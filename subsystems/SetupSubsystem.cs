@@ -24,23 +24,17 @@ internal static class SetupSubsystem
     }
 
     /// <summary>
-    ///     Runs interactive setup, validates that the current directory is the project root,
-    ///     and writes the generated configuration file.
+    ///     Runs interactive setup and writes the generated configuration file.
     /// </summary>
-    /// <param name="currentDirectory">Current working directory where the application is started.</param>
     /// <param name="agsDirectoryPath">Absolute path to the <c>.ags</c> directory.</param>
-    internal static void Run(string currentDirectory, string agsDirectoryPath)
+    /// <param name="settings">
+    ///     Settings selected during setup when setup succeeds; otherwise disabled defaults.
+    /// </param>
+    internal static void Run(string agsDirectoryPath, out AgsSettings settings)
     {
+        settings = new AgsSettings(false, false);
         Console.WriteLine("Setup required. Starting setup...");
-        var isProjectRoot =
-            AskYesNo($"Is the current folder the project root? ({currentDirectory})");
-        if (!isProjectRoot)
-        {
-            Console.WriteLine(
-                "The application must be started from the project root folder. Exiting.");
-            return;
-        }
-        var settings = new AgsSettings(AskYesNo("Do you want to use Claude Code?"),
+        settings = new AgsSettings(AskYesNo("Do you want to use Claude Code?"),
             AskYesNo("Do you want to use Codex?"));
         Directory.CreateDirectory(agsDirectoryPath);
         var configPath = Path.Combine(agsDirectoryPath, AgsSettings.ConfigFileName);
