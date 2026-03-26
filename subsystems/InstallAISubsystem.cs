@@ -8,7 +8,7 @@ namespace AGS.subsystems;
 /// </summary>
 internal static class InstallAISubsystem
 {
-    private const string ClaudeInstallerFileName = "install-claude-native.ps1";
+    private const string ClaudeInstallerFileName = "install-claude.ps1";
     private const string CodexInstallerFileName = "install-codex.ps1";
     private const int InstallerSkippedExitCode = 10;
     private const string ScriptsDirectoryName = "scripts";
