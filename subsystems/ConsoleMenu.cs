@@ -41,7 +41,26 @@ internal static class ConsoleMenu
         if (Console.IsInputRedirected || Console.IsOutputRedirected)
             return PromptForSelectionFallback(question, options);
 
-        return PromptForSelectionInteractive(question, options);
+        try
+        {
+            return PromptForSelectionInteractive(question, options);
+        }
+        catch (IOException)
+        {
+            return PromptForSelectionFallback(question, options);
+        }
+        catch (ArgumentOutOfRangeException)
+        {
+            return PromptForSelectionFallback(question, options);
+        }
+        catch (InvalidOperationException)
+        {
+            return PromptForSelectionFallback(question, options);
+        }
+        catch (PlatformNotSupportedException)
+        {
+            return PromptForSelectionFallback(question, options);
+        }
     }
 
     /// <summary>
@@ -54,24 +73,21 @@ internal static class ConsoleMenu
     {
         Console.WriteLine(question);
         Console.WriteLine(NavigationHint);
-        var optionsTop = Console.CursorTop;
-        for (var index = 0; index < options.Count; index++) Console.WriteLine();
-
         var selectedIndex = 0;
-        RenderOptions(options, optionsTop, selectedIndex);
+        var optionsTop = WriteInitialOptions(options, selectedIndex);
         while (true)
         {
             var pressedKey = Console.ReadKey(true).Key;
             if (TryGetOptionIndexFromDigitKey(pressedKey, options.Count, out var selectedByDigit))
             {
-                Console.SetCursorPosition(0, optionsTop + options.Count);
+                MoveCursorBelowMenu(optionsTop, options.Count);
                 Console.WriteLine();
                 return selectedByDigit;
             }
 
             if (pressedKey == ConsoleKey.Enter)
             {
-                Console.SetCursorPosition(0, optionsTop + options.Count);
+                MoveCursorBelowMenu(optionsTop, options.Count);
                 Console.WriteLine();
                 return selectedIndex;
             }
@@ -83,6 +99,26 @@ internal static class ConsoleMenu
             selectedIndex = nextSelectedIndex;
             RenderOptions(options, optionsTop, selectedIndex);
         }
+    }
+
+    /// <summary>
+    ///     Writes the initial visible option list and returns the row where the first option is
+    ///     rendered.
+    /// </summary>
+    /// <param name="options">Ordered option labels that the user can choose from.</param>
+    /// <param name="selectedIndex">Zero-based index of the initially highlighted option.</param>
+    /// <returns>Top console row where the first option should be rendered.</returns>
+    private static int WriteInitialOptions(IReadOnlyList<string> options, int selectedIndex)
+    {
+        var optionsTop = GetSafeCursorTop();
+        EnsureBufferHeight(optionsTop + options.Count + 1);
+        for (var index = 0; index < options.Count; index++)
+        {
+            WriteMenuLine(BuildMenuLine(index, options[index], index == selectedIndex));
+            Console.WriteLine();
+        }
+
+        return optionsTop;
     }
 
     /// <summary>
@@ -119,12 +155,40 @@ internal static class ConsoleMenu
     private static void RenderOptions(IReadOnlyList<string> options, int optionsTop,
         int selectedIndex)
     {
+        EnsureBufferHeight(optionsTop + options.Count + 1);
         for (var index = 0; index < options.Count; index++)
         {
             Console.SetCursorPosition(0, optionsTop + index);
-            var prefix = index == selectedIndex ? SelectedOptionPrefix : UnselectedOptionPrefix;
-            WriteMenuLine(prefix + FormatOptionLabel(index, options[index]));
+            WriteMenuLine(BuildMenuLine(index, options[index], index == selectedIndex));
         }
+    }
+
+    /// <summary>
+    ///     Moves the cursor to the first row below the current menu.
+    /// </summary>
+    /// <param name="optionsTop">Top console row where the first option is rendered.</param>
+    /// <param name="optionCount">Total number of available options.</param>
+    private static void MoveCursorBelowMenu(int optionsTop, int optionCount)
+    {
+        var targetTop = optionsTop + optionCount;
+        EnsureBufferHeight(targetTop + 1);
+        Console.SetCursorPosition(0, targetTop);
+    }
+
+    /// <summary>
+    ///     Builds a rendered menu line for the specified option state.
+    /// </summary>
+    /// <param name="optionIndex">Zero-based index of the menu option.</param>
+    /// <param name="optionText">Display text of the menu option.</param>
+    /// <param name="isSelected">
+    ///     <see langword="true" /> when the option should be rendered as selected; otherwise,
+    ///     <see langword="false" />.
+    /// </param>
+    /// <returns>Rendered menu line for the requested option.</returns>
+    private static string BuildMenuLine(int optionIndex, string optionText, bool isSelected)
+    {
+        var prefix = isSelected ? SelectedOptionPrefix : UnselectedOptionPrefix;
+        return prefix + FormatOptionLabel(optionIndex, optionText);
     }
 
     /// <summary>
@@ -208,6 +272,35 @@ internal static class ConsoleMenu
         }
 
         Console.Write(text.PadRight(writableLineWidth));
+    }
+
+    /// <summary>
+    ///     Gets the current cursor row and expands the buffer when the cursor is already positioned
+    ///     at the current buffer boundary.
+    /// </summary>
+    /// <returns>A cursor row that is safe to use for subsequent rendering.</returns>
+    private static int GetSafeCursorTop()
+    {
+        var cursorTop = Console.CursorTop;
+        if (cursorTop < 0) return 0;
+
+        EnsureBufferHeight(cursorTop + 1);
+        return cursorTop;
+    }
+
+    /// <summary>
+    ///     Ensures that the console buffer is tall enough to address the specified row index.
+    /// </summary>
+    /// <param name="requiredHeight">
+    ///     Minimum buffer height required for upcoming cursor operations.
+    /// </param>
+    private static void EnsureBufferHeight(int requiredHeight)
+    {
+        if (requiredHeight <= 0) return;
+        if (!OperatingSystem.IsWindows()) return;
+        if (Console.BufferHeight >= requiredHeight) return;
+
+        Console.BufferHeight = requiredHeight;
     }
 
     /// <summary>

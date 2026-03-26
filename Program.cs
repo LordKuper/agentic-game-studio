@@ -9,7 +9,7 @@ internal static class Program
 {
     /// <summary>
     ///     Starts the application, loads settings, runs setup when needed, and updates enabled
-    ///     integrations.
+    ///     integrations before showing the main menu.
     /// </summary>
     /// <param name="args">Command-line arguments passed to the application.</param>
     private static void Main(string[] args)
@@ -23,31 +23,65 @@ internal static class Program
                 return;
             }
         }
-        AgsSettings settings;
+
+        if (!TryInitializeApplication(out var settings)) return;
+
+        AgsSettings.SetCurrent(settings);
+        InstallAISubsystem.Run();
+        MainMenuSubsystem.Run();
+    }
+
+    /// <summary>
+    ///     Loads existing settings or runs setup when initialization is required.
+    /// </summary>
+    /// <param name="settings">
+    ///     Loaded or newly created application settings when initialization succeeds.
+    /// </param>
+    /// <returns>
+    ///     <see langword="true" /> when the application can continue to dependency
+    ///     initialization; otherwise, <see langword="false" />.
+    /// </returns>
+    private static bool TryInitializeApplication(out AgsSettings settings)
+    {
+        settings = new AgsSettings(false, false);
         var currentDirectory = Directory.GetCurrentDirectory();
         var agsDirectoryPath = Path.Combine(currentDirectory, AgsSettings.AgsDirectoryName);
         if (Directory.Exists(agsDirectoryPath))
+            return TryInitializeFromExistingConfiguration(agsDirectoryPath, out settings);
+
+        if (!ValidateProjectRoot(currentDirectory)) return false;
+
+        SetupSubsystem.Run(agsDirectoryPath, out settings);
+        return true;
+    }
+
+    /// <summary>
+    ///     Loads an existing configuration directory or reruns setup when its contents are not
+    ///     usable.
+    /// </summary>
+    /// <param name="agsDirectoryPath">Absolute path to the <c>.ags</c> directory.</param>
+    /// <param name="settings">
+    ///     Loaded or newly created application settings when initialization succeeds.
+    /// </param>
+    /// <returns>
+    ///     <see langword="true" /> when initialization succeeds; otherwise,
+    ///     <see langword="false" />.
+    /// </returns>
+    private static bool TryInitializeFromExistingConfiguration(string agsDirectoryPath,
+        out AgsSettings settings)
+    {
+        var configPath = Path.Combine(agsDirectoryPath, AgsSettings.ConfigFileName);
+        var canReadSettings = AgsSettings.TryReadFromConfig(configPath, out settings);
+        if (canReadSettings)
         {
-            var configPath = Path.Combine(agsDirectoryPath, AgsSettings.ConfigFileName);
-            var canReadSettings = AgsSettings.TryReadFromConfig(configPath, out settings);
-            if (!canReadSettings || settings.AreAllModelsDisabled)
-            {
-                Console.WriteLine(
-                    "Existing settings are missing/invalid or all AI integrations are disabled. Starting setup...");
-                SetupSubsystem.Run(agsDirectoryPath, out settings);
-                AgsSettings.SetCurrent(settings);
-                return;
-            }
-            Console.WriteLine(
-                "AGS configuration found and loaded. Initialization is not required.");
+            Console.WriteLine("AGS configuration found and loaded. Initialization is not required.");
+            return true;
         }
-        else
-        {
-            if (!ValidateProjectRoot(currentDirectory)) return;
-            SetupSubsystem.Run(agsDirectoryPath, out settings);
-        }
-        AgsSettings.SetCurrent(settings);
-        InstallAISubsystem.Run();
+
+        Console.WriteLine(
+            "Existing settings are missing or invalid. Starting setup...");
+        SetupSubsystem.Run(agsDirectoryPath, out settings);
+        return true;
     }
 
     /// <summary>

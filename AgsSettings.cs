@@ -182,6 +182,16 @@ internal readonly struct AgsSettings
     }
 
     /// <summary>
+    ///     Creates a copy of the current settings with an updated Claude Code enabled flag.
+    /// </summary>
+    /// <param name="useClaude">Whether Claude Code integration should be enabled.</param>
+    /// <returns>A new settings instance with the updated Claude enabled flag.</returns>
+    internal AgsSettings WithUseClaude(bool useClaude)
+    {
+        return new AgsSettings(useClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc);
+    }
+
+    /// <summary>
     ///     Creates a copy of the current settings with an updated Codex timestamp.
     /// </summary>
     /// <param name="codexLastUpdateUtc">UTC timestamp of the last successful Codex update.</param>
@@ -189,6 +199,52 @@ internal readonly struct AgsSettings
     internal AgsSettings WithCodexLastUpdateUtc(DateTimeOffset codexLastUpdateUtc)
     {
         return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, codexLastUpdateUtc);
+    }
+
+    /// <summary>
+    ///     Creates a copy of the current settings with an updated Codex enabled flag.
+    /// </summary>
+    /// <param name="useCodex">Whether Codex integration should be enabled.</param>
+    /// <returns>A new settings instance with the updated Codex enabled flag.</returns>
+    internal AgsSettings WithUseCodex(bool useCodex)
+    {
+        return new AgsSettings(UseClaude, useCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc);
+    }
+
+    /// <summary>
+    ///     Writes the current settings to the project configuration file.
+    /// </summary>
+    /// <param name="projectRootPath">Absolute path to the project root directory.</param>
+    /// <param name="errorMessage">
+    ///     Error message when the write fails; otherwise, an empty string.
+    /// </param>
+    /// <returns>
+    ///     <see langword="true" /> when the settings are written successfully; otherwise,
+    ///     <see langword="false" />.
+    /// </returns>
+    internal bool TryWriteToProjectConfig(string projectRootPath, out string errorMessage)
+    {
+        var configPath = GetConfigPath(projectRootPath);
+        try
+        {
+            var configDirectoryPath = Path.GetDirectoryName(configPath);
+            if (!string.IsNullOrEmpty(configDirectoryPath))
+                Directory.CreateDirectory(configDirectoryPath);
+
+            WriteToConfig(configPath);
+            errorMessage = string.Empty;
+            return true;
+        }
+        catch (IOException exception)
+        {
+            errorMessage = $"Settings could not be saved to {configPath}: {exception.Message}";
+            return false;
+        }
+        catch (UnauthorizedAccessException exception)
+        {
+            errorMessage = $"Settings could not be saved to {configPath}: {exception.Message}";
+            return false;
+        }
     }
 
     /// <summary>

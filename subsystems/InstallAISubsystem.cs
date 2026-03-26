@@ -237,27 +237,11 @@ internal static class InstallAISubsystem
     /// </returns>
     private static bool TryPersistSettings(AgsSettings settings)
     {
-        var configPath = AgsSettings.GetConfigPath(Directory.GetCurrentDirectory());
-        try
-        {
-            var configDirectoryPath = Path.GetDirectoryName(configPath);
-            if (!string.IsNullOrEmpty(configDirectoryPath))
-                Directory.CreateDirectory(configDirectoryPath);
-            settings.WriteToConfig(configPath);
+        if (settings.TryWriteToProjectConfig(Directory.GetCurrentDirectory(), out var errorMessage))
             return true;
-        }
-        catch (IOException exception)
-        {
-            Console.WriteLine(
-                $"Updated settings could not be saved to {configPath}: {exception.Message}");
-            return false;
-        }
-        catch (UnauthorizedAccessException exception)
-        {
-            Console.WriteLine(
-                $"Updated settings could not be saved to {configPath}: {exception.Message}");
-            return false;
-        }
+
+        Console.WriteLine(errorMessage);
+        return false;
     }
 
     /// <summary>
