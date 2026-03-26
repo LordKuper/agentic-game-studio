@@ -8,24 +8,6 @@ namespace AGS;
 internal static class Program
 {
     /// <summary>
-    ///     Prompts the user for a yes/no answer until valid input is provided.
-    /// </summary>
-    /// <param name="question">Question text shown to the user.</param>
-    /// <returns><see langword="true" /> for yes answers; otherwise, <see langword="false" />.</returns>
-    private static bool AskYesNo(string question)
-    {
-        while (true)
-        {
-            Console.Write($"{question} [y/n]: ");
-            var rawAnswer = Console.ReadLine();
-            var answer = rawAnswer == null ? string.Empty : rawAnswer.Trim().ToLowerInvariant();
-            if (answer is "y" or "yes") return true;
-            if (answer is "n" or "no") return false;
-            Console.WriteLine("Please answer with y/yes or n/no.");
-        }
-    }
-
-    /// <summary>
     ///     Starts the application, loads settings, runs setup when needed, and updates enabled
     ///     integrations.
     /// </summary>
@@ -79,7 +61,7 @@ internal static class Program
     private static bool ValidateProjectRoot(string currentDirectory)
     {
         var isProjectRoot =
-            AskYesNo($"Is the current folder the project root? ({currentDirectory})");
+            ConsoleMenu.PromptForBoolean($"Is the current folder the project root? ({currentDirectory})");
         if (isProjectRoot) return true;
         Console.WriteLine("The application must be started from the project root folder. Exiting.");
         return false;
