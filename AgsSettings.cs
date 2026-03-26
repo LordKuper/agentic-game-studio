@@ -1,10 +1,11 @@
+using System.Globalization;
 using System.Text.Json;
 
 namespace AGS;
 
 /// <summary>
-///     Represents persisted configuration flags for the local <c>.ags/config.json</c> file and
-///     stores the current process-wide settings instance.
+///     Represents persisted configuration flags and last successful update timestamps for the
+///     local <c>.ags/config.json</c> file and stores the current process-wide settings instance.
 /// </summary>
 internal readonly struct AgsSettings
 {
@@ -12,6 +13,8 @@ internal readonly struct AgsSettings
     internal const string ConfigFileName = "config.json";
     private const string UseClaudeSettingName = "use-claude";
     private const string UseCodexSettingName = "use-codex";
+    private const string ClaudeLastUpdateUtcSettingName = "claude-last-update-utc";
+    private const string CodexLastUpdateUtcSettingName = "codex-last-update-utc";
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -26,9 +29,30 @@ internal readonly struct AgsSettings
     /// <param name="useClaude">Whether Claude Code integration is enabled.</param>
     /// <param name="useCodex">Whether Codex integration is enabled.</param>
     internal AgsSettings(bool useClaude, bool useCodex)
+        : this(useClaude, useCodex, DateTimeOffset.MinValue, DateTimeOffset.MinValue)
+    {
+    }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AgsSettings" /> struct.
+    /// </summary>
+    /// <param name="useClaude">Whether Claude Code integration is enabled.</param>
+    /// <param name="useCodex">Whether Codex integration is enabled.</param>
+    /// <param name="claudeLastUpdateUtc">
+    ///     UTC timestamp of the last successful Claude Code update, or
+    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
+    /// </param>
+    /// <param name="codexLastUpdateUtc">
+    ///     UTC timestamp of the last successful Codex update, or
+    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
+    /// </param>
+    internal AgsSettings(bool useClaude, bool useCodex, DateTimeOffset claudeLastUpdateUtc,
+        DateTimeOffset codexLastUpdateUtc)
     {
         UseClaude = useClaude;
         UseCodex = useCodex;
+        ClaudeLastUpdateUtc = NormalizeTimestamp(claudeLastUpdateUtc);
+        CodexLastUpdateUtc = NormalizeTimestamp(codexLastUpdateUtc);
     }
 
     /// <summary>
@@ -40,6 +64,28 @@ internal readonly struct AgsSettings
     ///     Gets a value indicating whether Codex integration is enabled.
     /// </summary>
     internal bool UseCodex { get; }
+
+    /// <summary>
+    ///     Gets the UTC timestamp of the last successful Claude Code update, or
+    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
+    /// </summary>
+    internal DateTimeOffset ClaudeLastUpdateUtc { get; }
+
+    /// <summary>
+    ///     Gets the UTC timestamp of the last successful Codex update, or
+    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
+    /// </summary>
+    internal DateTimeOffset CodexLastUpdateUtc { get; }
+
+    /// <summary>
+    ///     Gets a value indicating whether a successful Claude Code update timestamp is stored.
+    /// </summary>
+    internal bool HasClaudeLastUpdateUtc => ClaudeLastUpdateUtc != DateTimeOffset.MinValue;
+
+    /// <summary>
+    ///     Gets a value indicating whether a successful Codex update timestamp is stored.
+    /// </summary>
+    internal bool HasCodexLastUpdateUtc => CodexLastUpdateUtc != DateTimeOffset.MinValue;
 
     /// <summary>
     ///     Gets a value indicating whether both integrations are disabled.
@@ -55,6 +101,16 @@ internal readonly struct AgsSettings
     ///     Gets a value indicating whether the current application settings have been initialized.
     /// </summary>
     internal static bool HasCurrentSettings => hasCurrentSettings;
+
+    /// <summary>
+    ///     Builds the absolute path to the persisted application configuration file.
+    /// </summary>
+    /// <param name="projectRootPath">Absolute path to the project root directory.</param>
+    /// <returns>Absolute path to the <c>.ags/config.json</c> file.</returns>
+    internal static string GetConfigPath(string projectRootPath)
+    {
+        return Path.Combine(projectRootPath, AgsDirectoryName, ConfigFileName);
+    }
 
     /// <summary>
     ///     Stores the current application settings for global access within the process.
@@ -81,7 +137,9 @@ internal readonly struct AgsSettings
         if (!File.Exists(configPath)) return false;
         try
         {
-            return TryReadFromJson(File.ReadAllText(configPath), out settings);
+            var configContent = File.ReadAllText(configPath);
+            if (TryReadFromJson(configContent, out settings)) return true;
+            return TryReadFromLegacyConfig(configContent, out settings);
         }
         catch (IOException)
         {
@@ -99,12 +157,38 @@ internal readonly struct AgsSettings
     /// <param name="configPath">Absolute path to the configuration file.</param>
     internal void WriteToConfig(string configPath)
     {
-        var serializedSettings = JsonSerializer.Serialize(new Dictionary<string, bool>
+        var serializedSettings = JsonSerializer.Serialize(new Dictionary<string, object>
         {
             [UseClaudeSettingName] = UseClaude,
-            [UseCodexSettingName] = UseCodex
+            [UseCodexSettingName] = UseCodex,
+            [ClaudeLastUpdateUtcSettingName] = HasClaudeLastUpdateUtc
+                ? ClaudeLastUpdateUtc.ToString("O", CultureInfo.InvariantCulture)
+                : null,
+            [CodexLastUpdateUtcSettingName] = HasCodexLastUpdateUtc
+                ? CodexLastUpdateUtc.ToString("O", CultureInfo.InvariantCulture)
+                : null
         }, JsonOptions);
         File.WriteAllText(configPath, serializedSettings);
+    }
+
+    /// <summary>
+    ///     Creates a copy of the current settings with an updated Claude Code timestamp.
+    /// </summary>
+    /// <param name="claudeLastUpdateUtc">UTC timestamp of the last successful Claude update.</param>
+    /// <returns>A new settings instance with the updated Claude timestamp.</returns>
+    internal AgsSettings WithClaudeLastUpdateUtc(DateTimeOffset claudeLastUpdateUtc)
+    {
+        return new AgsSettings(UseClaude, UseCodex, claudeLastUpdateUtc, CodexLastUpdateUtc);
+    }
+
+    /// <summary>
+    ///     Creates a copy of the current settings with an updated Codex timestamp.
+    /// </summary>
+    /// <param name="codexLastUpdateUtc">UTC timestamp of the last successful Codex update.</param>
+    /// <returns>A new settings instance with the updated Codex timestamp.</returns>
+    internal AgsSettings WithCodexLastUpdateUtc(DateTimeOffset codexLastUpdateUtc)
+    {
+        return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, codexLastUpdateUtc);
     }
 
     /// <summary>
@@ -121,11 +205,21 @@ internal readonly struct AgsSettings
         settings = new AgsSettings(false, false);
         try
         {
-            var configValues = JsonSerializer.Deserialize<Dictionary<string, bool>>(jsonContent);
-            if (configValues == null) return false;
-            if (!configValues.TryGetValue(UseClaudeSettingName, out var useClaude)) return false;
-            if (!configValues.TryGetValue(UseCodexSettingName, out var useCodex)) return false;
-            settings = new AgsSettings(useClaude, useCodex);
+            using var jsonDocument = JsonDocument.Parse(jsonContent);
+            var rootElement = jsonDocument.RootElement;
+            if (rootElement.ValueKind != JsonValueKind.Object) return false;
+            if (!TryReadRequiredBoolean(rootElement, UseClaudeSettingName, out var useClaude))
+                return false;
+            if (!TryReadRequiredBoolean(rootElement, UseCodexSettingName, out var useCodex))
+                return false;
+
+            var claudeLastUpdateUtc =
+                TryReadOptionalTimestamp(rootElement, ClaudeLastUpdateUtcSettingName);
+            var codexLastUpdateUtc =
+                TryReadOptionalTimestamp(rootElement, CodexLastUpdateUtcSettingName);
+
+            settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc,
+                codexLastUpdateUtc);
             return true;
         }
         catch (JsonException)
@@ -139,25 +233,72 @@ internal readonly struct AgsSettings
     }
 
     /// <summary>
-    ///     Attempts to read settings from the legacy plain-text configuration file.
+    ///     Attempts to read a required Boolean property from a JSON object.
     /// </summary>
-    /// <param name="configPath">Absolute path to the legacy configuration file.</param>
+    /// <param name="configElement">JSON object that contains persisted settings.</param>
+    /// <param name="propertyName">Property name to read.</param>
+    /// <param name="value">Parsed Boolean value when available.</param>
+    /// <returns>
+    ///     <see langword="true" /> when the property exists and contains a Boolean value;
+    ///     otherwise, <see langword="false" />.
+    /// </returns>
+    private static bool TryReadRequiredBoolean(JsonElement configElement, string propertyName,
+        out bool value)
+    {
+        value = false;
+        if (!configElement.TryGetProperty(propertyName, out var propertyElement)) return false;
+        if (propertyElement.ValueKind != JsonValueKind.True &&
+            propertyElement.ValueKind != JsonValueKind.False)
+            return false;
+
+        value = propertyElement.GetBoolean();
+        return true;
+    }
+
+    /// <summary>
+    ///     Attempts to read an optional UTC timestamp property from a JSON object.
+    /// </summary>
+    /// <param name="configElement">JSON object that contains persisted settings.</param>
+    /// <param name="propertyName">Property name to read.</param>
+    /// <returns>
+    ///     Parsed UTC timestamp when a valid value is present; otherwise,
+    ///     <see cref="DateTimeOffset.MinValue" />.
+    /// </returns>
+    private static DateTimeOffset TryReadOptionalTimestamp(JsonElement configElement,
+        string propertyName)
+    {
+        if (!configElement.TryGetProperty(propertyName, out var propertyElement))
+            return DateTimeOffset.MinValue;
+        if (propertyElement.ValueKind == JsonValueKind.Null) return DateTimeOffset.MinValue;
+        if (propertyElement.ValueKind != JsonValueKind.String) return DateTimeOffset.MinValue;
+
+        var rawTimestamp = propertyElement.GetString();
+        if (string.IsNullOrWhiteSpace(rawTimestamp)) return DateTimeOffset.MinValue;
+
+        return TryParseTimestamp(rawTimestamp);
+    }
+
+    /// <summary>
+    ///     Attempts to read settings from the legacy plain-text configuration file content.
+    /// </summary>
+    /// <param name="configContent">Raw content of the legacy configuration file.</param>
     /// <param name="settings">Parsed settings when read succeeds; otherwise default values.</param>
     /// <returns>
     ///     <see langword="true" /> when both required settings are successfully parsed; otherwise
     ///     <see langword="false" />.
     /// </returns>
-    private static bool TryReadFromLegacyConfig(string configPath, out AgsSettings settings)
+    private static bool TryReadFromLegacyConfig(string configContent, out AgsSettings settings)
     {
         settings = new AgsSettings(false, false);
-        if (!File.Exists(configPath)) return false;
         try
         {
-            var lines = File.ReadAllLines(configPath);
+            var lines = configContent.Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries);
             var hasUseClaude = false;
             var hasUseCodex = false;
             var useClaude = false;
             var useCodex = false;
+            var claudeLastUpdateUtc = DateTimeOffset.MinValue;
+            var codexLastUpdateUtc = DateTimeOffset.MinValue;
             foreach (var line in lines)
             {
                 var trimmedLine = line.Trim();
@@ -176,19 +317,55 @@ internal readonly struct AgsSettings
                 {
                     useCodex = parsedUseCodex;
                     hasUseCodex = true;
+                    continue;
                 }
+                if (key == ClaudeLastUpdateUtcSettingName)
+                {
+                    claudeLastUpdateUtc = TryParseTimestamp(value);
+                    continue;
+                }
+                if (key == CodexLastUpdateUtcSettingName)
+                    codexLastUpdateUtc = TryParseTimestamp(value);
             }
             if (!hasUseClaude || !hasUseCodex) return false;
-            settings = new AgsSettings(useClaude, useCodex);
+            settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc,
+                codexLastUpdateUtc);
             return true;
         }
-        catch (IOException)
+        catch (ArgumentException)
         {
             return false;
         }
-        catch (UnauthorizedAccessException)
-        {
-            return false;
-        }
+    }
+
+    /// <summary>
+    ///     Normalizes a persisted timestamp to UTC.
+    /// </summary>
+    /// <param name="timestamp">Timestamp to normalize.</param>
+    /// <returns>
+    ///     <paramref name="timestamp" /> converted to UTC, or
+    ///     <see cref="DateTimeOffset.MinValue" /> when the value is not set.
+    /// </returns>
+    private static DateTimeOffset NormalizeTimestamp(DateTimeOffset timestamp)
+    {
+        if (timestamp == DateTimeOffset.MinValue) return DateTimeOffset.MinValue;
+        return timestamp.ToUniversalTime();
+    }
+
+    /// <summary>
+    ///     Parses a persisted timestamp string into a UTC value.
+    /// </summary>
+    /// <param name="rawTimestamp">Timestamp string read from configuration.</param>
+    /// <returns>
+    ///     Parsed UTC timestamp when the input is valid; otherwise,
+    ///     <see cref="DateTimeOffset.MinValue" />.
+    /// </returns>
+    private static DateTimeOffset TryParseTimestamp(string rawTimestamp)
+    {
+        if (!DateTimeOffset.TryParse(rawTimestamp, CultureInfo.InvariantCulture,
+                DateTimeStyles.RoundtripKind, out var parsedTimestamp))
+            return DateTimeOffset.MinValue;
+
+        return NormalizeTimestamp(parsedTimestamp);
     }
 }

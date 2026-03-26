@@ -1,5 +1,6 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+$ProgressPreference = "SilentlyContinue"
 
 $bashCommand = Get-Command -Name "bash" -ErrorAction SilentlyContinue
 $defaultGitBashPath = Join-Path -Path $env:ProgramFiles -ChildPath "Git\bin\bash.exe"
@@ -9,11 +10,27 @@ if ($null -eq $bashCommand -and -not (Test-Path -Path $defaultGitBashPath))
 }
 
 Write-Host "Installing or updating Claude Code to the latest native version..."
-$installerScript = Invoke-RestMethod -Uri "https://claude.ai/install.ps1"
-& ([scriptblock]::Create($installerScript)) latest
-if ($LASTEXITCODE -ne 0)
+$temporaryInstallerPath = Join-Path -Path $env:TEMP -ChildPath ("claude-install-" + [guid]::NewGuid().ToString() + ".ps1")
+try
 {
-    throw "The Claude Code installer failed."
+    Write-Host "Downloading Claude Code installer from https://claude.ai/install.ps1..."
+    Invoke-WebRequest -Uri "https://claude.ai/install.ps1" -OutFile $temporaryInstallerPath -TimeoutSec 60 -UseBasicParsing
+    Write-Host "Claude Code installer downloaded to $temporaryInstallerPath"
+
+    Write-Host "Running downloaded Claude Code installer..."
+    & powershell.exe -NoProfile -ExecutionPolicy Bypass -File $temporaryInstallerPath latest
+    $installerExitCode = $LASTEXITCODE
+    if ($installerExitCode -ne 0)
+    {
+        throw "The Claude Code installer failed with exit code $installerExitCode."
+    }
+}
+finally
+{
+    if (Test-Path -Path $temporaryInstallerPath)
+    {
+        Remove-Item -Path $temporaryInstallerPath -Force
+    }
 }
 
 $npmCommand = Get-Command -Name "npm" -ErrorAction SilentlyContinue

@@ -10,11 +10,13 @@
     <AssemblyName>ags</AssemblyName>
   </PropertyGroup>
 
-  <ItemGroup>
-    <None Update="scripts\**\*">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      <TargetPath>%(RecursiveDir)%(Filename)%(Extension)</TargetPath>
-    </None>
-  </ItemGroup>
+  <Target Name="CopyScriptsToOutput" AfterTargets="Build">
+    <ItemGroup>
+      <ScriptFiles Include="scripts\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(ScriptFiles)"
+          DestinationFiles="@(ScriptFiles->'$(OutDir)scripts\%(RecursiveDir)%(Filename)%(Extension)')"
+          SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>
