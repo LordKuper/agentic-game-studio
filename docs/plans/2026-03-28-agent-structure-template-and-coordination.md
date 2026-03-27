@@ -25,14 +25,14 @@ Create the foundational agent infrastructure: `agent-template.md` in the project
 **Files:**
 - Create: `agent-template.md`
 
-- [ ] Create agent-template.md with the following sections:
+- [x] Create agent-template.md with the following sections:
   - `name:` — agent's name
   - `description:` — what the agent does (brief, one-paragraph summary)
   - `must_not:` — explicit list of behaviours, actions, and decisions this agent must never perform or initiate (e.g. "must not make final budget decisions", "must not override another agent's domain")
   - `models:` — ordered list of suitable AI models (highest priority first), values from: claude-opus-4-6, claude-sonnet-4-6, claude-haiku-4-5
   - `max_iterations:` — maximum number of execution iterations per session (integer)
-- [ ] Include inline comments/guidance in the template explaining what to fill in each field
-- [ ] Note in the template that the agent's responsibilities are documented in agent-coordination.md, not in the individual agent file
+- [x] Include inline comments/guidance in the template explaining what to fill in each field
+- [x] Note in the template that the agent's responsibilities are documented in agent-coordination.md, not in the individual agent file
 
 ### Task 2: Create agent-coordination.md
 
