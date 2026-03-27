@@ -55,7 +55,7 @@ Create the foundational agent infrastructure: `agent-template.md` in the project
 **Files:**
 - Create: `agents/.gitkeep`
 
-- [ ] Create `agents/.gitkeep` so the empty directory is tracked in git
+- [x] Create `agents/.gitkeep` so the empty directory is tracked in git
 
 ### Task 4: Verify and finalize
 
