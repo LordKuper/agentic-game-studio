@@ -39,16 +39,16 @@ Create the foundational agent infrastructure: `agent-template.md` in the project
 **Files:**
 - Create: `agent-coordination.md`
 
-- [ ] Document the 4-level hierarchy:
+- [x] Document the 4-level hierarchy:
   - Level 1: CEO — human user, ultimate decision-maker, not an AI agent
   - Level 2: C-Level Agents — AI agents responsible for strategic domains (e.g. CTO, CCO, CPO)
   - Level 3: Team-lead Agents — AI agents managing specific functional teams
   - Level 4: Specialist Agents — AI agents executing focused domain tasks
-- [ ] Include a Mermaid hierarchy diagram showing the 4 levels and their relationships
-- [ ] Define escalation rules: when agents at the same level disagree, the conflict is escalated to the most appropriate parent agent on the level above, chosen based on the subject matter of the disagreement
-- [ ] Document communication flow: top-down task assignment, bottom-up result reporting, lateral peer collaboration within a level
-- [ ] Add an "Agent Responsibilities Reference" section listing each agent (by filename) with its area of responsibility and the kinds of questions/topics it should be involved in — this is the primary lookup table for deciding which agents to engage
-- [ ] Note that concrete agent definitions live in `agents/<agent-name>.md` and must conform to `agent-template.md`
+- [x] Include a Mermaid hierarchy diagram showing the 4 levels and their relationships
+- [x] Define escalation rules: when agents at the same level disagree, the conflict is escalated to the most appropriate parent agent on the level above, chosen based on the subject matter of the disagreement
+- [x] Document communication flow: top-down task assignment, bottom-up result reporting, lateral peer collaboration within a level
+- [x] Add an "Agent Responsibilities Reference" section listing each agent (by filename) with its area of responsibility and the kinds of questions/topics it should be involved in — this is the primary lookup table for deciding which agents to engage
+- [x] Note that concrete agent definitions live in `agents/<agent-name>.md` and must conform to `agent-template.md`
 
 ### Task 3: Create agents/ directory placeholder
 
