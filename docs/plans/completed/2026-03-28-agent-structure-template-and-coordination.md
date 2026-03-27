@@ -59,7 +59,7 @@ Create the foundational agent infrastructure: `agent-template.md` in the project
 
 ### Task 4: Verify and finalize
 
-- [ ] Confirm agent-template.md includes all required fields including must_not
-- [ ] Confirm agent-template.md does not duplicate responsibility data already in agent-coordination.md
-- [ ] Confirm agent-coordination.md Agent Responsibilities Reference covers all hierarchy levels and is sufficient to determine agent selection for any topic
-- [ ] Move this plan to `docs/plans/completed/`
+- [x] Confirm agent-template.md includes all required fields including must_not
+- [x] Confirm agent-template.md does not duplicate responsibility data already in agent-coordination.md
+- [x] Confirm agent-coordination.md Agent Responsibilities Reference covers all hierarchy levels and is sufficient to determine agent selection for any topic
+- [x] Move this plan to `docs/plans/completed/`
