@@ -107,9 +107,11 @@ that belong to it.
 | agents/narrative-writer.md | 4 — Specialist | Writing and dialogue | Quest text, NPC dialogue, item descriptions, lore entries |
 | agents/level-designer.md | 4 — Specialist | Level and environment design | Map layout, encounter placement, environmental storytelling, pacing |
 
-Note: This table reflects the intended hierarchy. As new agents are defined and added to
-`agents/`, this table must be updated to include them. Any agent not listed here is not
-officially part of the coordination structure.
+Note: This table reflects the intended hierarchy. Entries marked here are planned agents —
+they may not yet have a corresponding file in `agents/`. As agents are created and added to
+`agents/`, this table must be kept in sync. Only agents with an existing file in `agents/`
+are currently operative. Any agent not listed here is not officially part of the coordination
+structure.
 
 ---
 

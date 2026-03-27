@@ -76,5 +76,6 @@ max_iterations: 20
   organisational context.
 - All agents must conform to this template. Fields may not be removed.
   Additional fields may be added below the required ones if needed.
-- All agent files must also comply with the project-wide rules in `AGENTS.md`
+- Any code produced by an agent must comply with the project-wide rules in `AGENTS.md`
   at the repository root (coding standards, language, test coverage, etc.).
+  `AGENTS.md` rules apply to source code output, not to agent definition files.
