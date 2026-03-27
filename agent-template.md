@@ -64,7 +64,7 @@ models:
      Increase for agents that orchestrate long multi-step workflows;
      decrease for narrow specialist agents. -->
 
-max_iterations: 20
+max_iterations: <integer, 10-50>
 
 ---
 
