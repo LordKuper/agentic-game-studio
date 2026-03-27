@@ -5,59 +5,13 @@ namespace AGS.subsystems;
 /// </summary>
 internal static class MainMenuSubsystem
 {
-    /// <summary>
-    ///     Shows the main menu until the user chooses to exit the application.
-    /// </summary>
-    internal static void Run()
-    {
-        while (true)
-        {
-            ClearConsoleForMainMenu();
-            var options = BuildOptions();
-            var selectedIndex = ConsoleMenu.PromptForSelection("Main menu", GetOptionLabels(options));
-            var selectedOption = options[selectedIndex];
-            if (selectedOption.Kind == MainMenuOptionKind.Exit)
-            {
-                Console.WriteLine("Application is shutting down.");
-                return;
-            }
+    private static readonly Action clearConsoleHandler = Console.Clear;
 
-            if (selectedOption.Kind == MainMenuOptionKind.Settings)
-            {
-                SettingsSubsystem.Run();
-                continue;
-            }
+    private static readonly Func<bool>
+        isOutputRedirectedProvider = () => Console.IsOutputRedirected;
 
-            if (selectedOption.Kind == MainMenuOptionKind.ContinueSession ||
-                selectedOption.Kind == MainMenuOptionKind.StartNewSession)
-                continue;
-        }
-    }
-
-    /// <summary>
-    ///     Clears the console before the main menu is rendered so repeated selections do not stack
-    ///     multiple menu screens on top of each other.
-    /// </summary>
-    private static void ClearConsoleForMainMenu()
-    {
-        if (Console.IsOutputRedirected) return;
-        try
-        {
-            Console.Clear();
-        }
-        catch (IOException)
-        {
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-        }
-        catch (InvalidOperationException)
-        {
-        }
-        catch (PlatformNotSupportedException)
-        {
-        }
-    }
+    private static readonly Func<IReadOnlyList<string>> unfinishedSessionNamesProvider =
+        GetUnfinishedSessionNames;
 
     /// <summary>
     ///     Builds the visible main menu options for the current application state.
@@ -66,15 +20,33 @@ internal static class MainMenuSubsystem
     private static MainMenuOption[] BuildOptions()
     {
         var options = new List<MainMenuOption>();
-        foreach (var sessionName in GetUnfinishedSessionNames())
+        foreach (var sessionName in unfinishedSessionNamesProvider())
+        {
             options.Add(new MainMenuOption($"Continue session {sessionName}",
                 MainMenuOptionKind.ContinueSession, sessionName));
-
+        }
         options.Add(new MainMenuOption("Start a new session", MainMenuOptionKind.StartNewSession,
             string.Empty));
         options.Add(new MainMenuOption("Settings", MainMenuOptionKind.Settings, string.Empty));
         options.Add(new MainMenuOption("Exit", MainMenuOptionKind.Exit, string.Empty));
         return [.. options];
+    }
+
+    /// <summary>
+    ///     Clears the console before the main menu is rendered so repeated selections do not stack
+    ///     multiple menu screens on top of each other.
+    /// </summary>
+    private static void ClearConsoleForMainMenu()
+    {
+        if (isOutputRedirectedProvider()) return;
+        try
+        {
+            clearConsoleHandler();
+        }
+        catch (IOException) { }
+        catch (ArgumentOutOfRangeException) { }
+        catch (InvalidOperationException) { }
+        catch (PlatformNotSupportedException) { }
     }
 
     /// <summary>
@@ -99,6 +71,34 @@ internal static class MainMenuSubsystem
     private static IReadOnlyList<string> GetUnfinishedSessionNames()
     {
         return [];
+    }
+
+    /// <summary>
+    ///     Shows the main menu until the user chooses to exit the application.
+    /// </summary>
+    internal static void Run()
+    {
+        while (true)
+        {
+            ClearConsoleForMainMenu();
+            var options = BuildOptions();
+            var selectedIndex =
+                ConsoleMenu.PromptForSelection("Main menu", GetOptionLabels(options));
+            var selectedOption = options[selectedIndex];
+            if (selectedOption.Kind == MainMenuOptionKind.Exit)
+            {
+                Console.WriteLine("Application is shutting down.");
+                return;
+            }
+            if (selectedOption.Kind == MainMenuOptionKind.Settings)
+            {
+                SettingsSubsystem.Run();
+                continue;
+            }
+            if (selectedOption.Kind == MainMenuOptionKind.ContinueSession ||
+                selectedOption.Kind == MainMenuOptionKind.StartNewSession)
+                continue;
+        }
     }
 
     /// <summary>

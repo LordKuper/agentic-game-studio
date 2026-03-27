@@ -20,18 +20,14 @@ internal readonly struct AgsSettings
     {
         WriteIndented = true
     };
-    private static AgsSettings currentSettings = new(false, false);
-    private static bool hasCurrentSettings;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AgsSettings" /> struct.
     /// </summary>
     /// <param name="useClaude">Whether Claude Code integration is enabled.</param>
     /// <param name="useCodex">Whether Codex integration is enabled.</param>
-    internal AgsSettings(bool useClaude, bool useCodex)
-        : this(useClaude, useCodex, DateTimeOffset.MinValue, DateTimeOffset.MinValue)
-    {
-    }
+    internal AgsSettings(bool useClaude, bool useCodex) : this(useClaude, useCodex,
+        DateTimeOffset.MinValue, DateTimeOffset.MinValue) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AgsSettings" /> struct.
@@ -95,12 +91,12 @@ internal readonly struct AgsSettings
     /// <summary>
     ///     Gets the current application settings for this process.
     /// </summary>
-    internal static AgsSettings Current => currentSettings;
+    internal static AgsSettings Current { get; private set; } = new(false, false);
 
     /// <summary>
     ///     Gets a value indicating whether the current application settings have been initialized.
     /// </summary>
-    internal static bool HasCurrentSettings => hasCurrentSettings;
+    internal static bool HasCurrentSettings { get; private set; }
 
     /// <summary>
     ///     Builds the absolute path to the persisted application configuration file.
@@ -118,8 +114,8 @@ internal readonly struct AgsSettings
     /// <param name="settings">Settings instance to expose globally.</param>
     internal static void SetCurrent(AgsSettings settings)
     {
-        currentSettings = settings;
-        hasCurrentSettings = true;
+        Current = settings;
+        HasCurrentSettings = true;
     }
 
     /// <summary>
@@ -230,7 +226,6 @@ internal readonly struct AgsSettings
             var configDirectoryPath = Path.GetDirectoryName(configPath);
             if (!string.IsNullOrEmpty(configDirectoryPath))
                 Directory.CreateDirectory(configDirectoryPath);
-
             WriteToConfig(configPath);
             errorMessage = string.Empty;
             return true;
@@ -268,12 +263,10 @@ internal readonly struct AgsSettings
                 return false;
             if (!TryReadRequiredBoolean(rootElement, UseCodexSettingName, out var useCodex))
                 return false;
-
             var claudeLastUpdateUtc =
                 TryReadOptionalTimestamp(rootElement, ClaudeLastUpdateUtcSettingName);
             var codexLastUpdateUtc =
                 TryReadOptionalTimestamp(rootElement, CodexLastUpdateUtcSettingName);
-
             settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc,
                 codexLastUpdateUtc);
             return true;
@@ -306,7 +299,6 @@ internal readonly struct AgsSettings
         if (propertyElement.ValueKind != JsonValueKind.True &&
             propertyElement.ValueKind != JsonValueKind.False)
             return false;
-
         value = propertyElement.GetBoolean();
         return true;
     }
@@ -327,10 +319,8 @@ internal readonly struct AgsSettings
             return DateTimeOffset.MinValue;
         if (propertyElement.ValueKind == JsonValueKind.Null) return DateTimeOffset.MinValue;
         if (propertyElement.ValueKind != JsonValueKind.String) return DateTimeOffset.MinValue;
-
         var rawTimestamp = propertyElement.GetString();
         if (string.IsNullOrWhiteSpace(rawTimestamp)) return DateTimeOffset.MinValue;
-
         return TryParseTimestamp(rawTimestamp);
     }
 
@@ -421,7 +411,6 @@ internal readonly struct AgsSettings
         if (!DateTimeOffset.TryParse(rawTimestamp, CultureInfo.InvariantCulture,
                 DateTimeStyles.RoundtripKind, out var parsedTimestamp))
             return DateTimeOffset.MinValue;
-
         return NormalizeTimestamp(parsedTimestamp);
     }
 }

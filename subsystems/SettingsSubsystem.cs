@@ -5,15 +5,90 @@ namespace AGS.subsystems;
 /// </summary>
 internal static class SettingsSubsystem
 {
-    private const string Title = "Settings";
+    private const string FallbackNavigationHint = "Type use-codex, use-claude, or 0 to return.";
+
     private const string InteractiveNavigationHint =
         "Use Up/Down to choose, Left/Right to set no/yes, Enter to toggle, and 0 to return.";
-    private const string FallbackNavigationHint =
-        "Type use-codex, use-claude, or 0 to return.";
-    private const int UseCodexOptionIndex = 0;
-    private const int UseClaudeOptionIndex = 1;
-    private const int ReturnOptionIndex = 2;
+
     private const int OptionCount = 3;
+    private const int ReturnOptionIndex = 2;
+    private const string Title = "Settings";
+    private const int UseClaudeOptionIndex = 1;
+    private const int UseCodexOptionIndex = 0;
+    private static readonly Func<bool> isInputRedirectedProvider = () => Console.IsInputRedirected;
+
+    private static readonly Func<bool>
+        isOutputRedirectedProvider = () => Console.IsOutputRedirected;
+
+    private static readonly Func<ConsoleKey> readKeyProvider = () => Console.ReadKey(true).Key;
+
+    /// <summary>
+    ///     Clears the console before the settings screen is redrawn.
+    /// </summary>
+    private static void ClearConsole()
+    {
+        try
+        {
+            Console.Clear();
+        }
+        catch (IOException) { }
+        catch (ArgumentOutOfRangeException) { }
+        catch (InvalidOperationException) { }
+        catch (PlatformNotSupportedException) { }
+    }
+
+    /// <summary>
+    ///     Formats a Boolean setting value for display in the settings screen.
+    /// </summary>
+    /// <param name="value">Boolean value to format.</param>
+    /// <returns><c>yes</c> when <paramref name="value" /> is true; otherwise, <c>no</c>.</returns>
+    private static string FormatBooleanValue(bool value)
+    {
+        return value ? "yes" : "no";
+    }
+
+    /// <summary>
+    ///     Persists the provided settings and updates the process-wide current settings instance on
+    ///     success.
+    /// </summary>
+    /// <param name="updatedSettings">Settings instance to persist.</param>
+    /// <returns>
+    ///     Error message when persistence fails; otherwise, an empty string.
+    /// </returns>
+    private static string PersistSettings(AgsSettings updatedSettings)
+    {
+        if (!updatedSettings.TryWriteToProjectConfig(Directory.GetCurrentDirectory(),
+                out var errorMessage))
+            return errorMessage;
+        AgsSettings.SetCurrent(updatedSettings);
+        return string.Empty;
+    }
+
+    /// <summary>
+    ///     Renders the current interactive settings screen.
+    /// </summary>
+    /// <param name="settings">Current persisted application settings.</param>
+    /// <param name="selectedIndex">Zero-based index of the selected settings row.</param>
+    /// <param name="statusMessage">
+    ///     Status message shown above the settings rows, or an empty string when no message should
+    ///     be displayed.
+    /// </param>
+    private static void RenderInteractive(AgsSettings settings, int selectedIndex,
+        string statusMessage)
+    {
+        ClearConsole();
+        Console.WriteLine(Title);
+        Console.WriteLine(InteractiveNavigationHint);
+        if (string.IsNullOrEmpty(statusMessage))
+            Console.WriteLine();
+        else
+            Console.WriteLine(statusMessage);
+        WriteOptionLine(selectedIndex == UseCodexOptionIndex,
+            $"use-codex: {FormatBooleanValue(settings.UseCodex)}");
+        WriteOptionLine(selectedIndex == UseClaudeOptionIndex,
+            $"use-claude: {FormatBooleanValue(settings.UseClaude)}");
+        WriteOptionLine(selectedIndex == ReturnOptionIndex, "0. Return to main menu");
+    }
 
     /// <summary>
     ///     Shows the settings screen and persists any configuration changes made by the user.
@@ -21,54 +96,12 @@ internal static class SettingsSubsystem
     internal static void Run()
     {
         if (!AgsSettings.HasCurrentSettings) return;
-        if (Console.IsInputRedirected || Console.IsOutputRedirected)
+        if (isInputRedirectedProvider() || isOutputRedirectedProvider())
         {
             RunFallback();
             return;
         }
-
         RunInteractive();
-    }
-
-    /// <summary>
-    ///     Shows the interactive settings screen for consoles that support key input.
-    /// </summary>
-    private static void RunInteractive()
-    {
-        var selectedIndex = 0;
-        var statusMessage = string.Empty;
-        while (true)
-        {
-            RenderInteractive(AgsSettings.Current, selectedIndex, statusMessage);
-            var pressedKey = Console.ReadKey(true).Key;
-            if (pressedKey == ConsoleKey.D0 || pressedKey == ConsoleKey.NumPad0) return;
-            if (pressedKey == ConsoleKey.UpArrow)
-            {
-                selectedIndex = selectedIndex == 0 ? OptionCount - 1 : selectedIndex - 1;
-                continue;
-            }
-            if (pressedKey == ConsoleKey.DownArrow)
-            {
-                selectedIndex = selectedIndex == OptionCount - 1 ? 0 : selectedIndex + 1;
-                continue;
-            }
-            if (pressedKey == ConsoleKey.Enter)
-            {
-                if (selectedIndex == ReturnOptionIndex) return;
-
-                statusMessage = ToggleSetting(selectedIndex);
-                continue;
-            }
-            if (pressedKey == ConsoleKey.LeftArrow)
-            {
-                statusMessage = SetSettingValue(selectedIndex, false);
-                continue;
-            }
-            if (pressedKey == ConsoleKey.RightArrow)
-            {
-                statusMessage = SetSettingValue(selectedIndex, true);
-            }
-        }
     }
 
     /// <summary>
@@ -99,53 +132,46 @@ internal static class SettingsSubsystem
                 if (!string.IsNullOrEmpty(errorMessage)) Console.WriteLine(errorMessage);
                 continue;
             }
-
             Console.WriteLine("Please enter use-codex, use-claude, or 0.");
         }
     }
 
     /// <summary>
-    ///     Renders the current interactive settings screen.
+    ///     Shows the interactive settings screen for consoles that support key input.
     /// </summary>
-    /// <param name="settings">Current persisted application settings.</param>
-    /// <param name="selectedIndex">Zero-based index of the selected settings row.</param>
-    /// <param name="statusMessage">
-    ///     Status message shown above the settings rows, or an empty string when no message should
-    ///     be displayed.
-    /// </param>
-    private static void RenderInteractive(AgsSettings settings, int selectedIndex,
-        string statusMessage)
+    private static void RunInteractive()
     {
-        ClearConsole();
-        Console.WriteLine(Title);
-        Console.WriteLine(InteractiveNavigationHint);
-        if (string.IsNullOrEmpty(statusMessage))
-            Console.WriteLine();
-        else
-            Console.WriteLine(statusMessage);
-
-        WriteOptionLine(selectedIndex == UseCodexOptionIndex,
-            $"use-codex: {FormatBooleanValue(settings.UseCodex)}");
-        WriteOptionLine(selectedIndex == UseClaudeOptionIndex,
-            $"use-claude: {FormatBooleanValue(settings.UseClaude)}");
-        WriteOptionLine(selectedIndex == ReturnOptionIndex, "0. Return to main menu");
-    }
-
-    /// <summary>
-    ///     Toggles the selected Boolean setting and persists the updated configuration.
-    /// </summary>
-    /// <param name="selectedIndex">Zero-based index of the selected settings row.</param>
-    /// <returns>
-    ///     Error message when persistence fails; otherwise, an empty string.
-    /// </returns>
-    private static string ToggleSetting(int selectedIndex)
-    {
-        var currentSettings = AgsSettings.Current;
-        if (selectedIndex == UseCodexOptionIndex)
-            return PersistSettings(currentSettings.WithUseCodex(!currentSettings.UseCodex));
-        if (selectedIndex == UseClaudeOptionIndex)
-            return PersistSettings(currentSettings.WithUseClaude(!currentSettings.UseClaude));
-        return string.Empty;
+        var selectedIndex = 0;
+        var statusMessage = string.Empty;
+        while (true)
+        {
+            RenderInteractive(AgsSettings.Current, selectedIndex, statusMessage);
+            var pressedKey = readKeyProvider();
+            if (pressedKey == ConsoleKey.D0 || pressedKey == ConsoleKey.NumPad0) return;
+            if (pressedKey == ConsoleKey.UpArrow)
+            {
+                selectedIndex = selectedIndex == 0 ? OptionCount - 1 : selectedIndex - 1;
+                continue;
+            }
+            if (pressedKey == ConsoleKey.DownArrow)
+            {
+                selectedIndex = selectedIndex == OptionCount - 1 ? 0 : selectedIndex + 1;
+                continue;
+            }
+            if (pressedKey == ConsoleKey.Enter)
+            {
+                if (selectedIndex == ReturnOptionIndex) return;
+                statusMessage = ToggleSetting(selectedIndex);
+                continue;
+            }
+            if (pressedKey == ConsoleKey.LeftArrow)
+            {
+                statusMessage = SetSettingValue(selectedIndex, false);
+                continue;
+            }
+            if (pressedKey == ConsoleKey.RightArrow)
+                statusMessage = SetSettingValue(selectedIndex, true);
+        }
     }
 
     /// <summary>
@@ -170,36 +196,24 @@ internal static class SettingsSubsystem
             if (currentSettings.UseClaude == value) return string.Empty;
             return PersistSettings(currentSettings.WithUseClaude(value));
         }
-
         return string.Empty;
     }
 
     /// <summary>
-    ///     Persists the provided settings and updates the process-wide current settings instance on
-    ///     success.
+    ///     Toggles the selected Boolean setting and persists the updated configuration.
     /// </summary>
-    /// <param name="updatedSettings">Settings instance to persist.</param>
+    /// <param name="selectedIndex">Zero-based index of the selected settings row.</param>
     /// <returns>
     ///     Error message when persistence fails; otherwise, an empty string.
     /// </returns>
-    private static string PersistSettings(AgsSettings updatedSettings)
+    private static string ToggleSetting(int selectedIndex)
     {
-        if (!updatedSettings.TryWriteToProjectConfig(Directory.GetCurrentDirectory(),
-                out var errorMessage))
-            return errorMessage;
-
-        AgsSettings.SetCurrent(updatedSettings);
+        var currentSettings = AgsSettings.Current;
+        if (selectedIndex == UseCodexOptionIndex)
+            return PersistSettings(currentSettings.WithUseCodex(!currentSettings.UseCodex));
+        if (selectedIndex == UseClaudeOptionIndex)
+            return PersistSettings(currentSettings.WithUseClaude(!currentSettings.UseClaude));
         return string.Empty;
-    }
-
-    /// <summary>
-    ///     Formats a Boolean setting value for display in the settings screen.
-    /// </summary>
-    /// <param name="value">Boolean value to format.</param>
-    /// <returns><c>yes</c> when <paramref name="value" /> is true; otherwise, <c>no</c>.</returns>
-    private static string FormatBooleanValue(bool value)
-    {
-        return value ? "yes" : "no";
     }
 
     /// <summary>
@@ -214,28 +228,5 @@ internal static class SettingsSubsystem
     {
         var prefix = isSelected ? "> " : "  ";
         Console.WriteLine(prefix + text);
-    }
-
-    /// <summary>
-    ///     Clears the console before the settings screen is redrawn.
-    /// </summary>
-    private static void ClearConsole()
-    {
-        try
-        {
-            Console.Clear();
-        }
-        catch (IOException)
-        {
-        }
-        catch (ArgumentOutOfRangeException)
-        {
-        }
-        catch (InvalidOperationException)
-        {
-        }
-        catch (PlatformNotSupportedException)
-        {
-        }
     }
 }

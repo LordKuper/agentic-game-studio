@@ -23,9 +23,7 @@ internal static class Program
                 return;
             }
         }
-
         if (!TryInitializeApplication(out var settings)) return;
-
         AgsSettings.SetCurrent(settings);
         InstallAISubsystem.Run();
         MainMenuSubsystem.Run();
@@ -48,9 +46,7 @@ internal static class Program
         var agsDirectoryPath = Path.Combine(currentDirectory, AgsSettings.AgsDirectoryName);
         if (Directory.Exists(agsDirectoryPath))
             return TryInitializeFromExistingConfiguration(agsDirectoryPath, out settings);
-
         if (!ValidateProjectRoot(currentDirectory)) return false;
-
         SetupSubsystem.Run(agsDirectoryPath, out settings);
         return true;
     }
@@ -74,12 +70,11 @@ internal static class Program
         var canReadSettings = AgsSettings.TryReadFromConfig(configPath, out settings);
         if (canReadSettings)
         {
-            Console.WriteLine("AGS configuration found and loaded. Initialization is not required.");
+            Console.WriteLine(
+                "AGS configuration found and loaded. Initialization is not required.");
             return true;
         }
-
-        Console.WriteLine(
-            "Existing settings are missing or invalid. Starting setup...");
+        Console.WriteLine("Existing settings are missing or invalid. Starting setup...");
         SetupSubsystem.Run(agsDirectoryPath, out settings);
         return true;
     }
@@ -95,7 +90,8 @@ internal static class Program
     private static bool ValidateProjectRoot(string currentDirectory)
     {
         var isProjectRoot =
-            ConsoleMenu.PromptForBoolean($"Is the current folder the project root? ({currentDirectory})");
+            ConsoleMenu.PromptForBoolean(
+                $"Is the current folder the project root? ({currentDirectory})");
         if (isProjectRoot) return true;
         Console.WriteLine("The application must be started from the project root folder. Exiting.");
         return false;

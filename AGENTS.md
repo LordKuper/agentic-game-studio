@@ -7,3 +7,5 @@
 - Follow SOLID, KISS, DRY, YAGNI.
 - Prefer small, atomic functions with a single, clear responsibility.
 - Favor readability and maintainability over cleverness.
+- Maintain automated test coverage of at least 80% across the entire project codebase.
+- Place all tests in the `tests` folder.

@@ -239,7 +239,6 @@ internal static class InstallAISubsystem
     {
         if (settings.TryWriteToProjectConfig(Directory.GetCurrentDirectory(), out var errorMessage))
             return true;
-
         Console.WriteLine(errorMessage);
         return false;
     }
