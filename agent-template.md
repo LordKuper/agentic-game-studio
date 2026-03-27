@@ -49,7 +49,7 @@ must_not:
      Allowed values (as of 2026-03):
        - claude-opus-4-6      (most capable, highest cost)
        - claude-sonnet-4-6    (balanced capability and cost)
-       - claude-haiku-4-5     (fastest, lowest cost)
+       - claude-haiku-4-5-20251001  (fastest, lowest cost)
      Choose based on the complexity of tasks this agent handles. -->
 
 models:
@@ -67,6 +67,8 @@ models:
 max_iterations: <integer, 10-50>
 
 ---
+
+<!-- Template guidance only — remove this entire Notes section when creating a production agent file. -->
 
 ## Notes
 
