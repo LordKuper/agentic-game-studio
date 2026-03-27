@@ -55,12 +55,18 @@ Agent Responsibilities Reference section below.
 
 ## Escalation Rules
 
-When agents at the same level disagree or cannot reach a decision independently:
+**Disagreement:** When agents at the same level disagree or cannot reach a decision independently:
 
 1. Identify the subject matter of the disagreement.
 2. Determine the most appropriate parent agent on the level above whose domain covers that subject.
 3. Escalate the conflict to that parent agent for resolution.
 4. If the disagreement spans multiple domains (no single parent covers it), escalate to the CEO.
+
+**Blocked:** When an agent cannot proceed (missing permissions, outside its scope, lacks information):
+
+1. Report the blocker upward to the direct parent agent with a clear description of what is needed.
+2. Do not attempt to acquire permissions or expand scope unilaterally.
+3. If the parent cannot resolve the blocker, it escalates further up the chain until it reaches the CEO.
 
 Agents must not attempt to resolve cross-domain conflicts unilaterally. Escalation is not a
 sign of failure — it is the correct procedure for maintaining clear ownership.

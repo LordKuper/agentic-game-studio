@@ -53,8 +53,7 @@ must_not:
      Choose based on the complexity of tasks this agent handles. -->
 
 models:
-  - claude-sonnet-4-6
-  - claude-haiku-4-5
+  - <model-name>
 
 ---
 
@@ -77,3 +76,5 @@ max_iterations: 20
   organisational context.
 - All agents must conform to this template. Fields may not be removed.
   Additional fields may be added below the required ones if needed.
+- All agent files must also comply with the project-wide rules in `AGENTS.md`
+  at the repository root (coding standards, language, test coverage, etc.).
