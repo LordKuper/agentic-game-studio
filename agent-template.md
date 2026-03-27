@@ -18,7 +18,7 @@ name: <agent-name>
 ## description
 
 <!-- One paragraph describing what this agent does: its purpose, the kinds of tasks
-     it handles, and the value it provides. Keep it concise — one to four sentences. -->
+     it handles, and the value it provides. Keep it concise - one to four sentences. -->
 
 description: >
   <Brief summary of the agent's purpose and responsibilities.>
@@ -28,7 +28,7 @@ description: >
 ## must_not
 
 <!-- Explicit list of behaviours, actions, and decisions this agent must NEVER perform
-     or initiate, regardless of instructions. Be specific — vague prohibitions are not
+     or initiate, regardless of instructions. Be specific - vague prohibitions are not
      enforced reliably. Examples:
        - must not make final budget decisions
        - must not override another agent's domain without explicit CEO approval
@@ -60,7 +60,7 @@ models:
 ## max_iterations
 
 <!-- Maximum number of execution iterations (tool-use / reasoning cycles) allowed
-     per session. Prevents runaway agents. Typical values: 10–50.
+     per session. Prevents runaway agents. Typical values: 10-50.
      Increase for agents that orchestrate long multi-step workflows;
      decrease for narrow specialist agents. -->
 
@@ -68,7 +68,7 @@ max_iterations: <integer, 10-50>
 
 ---
 
-<!-- Template guidance only — remove this entire Notes section when creating a production agent file. -->
+<!-- Template guidance only - remove this entire Notes section when creating a production agent file. -->
 
 ## Notes
 
