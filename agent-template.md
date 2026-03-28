@@ -24,7 +24,7 @@ Do not leave placeholder text in a production agent file.
 - `name`: Unique agent identifier in kebab-case, for example `cto-agent` or `narrative-lead`.
 - `description`: One concise paragraph describing the agent's purpose, the kinds of tasks it handles, and the value it provides.
 - `must_not`: Explicit list of behaviors, actions, and decisions this agent must never perform or initiate. Be specific.
-- `models`: Ordered list of suitable AI models, highest priority first. The agent runner will use the first model that is available.
+- `models`: Ordered list of suitable AI models, highest priority first. All models must have both Claude and ChatGPT models in the list. Technical roles should prioritise Claude models over ChatGPT and vice versa. The agent runner will use the first model that is available.
 - `max_iterations`: Maximum number of execution iterations (tool-use / reasoning cycles) allowed per session. Typical values are `10-50`.
 
 ### Model Values
