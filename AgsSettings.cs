@@ -15,6 +15,8 @@ internal readonly struct AgsSettings
     private const string UseCodexSettingName = "use-codex";
     private const string ClaudeLastUpdateUtcSettingName = "claude-last-update-utc";
     private const string CodexLastUpdateUtcSettingName = "codex-last-update-utc";
+    private static AgsSettings currentSettings = new(false, false);
+    private static bool hasCurrentSettings;
 
     private static readonly JsonSerializerOptions JsonOptions = new()
     {
@@ -91,12 +93,12 @@ internal readonly struct AgsSettings
     /// <summary>
     ///     Gets the current application settings for this process.
     /// </summary>
-    internal static AgsSettings Current { get; private set; } = new(false, false);
+    internal static AgsSettings Current => currentSettings;
 
     /// <summary>
     ///     Gets a value indicating whether the current application settings have been initialized.
     /// </summary>
-    internal static bool HasCurrentSettings { get; private set; }
+    internal static bool HasCurrentSettings => hasCurrentSettings;
 
     /// <summary>
     ///     Builds the absolute path to the persisted application configuration file.
@@ -114,8 +116,8 @@ internal readonly struct AgsSettings
     /// <param name="settings">Settings instance to expose globally.</param>
     internal static void SetCurrent(AgsSettings settings)
     {
-        Current = settings;
-        HasCurrentSettings = true;
+        currentSettings = settings;
+        hasCurrentSettings = true;
     }
 
     /// <summary>

@@ -12,23 +12,23 @@ internal static class ConsoleMenu
 
     private const string SelectedOptionPrefix = "> ";
     private const string UnselectedOptionPrefix = "  ";
-    private static readonly Func<bool> isInputRedirectedProvider = () => Console.IsInputRedirected;
+    private static Func<bool> isInputRedirectedProvider = () => Console.IsInputRedirected;
 
-    private static readonly Func<bool>
+    private static Func<bool>
         isOutputRedirectedProvider = () => Console.IsOutputRedirected;
 
-    private static readonly Func<string, IReadOnlyList<string>, int> interactivePromptHandler =
+    private static Func<string, IReadOnlyList<string>, int> interactivePromptHandler =
         PromptForSelectionInteractive;
 
-    private static readonly Func<ConsoleKey> readKeyProvider = () => Console.ReadKey(true).Key;
+    private static Func<ConsoleKey> readKeyProvider = () => Console.ReadKey(true).Key;
 
-    private static readonly Func<IReadOnlyList<string>, int, int> writeInitialOptionsHandler =
+    private static Func<IReadOnlyList<string>, int, int> writeInitialOptionsHandler =
         WriteInitialOptions;
 
-    private static readonly Action<IReadOnlyList<string>, int, int> renderOptionsHandler =
+    private static Action<IReadOnlyList<string>, int, int> renderOptionsHandler =
         RenderOptions;
 
-    private static readonly Action<int, int> moveCursorBelowMenuHandler = MoveCursorBelowMenu;
+    private static Action<int, int> moveCursorBelowMenuHandler = MoveCursorBelowMenu;
 
     /// <summary>
     ///     Builds a rendered menu line for the specified option state.

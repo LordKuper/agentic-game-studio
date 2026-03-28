@@ -15,12 +15,12 @@ internal static class SettingsSubsystem
     private const string Title = "Settings";
     private const int UseClaudeOptionIndex = 1;
     private const int UseCodexOptionIndex = 0;
-    private static readonly Func<bool> isInputRedirectedProvider = () => Console.IsInputRedirected;
+    private static Func<bool> isInputRedirectedProvider = () => Console.IsInputRedirected;
 
-    private static readonly Func<bool>
+    private static Func<bool>
         isOutputRedirectedProvider = () => Console.IsOutputRedirected;
 
-    private static readonly Func<ConsoleKey> readKeyProvider = () => Console.ReadKey(true).Key;
+    private static Func<ConsoleKey> readKeyProvider = () => Console.ReadKey(true).Key;
 
     /// <summary>
     ///     Clears the console before the settings screen is redrawn.

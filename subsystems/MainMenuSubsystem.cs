@@ -5,12 +5,12 @@ namespace AGS.subsystems;
 /// </summary>
 internal static class MainMenuSubsystem
 {
-    private static readonly Action clearConsoleHandler = Console.Clear;
+    private static Action clearConsoleHandler = Console.Clear;
 
-    private static readonly Func<bool>
+    private static Func<bool>
         isOutputRedirectedProvider = () => Console.IsOutputRedirected;
 
-    private static readonly Func<IReadOnlyList<string>> unfinishedSessionNamesProvider =
+    private static Func<IReadOnlyList<string>> unfinishedSessionNamesProvider =
         GetUnfinishedSessionNames;
 
     /// <summary>
