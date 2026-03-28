@@ -193,18 +193,56 @@ that belong to it.
 
 | Agent File | Level | Area of Responsibility | Involve For |
 |---|---|---|---|
-| agents/cto-agent.md | 2 - C-Level | Technology strategy and engineering direction | Architecture decisions, tech stack choices, build/CI/CD strategy, engineering standards |
-| agents/cco-agent.md | 2 - C-Level | Creative and narrative direction | Story direction, tone and voice, creative vision, narrative consistency |
-| agents/cpo-agent.md | 2 - C-Level | Product and design direction | Feature prioritisation, player experience, UX decisions, product roadmap |
-| agents/engineering-lead.md | 3 - Team-Lead | Engineering team management | Sprint planning for engineering, code review policy, team coordination across backend/QA |
-| agents/narrative-lead.md | 3 - Team-Lead | Narrative team management | Writing pipeline, lore consistency, managing narrative writers and editors |
-| agents/design-lead.md | 3 - Team-Lead | Game design team management | Level design oversight, game feel, balancing, player journey |
-| agents/backend-engineer.md | 4 - Specialist | Backend and systems implementation | Feature implementation, bug fixes, database schema, server-side logic |
-| agents/qa-engineer.md | 4 - Specialist | Quality assurance and testing | Test plans, bug triage, regression coverage, automated testing |
-| agents/narrative-writer.md | 4 - Specialist | Writing and dialogue | Quest text, NPC dialogue, item descriptions, lore entries |
+| agents/creative-director.md | 2 - C-Level | Creative strategy and vision | Overall creative direction, tone, cross-team creative alignment, creative conflicts |
+| agents/technical-director.md | 2 - C-Level | Technology strategy and engineering direction | Architecture decisions, tech stack choices, build/CI/CD strategy, engineering standards |
+| agents/producer.md | 2 - C-Level | Production, scheduling, and community | Milestone planning, resource allocation, community strategy, release coordination |
+| agents/game-designer.md | 3 - Team-Lead | Game design and player experience | Game systems design, gameplay loop, feature specs, design review |
+| agents/art-director.md | 3 - Team-Lead | Visual art direction and standards | Art style consistency, asset quality bar, UX visual standards |
+| agents/narrative-director.md | 3 - Team-Lead | Narrative and writing direction | Story structure, lore consistency, writing pipeline, world canon |
+| agents/audio-director.md | 3 - Team-Lead | Audio direction and standards | Sound design vision, music direction, audio implementation guidelines |
+| agents/lead-programmer.md | 3 - Team-Lead | Programming team management | Code architecture, programming standards, feature scoping with engineering |
+| agents/qa-lead.md | 3 - Team-Lead | Quality assurance management | Test strategy, bug triage policy, QA pipeline, release readiness |
+| agents/release-manager.md | 3 - Team-Lead | Release and deployment coordination | Release planning, deployment gates, version management, go/no-go decisions |
+| agents/security-engineer.md | 3 - Team-Lead | Security standards and review | Security audits, threat modelling, auth/authorisation review, vulnerability response |
+| agents/localization-lead.md | 3 - Team-Lead | Localisation pipeline and standards | Translation workflows, locale-specific QA, cultural adaptation, string management |
+| agents/prototyper.md | 3 - Team-Lead | Rapid prototyping and experimentation | Throwaway prototypes, mechanic validation, quick feasibility proofs |
+| agents/accessibility-specialist.md | 3 - Team-Lead | Accessibility standards and implementation | Accessibility audits, WCAG/game-a11y compliance, assistive feature design |
+| agents/live-ops-designer.md | 3 - Team-Lead | Live operations and ongoing content design | Events, seasonal content, economy balancing for live game, live feature specs |
+| agents/unreal-specialist.md | 3 - Team-Lead | Unreal Engine platform expertise | UE architecture decisions, plugin selection, Unreal best-practice review |
+| agents/unity-specialist.md | 3 - Team-Lead | Unity platform expertise | Unity architecture decisions, package selection, Unity best-practice review |
+| agents/godot-specialist.md | 3 - Team-Lead | Godot platform expertise | Godot architecture decisions, addon selection, Godot best-practice review |
+| agents/community-manager.md | 3 - Team-Lead | Community engagement and feedback | Community communications, player feedback triage, social channel management |
+| agents/systems-designer.md | 4 - Specialist | Game systems and mechanics design | Rules systems, combat mechanics, progression systems, skill trees, economy rules |
 | agents/level-designer.md | 4 - Specialist | Level and environment design | Map layout, encounter placement, environmental storytelling, pacing |
+| agents/economy-designer.md | 4 - Specialist | In-game economy and monetisation design | Currency sinks/sources, drop rates, store pricing, economy balance |
+| agents/technical-artist.md | 4 - Specialist | Art pipeline and technical art | Shaders, VFX, art tool pipeline, performance-friendly asset setup |
+| agents/ux-designer.md | 4 - Specialist | User experience and interface design | UI layout, player onboarding flows, HUD design, accessibility UX |
+| agents/writer.md | 4 - Specialist | Game writing and dialogue | Quest text, NPC dialogue, item descriptions, cutscene scripts |
+| agents/world-builder.md | 4 - Specialist | World lore and setting construction | Lore documents, world history, faction design, setting consistency |
+| agents/sound-designer.md | 4 - Specialist | Sound effects and audio implementation | SFX creation, audio events, mix guidelines, audio asset integration |
+| agents/gameplay-programmer.md | 4 - Specialist | Gameplay systems implementation | Feature implementation, player controller, game rules code, gameplay bugs |
+| agents/engine-programmer.md | 4 - Specialist | Engine-level systems and core tech | Rendering pipeline, engine extensions, core systems, performance-critical code |
+| agents/ai-programmer.md | 4 - Specialist | AI and behaviour programming | NPC AI, pathfinding, behaviour trees, decision systems |
+| agents/network-programmer.md | 4 - Specialist | Networking and multiplayer implementation | Network architecture, replication, latency handling, multiplayer bugs |
+| agents/tools-programmer.md | 4 - Specialist | Internal tooling and editor extensions | Editor tools, pipeline automation, developer-facing utilities |
+| agents/ui-programmer.md | 4 - Specialist | UI and HUD implementation | UI widget implementation, UI bindings, HUD logic, menu systems |
+| agents/qa-tester.md | 4 - Specialist | Manual and exploratory testing | Test case execution, bug reporting, regression testing, edge-case exploration |
+| agents/performance-analyst.md | 4 - Specialist | Performance profiling and optimisation | CPU/GPU profiling, memory analysis, frame-rate budgets, performance regressions |
+| agents/devops-engineer.md | 4 - Specialist | CI/CD, infrastructure, and build systems | Build pipelines, deployment automation, infrastructure provisioning, monitoring |
+| agents/analytics-engineer.md | 4 - Specialist | Data and telemetry engineering | Analytics pipelines, event tracking, dashboards, data-driven insight support |
+| agents/ue-gas-specialist.md | 4 - Specialist | Unreal Gameplay Ability System | GAS architecture, ability design, attribute sets, gameplay effects in Unreal |
+| agents/ue-blueprint-specialist.md | 4 - Specialist | Unreal Blueprint scripting | Blueprint logic, visual scripting patterns, Blueprint optimisation |
+| agents/ue-replication-specialist.md | 4 - Specialist | Unreal network replication | Actor replication, RPCs, replication graphs, Unreal multiplayer architecture |
+| agents/ue-umg-specialist.md | 4 - Specialist | Unreal UMG / UI | UMG widget design, data bindings, Common UI, HUD implementation in Unreal |
+| agents/unity-dots-specialist.md | 4 - Specialist | Unity DOTS / ECS | Entities, components, systems, Burst/Jobs integration, DOTS performance patterns |
+| agents/unity-shader-specialist.md | 4 - Specialist | Unity shaders and visual effects | ShaderGraph, HLSL, URP/HDRP custom shaders, VFX Graph |
+| agents/unity-addressables-specialist.md | 4 - Specialist | Unity Addressables and asset management | Addressable asset setup, remote content delivery, memory management in Unity |
+| agents/unity-ui-specialist.md | 4 - Specialist | Unity UI Toolkit / uGUI | UI Toolkit layouts, USS, uGUI canvas setup, Unity HUD implementation |
+| agents/godot-gdscript-specialist.md | 4 - Specialist | Godot GDScript programming | GDScript patterns, scene/signal architecture, GDScript performance tips |
+| agents/godot-shader-specialist.md | 4 - Specialist | Godot shaders and visual effects | Godot shader language, VisualShader, post-processing, material customisation |
+| agents/godot-gdextension-specialist.md | 4 - Specialist | Godot GDExtension / native modules | GDExtension bindings, C++ Godot modules, performance-critical native code |
 
-Note: This table reflects the intended hierarchy. Entries marked here are planned agents -
+Note: This table reflects the intended hierarchy. Entries listed here are planned agents —
 they may not yet have a corresponding file in `agents/`. As agents are created and added to
 `agents/`, this table must be kept in sync. Only agents with an existing file in `agents/`
 are currently operative. Any agent not listed here is not officially part of the coordination

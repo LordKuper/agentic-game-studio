@@ -51,13 +51,13 @@ Replace the current example diagram (which shows placeholder agents) with a diag
 
 Replace the current 10-row table with a full table. Each row: agent file path, level, area of responsibility, "involve for" description.
 
-- [ ] Add all Level 2 agents: creative-director, technical-director, producer
-- [ ] Add all Level 3 general agents: game-designer, art-director, narrative-director, audio-director, lead-programmer, qa-lead, release-manager, security-engineer, localization-lead, prototyper, accessibility-specialist, live-ops-designer, community-manager
-- [ ] Add all Level 3 engine-lead agents: unreal-specialist, unity-specialist, godot-specialist
-- [ ] Add all Level 4 general agents: systems-designer, level-designer, economy-designer, technical-artist, ux-designer, writer, world-builder, sound-designer, gameplay-programmer, engine-programmer, ai-programmer, network-programmer, tools-programmer, ui-programmer, qa-tester, performance-analyst, devops-engineer, analytics-engineer
-- [ ] Add all Level 4 Unreal sub-specialists: ue-gas-specialist, ue-blueprint-specialist, ue-replication-specialist, ue-umg-specialist
-- [ ] Add all Level 4 Unity sub-specialists: unity-dots-specialist, unity-shader-specialist, unity-addressables-specialist, unity-ui-specialist
-- [ ] Add all Level 4 Godot sub-specialists: godot-gdscript-specialist, godot-shader-specialist, godot-gdextension-specialist
+- [x] Add all Level 2 agents: creative-director, technical-director, producer
+- [x] Add all Level 3 general agents: game-designer, art-director, narrative-director, audio-director, lead-programmer, qa-lead, release-manager, security-engineer, localization-lead, prototyper, accessibility-specialist, live-ops-designer, community-manager
+- [x] Add all Level 3 engine-lead agents: unreal-specialist, unity-specialist, godot-specialist
+- [x] Add all Level 4 general agents: systems-designer, level-designer, economy-designer, technical-artist, ux-designer, writer, world-builder, sound-designer, gameplay-programmer, engine-programmer, ai-programmer, network-programmer, tools-programmer, ui-programmer, qa-tester, performance-analyst, devops-engineer, analytics-engineer
+- [x] Add all Level 4 Unreal sub-specialists: ue-gas-specialist, ue-blueprint-specialist, ue-replication-specialist, ue-umg-specialist
+- [x] Add all Level 4 Unity sub-specialists: unity-dots-specialist, unity-shader-specialist, unity-addressables-specialist, unity-ui-specialist
+- [x] Add all Level 4 Godot sub-specialists: godot-gdscript-specialist, godot-shader-specialist, godot-gdextension-specialist
 
 ### Task 3: Add Delegation Map section
 
