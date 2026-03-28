@@ -86,8 +86,8 @@ New rule:
 
 The **Blocked** rule and the closing note are not changed.
 
-- [ ] Replace the Disagreement bullet list in the Escalation Rules section with the new recursive chain rule
-- [ ] Ensure the new rule references the hierarchical subordination structure defined in the diagram (i.e., "direct parent" means the agent's parent as shown in the hierarchy)
+- [x] Replace the Disagreement bullet list in the Escalation Rules section with the new recursive chain rule
+- [x] Ensure the new rule references the hierarchical subordination structure defined in the diagram (i.e., "direct parent" means the agent's parent as shown in the hierarchy)
 
 ### Task 5: Verify acceptance criteria
 

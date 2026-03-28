@@ -152,12 +152,14 @@ graph TD
 
 ## Escalation Rules
 
-**Disagreement:** When agents at the same level disagree or cannot reach a decision independently:
+**Disagreement:** When agents at the same level disagree and cannot reach a decision through lateral negotiation, the conflict is resolved by recursive hierarchical escalation:
 
-1. Identify the subject matter of the disagreement.
-2. Determine the most appropriate parent agent on the level above whose domain covers that subject.
-3. Escalate the conflict to that parent agent for resolution.
-4. If the disagreement spans multiple domains (no single parent covers it), escalate to the CEO.
+1. Each conflicting agent identifies its direct parent in the hierarchy (as shown in the diagram above).
+2. Those parent agents attempt to resolve the conflict between themselves, following the same lateral negotiation process.
+3. If the parent agents cannot agree, the conflict is escalated one level further up the chain: each parent identifies its own direct parent, and those agents attempt resolution.
+4. This process repeats level by level until either the conflict is resolved at some level or it reaches the CEO, who makes the final binding decision.
+
+"Direct parent" means the agent's immediate supervisor as shown in the hierarchy diagram — not the most domain-relevant agent at the level above.
 
 **Blocked:** When an agent cannot proceed (missing permissions, outside its scope, lacks information):
 
