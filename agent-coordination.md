@@ -154,7 +154,7 @@ graph TD
 - Level 1 (CEO / Human): single root node; ultimate decision-maker — no fill colour (default)
 - Level 2 (C-Level): blue fill — strategic domain owners — creative-director, technical-director, producer
 - Level 3 (Team-Lead): green fill — functional team leads and engine-lead specialists reporting to a C-Level
-- Level 4 (Specialist): yellow fill — narrow-domain executors and engine sub-specialists reporting to a Team-Lead or directly to a C-Level
+- Level 4 (Specialist): yellow fill — narrow-domain executors and engine sub-specialists reporting to a Team-Lead
 
 > **Note:** `performance-analyst`, `devops-engineer`, and `analytics-engineer` are Level 4 agents that report directly to `technical-director` (Level 2) with no Level 3 intermediary. Because Mermaid places nodes by path depth from the root, these three nodes render at the same visual row as Level 3 agents in the diagram above, despite their yellow Level 4 styling.
 
@@ -291,7 +291,7 @@ Cross-team delegations are permitted where explicitly listed below.
 | audio-director | sound-designer |
 | lead-programmer | gameplay-programmer, engine-programmer, ai-programmer, network-programmer, tools-programmer, ui-programmer |
 | qa-lead | qa-tester |
-| release-manager | none (no L4 direct reports — see cross-team delegations below) |
+| release-manager | none (no L4 direct reports) |
 | security-engineer | none (no L4 direct reports) |
 | localization-lead | none (no L4 direct reports) |
 | prototyper | none (no L4 direct reports) |
@@ -310,7 +310,6 @@ the receiving agent's area of concern, even across reporting lines.
 | Delegating Agent | May delegate to | Reason |
 |---|---|---|
 | release-manager | devops-engineer | Release manager owns deployment gates; devops-engineer executes the pipeline |
-| release-manager | qa-lead | Release readiness requires QA sign-off; this is coordinated peer collaboration (both are L3 under technical-director), not a subordinate delegation |
 | live-ops-designer | economy-designer | Live events require economy balance adjustments |
 | live-ops-designer | community-manager | Live content rollouts require community communication coordination |
 | live-ops-designer | analytics-engineer | Live operations are data-driven; analytics-engineer provides telemetry support |
