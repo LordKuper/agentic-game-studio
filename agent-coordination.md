@@ -162,7 +162,7 @@ graph TD
 
 ## Escalation Rules
 
-**Disagreement:** When agents at the same level disagree and cannot reach a decision through lateral negotiation, the conflict is resolved by recursive hierarchical escalation:
+**Disagreement:** When agents disagree and cannot reach a decision through lateral negotiation — regardless of whether they are at the same level, from the same branch, or from different branches — the conflict is resolved by recursive hierarchical escalation:
 
 1. Each conflicting agent identifies its direct parent in the hierarchy (as shown in the diagram above).
 2. Those parent agents attempt to resolve the conflict between themselves, following the same lateral negotiation process.
@@ -316,7 +316,6 @@ the receiving agent, but does not hold authority over that agent's priorities or
 | Initiating Agent | Coordinates with | Reason |
 |---|---|---|
 | release-manager | devops-engineer | Release manager owns deployment gates; devops-engineer executes the pipeline |
-| release-manager | qa-lead | Release go/no-go decisions require QA sign-off |
 | live-ops-designer | economy-designer | Live events require economy balance adjustments |
 | live-ops-designer | community-manager | Live content rollouts require community communication coordination |
 | live-ops-designer | analytics-engineer | Live operations are data-driven; analytics-engineer provides telemetry support |
