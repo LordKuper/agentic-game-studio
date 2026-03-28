@@ -46,11 +46,12 @@ must_not:
 
 <!-- Ordered list of suitable AI models, highest priority first.
      The agent runner will use the first model that is available.
-     Allowed values (as of 2026-03):
-       - claude-opus-4-6      (most capable, highest cost)
-       - claude-sonnet-4-6    (balanced capability and cost)
-       - claude-haiku-4-5-20251001  (fastest, lowest cost)
-     Choose based on the complexity of tasks this agent handles. -->
+     Allowed values:
+       - chatgpt
+       - claude-opus
+       - claude-sonnet
+       - claude-haiku
+     Use versionless model names only. Do not include provider-specific version numbers. -->
 
 models:
   - <model-name>
