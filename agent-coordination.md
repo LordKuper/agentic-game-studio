@@ -310,9 +310,12 @@ the receiving agent's area of concern, even across reporting lines.
 | Delegating Agent | May delegate to | Reason |
 |---|---|---|
 | release-manager | devops-engineer | Release manager owns deployment gates; devops-engineer executes the pipeline |
+| release-manager | qa-lead | Release go/no-go decisions require QA sign-off |
 | live-ops-designer | economy-designer | Live events require economy balance adjustments |
 | live-ops-designer | community-manager | Live content rollouts require community communication coordination |
 | live-ops-designer | analytics-engineer | Live operations are data-driven; analytics-engineer provides telemetry support |
+
+When a cross-team delegating agent and the receiving agent's direct parent give conflicting instructions, the direct parent's instructions take precedence. The cross-team delegating agent must escalate the conflict to its own direct parent rather than issuing instructions that override the receiving agent's chain of command.
 
 ---
 
@@ -329,4 +332,4 @@ with the CEO (human user) until that agent is created.
 - "The save system is crashing" -> gameplay-programmer or engine-programmer (implementation bug), escalate to lead-programmer if systemic
 - "This quest dialogue doesn't match the lore" -> writer to fix, narrative-director if it's a lore-consistency policy question
 - "Level 7 is too hard" -> level-designer (balancing), escalate to game-designer if it's a systemic design question
-- "We need a new test suite for combat" -> qa-tester (test plan), escalate to qa-lead for strategy or lead-programmer for resourcing
+- "We need a new test suite for combat" -> qa-lead (test strategy and plan), then qa-tester for execution once the plan is approved; escalate to lead-programmer for resourcing
