@@ -91,8 +91,8 @@ The **Blocked** rule and the closing note are not changed.
 
 ### Task 5: Verify acceptance criteria
 
-- [ ] Confirm all agents from the Donchitos reference are present in the table
-- [ ] Confirm Mermaid diagram renders without syntax errors
-- [ ] Confirm no placeholder agents remain in the document
-- [ ] Confirm Escalation Rules section reflects the new recursive conflict resolution chain
-- [ ] Move this plan to `docs/plans/completed/`
+- [x] Confirm all agents from the Donchitos reference are present in the table
+- [x] Confirm Mermaid diagram renders without syntax errors
+- [x] Confirm no placeholder agents remain in the document
+- [x] Confirm Escalation Rules section reflects the new recursive conflict resolution chain
+- [x] Move this plan to `docs/plans/completed/`
