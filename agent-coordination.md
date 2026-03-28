@@ -139,14 +139,22 @@ graph TD
     GO3 --> GGDS
     GO3 --> GSHD
     GO3 --> GEXT
+
+    classDef level2 fill:#4a90d9,color:#fff,stroke:#2c6fad
+    classDef level3 fill:#7bc47f,color:#000,stroke:#4e9e52
+    classDef level4 fill:#f5c842,color:#000,stroke:#c9a200
+
+    class CD,TD,PR level2
+    class GD,AD,ND,AUD,LOD,LP,QAL,RM,SEC,LL,PT,AS,UE3,UN3,GO3,CM level3
+    class SYD,LVD,ECD,TA,UXD,WR,WB,SD,GPP,EP,AIP,NP,TP,UIP,QAT,PA,DO,AE,UEGAS,UEBP,UEREP,UEUMG,UDOTS,USHD,UADDR,UUISP,GGDS,GSHD,GEXT level4
 ```
 
 **Diagram Legend**
 
-- Level 1 (CEO / Human): single root node; ultimate decision-maker
-- Level 2 (C-Level): strategic domain owners — creative-director, technical-director, producer
-- Level 3 (Team-Lead): functional team leads and engine-lead specialists reporting to a C-Level
-- Level 4 (Specialist): narrow-domain executors and engine sub-specialists reporting to a Team-Lead
+- Level 1 (CEO / Human): single root node; ultimate decision-maker — no fill colour (default)
+- Level 2 (C-Level): blue fill — strategic domain owners — creative-director, technical-director, producer
+- Level 3 (Team-Lead): green fill — functional team leads and engine-lead specialists reporting to a C-Level
+- Level 4 (Specialist): yellow fill — narrow-domain executors and engine sub-specialists reporting to a Team-Lead or directly to a C-Level
 
 ---
 
@@ -258,12 +266,12 @@ This section documents the allowed delegation (from → to) relationships in the
 A delegating agent assigns work to a subordinate; the subordinate reports results back up.
 Cross-team delegations are permitted where explicitly listed below.
 
-### Level 2 → Level 3 delegations
+### Level 2 → Level 3 delegations (and direct Level 4 exceptions)
 
 | Delegating Agent | May delegate to |
 |---|---|
 | creative-director | game-designer, art-director, narrative-director, audio-director, live-ops-designer |
-| technical-director | lead-programmer, qa-lead, release-manager, security-engineer, localization-lead, prototyper, accessibility-specialist, unreal-specialist, unity-specialist, godot-specialist, performance-analyst, devops-engineer, analytics-engineer |
+| technical-director | lead-programmer, qa-lead, release-manager, security-engineer, localization-lead, prototyper, accessibility-specialist, unreal-specialist, unity-specialist, godot-specialist, performance-analyst (L4 direct), devops-engineer (L4 direct), analytics-engineer (L4 direct) |
 | producer | community-manager |
 
 ### Level 3 → Level 4 delegations
@@ -302,10 +310,10 @@ Use this as a fast triage guide. Find the topic area, then engage the listed age
 If the recommended agent file does not exist yet in `agents/`, handle the topic directly
 with the CEO (human user) until that agent is created.
 
-- "Should we use Unity or Godot?" -> cto-agent (architecture/tech strategy)
-- "The story feels tonally inconsistent" -> cco-agent (creative direction)
-- "Players are dropping off at level 3" -> cpo-agent (product/player experience)
-- "The save system is crashing" -> backend-engineer (implementation bug), escalate to engineering-lead if systemic
-- "This quest dialogue doesn't match the lore" -> narrative-writer to fix, narrative-lead if it's a lore-consistency policy question
-- "Level 7 is too hard" -> level-designer (balancing), escalate to design-lead if it's a systemic design question
-- "We need a new test suite for combat" -> qa-engineer (test plan), engineering-lead for resourcing
+- "Should we use Unity or Godot?" -> technical-director (architecture/tech strategy)
+- "The story feels tonally inconsistent" -> creative-director (creative direction)
+- "Players are dropping off at level 3" -> producer (product/player experience)
+- "The save system is crashing" -> gameplay-programmer or engine-programmer (implementation bug), escalate to lead-programmer if systemic
+- "This quest dialogue doesn't match the lore" -> writer to fix, narrative-director if it's a lore-consistency policy question
+- "Level 7 is too hard" -> level-designer (balancing), escalate to game-designer if it's a systemic design question
+- "We need a new test suite for combat" -> qa-tester (test plan), escalate to qa-lead for strategy or lead-programmer for resourcing
