@@ -3,7 +3,7 @@
 
 ## Overview
 
-Replace the current 10-agent placeholder in `agent-coordination.md` with a complete coordination map covering all game development zones for a mid-scale studio. Includes general specialists (40+ agents across 4 levels), engine-specific specialists for Unity, Godot, and Unreal Engine, a full delegation/interaction map, and updated escalation rules with recursive hierarchical conflict resolution. No agent definition files are created — only `agent-coordination.md` is modified. The quick-reference routing examples section is not touched.
+Replace the current 10-agent placeholder in `agent-coordination.md` with a complete coordination map covering all game development zones for a mid-scale studio. Includes general specialists (40+ agents across 4 levels), engine-specific specialists for Unity, Godot, and Unreal Engine, a full delegation/interaction map, and updated escalation rules with recursive hierarchical conflict resolution. No agent definition files are created — only `agent-coordination.md` is modified. The quick-reference routing examples section was also updated to replace old placeholder agent names (cto-agent, cco-agent, etc.) with the real agent names from the new roster, to keep the document internally consistent.
 
 ## Context
 

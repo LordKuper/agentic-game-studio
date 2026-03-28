@@ -156,6 +156,8 @@ graph TD
 - Level 3 (Team-Lead): green fill — functional team leads and engine-lead specialists reporting to a C-Level
 - Level 4 (Specialist): yellow fill — narrow-domain executors and engine sub-specialists reporting to a Team-Lead or directly to a C-Level
 
+> **Note:** `performance-analyst`, `devops-engineer`, and `analytics-engineer` are Level 4 agents that report directly to `technical-director` (Level 2) with no Level 3 intermediary. Because Mermaid places nodes by path depth from the root, these three nodes render at the same visual row as Level 3 agents in the diagram above, despite their yellow Level 4 styling.
+
 ---
 
 ## Escalation Rules
@@ -169,7 +171,7 @@ graph TD
 
 "Direct parent" means the agent's immediate supervisor as shown in the hierarchy diagram — not the most domain-relevant agent at the level above.
 
-**Special case — L4 direct reports:** `performance-analyst`, `devops-engineer`, and `analytics-engineer` report directly to `technical-director` (no Level 3 intermediary). If one of these agents disagrees with a Level 3 peer, step 1 produces the same parent (`technical-director`) for both conflicting agents. In this case, `technical-director` resolves the conflict directly without a lateral-negotiation step between parents.
+**Special case — L4 direct reports:** `performance-analyst`, `devops-engineer`, and `analytics-engineer` report directly to `technical-director` (no Level 3 intermediary). If one of these agents disagrees with a Level 3 peer, step 1 produces the same parent (`technical-director`) for both conflicting agents. In this case, `technical-director` resolves the conflict directly without a lateral-negotiation step between parents. If two of these L4 direct-report agents disagree with each other, `technical-director` likewise resolves the conflict directly, as both agents share the same parent.
 
 **Blocked:** When an agent cannot proceed (missing permissions, outside its scope, lacks information):
 
@@ -308,7 +310,7 @@ the receiving agent's area of concern, even across reporting lines.
 | Delegating Agent | May delegate to | Reason |
 |---|---|---|
 | release-manager | devops-engineer | Release manager owns deployment gates; devops-engineer executes the pipeline |
-| release-manager | qa-lead | Release readiness requires QA sign-off coordinated by release-manager |
+| release-manager | qa-lead | Release readiness requires QA sign-off; this is coordinated peer collaboration (both are L3 under technical-director), not a subordinate delegation |
 | live-ops-designer | economy-designer | Live events require economy balance adjustments |
 | live-ops-designer | community-manager | Live content rollouts require community communication coordination |
 | live-ops-designer | analytics-engineer | Live operations are data-driven; analytics-engineer provides telemetry support |
