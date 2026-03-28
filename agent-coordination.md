@@ -13,7 +13,7 @@ Concrete agent definitions live in `agents/<agent-name>.md` and must conform to 
 The project uses a 4-level structure:
 
 - Level 1 - CEO: The human user. Ultimate decision-maker. Not an AI agent.
-- Level 2 - C-Level Agents: AI agents responsible for strategic domains (e.g. CTO, CCO, CPO).
+- Level 2 - C-Level Agents: AI agents responsible for strategic domains (e.g. creative-director, technical-director, producer).
 - Level 3 - Team-Lead Agents: AI agents managing specific functional teams under a C-Level.
 - Level 4 - Specialist Agents: AI agents executing focused, narrow domain tasks.
 
@@ -312,7 +312,7 @@ with the CEO (human user) until that agent is created.
 
 - "Should we use Unity or Godot?" -> technical-director (architecture/tech strategy)
 - "The story feels tonally inconsistent" -> creative-director (creative direction)
-- "Players are dropping off at level 3" -> producer (product/player experience)
+- "Players are dropping off at level 3" -> game-designer (player experience and gameplay loop)
 - "The save system is crashing" -> gameplay-programmer or engine-programmer (implementation bug), escalate to lead-programmer if systemic
 - "This quest dialogue doesn't match the lore" -> writer to fix, narrative-director if it's a lore-consistency policy question
 - "Level 7 is too hard" -> level-designer (balancing), escalate to game-designer if it's a systemic design question
