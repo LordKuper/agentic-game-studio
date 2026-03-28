@@ -171,7 +171,9 @@ graph TD
 
 "Direct parent" means the agent's immediate supervisor as shown in the hierarchy diagram — not the most domain-relevant agent at the level above.
 
-**Special case — L4 direct reports:** `performance-analyst`, `devops-engineer`, and `analytics-engineer` report directly to `technical-director` (no Level 3 intermediary). If one of these agents disagrees with a Level 3 peer, step 1 produces the same parent (`technical-director`) for both conflicting agents. In this case, `technical-director` resolves the conflict directly without a lateral-negotiation step between parents. If two of these L4 direct-report agents disagree with each other, `technical-director` likewise resolves the conflict directly, as both agents share the same parent.
+**Special case — shared direct parent:** If step 1 yields the same parent for both conflicting agents (i.e., the two agents are siblings in the hierarchy who share a direct parent), step 2 collapses: there is only one parent agent, so that parent resolves the conflict directly without a lateral-negotiation step between parents. This applies to any sibling pair — for example, `systems-designer` and `level-designer` (both under `game-designer`), or `release-manager` and `qa-lead` (both under `technical-director`).
+
+**Special case — L4 direct reports:** `performance-analyst`, `devops-engineer`, and `analytics-engineer` report directly to `technical-director` (no Level 3 intermediary). This means they share `technical-director` as their direct parent with each other and with all Level 3 agents under `technical-director`. Any disagreement between these agents, or between one of them and a Level 3 peer, falls under the shared-direct-parent rule above: `technical-director` resolves the conflict directly.
 
 **Blocked:** When an agent cannot proceed (missing permissions, outside its scope, lacks information):
 
@@ -271,7 +273,9 @@ structure.
 
 This section documents the allowed delegation (from → to) relationships in the hierarchy.
 A delegating agent assigns work to a subordinate; the subordinate reports results back up.
-Cross-team delegations are permitted where explicitly listed below.
+Cross-team coordination paths are permitted where explicitly listed below. Cross-team paths
+are coordination relationships, not hierarchical delegation — they do not carry the same
+authority as a direct-parent assignment.
 
 ### Level 2 → Level 3 delegations (and direct Level 4 exceptions)
 
@@ -296,18 +300,20 @@ Cross-team delegations are permitted where explicitly listed below.
 | localization-lead | none (no L4 direct reports) |
 | prototyper | none (no L4 direct reports) |
 | accessibility-specialist | none (no L4 direct reports) |
-| live-ops-designer | none (no L4 direct reports — see cross-team delegations below) |
+| live-ops-designer | none (no L4 direct reports — see cross-team coordination paths below) |
 | community-manager | none (no L4 direct reports) |
 | unreal-specialist | ue-gas-specialist, ue-blueprint-specialist, ue-replication-specialist, ue-umg-specialist |
 | unity-specialist | unity-dots-specialist, unity-shader-specialist, unity-addressables-specialist, unity-ui-specialist |
 | godot-specialist | godot-gdscript-specialist, godot-shader-specialist, godot-gdextension-specialist |
 
-### Cross-team delegations
+### Cross-team coordination paths
 
-These cross-team paths are explicitly permitted because the delegating agent's domain spans
-the receiving agent's area of concern, even across reporting lines.
+These cross-team paths are explicitly permitted because the initiating agent's domain spans
+the receiving agent's area of concern, even across reporting lines. These are coordination
+paths, not hierarchical delegation: the initiating agent may request work or sign-off from
+the receiving agent, but does not hold authority over that agent's priorities or direction.
 
-| Delegating Agent | May delegate to | Reason |
+| Initiating Agent | Coordinates with | Reason |
 |---|---|---|
 | release-manager | devops-engineer | Release manager owns deployment gates; devops-engineer executes the pipeline |
 | release-manager | qa-lead | Release go/no-go decisions require QA sign-off |
@@ -315,7 +321,7 @@ the receiving agent's area of concern, even across reporting lines.
 | live-ops-designer | community-manager | Live content rollouts require community communication coordination |
 | live-ops-designer | analytics-engineer | Live operations are data-driven; analytics-engineer provides telemetry support |
 
-When a cross-team delegating agent and the receiving agent's direct parent give conflicting instructions, the direct parent's instructions take precedence. The cross-team delegating agent must escalate the conflict to its own direct parent rather than issuing instructions that override the receiving agent's chain of command.
+When a cross-team initiating agent and the receiving agent's direct parent give conflicting instructions, the direct parent's instructions take precedence. The cross-team initiating agent must escalate the conflict to its own direct parent rather than issuing instructions that override the receiving agent's chain of command.
 
 ---
 
