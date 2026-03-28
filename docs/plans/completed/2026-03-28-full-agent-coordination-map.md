@@ -79,10 +79,12 @@ Add a new "Delegation Map" section after the Agent Responsibilities Reference. T
 Replace the current **Disagreement** rule with a recursive hierarchical conflict resolution rule:
 
 New rule:
-1. When agents at the same level disagree and cannot reach a decision, each conflicting agent identifies its direct parent in the hierarchy.
+1. When agents disagree and cannot reach a decision — regardless of whether they are at the same level, from the same branch, or from different branches — each conflicting agent identifies its direct parent in the hierarchy.
 2. Those parent agents attempt to resolve the conflict between themselves, following the same lateral negotiation process.
 3. If the parent agents cannot agree, the conflict is escalated one level further up the chain: each parent identifies its own parent, and those agents attempt resolution.
 4. This process repeats level by level until either the conflict is resolved or it reaches the CEO, who makes the final decision.
+
+Note: the implementation broadened the original "same level" scope to cover all cross-branch and cross-level disagreements.
 
 The **Blocked** rule and the closing note are not changed.
 

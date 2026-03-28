@@ -37,7 +37,7 @@ graph TD
     SEC["Level 3 — security-engineer"]
     LL["Level 3 — localization-lead"]
     PT["Level 3 — prototyper"]
-    AS["Level 3 — accessibility-specialist"]
+    ACCS["Level 3 — accessibility-specialist"]
     UE3["Level 3 — unreal-specialist"]
     UN3["Level 3 — unity-specialist"]
     GO3["Level 3 — godot-specialist"]
@@ -95,7 +95,7 @@ graph TD
     TD --> SEC
     TD --> LL
     TD --> PT
-    TD --> AS
+    TD --> ACCS
     TD --> UE3
     TD --> UN3
     TD --> GO3
@@ -145,7 +145,7 @@ graph TD
     classDef level4 fill:#f5c842,color:#000,stroke:#c9a200
 
     class CD,TD,PR level2
-    class GD,AD,ND,AUD,LOD,LP,QAL,RM,SEC,LL,PT,AS,UE3,UN3,GO3,CM level3
+    class GD,AD,ND,AUD,LOD,LP,QAL,RM,SEC,LL,PT,ACCS,UE3,UN3,GO3,CM level3
     class SYD,LVD,ECD,TA,UXD,WR,WB,SD,GPP,EP,AIP,NP,TP,UIP,QAT,PA,DO,AE,UEGAS,UEBP,UEREP,UEUMG,UDOTS,USHD,UADDR,UUISP,GGDS,GSHD,GEXT level4
 ```
 
@@ -286,6 +286,8 @@ authority as a direct-parent assignment.
 | producer | community-manager |
 
 ### Level 3 → Level 4 delegations
+
+> **Note:** `performance-analyst`, `devops-engineer`, and `analytics-engineer` receive work directly from `technical-director` (Level 2) and are not listed in this table. See the Level 2 → Level 3 table above.
 
 | Delegating Agent | May delegate to |
 |---|---|
