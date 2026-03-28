@@ -66,10 +66,10 @@ Replace the current 10-row table with a full table. Each row: agent file path, l
 
 Add a new "Delegation Map" section after the Agent Responsibilities Reference. This section documents the allowed from→to delegation relationships as a table.
 
-- [ ] Add delegation table covering all Level 2→3 paths
-- [ ] Add delegation table covering all Level 3→4 paths
-- [ ] Include engine specialist delegation: each [engine]-specialist → its sub-specialists
-- [ ] Include cross-team delegations (e.g. release-manager → devops-engineer + qa-lead; live-ops-designer → economy-designer + community-manager + analytics-engineer)
+- [x] Add delegation table covering all Level 2→3 paths
+- [x] Add delegation table covering all Level 3→4 paths
+- [x] Include engine specialist delegation: each [engine]-specialist → its sub-specialists
+- [x] Include cross-team delegations (e.g. release-manager → devops-engineer + qa-lead; live-ops-designer → economy-designer + community-manager + analytics-engineer)
 
 ### Task 4: Update Escalation Rules — conflict resolution chain
 

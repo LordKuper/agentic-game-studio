@@ -250,6 +250,49 @@ structure.
 
 ---
 
+## Delegation Map
+
+This section documents the allowed delegation (from → to) relationships in the hierarchy.
+A delegating agent assigns work to a subordinate; the subordinate reports results back up.
+Cross-team delegations are permitted where explicitly listed below.
+
+### Level 2 → Level 3 delegations
+
+| Delegating Agent | May delegate to |
+|---|---|
+| creative-director | game-designer, art-director, narrative-director, audio-director, live-ops-designer |
+| technical-director | lead-programmer, qa-lead, release-manager, security-engineer, localization-lead, prototyper, accessibility-specialist, unreal-specialist, unity-specialist, godot-specialist, performance-analyst, devops-engineer, analytics-engineer |
+| producer | community-manager |
+
+### Level 3 → Level 4 delegations
+
+| Delegating Agent | May delegate to |
+|---|---|
+| game-designer | systems-designer, level-designer, economy-designer |
+| art-director | technical-artist, ux-designer |
+| narrative-director | writer, world-builder |
+| audio-director | sound-designer |
+| lead-programmer | gameplay-programmer, engine-programmer, ai-programmer, network-programmer, tools-programmer, ui-programmer |
+| qa-lead | qa-tester |
+| unreal-specialist | ue-gas-specialist, ue-blueprint-specialist, ue-replication-specialist, ue-umg-specialist |
+| unity-specialist | unity-dots-specialist, unity-shader-specialist, unity-addressables-specialist, unity-ui-specialist |
+| godot-specialist | godot-gdscript-specialist, godot-shader-specialist, godot-gdextension-specialist |
+
+### Cross-team delegations
+
+These cross-team paths are explicitly permitted because the delegating agent's domain spans
+the receiving agent's area of concern, even across reporting lines.
+
+| Delegating Agent | May delegate to | Reason |
+|---|---|---|
+| release-manager | devops-engineer | Release manager owns deployment gates; devops-engineer executes the pipeline |
+| release-manager | qa-lead | Release readiness requires QA sign-off coordinated by release-manager |
+| live-ops-designer | economy-designer | Live events require economy balance adjustments |
+| live-ops-designer | community-manager | Live content rollouts require community communication coordination |
+| live-ops-designer | analytics-engineer | Live operations are data-driven; analytics-engineer provides telemetry support |
+
+---
+
 ## Quick-Reference: Which Agent for Which Topic?
 
 Use this as a fast triage guide. Find the topic area, then engage the listed agent.
