@@ -3,7 +3,7 @@
 
 ## Overview
 
-Replace the current 10-agent placeholder in `agent-coordination.md` with a complete coordination map covering all game development zones for a mid-scale studio. Includes general specialists (40+ agents across 4 levels), engine-specific specialists for Unity, Godot, and Unreal Engine, a full delegation/interaction map, and updated escalation rules with recursive hierarchical conflict resolution. No agent definition files are created — only `agent-coordination.md` is modified. The quick-reference routing examples section is not touched.
+Replace the current 10-agent placeholder in `agent-coordination.md` with a complete coordination map covering all game development zones for a mid-scale studio. Includes general specialists (40+ agents across 4 levels), engine-specific specialists for Unity, Godot, and Unreal Engine, a full delegation/interaction map, and updated escalation rules with recursive hierarchical conflict resolution. No agent definition files are created — only `agent-coordination.md` is modified. The quick-reference routing examples section was also updated to replace old placeholder agent names (cto-agent, cco-agent, etc.) with the real agent names from the new roster, to keep the document internally consistent.
 
 ## Context
 
@@ -41,8 +41,8 @@ Replace the current example diagram (which shows placeholder agents) with a diag
 - Level 4 (under unity-specialist): unity-dots-specialist, unity-shader-specialist, unity-addressables-specialist, unity-ui-specialist
 - Level 4 (under godot-specialist): godot-gdscript-specialist, godot-shader-specialist, godot-gdextension-specialist
 
-- [ ] Replace old Mermaid diagram with updated one showing all agents
-- [ ] Add a legend block beneath the diagram listing level color/shape conventions
+- [x] Replace old Mermaid diagram with updated one showing all agents
+- [x] Add a legend block beneath the diagram listing level color/shape conventions
 
 ### Task 2: Replace Agent Responsibilities Reference table
 
@@ -51,13 +51,13 @@ Replace the current example diagram (which shows placeholder agents) with a diag
 
 Replace the current 10-row table with a full table. Each row: agent file path, level, area of responsibility, "involve for" description.
 
-- [ ] Add all Level 2 agents: creative-director, technical-director, producer
-- [ ] Add all Level 3 general agents: game-designer, art-director, narrative-director, audio-director, lead-programmer, qa-lead, release-manager, security-engineer, localization-lead, prototyper, accessibility-specialist, live-ops-designer, community-manager
-- [ ] Add all Level 3 engine-lead agents: unreal-specialist, unity-specialist, godot-specialist
-- [ ] Add all Level 4 general agents: systems-designer, level-designer, economy-designer, technical-artist, ux-designer, writer, world-builder, sound-designer, gameplay-programmer, engine-programmer, ai-programmer, network-programmer, tools-programmer, ui-programmer, qa-tester, performance-analyst, devops-engineer, analytics-engineer
-- [ ] Add all Level 4 Unreal sub-specialists: ue-gas-specialist, ue-blueprint-specialist, ue-replication-specialist, ue-umg-specialist
-- [ ] Add all Level 4 Unity sub-specialists: unity-dots-specialist, unity-shader-specialist, unity-addressables-specialist, unity-ui-specialist
-- [ ] Add all Level 4 Godot sub-specialists: godot-gdscript-specialist, godot-shader-specialist, godot-gdextension-specialist
+- [x] Add all Level 2 agents: creative-director, technical-director, producer
+- [x] Add all Level 3 general agents: game-designer, art-director, narrative-director, audio-director, lead-programmer, qa-lead, release-manager, security-engineer, localization-lead, prototyper, accessibility-specialist, live-ops-designer, community-manager
+- [x] Add all Level 3 engine-lead agents: unreal-specialist, unity-specialist, godot-specialist
+- [x] Add all Level 4 general agents: systems-designer, level-designer, economy-designer, technical-artist, ux-designer, writer, world-builder, sound-designer, gameplay-programmer, engine-programmer, ai-programmer, network-programmer, tools-programmer, ui-programmer, qa-tester, performance-analyst, devops-engineer, analytics-engineer
+- [x] Add all Level 4 Unreal sub-specialists: ue-gas-specialist, ue-blueprint-specialist, ue-replication-specialist, ue-umg-specialist
+- [x] Add all Level 4 Unity sub-specialists: unity-dots-specialist, unity-shader-specialist, unity-addressables-specialist, unity-ui-specialist
+- [x] Add all Level 4 Godot sub-specialists: godot-gdscript-specialist, godot-shader-specialist, godot-gdextension-specialist
 
 ### Task 3: Add Delegation Map section
 
@@ -66,10 +66,10 @@ Replace the current 10-row table with a full table. Each row: agent file path, l
 
 Add a new "Delegation Map" section after the Agent Responsibilities Reference. This section documents the allowed from→to delegation relationships as a table.
 
-- [ ] Add delegation table covering all Level 2→3 paths
-- [ ] Add delegation table covering all Level 3→4 paths
-- [ ] Include engine specialist delegation: each [engine]-specialist → its sub-specialists
-- [ ] Include cross-team delegations (e.g. release-manager → devops-engineer + qa-lead; live-ops-designer → economy-designer + community-manager + analytics-engineer)
+- [x] Add delegation table covering all Level 2→3 paths
+- [x] Add delegation table covering all Level 3→4 paths
+- [x] Include engine specialist delegation: each [engine]-specialist → its sub-specialists
+- [x] Include cross-team delegations (e.g. release-manager → devops-engineer + qa-lead; live-ops-designer → economy-designer + community-manager + analytics-engineer)
 
 ### Task 4: Update Escalation Rules — conflict resolution chain
 
@@ -79,20 +79,22 @@ Add a new "Delegation Map" section after the Agent Responsibilities Reference. T
 Replace the current **Disagreement** rule with a recursive hierarchical conflict resolution rule:
 
 New rule:
-1. When agents at the same level disagree and cannot reach a decision, each conflicting agent identifies its direct parent in the hierarchy.
+1. When agents disagree and cannot reach a decision — regardless of whether they are at the same level, from the same branch, or from different branches — each conflicting agent identifies its direct parent in the hierarchy.
 2. Those parent agents attempt to resolve the conflict between themselves, following the same lateral negotiation process.
 3. If the parent agents cannot agree, the conflict is escalated one level further up the chain: each parent identifies its own parent, and those agents attempt resolution.
 4. This process repeats level by level until either the conflict is resolved or it reaches the CEO, who makes the final decision.
 
+Note: the implementation broadened the original "same level" scope to cover all cross-branch and cross-level disagreements.
+
 The **Blocked** rule and the closing note are not changed.
 
-- [ ] Replace the Disagreement bullet list in the Escalation Rules section with the new recursive chain rule
-- [ ] Ensure the new rule references the hierarchical subordination structure defined in the diagram (i.e., "direct parent" means the agent's parent as shown in the hierarchy)
+- [x] Replace the Disagreement bullet list in the Escalation Rules section with the new recursive chain rule
+- [x] Ensure the new rule references the hierarchical subordination structure defined in the diagram (i.e., "direct parent" means the agent's parent as shown in the hierarchy)
 
 ### Task 5: Verify acceptance criteria
 
-- [ ] Confirm all agents from the Donchitos reference are present in the table
-- [ ] Confirm Mermaid diagram renders without syntax errors
-- [ ] Confirm no placeholder agents remain in the document
-- [ ] Confirm Escalation Rules section reflects the new recursive conflict resolution chain
-- [ ] Move this plan to `docs/plans/completed/`
+- [x] Confirm all agents from the Donchitos reference are present in the table
+- [x] Confirm Mermaid diagram renders without syntax errors
+- [x] Confirm no placeholder agents remain in the document
+- [x] Confirm Escalation Rules section reflects the new recursive conflict resolution chain
+- [x] Move this plan to `docs/plans/completed/`
