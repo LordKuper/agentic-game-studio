@@ -169,6 +169,8 @@ graph TD
 
 "Direct parent" means the agent's immediate supervisor as shown in the hierarchy diagram — not the most domain-relevant agent at the level above.
 
+**Special case — L4 direct reports:** `performance-analyst`, `devops-engineer`, and `analytics-engineer` report directly to `technical-director` (no Level 3 intermediary). If one of these agents disagrees with a Level 3 peer, step 1 produces the same parent (`technical-director`) for both conflicting agents. In this case, `technical-director` resolves the conflict directly without a lateral-negotiation step between parents.
+
 **Blocked:** When an agent cannot proceed (missing permissions, outside its scope, lacks information):
 
 1. Report the blocker upward to the direct parent agent with a clear description of what is needed.
@@ -185,9 +187,12 @@ sign of failure - it is the correct procedure for maintaining clear ownership.
 - Top-down: Task assignment flows from higher levels to lower levels.
   The CEO assigns work to C-Level agents; C-Level agents delegate to Team-Lead agents;
   Team-Lead agents direct Specialist agents.
+  Exception: `performance-analyst`, `devops-engineer`, and `analytics-engineer` are Level 4
+  agents with no Level 3 intermediary — they receive work directly from `technical-director`.
 
 - Bottom-up: Results, status updates, and blockers are reported upward.
   Specialists report to their Team-Lead; Team-Leads report to their C-Level; C-Levels report to the CEO.
+  Exception: the three L4 direct-report agents above report directly to `technical-director`.
 
 - Lateral: Agents at the same level may collaborate directly as peers.
   Lateral collaboration does not require routing through a parent unless a conflict arises.
@@ -284,6 +289,13 @@ Cross-team delegations are permitted where explicitly listed below.
 | audio-director | sound-designer |
 | lead-programmer | gameplay-programmer, engine-programmer, ai-programmer, network-programmer, tools-programmer, ui-programmer |
 | qa-lead | qa-tester |
+| release-manager | none (no L4 direct reports — see cross-team delegations below) |
+| security-engineer | none (no L4 direct reports) |
+| localization-lead | none (no L4 direct reports) |
+| prototyper | none (no L4 direct reports) |
+| accessibility-specialist | none (no L4 direct reports) |
+| live-ops-designer | none (no L4 direct reports — see cross-team delegations below) |
+| community-manager | none (no L4 direct reports) |
 | unreal-specialist | ue-gas-specialist, ue-blueprint-specialist, ue-replication-specialist, ue-umg-specialist |
 | unity-specialist | unity-dots-specialist, unity-shader-specialist, unity-addressables-specialist, unity-ui-specialist |
 | godot-specialist | godot-gdscript-specialist, godot-shader-specialist, godot-gdextension-specialist |
