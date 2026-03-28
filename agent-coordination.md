@@ -342,4 +342,4 @@ with the CEO (human user) until that agent is created.
 - "The save system is crashing" -> gameplay-programmer or engine-programmer (implementation bug), escalate to lead-programmer if systemic
 - "This quest dialogue doesn't match the lore" -> writer to fix, narrative-director if it's a lore-consistency policy question
 - "Level 7 is too hard" -> level-designer (balancing), escalate to game-designer if it's a systemic design question
-- "We need a new test suite for combat" -> qa-lead (test strategy and plan), then qa-tester for execution once the plan is approved; escalate to lead-programmer for resourcing
+- "We need a new test suite for combat" -> qa-lead (test strategy and plan), then qa-tester for execution once the plan is approved; escalate to technical-director for resourcing
