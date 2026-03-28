@@ -165,7 +165,7 @@ graph TD
 **Disagreement:** When agents disagree and cannot reach a decision through lateral negotiation — regardless of whether they are at the same level, from the same branch, or from different branches — the conflict is resolved by recursive hierarchical escalation:
 
 1. Each conflicting agent identifies its direct parent in the hierarchy (as shown in the diagram above).
-2. Those parent agents attempt to resolve the conflict between themselves, following the same lateral negotiation process.
+2. Those parent agents attempt to resolve the conflict directly between themselves.
 3. If the parent agents cannot agree, the conflict is escalated one level further up the chain: each parent identifies its own direct parent, and those agents attempt resolution.
 4. This process repeats level by level until either the conflict is resolved at some level or it reaches the CEO, who makes the final binding decision.
 
@@ -226,7 +226,7 @@ that belong to it.
 | agents/localization-lead.md | 3 - Team-Lead | Localisation pipeline and standards | Translation workflows, locale-specific QA, cultural adaptation, string management |
 | agents/prototyper.md | 3 - Team-Lead | Rapid prototyping and experimentation | Throwaway prototypes, mechanic validation, quick feasibility proofs |
 | agents/accessibility-specialist.md | 3 - Team-Lead | Accessibility standards and implementation | Accessibility audits, WCAG/game-a11y compliance, assistive feature design |
-| agents/live-ops-designer.md | 3 - Team-Lead | Live operations and ongoing content design | Events, seasonal content, economy balancing for live game, live feature specs |
+| agents/live-ops-designer.md | 3 - Team-Lead | Live operations and ongoing content design | Events, seasonal content, live feature specs, economy balancing coordination for live game (via economy-designer) |
 | agents/unreal-specialist.md | 3 - Team-Lead | Unreal Engine platform expertise | UE architecture decisions, plugin selection, Unreal best-practice review |
 | agents/unity-specialist.md | 3 - Team-Lead | Unity platform expertise | Unity architecture decisions, package selection, Unity best-practice review |
 | agents/godot-specialist.md | 3 - Team-Lead | Godot platform expertise | Godot architecture decisions, addon selection, Godot best-practice review |
@@ -308,10 +308,12 @@ authority as a direct-parent assignment.
 
 ### Cross-team coordination paths
 
-These cross-team paths are explicitly permitted because the initiating agent's domain spans
-the receiving agent's area of concern, even across reporting lines. These are coordination
-paths, not hierarchical delegation: the initiating agent may request work or sign-off from
-the receiving agent, but does not hold authority over that agent's priorities or direction.
+These paths are explicitly documented because the initiating agent's domain spans the
+receiving agent's area of concern. They cover both cross-chain relationships (agents in
+different reporting lines) and same-chain peer relationships where the dependency is
+non-obvious. These are coordination paths, not hierarchical delegation: the initiating agent
+may request work or sign-off from the receiving agent, but does not hold authority over that
+agent's priorities or direction.
 
 | Initiating Agent | Coordinates with | Reason |
 |---|---|---|
