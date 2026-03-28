@@ -4,8 +4,6 @@ This document defines the organisational structure for all AI agents in this pro
 the 4-level hierarchy, escalation rules, communication flow, and the Agent Responsibilities
 Reference. It is the authoritative source for deciding which agents to engage for any topic.
 
-Concrete agent definitions live in `agents/<agent-name>.md` and must conform to `agent-template.md`.
-
 ---
 
 ## Hierarchy
@@ -326,20 +324,3 @@ agent's priorities or direction.
 | live-ops-designer | analytics-engineer | Live operations are data-driven; analytics-engineer provides telemetry support |
 
 When a cross-team initiating agent and the receiving agent's direct parent give conflicting instructions, the direct parent's instructions take precedence. The cross-team initiating agent must escalate the conflict to its own direct parent rather than issuing instructions that override the receiving agent's chain of command.
-
----
-
-## Quick-Reference: Which Agent for Which Topic?
-
-Use this as a fast triage guide. Find the topic area, then engage the listed agent.
-
-If the recommended agent file does not exist yet in `agents/`, handle the topic directly
-with the CEO (human user) until that agent is created.
-
-- "Should we use Unity or Godot?" -> technical-director (architecture/tech strategy)
-- "The story feels tonally inconsistent" -> creative-director (creative direction)
-- "Players are dropping off at level 3" -> game-designer (player experience and gameplay loop)
-- "The save system is crashing" -> gameplay-programmer or engine-programmer (implementation bug), escalate to lead-programmer if systemic
-- "This quest dialogue doesn't match the lore" -> writer to fix, narrative-director if it's a lore-consistency policy question
-- "Level 7 is too hard" -> level-designer (balancing), escalate to game-designer if it's a systemic design question
-- "We need a new test suite for combat" -> qa-lead (test strategy and plan), then qa-tester for execution once the plan is approved; escalate to technical-director for resourcing
