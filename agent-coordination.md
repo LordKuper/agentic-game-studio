@@ -316,6 +316,7 @@ the receiving agent, but does not hold authority over that agent's priorities or
 | Initiating Agent | Coordinates with | Reason |
 |---|---|---|
 | release-manager | devops-engineer | Release manager owns deployment gates; devops-engineer executes the pipeline |
+| release-manager | qa-lead | Release go/no-go decisions require QA readiness confirmation |
 | live-ops-designer | economy-designer | Live events require economy balance adjustments |
 | live-ops-designer | community-manager | Live content rollouts require community communication coordination |
 | live-ops-designer | analytics-engineer | Live operations are data-driven; analytics-engineer provides telemetry support |
