@@ -19,37 +19,134 @@ The project uses a 4-level structure:
 
 ```mermaid
 graph TD
-    CEO["Level 1 - CEO (Human)"]
+    CEO["Level 1 — CEO (Human)"]
 
-    CTO["Level 2 - CTO Agent"]
-    CCO["Level 2 - CCO Agent"]
-    CPO["Level 2 - CPO Agent"]
+    CD["Level 2 — creative-director"]
+    TD["Level 2 — technical-director"]
+    PR["Level 2 — producer"]
 
-    EL["Level 3 - Engineering Lead"]
-    NL["Level 3 - Narrative Lead"]
-    DL["Level 3 - Design Lead"]
+    GD["Level 3 — game-designer"]
+    AD["Level 3 — art-director"]
+    ND["Level 3 — narrative-director"]
+    AUD["Level 3 — audio-director"]
+    LOD["Level 3 — live-ops-designer"]
 
-    SE["Level 4 - Specialist: Backend Engineer"]
-    QA["Level 4 - Specialist: QA Engineer"]
-    NW["Level 4 - Specialist: Narrative Writer"]
-    LD["Level 4 - Specialist: Level Designer"]
+    LP["Level 3 — lead-programmer"]
+    QAL["Level 3 — qa-lead"]
+    RM["Level 3 — release-manager"]
+    SEC["Level 3 — security-engineer"]
+    LL["Level 3 — localization-lead"]
+    PT["Level 3 — prototyper"]
+    AS["Level 3 — accessibility-specialist"]
+    UE3["Level 3 — unreal-specialist"]
+    UN3["Level 3 — unity-specialist"]
+    GO3["Level 3 — godot-specialist"]
 
-    CEO --> CTO
-    CEO --> CCO
-    CEO --> CPO
+    CM["Level 3 — community-manager"]
 
-    CTO --> EL
-    CCO --> NL
-    CPO --> DL
+    SYD["Level 4 — systems-designer"]
+    LVD["Level 4 — level-designer"]
+    ECD["Level 4 — economy-designer"]
+    TA["Level 4 — technical-artist"]
+    UXD["Level 4 — ux-designer"]
+    WR["Level 4 — writer"]
+    WB["Level 4 — world-builder"]
+    SD["Level 4 — sound-designer"]
 
-    EL --> SE
-    EL --> QA
-    NL --> NW
-    DL --> LD
+    GPP["Level 4 — gameplay-programmer"]
+    EP["Level 4 — engine-programmer"]
+    AIP["Level 4 — ai-programmer"]
+    NP["Level 4 — network-programmer"]
+    TP["Level 4 — tools-programmer"]
+    UIP["Level 4 — ui-programmer"]
+    QAT["Level 4 — qa-tester"]
+
+    PA["Level 4 — performance-analyst"]
+    DO["Level 4 — devops-engineer"]
+    AE["Level 4 — analytics-engineer"]
+
+    UEGAS["Level 4 — ue-gas-specialist"]
+    UEBP["Level 4 — ue-blueprint-specialist"]
+    UEREP["Level 4 — ue-replication-specialist"]
+    UEUMG["Level 4 — ue-umg-specialist"]
+
+    UDOTS["Level 4 — unity-dots-specialist"]
+    USHD["Level 4 — unity-shader-specialist"]
+    UADDR["Level 4 — unity-addressables-specialist"]
+    UUISP["Level 4 — unity-ui-specialist"]
+
+    GGDS["Level 4 — godot-gdscript-specialist"]
+    GSHD["Level 4 — godot-shader-specialist"]
+    GEXT["Level 4 — godot-gdextension-specialist"]
+
+    CEO --> CD
+    CEO --> TD
+    CEO --> PR
+
+    CD --> GD
+    CD --> AD
+    CD --> ND
+    CD --> AUD
+    CD --> LOD
+
+    TD --> LP
+    TD --> QAL
+    TD --> RM
+    TD --> SEC
+    TD --> LL
+    TD --> PT
+    TD --> AS
+    TD --> UE3
+    TD --> UN3
+    TD --> GO3
+    TD --> PA
+    TD --> DO
+    TD --> AE
+
+    PR --> CM
+
+    GD --> SYD
+    GD --> LVD
+    GD --> ECD
+
+    AD --> TA
+    AD --> UXD
+
+    ND --> WR
+    ND --> WB
+
+    AUD --> SD
+
+    LP --> GPP
+    LP --> EP
+    LP --> AIP
+    LP --> NP
+    LP --> TP
+    LP --> UIP
+
+    QAL --> QAT
+
+    UE3 --> UEGAS
+    UE3 --> UEBP
+    UE3 --> UEREP
+    UE3 --> UEUMG
+
+    UN3 --> UDOTS
+    UN3 --> USHD
+    UN3 --> UADDR
+    UN3 --> UUISP
+
+    GO3 --> GGDS
+    GO3 --> GSHD
+    GO3 --> GEXT
 ```
 
-The diagram above shows example agents. Actual agents are listed in the
-Agent Responsibilities Reference section below.
+**Diagram Legend**
+
+- Level 1 (CEO / Human): single root node; ultimate decision-maker
+- Level 2 (C-Level): strategic domain owners — creative-director, technical-director, producer
+- Level 3 (Team-Lead): functional team leads and engine-lead specialists reporting to a C-Level
+- Level 4 (Specialist): narrow-domain executors and engine sub-specialists reporting to a Team-Lead
 
 ---
 

@@ -41,8 +41,8 @@ Replace the current example diagram (which shows placeholder agents) with a diag
 - Level 4 (under unity-specialist): unity-dots-specialist, unity-shader-specialist, unity-addressables-specialist, unity-ui-specialist
 - Level 4 (under godot-specialist): godot-gdscript-specialist, godot-shader-specialist, godot-gdextension-specialist
 
-- [ ] Replace old Mermaid diagram with updated one showing all agents
-- [ ] Add a legend block beneath the diagram listing level color/shape conventions
+- [x] Replace old Mermaid diagram with updated one showing all agents
+- [x] Add a legend block beneath the diagram listing level color/shape conventions
 
 ### Task 2: Replace Agent Responsibilities Reference table
 
