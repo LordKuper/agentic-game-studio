@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\\agentic-game-studio.csproj" />
+    <ProjectReference Include="..\src\agentic-game-studio.csproj" />
   </ItemGroup>
 
 </Project>
