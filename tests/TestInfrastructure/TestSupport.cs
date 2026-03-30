@@ -204,6 +204,93 @@ internal static class AgsTestState
             new AgsSettings(false, false));
         PrivateAccess.SetStaticField(typeof(AgsSettings), "hasCurrentSettings", false);
     }
+
+    /// <summary>
+    ///     Restores the default prompt handlers used by the application.
+    /// </summary>
+    internal static void ResetPromptHandlers()
+    {
+        PrivateAccess.SetStaticField(typeof(AgsPrompt), "confirmHandler",
+            (Func<string, bool, bool>)((message, defaultValue) =>
+                Sharprompt.Prompt.Confirm(message, defaultValue: defaultValue)));
+        PrivateAccess.SetStaticField(typeof(AgsPrompt), "selectHandler",
+            (Func<string, IReadOnlyList<string>, string>)((message, options) =>
+                Sharprompt.Prompt.Select(message, [.. options])));
+    }
+}
+
+/// <summary>
+///     Temporarily replaces prompt handlers with deterministic test responses.
+/// </summary>
+internal sealed class PromptStubScope : IDisposable
+{
+    private readonly Func<string, bool, bool> originalConfirmHandler;
+    private readonly Func<string, IReadOnlyList<string>, string> originalSelectHandler;
+    private readonly Queue<bool> queuedConfirmations;
+    private readonly Queue<int> queuedSelections;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="PromptStubScope" /> class.
+    /// </summary>
+    /// <param name="confirmations">Queued confirmation responses returned to the caller.</param>
+    /// <param name="selectionIndexes">Queued zero-based selection indexes returned to the caller.</param>
+    internal PromptStubScope(IEnumerable<bool> confirmations = null,
+        IEnumerable<int> selectionIndexes = null)
+    {
+        originalConfirmHandler = PrivateAccess.GetStaticField<Func<string, bool, bool>>(
+            typeof(AgsPrompt), "confirmHandler");
+        originalSelectHandler =
+            PrivateAccess.GetStaticField<Func<string, IReadOnlyList<string>, string>>(
+                typeof(AgsPrompt), "selectHandler");
+        queuedConfirmations = confirmations == null ? [] : new Queue<bool>(confirmations);
+        queuedSelections = selectionIndexes == null ? [] : new Queue<int>(selectionIndexes);
+        ConfirmMessages = [];
+        SelectMessages = [];
+        SelectOptions = [];
+        PrivateAccess.SetStaticField(typeof(AgsPrompt), "confirmHandler",
+            (Func<string, bool, bool>)((message, defaultValue) =>
+            {
+                ConfirmMessages.Add(message);
+                if (queuedConfirmations.Count == 0) return defaultValue;
+                return queuedConfirmations.Dequeue();
+            }));
+        PrivateAccess.SetStaticField(typeof(AgsPrompt), "selectHandler",
+            (Func<string, IReadOnlyList<string>, string>)((message, options) =>
+            {
+                SelectMessages.Add(message);
+                SelectOptions.Add(options.ToArray());
+                Assert.NotEmpty(options);
+                if (queuedSelections.Count == 0)
+                    throw new InvalidOperationException("No queued selection is available.");
+                var selectedIndex = queuedSelections.Dequeue();
+                Assert.InRange(selectedIndex, 0, options.Count - 1);
+                return options[selectedIndex];
+            }));
+    }
+
+    /// <summary>
+    ///     Gets the confirmation prompt messages that were shown during the scope lifetime.
+    /// </summary>
+    internal List<string> ConfirmMessages { get; }
+
+    /// <summary>
+    ///     Gets the selection prompt messages that were shown during the scope lifetime.
+    /// </summary>
+    internal List<string> SelectMessages { get; }
+
+    /// <summary>
+    ///     Gets the option lists shown for each selection prompt during the scope lifetime.
+    /// </summary>
+    internal List<string[]> SelectOptions { get; }
+
+    /// <summary>
+    ///     Restores the original prompt handlers.
+    /// </summary>
+    public void Dispose()
+    {
+        PrivateAccess.SetStaticField(typeof(AgsPrompt), "confirmHandler", originalConfirmHandler);
+        PrivateAccess.SetStaticField(typeof(AgsPrompt), "selectHandler", originalSelectHandler);
+    }
 }
 
 /// <summary>

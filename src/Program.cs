@@ -90,7 +90,7 @@ internal static class Program
     private static bool ValidateProjectRoot(string currentDirectory)
     {
         var isProjectRoot =
-            ConsoleMenu.PromptForBoolean(
+            AgsPrompt.Confirm(
                 $"Is the current folder the project root? ({currentDirectory})");
         if (isProjectRoot) return true;
         Console.WriteLine("The application must be started from the project root folder. Exiting.");

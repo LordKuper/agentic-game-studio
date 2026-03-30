@@ -16,8 +16,8 @@ internal static class SetupSubsystem
     {
         settings = new AgsSettings(false, false);
         Console.WriteLine("Setup required. Starting setup...");
-        settings = new AgsSettings(ConsoleMenu.PromptForBoolean("Do you want to use Claude Code?"),
-            ConsoleMenu.PromptForBoolean("Do you want to use Codex?"));
+        settings = new AgsSettings(AgsPrompt.Confirm("Do you want to use Claude Code?", false),
+            AgsPrompt.Confirm("Do you want to use Codex?", false));
         Directory.CreateDirectory(agsDirectoryPath);
         var configPath = Path.Combine(agsDirectoryPath, AgsSettings.ConfigFileName);
         settings.WriteToConfig(configPath);

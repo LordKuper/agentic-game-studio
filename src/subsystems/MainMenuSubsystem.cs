@@ -5,11 +5,6 @@ namespace AGS.subsystems;
 /// </summary>
 internal static class MainMenuSubsystem
 {
-    private static Action clearConsoleHandler = Console.Clear;
-
-    private static Func<bool>
-        isOutputRedirectedProvider = () => Console.IsOutputRedirected;
-
     private static Func<IReadOnlyList<string>> unfinishedSessionNamesProvider =
         GetUnfinishedSessionNames;
 
@@ -30,23 +25,6 @@ internal static class MainMenuSubsystem
         options.Add(new MainMenuOption("Settings", MainMenuOptionKind.Settings, string.Empty));
         options.Add(new MainMenuOption("Exit", MainMenuOptionKind.Exit, string.Empty));
         return [.. options];
-    }
-
-    /// <summary>
-    ///     Clears the console before the main menu is rendered so repeated selections do not stack
-    ///     multiple menu screens on top of each other.
-    /// </summary>
-    private static void ClearConsoleForMainMenu()
-    {
-        if (isOutputRedirectedProvider()) return;
-        try
-        {
-            clearConsoleHandler();
-        }
-        catch (IOException) { }
-        catch (ArgumentOutOfRangeException) { }
-        catch (InvalidOperationException) { }
-        catch (PlatformNotSupportedException) { }
     }
 
     /// <summary>
@@ -80,10 +58,8 @@ internal static class MainMenuSubsystem
     {
         while (true)
         {
-            ClearConsoleForMainMenu();
             var options = BuildOptions();
-            var selectedIndex =
-                ConsoleMenu.PromptForSelection("Main menu", GetOptionLabels(options));
+            var selectedIndex = AgsPrompt.Select("Main menu", GetOptionLabels(options));
             var selectedOption = options[selectedIndex];
             if (selectedOption.Kind == MainMenuOptionKind.Exit)
             {

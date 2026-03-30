@@ -10,20 +10,33 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="coverlet.collector" Version="6.0.2">
+    <PackageReference Include="coverlet.collector" Version="8.0.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageReference Include="xunit" Version="2.9.3" />
-    <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2">
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.3.0" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="3.1.5">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="xunit.v3" Version="3.2.2" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\src\agentic-game-studio.csproj" />
   </ItemGroup>
+
+  <Target Name="CopyStandardResourcesToTestOutput" AfterTargets="Build">
+    <ItemGroup>
+      <AgentFiles Include="..\agents\**\*" Exclude="..\agents\.gitkeep" />
+      <RuleFiles Include="..\rules\**\*" />
+      <SkillFiles Include="..\skills\**\*" />
+      <TemplateFiles Include="..\templates\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(AgentFiles)" DestinationFiles="@(AgentFiles->'$(OutDir)agents\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(RuleFiles)" DestinationFiles="@(RuleFiles->'$(OutDir)rules\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(SkillFiles)" DestinationFiles="@(SkillFiles->'$(OutDir)skills\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+    <Copy SourceFiles="@(TemplateFiles)" DestinationFiles="@(TemplateFiles->'$(OutDir)templates\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+  </Target>
 
 </Project>

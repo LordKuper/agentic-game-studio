@@ -12,6 +12,9 @@ These rules apply to source code output produced by agents (C# files, test files
 - Maintain automated test coverage of at least 80% across the entire project codebase.
 - Place all tests in the `tests` folder.
 
+# Task Completion
+- After completing a task from `AGS-plan.md`, mark the corresponding checklist items as done by changing `- [ ]` to `- [x]`.
+
 # Agent Definition Rules
 - Agent definitions live in `agents` folder and must be named `<agent-name>.md`
 - Agent definitions must conform to the template defined in `agent-template.md`

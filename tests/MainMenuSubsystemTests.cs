@@ -4,29 +4,10 @@ using AGS.subsystems;
 namespace AGS.Tests;
 
 /// <summary>
-///     Covers the main menu fallback loop and menu construction helpers.
+///     Covers main menu prompt flow and menu construction helpers.
 /// </summary>
 public sealed class MainMenuSubsystemTests
 {
-    /// <summary>
-    ///     Counts non-overlapping occurrences of a substring in a source string.
-    /// </summary>
-    /// <param name="source">Source string to inspect.</param>
-    /// <param name="value">Substring to count.</param>
-    /// <returns>Number of non-overlapping occurrences found in <paramref name="source" />.</returns>
-    private static int CountOccurrences(string source, string value)
-    {
-        var count = 0;
-        var index = 0;
-        while (true)
-        {
-            index = source.IndexOf(value, index, StringComparison.Ordinal);
-            if (index < 0) return count;
-            count++;
-            index += value.Length;
-        }
-    }
-
     /// <summary>
     ///     Verifies that unfinished sessions are converted into continue-session menu options.
     /// </summary>
@@ -72,59 +53,6 @@ public sealed class MainMenuSubsystemTests
     }
 
     /// <summary>
-    ///     Verifies that clearing the main menu console does not throw when output is redirected.
-    /// </summary>
-    [Fact]
-    public void ClearConsoleForMainMenuDoesNotThrowWhenOutputIsRedirected()
-    {
-        using var console = new ConsoleRedirectionScope(string.Empty);
-        var exception = Record.Exception(() =>
-            PrivateAccess.InvokeStatic(typeof(MainMenuSubsystem), "ClearConsoleForMainMenu"));
-        Assert.Null(exception);
-    }
-
-    /// <summary>
-    ///     Verifies that console clear failures are swallowed when the output stream supports interactive mode.
-    /// </summary>
-    [Fact]
-    public void ClearConsoleForMainMenuSwallowsClearExceptions()
-    {
-        var originalOutputProvider =
-            PrivateAccess.GetStaticField<Func<bool>>(typeof(MainMenuSubsystem),
-                "isOutputRedirectedProvider");
-        var originalClearHandler = PrivateAccess.GetStaticField<Action>(typeof(MainMenuSubsystem),
-            "clearConsoleHandler");
-        var exceptions = new Exception[]
-        {
-            new IOException("io"),
-            new ArgumentOutOfRangeException("value"),
-            new InvalidOperationException("invalid"),
-            new PlatformNotSupportedException("unsupported")
-        };
-        try
-        {
-            PrivateAccess.SetStaticField(typeof(MainMenuSubsystem), "isOutputRedirectedProvider",
-                (Func<bool>)(() => false));
-            foreach (var exception in exceptions)
-            {
-                PrivateAccess.SetStaticField(typeof(MainMenuSubsystem), "clearConsoleHandler",
-                    (Action)(() => throw exception));
-                var thrownException = Record.Exception(() =>
-                    PrivateAccess.InvokeStatic(typeof(MainMenuSubsystem),
-                        "ClearConsoleForMainMenu"));
-                Assert.Null(thrownException);
-            }
-        }
-        finally
-        {
-            PrivateAccess.SetStaticField(typeof(MainMenuSubsystem), "isOutputRedirectedProvider",
-                originalOutputProvider);
-            PrivateAccess.SetStaticField(typeof(MainMenuSubsystem), "clearConsoleHandler",
-                originalClearHandler);
-        }
-    }
-
-    /// <summary>
     ///     Verifies that menu labels are extracted from the option objects.
     /// </summary>
     [Fact]
@@ -153,8 +81,10 @@ public sealed class MainMenuSubsystemTests
     [Fact]
     public void RunExitsWhenExitOptionIsSelected()
     {
-        using var console = new ConsoleRedirectionScope("3" + Environment.NewLine);
+        using var prompts = new PromptStubScope(selectionIndexes: [2]);
+        using var console = new ConsoleRedirectionScope(string.Empty);
         MainMenuSubsystem.Run();
+        Assert.Equal(["Main menu"], prompts.SelectMessages);
         Assert.Contains("Application is shutting down.", console.Output);
     }
 
@@ -171,10 +101,11 @@ public sealed class MainMenuSubsystemTests
             PrivateAccess.SetStaticField(typeof(MainMenuSubsystem),
                 "unfinishedSessionNamesProvider",
                 (Func<IReadOnlyList<string>>)(() => new[] { "alpha" }));
-            using var console = new ConsoleRedirectionScope(string.Join(Environment.NewLine,
-                "1", "4", string.Empty));
+            using var prompts = new PromptStubScope(selectionIndexes: [0, 3]);
+            using var console = new ConsoleRedirectionScope(string.Empty);
             MainMenuSubsystem.Run();
-            Assert.True(CountOccurrences(console.Output, "Main menu") >= 2);
+            Assert.Equal(["Main menu", "Main menu"], prompts.SelectMessages);
+            Assert.Contains("Application is shutting down.", console.Output);
         }
         finally
         {
@@ -189,10 +120,11 @@ public sealed class MainMenuSubsystemTests
     [Fact]
     public void RunLoopsAfterStartNewSession()
     {
-        using var console = new ConsoleRedirectionScope(string.Join(Environment.NewLine,
-            "1", "3", string.Empty));
+        using var prompts = new PromptStubScope(selectionIndexes: [0, 2]);
+        using var console = new ConsoleRedirectionScope(string.Empty);
         MainMenuSubsystem.Run();
-        Assert.True(CountOccurrences(console.Output, "Main menu") >= 2);
+        Assert.Equal(["Main menu", "Main menu"], prompts.SelectMessages);
+        Assert.Contains("Application is shutting down.", console.Output);
     }
 
     /// <summary>
@@ -205,10 +137,10 @@ public sealed class MainMenuSubsystemTests
         AgsSettings.SetCurrent(new AgsSettings(false, false));
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
-        using var console = new ConsoleRedirectionScope(string.Join(Environment.NewLine,
-            "2", "0", "3", string.Empty));
+        using var prompts = new PromptStubScope(selectionIndexes: [1, 2, 2]);
+        using var console = new ConsoleRedirectionScope(string.Empty);
         MainMenuSubsystem.Run();
-        Assert.Contains("Settings", console.Output);
+        Assert.Equal(["Main menu", "Settings", "Main menu"], prompts.SelectMessages);
         Assert.Contains("Application is shutting down.", console.Output);
     }
 }

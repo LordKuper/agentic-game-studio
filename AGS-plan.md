@@ -803,12 +803,12 @@ that:
 Set up the global installation model, resource overlay, and installer script.
 
 **0.1 Project Restructure for Global Install**
-- [ ] Reorganize the repo so that `agents/`, `rules/`, `skills/`, `templates/`
+- [x] Reorganize the repo so that `agents/`, `rules/`, `skills/`, `templates/`
   are published alongside the binary as standard resources
-- [ ] Configure .csproj to include standard resources in the publish output
-- [ ] Ensure the binary resolves its own install directory at runtime to locate
+- [x] Configure .csproj to include standard resources in the publish output
+- [x] Ensure the binary resolves its own install directory at runtime to locate
   standard resources
-- [ ] Tests: verify resource files are present in publish output
+- [x] Tests: verify resource files are present in publish output
 
 **0.2 Resource Loader**
 - [ ] Implement `ResourceLoader` class (resolve standard vs. project-local)

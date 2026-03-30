@@ -146,7 +146,7 @@ internal static class InstallAISubsystem
         string scriptFileName)
     {
         var scriptPath =
-            Path.Combine(AppContext.BaseDirectory, ScriptsDirectoryName, scriptFileName);
+            Path.Combine(InstallDirectory.GetInstallPath(), ScriptsDirectoryName, scriptFileName);
         if (!File.Exists(scriptPath))
         {
             Console.WriteLine(

@@ -1,29 +1,36 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net10.0</TargetFramework>
-    <RootNamespace>AGS</RootNamespace>
-    <Version>0.1.0</Version>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
-    <AssemblyName>ags</AssemblyName>
-  </PropertyGroup>
-
-  <ItemGroup>
-    <Compile Remove="skills\**" />
-    <Compile Remove="tests\**" />
-    <EmbeddedResource Remove="skills\**" />
-    <EmbeddedResource Remove="tests\**" />
-    <None Remove="skills\**" />
-    <None Remove="tests\**" />
-  </ItemGroup>
-
-  <Target Name="CopyScriptsToOutput" AfterTargets="Build">
-    <ItemGroup>
-      <ScriptFiles Include="scripts\**\*" />
-    </ItemGroup>
-    <Copy SourceFiles="@(ScriptFiles)" DestinationFiles="@(ScriptFiles->'$(OutDir)scripts\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
-  </Target>
-
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net10.0</TargetFramework>
+		<RootNamespace>AGS</RootNamespace>
+		<Version>0.1.0</Version>
+		<ImplicitUsings>enable</ImplicitUsings>
+		<Nullable>disable</Nullable>
+		<AssemblyName>ags</AssemblyName>
+	</PropertyGroup>
+	<ItemGroup>
+		<Compile Remove="skills\**" />
+		<Compile Remove="tests\**" />
+		<EmbeddedResource Remove="skills\**" />
+		<EmbeddedResource Remove="tests\**" />
+		<None Remove="skills\**" />
+		<None Remove="tests\**" />
+	</ItemGroup>
+	<ItemGroup>
+	  <PackageReference Include="Sharprompt" Version="3.0.1" />
+	</ItemGroup>
+	<Target Name="CopyStandardResourcesToOutput" AfterTargets="Build">
+		<ItemGroup>
+			<ScriptFiles Include="..\scripts\**\*" />
+			<AgentFiles Include="..\agents\**\*" Exclude="..\agents\.gitkeep" />
+			<RuleFiles Include="..\rules\**\*" />
+			<SkillFiles Include="..\skills\**\*" />
+			<TemplateFiles Include="..\templates\**\*" />
+		</ItemGroup>
+		<Copy SourceFiles="@(ScriptFiles)" DestinationFiles="@(ScriptFiles->'$(OutDir)scripts\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(AgentFiles)" DestinationFiles="@(AgentFiles->'$(OutDir)agents\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(RuleFiles)" DestinationFiles="@(RuleFiles->'$(OutDir)rules\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(SkillFiles)" DestinationFiles="@(SkillFiles->'$(OutDir)skills\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+		<Copy SourceFiles="@(TemplateFiles)" DestinationFiles="@(TemplateFiles->'$(OutDir)templates\%(RecursiveDir)%(Filename)%(Extension)')" SkipUnchangedFiles="true" />
+	</Target>
 </Project>

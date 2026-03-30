@@ -28,7 +28,8 @@ public sealed class ProgramTests
         AgsTestState.ResetCurrentSettings();
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
-        using var console = new ConsoleRedirectionScope("3" + Environment.NewLine);
+        using var prompts = new PromptStubScope(selectionIndexes: [2]);
+        using var console = new ConsoleRedirectionScope(string.Empty);
         var settings = new AgsSettings(false, false);
         settings.TryWriteToProjectConfig(tempDirectory.Path, out _);
         InvokeProgramMain(Array.Empty<string>());
@@ -36,6 +37,7 @@ public sealed class ProgramTests
             console.Output);
         Assert.Contains("No enabled integrations were selected. Update is skipped.",
             console.Output);
+        Assert.Equal(["Main menu"], prompts.SelectMessages);
     }
 
     /// <summary>
@@ -47,8 +49,9 @@ public sealed class ProgramTests
         AgsTestState.ResetCurrentSettings();
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
-        using var console = new ConsoleRedirectionScope(string.Join(Environment.NewLine,
-            "2", "2", "3", string.Empty));
+        using var prompts = new PromptStubScope(confirmations: [false, false],
+            selectionIndexes: [2]);
+        using var console = new ConsoleRedirectionScope(string.Empty);
         var agsDirectoryPath = Path.Combine(tempDirectory.Path, ".ags");
         Directory.CreateDirectory(agsDirectoryPath);
         File.WriteAllText(Path.Combine(agsDirectoryPath, "config.json"), "invalid configuration");
@@ -59,6 +62,8 @@ public sealed class ProgramTests
             out var settings));
         Assert.False(settings.UseClaude);
         Assert.False(settings.UseCodex);
+        Assert.Equal(["Do you want to use Claude Code?", "Do you want to use Codex?"],
+            prompts.ConfirmMessages);
     }
 
     /// <summary>
@@ -70,8 +75,9 @@ public sealed class ProgramTests
         AgsTestState.ResetCurrentSettings();
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
-        using var console = new ConsoleRedirectionScope(string.Join(Environment.NewLine,
-            "1", "2", "2", "3", string.Empty));
+        using var prompts = new PromptStubScope(confirmations: [true, false, false],
+            selectionIndexes: [2]);
+        using var console = new ConsoleRedirectionScope(string.Empty);
         InvokeProgramMain(Array.Empty<string>());
         var configPath = AgsSettings.GetConfigPath(tempDirectory.Path);
         Assert.True(File.Exists(configPath));
@@ -82,6 +88,12 @@ public sealed class ProgramTests
         Assert.Contains("No enabled integrations were selected. Update is skipped.",
             console.Output);
         Assert.Contains("Application is shutting down.", console.Output);
+        Assert.Equal(
+        [
+            $"Is the current folder the project root? ({tempDirectory.Path})",
+            "Do you want to use Claude Code?",
+            "Do you want to use Codex?"
+        ], prompts.ConfirmMessages);
     }
 
     /// <summary>
@@ -93,10 +105,13 @@ public sealed class ProgramTests
         AgsTestState.ResetCurrentSettings();
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
-        using var console = new ConsoleRedirectionScope("2" + Environment.NewLine);
+        using var prompts = new PromptStubScope(confirmations: [false]);
+        using var console = new ConsoleRedirectionScope(string.Empty);
         InvokeProgramMain(Array.Empty<string>());
         Assert.Contains("The application must be started from the project root folder. Exiting.",
             console.Output);
+        Assert.Equal([$"Is the current folder the project root? ({tempDirectory.Path})"],
+            prompts.ConfirmMessages);
     }
 
     /// <summary>
