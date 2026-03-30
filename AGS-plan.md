@@ -811,13 +811,13 @@ Set up the global installation model, resource overlay, and installer script.
 - [x] Tests: verify resource files are present in publish output
 
 **0.2 Resource Loader**
-- [ ] Implement `ResourceLoader` class (resolve standard vs. project-local)
-- [ ] Implement `ResolveResourcePath` (project `.ags/` first, then install dir)
-- [ ] Implement `ListResources` (merged listing from both layers)
-- [ ] Implement `ReadResource`
-- [ ] Wire Resource Loader into existing subsystems that read agents, rules,
+- [x] Implement `ResourceLoader` class (resolve standard vs. project-local)
+- [x] Implement `ResolveResourcePath` (project `.ags/` first, then install dir)
+- [x] Implement `ListResources` (merged listing from both layers)
+- [x] Implement `ReadResource`
+- [x] Wire Resource Loader into existing subsystems that read agents, rules,
   skills, templates
-- [ ] Tests: overlay resolution (project wins), additions, standard-only
+- [x] Tests: overlay resolution (project wins), additions, standard-only
   fallback
 
 **0.3 Windows Installation Script**
