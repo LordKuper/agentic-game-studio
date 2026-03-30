@@ -26,6 +26,7 @@ design documentation separated by responsibility.
   rules/
   sessions/
   skills/
+  templates/
 assets/
   art/
   audio/
@@ -51,6 +52,7 @@ Allowed content:
 - AGS metadata
 - AGS rule overrides and extensions
 - AGS skill overrides and extensions
+- AGS template overrides and extensions
 - AGS internal state
 - other files required for AGS runtime workflows
 
@@ -86,6 +88,16 @@ Allowed content:
 - repository-specific AGS agent overrides
 - repository-specific AGS agent extensions
 - project-local AGS agent definitions
+
+### `.ags/templates/`
+
+Stores overrides or extensions for the templates used by AGS.
+
+Allowed content:
+
+- repository-specific AGS template overrides
+- repository-specific AGS template extensions
+- project-local AGS templates
 
 ### `.ags/sessions/`
 
@@ -181,6 +193,7 @@ Examples:
 - AGS operational files must stay under `.ags/`.
 - AGS overrides and extensions for standard rules, skills, and agents must stay
   under `.ags/rules/`, `.ags/skills/`, and `.ags/agents/` respectively.
+- AGS template overrides and extensions must stay under `.ags/templates/`.
 - Game assets must stay under `assets/`.
 - Engine-specific asset layout decisions are allowed only if they preserve the
   same logical separation of asset responsibilities.
