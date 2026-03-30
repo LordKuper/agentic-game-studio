@@ -34,6 +34,8 @@ assets/
   scenes/
   scripts/
 gdd/
+  game-concept.md
+  engine-decision.md
 ```
 
 ---
@@ -176,6 +178,15 @@ Examples:
 
 Stores the game design document and all conceptual decision records.
 
+Canonical foundation files in this directory:
+
+- `game-concept.md` - the current conceptual vision of the project: pitch,
+  genre, player fantasy, core loop hypothesis, scope assumptions, and open
+  questions.
+- `engine-decision.md` - the selected game engine and the rationale for the
+  decision, including relevant constraints, alternatives considered, and
+  technical consequences.
+
 Examples:
 
 - narrative documents
@@ -183,6 +194,20 @@ Examples:
 - balance design notes
 - feature concepts
 - mechanic descriptions
+
+### `gdd/game-concept.md`
+
+Stores the project's current conceptual vision.
+
+This is the canonical location for the high-level game concept used to align
+design, production, and technical planning at project start.
+
+### `gdd/engine-decision.md`
+
+Stores the project's chosen game engine and the reasoning behind the choice.
+
+This is the canonical location for recording the engine selection and the
+constraints or tradeoffs that informed it.
 
 ---
 
@@ -198,6 +223,8 @@ Examples:
 - Engine-specific asset layout decisions are allowed only if they preserve the
   same logical separation of asset responsibilities.
 - Conceptual, narrative, and design decision documents must stay under `gdd/`.
+- The canonical project-foundation files are `gdd/game-concept.md` and
+  `gdd/engine-decision.md`.
 - New subdirectories may be added inside the directories defined here if they
   preserve the same responsibility boundaries.
 - Do not mix AGS operational data with game assets or design documentation.
