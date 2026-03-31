@@ -165,6 +165,84 @@ public sealed class CodexAdapterTests
         Assert.Equal(-1, result.ExitCode);
     }
 
+    // ── Rate-limit detection ──────────────────────────────────────────────────
+
+    /// <summary>
+    ///     Verifies that "rate limit" in stderr produces a rate-limited result.
+    /// </summary>
+    [Fact]
+    public void InvokeReturnsRateLimitedResultWhenStderrContainsRateLimit()
+    {
+        var adapter = new CodexAdapter(si => (1, string.Empty, "Error: rate limit exceeded"));
+
+        using var tempDir = new TemporaryDirectoryScope();
+        var request = new AIProviderRequest("", "task", tempDir.Path, TimeSpan.FromMinutes(1));
+        var result = adapter.Invoke(request);
+
+        Assert.False(result.Success);
+        Assert.True(result.IsRateLimited);
+    }
+
+    /// <summary>
+    ///     Verifies that "too many requests" in output triggers rate-limited.
+    /// </summary>
+    [Fact]
+    public void InvokeReturnsRateLimitedResultWhenOutputContainsTooManyRequests()
+    {
+        var adapter = new CodexAdapter(si => (1, "Too Many Requests", string.Empty));
+
+        using var tempDir = new TemporaryDirectoryScope();
+        var request = new AIProviderRequest("", "task", tempDir.Path, TimeSpan.FromMinutes(1));
+        var result = adapter.Invoke(request);
+
+        Assert.True(result.IsRateLimited);
+    }
+
+    /// <summary>
+    ///     Verifies that a generic non-zero exit with no rate-limit keywords is NOT flagged.
+    /// </summary>
+    [Fact]
+    public void InvokeDoesNotFlagRateLimitOnUnrelatedError()
+    {
+        var adapter = new CodexAdapter(si => (1, string.Empty, "unknown command"));
+
+        using var tempDir = new TemporaryDirectoryScope();
+        var request = new AIProviderRequest("", "task", tempDir.Path, TimeSpan.FromMinutes(1));
+        var result = adapter.Invoke(request);
+
+        Assert.False(result.Success);
+        Assert.False(result.IsRateLimited);
+    }
+
+    /// <summary>
+    ///     Verifies that "retry after N seconds" sets RateLimitResetsAt.
+    /// </summary>
+    [Fact]
+    public void DetectRateLimitParsesRetryAfterSeconds()
+    {
+        var before = DateTimeOffset.UtcNow;
+        var (isRateLimited, resetsAt) = CodexAdapter.DetectRateLimit(
+            string.Empty, "quota exceeded, retry after 120s");
+
+        Assert.True(isRateLimited);
+        Assert.NotNull(resetsAt);
+        Assert.True(resetsAt.Value >= before.AddSeconds(115));
+        Assert.True(resetsAt.Value <= before.AddSeconds(125));
+    }
+
+    /// <summary>
+    ///     Verifies that rate-limit text with no parsable time returns null for ResetsAt.
+    /// </summary>
+    [Fact]
+    public void DetectRateLimitReturnsNullResetsAtWhenNoParsableTime()
+    {
+        var (isRateLimited, resetsAt) = CodexAdapter.DetectRateLimit(
+            string.Empty, "rate limit hit");
+
+        Assert.True(isRateLimited);
+        Assert.Null(resetsAt);
+    }
+
     private static Func<ProcessStartInfo, (int, string, string)> AlwaysSucceedRunner()
         => _ => (0, string.Empty, string.Empty);
 

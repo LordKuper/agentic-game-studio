@@ -79,6 +79,9 @@ internal sealed class ClaudeCodeAdapter : IAIProvider
                 var errorMessage = error.Length > 0
                     ? error
                     : $"Claude Code exited with code {exitCode}.";
+                var (isRateLimited, resetsAt) = DetectRateLimit(output, error);
+                if (isRateLimited)
+                    return AIProviderResult.RateLimited(errorMessage, exitCode, resetsAt, output);
                 return AIProviderResult.Failed(errorMessage, exitCode, output);
             }
 
@@ -89,6 +92,48 @@ internal sealed class ClaudeCodeAdapter : IAIProvider
         {
             return AIProviderResult.Failed(exception.Message, -1);
         }
+    }
+
+    /// <summary>
+    ///     Detects whether the CLI output signals a rate-limit or quota-exhaustion error and
+    ///     attempts to parse the reset time.
+    /// </summary>
+    internal static (bool IsRateLimited, DateTimeOffset? ResetsAt) DetectRateLimit(
+        string output, string error)
+    {
+        var combined = (output + "\n" + error).ToLowerInvariant();
+        if (!combined.Contains("rate limit") && !combined.Contains("ratelimit") &&
+            !combined.Contains("rate_limit") && !combined.Contains("quota exceeded") &&
+            !combined.Contains("quota_exceeded") && !combined.Contains("too many requests") &&
+            !combined.Contains("429") && !combined.Contains("overloaded"))
+            return (false, null);
+        var resetsAt = TryParseResetTime(output + "\n" + error);
+        return (true, resetsAt);
+    }
+
+    /// <summary>
+    ///     Attempts to parse a reset timestamp from provider error output.
+    ///     Looks for "retry after N seconds", "retry after HH:MM:SS", or an ISO 8601 timestamp
+    ///     following "retry" or "reset" keywords.
+    /// </summary>
+    private static DateTimeOffset? TryParseResetTime(string text)
+    {
+        // "retry after N seconds" / "retry-after: N"
+        var retryAfterPattern = System.Text.RegularExpressions.Regex.Match(
+            text, @"retry.after[:\s]+(\d+)\s*s", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (retryAfterPattern.Success && int.TryParse(retryAfterPattern.Groups[1].Value, out var seconds))
+            return DateTimeOffset.UtcNow.AddSeconds(seconds);
+
+        // ISO 8601 timestamp after "reset" or "available" or "retry"
+        var isoPattern = System.Text.RegularExpressions.Regex.Match(
+            text, @"(?:reset|available|retry)[^\d]*(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[^\s]*)",
+            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        if (isoPattern.Success && DateTimeOffset.TryParse(isoPattern.Groups[1].Value,
+                System.Globalization.CultureInfo.InvariantCulture,
+                System.Globalization.DateTimeStyles.RoundtripKind, out var parsed))
+            return parsed.ToUniversalTime();
+
+        return null;
     }
 
     /// <summary>

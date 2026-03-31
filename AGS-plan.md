@@ -932,31 +932,36 @@ Set up the global installation model, resource overlay, and installer script.
 Establish the core infrastructure that everything else builds on.
 
 **1.1 AI Provider Abstraction**
-- [ ] Define `IAIProvider`, `AIProviderRequest`, `AIProviderResult` interfaces
-- [ ] Implement `ClaudeCodeAdapter` (CLI subprocess invocation)
-- [ ] Implement `CodexAdapter`
-- [ ] Implement `AIProviderRegistry`
-- [ ] Add provider selection to settings
-- [ ] Tests: unit tests for adapters with mock CLI, registry tests
+- [x] Define `IAIProvider`, `AIProviderRequest`, `AIProviderResult` interfaces
+- [x] Implement `ClaudeCodeAdapter` (CLI subprocess invocation)
+- [x] Implement `CodexAdapter`
+- [x] Implement `AIProviderRegistry`
+- [x] Add provider selection to settings
+- [x] Tests: unit tests for adapters with mock CLI, registry tests
 
 **1.1.1 Rate Limit Handling and Provider Failover**
-- [ ] Extend `AIProviderResult` with `IsRateLimited` and `RateLimitResetsAt`
-- [ ] Implement rate-limit detection in `ClaudeCodeAdapter` (parse stderr / exit
+- [x] Extend `AIProviderResult` with `IsRateLimited` and `RateLimitResetsAt`
+- [x] Implement rate-limit detection in `ClaudeCodeAdapter` (parse stderr / exit
   code / error JSON for quota-exceeded signals)
-- [ ] Implement rate-limit detection in `CodexAdapter`
-- [ ] Add provider cooldown tracking to `AIProviderRegistry`
+- [x] Implement rate-limit detection in `CodexAdapter`
+- [x] Add provider cooldown tracking to `AIProviderRegistry`
   (`MarkRateLimited`, `GetCooldownExpiry`, automatic expiry)
-- [ ] Persist cooldown state (`ProviderCooldowns`) to `.ags/config.json`;
+- [x] Persist cooldown state (`ProviderCooldowns`) to `.ags/config.json`;
   restore on startup; clean up expired entries on write
-- [ ] `IsAvailable` returns `false` while provider is in cooldown
-- [ ] Add `RateLimitDefaultCooldown` setting to `.ags/config.json` schema
+- [x] `IsAvailable` returns `false` while provider is in cooldown
+- [x] Add `RateLimitDefaultCooldown` setting to `.ags/config.json` schema
   (default: 1800 seconds)
 - [ ] Implement task failover in Agent Orchestrator: on rate-limit, select next
   available provider from agent's `models` list and restart task
+  (infrastructure ready: `GetNextAvailableProvider` on registry; wiring deferred
+  to Phase 3 when the Agent Orchestrator is built)
 - [ ] Implement wait-and-retry when all providers are rate-limited (wait for
   earliest cooldown expiry, then retry)
+  (infrastructure ready: `GetEarliestCooldownExpiry` on registry; wiring deferred
+  to Phase 3)
 - [ ] Add CEO notification on provider switch and on all-providers-exhausted
-- [ ] Tests: rate-limit detection per adapter, cooldown expiry, failover
+  (deferred to Phase 3 / Phase 6 UX layer)
+- [x] Tests: rate-limit detection per adapter, cooldown expiry, failover
   selection, all-exhausted wait behavior
 
 **1.2 Git Manager**

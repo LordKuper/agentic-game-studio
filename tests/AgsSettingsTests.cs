@@ -162,4 +162,131 @@ public sealed class AgsSettingsTests
         Assert.Equal(codexTimestamp.ToUniversalTime(), reloadedSettings.CodexLastUpdateUtc);
     }
 
+    // ── ProviderCooldowns / RateLimitDefaultCooldown ──────────────────────────
+
+    /// <summary>
+    ///     Verifies default values for the cooldown properties.
+    /// </summary>
+    [Fact]
+    public void DefaultSettingsHaveEmptyCooldownsAndDefaultCooldownSeconds()
+    {
+        var settings = new AgsSettings(true, false);
+
+        Assert.Equal(AgsSettings.DefaultRateLimitCooldownSeconds, settings.RateLimitDefaultCooldown);
+        Assert.Empty(settings.ProviderCooldowns);
+    }
+
+    /// <summary>
+    ///     Verifies that provider cooldowns round-trip through JSON correctly, and that expired
+    ///     entries are dropped on write.
+    /// </summary>
+    [Fact]
+    public void WriteToConfigRoundTripsProviderCooldownsAndDropsExpired()
+    {
+        using var tempDirectory = new TemporaryDirectoryScope();
+        var configPath = Path.Combine(tempDirectory.Path, "config.json");
+        var futureExpiry = DateTimeOffset.UtcNow.AddMinutes(30);
+        var pastExpiry = DateTimeOffset.UtcNow.AddMinutes(-5);
+        var cooldowns = new Dictionary<string, DateTimeOffset>
+        {
+            ["claude-code"] = futureExpiry,
+            ["codex"] = pastExpiry
+        };
+        var settings = new AgsSettings(true, true, DateTimeOffset.MinValue, DateTimeOffset.MinValue,
+            AgsSettings.DefaultRateLimitCooldownSeconds, cooldowns);
+
+        settings.WriteToConfig(configPath);
+        Assert.True(AgsSettings.TryReadFromConfig(configPath, out var reloaded));
+
+        // Active cooldown is preserved
+        Assert.True(reloaded.ProviderCooldowns.ContainsKey("claude-code"));
+        Assert.Equal(futureExpiry.ToUniversalTime(), reloaded.ProviderCooldowns["claude-code"],
+            TimeSpan.FromSeconds(1));
+        // Expired cooldown is dropped
+        Assert.False(reloaded.ProviderCooldowns.ContainsKey("codex"));
+    }
+
+    /// <summary>
+    ///     Verifies that RateLimitDefaultCooldown round-trips through JSON.
+    /// </summary>
+    [Fact]
+    public void WriteToConfigRoundTripsRateLimitDefaultCooldown()
+    {
+        using var tempDirectory = new TemporaryDirectoryScope();
+        var configPath = Path.Combine(tempDirectory.Path, "config.json");
+        var settings = new AgsSettings(true, false, DateTimeOffset.MinValue, DateTimeOffset.MinValue,
+            3600, null);
+
+        settings.WriteToConfig(configPath);
+        Assert.True(AgsSettings.TryReadFromConfig(configPath, out var reloaded));
+
+        Assert.Equal(3600, reloaded.RateLimitDefaultCooldown);
+    }
+
+    /// <summary>
+    ///     Verifies that WithProviderCooldowns returns a copy with the updated map.
+    /// </summary>
+    [Fact]
+    public void WithProviderCooldownsReturnsUpdatedCopy()
+    {
+        var settings = new AgsSettings(true, false);
+        var expiry = DateTimeOffset.UtcNow.AddMinutes(15);
+        var cooldowns = new Dictionary<string, DateTimeOffset> { ["claude-code"] = expiry };
+
+        var updated = settings.WithProviderCooldowns(cooldowns);
+
+        Assert.True(updated.ProviderCooldowns.ContainsKey("claude-code"));
+        Assert.Equal(expiry.ToUniversalTime(), updated.ProviderCooldowns["claude-code"],
+            TimeSpan.FromSeconds(1));
+        // Original is unchanged
+        Assert.Empty(settings.ProviderCooldowns);
+    }
+
+    /// <summary>
+    ///     Verifies that a JSON config without provider-cooldowns key parses successfully with an
+    ///     empty cooldown map.
+    /// </summary>
+    [Fact]
+    public void TryReadFromConfigReturnsEmptyCooldownsWhenKeyAbsent()
+    {
+        using var tempDirectory = new TemporaryDirectoryScope();
+        var configPath = Path.Combine(tempDirectory.Path, "config.json");
+        File.WriteAllText(configPath,
+            "{\"use-claude\":true,\"use-codex\":false,\"claude-last-update-utc\":null,\"codex-last-update-utc\":null}");
+
+        var canRead = AgsSettings.TryReadFromConfig(configPath, out var settings);
+
+        Assert.True(canRead);
+        Assert.Empty(settings.ProviderCooldowns);
+        Assert.Equal(AgsSettings.DefaultRateLimitCooldownSeconds, settings.RateLimitDefaultCooldown);
+    }
+
+    /// <summary>
+    ///     Verifies that a JSON config with provider-cooldowns present is fully parsed.
+    /// </summary>
+    [Fact]
+    public void TryReadFromConfigParsesProviderCooldowns()
+    {
+        using var tempDirectory = new TemporaryDirectoryScope();
+        var configPath = Path.Combine(tempDirectory.Path, "config.json");
+        var expiry = DateTimeOffset.UtcNow.AddMinutes(20);
+        var json = $@"{{
+  ""use-claude"": true,
+  ""use-codex"": false,
+  ""claude-last-update-utc"": null,
+  ""codex-last-update-utc"": null,
+  ""rate-limit-default-cooldown"": 900,
+  ""provider-cooldowns"": {{
+    ""claude-code"": ""{expiry:O}""
+  }}
+}}";
+        File.WriteAllText(configPath, json);
+
+        Assert.True(AgsSettings.TryReadFromConfig(configPath, out var settings));
+        Assert.Equal(900, settings.RateLimitDefaultCooldown);
+        Assert.True(settings.ProviderCooldowns.ContainsKey("claude-code"));
+        Assert.Equal(expiry.ToUniversalTime(), settings.ProviderCooldowns["claude-code"],
+            TimeSpan.FromSeconds(1));
+    }
+
 }

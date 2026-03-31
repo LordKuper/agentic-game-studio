@@ -15,6 +15,9 @@ internal readonly struct AgsSettings
     private const string UseCodexSettingName = "use-codex";
     private const string ClaudeLastUpdateUtcSettingName = "claude-last-update-utc";
     private const string CodexLastUpdateUtcSettingName = "codex-last-update-utc";
+    private const string RateLimitDefaultCooldownSettingName = "rate-limit-default-cooldown";
+    private const string ProviderCooldownsSettingName = "provider-cooldowns";
+    internal const int DefaultRateLimitCooldownSeconds = 1800;
     private static AgsSettings currentSettings = new(false, false);
     private static bool hasCurrentSettings;
 
@@ -45,12 +48,42 @@ internal readonly struct AgsSettings
     ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
     /// </param>
     internal AgsSettings(bool useClaude, bool useCodex, DateTimeOffset claudeLastUpdateUtc,
-        DateTimeOffset codexLastUpdateUtc)
+        DateTimeOffset codexLastUpdateUtc) : this(useClaude, useCodex, claudeLastUpdateUtc,
+        codexLastUpdateUtc, DefaultRateLimitCooldownSeconds, null) { }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AgsSettings" /> struct.
+    /// </summary>
+    /// <param name="useClaude">Whether Claude Code integration is enabled.</param>
+    /// <param name="useCodex">Whether Codex integration is enabled.</param>
+    /// <param name="claudeLastUpdateUtc">
+    ///     UTC timestamp of the last successful Claude Code update, or
+    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
+    /// </param>
+    /// <param name="codexLastUpdateUtc">
+    ///     UTC timestamp of the last successful Codex update, or
+    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
+    /// </param>
+    /// <param name="rateLimitDefaultCooldown">
+    ///     Cooldown period in seconds applied when the provider response does not include a reset
+    ///     time. Defaults to <see cref="DefaultRateLimitCooldownSeconds" />.
+    /// </param>
+    /// <param name="providerCooldowns">
+    ///     Map of provider ID to cooldown expiry timestamp. Pass <see langword="null" /> for an
+    ///     empty map.
+    /// </param>
+    internal AgsSettings(bool useClaude, bool useCodex, DateTimeOffset claudeLastUpdateUtc,
+        DateTimeOffset codexLastUpdateUtc, int rateLimitDefaultCooldown,
+        IReadOnlyDictionary<string, DateTimeOffset> providerCooldowns)
     {
         UseClaude = useClaude;
         UseCodex = useCodex;
         ClaudeLastUpdateUtc = NormalizeTimestamp(claudeLastUpdateUtc);
         CodexLastUpdateUtc = NormalizeTimestamp(codexLastUpdateUtc);
+        RateLimitDefaultCooldown = rateLimitDefaultCooldown > 0
+            ? rateLimitDefaultCooldown
+            : DefaultRateLimitCooldownSeconds;
+        ProviderCooldowns = providerCooldowns ?? new Dictionary<string, DateTimeOffset>();
     }
 
     /// <summary>
@@ -89,6 +122,17 @@ internal readonly struct AgsSettings
     ///     Gets a value indicating whether both integrations are disabled.
     /// </summary>
     internal bool AreAllModelsDisabled => !UseClaude && !UseCodex;
+
+    /// <summary>
+    ///     Gets the cooldown period in seconds applied when the provider response does not include
+    ///     a reset time. Defaults to <see cref="DefaultRateLimitCooldownSeconds" />.
+    /// </summary>
+    internal int RateLimitDefaultCooldown { get; }
+
+    /// <summary>
+    ///     Gets the map of provider IDs to their cooldown expiry timestamps.
+    /// </summary>
+    internal IReadOnlyDictionary<string, DateTimeOffset> ProviderCooldowns { get; }
 
     /// <summary>
     ///     Gets the current application settings for this process.
@@ -155,6 +199,11 @@ internal readonly struct AgsSettings
     /// <param name="configPath">Absolute path to the configuration file.</param>
     internal void WriteToConfig(string configPath)
     {
+        var now = DateTimeOffset.UtcNow;
+        var activeCooldowns = ProviderCooldowns
+            .Where(kvp => kvp.Value > now)
+            .ToDictionary(kvp => kvp.Key,
+                kvp => (object)kvp.Value.ToString("O", CultureInfo.InvariantCulture));
         var serializedSettings = JsonSerializer.Serialize(new Dictionary<string, object>
         {
             [UseClaudeSettingName] = UseClaude,
@@ -164,9 +213,23 @@ internal readonly struct AgsSettings
                 : null,
             [CodexLastUpdateUtcSettingName] = HasCodexLastUpdateUtc
                 ? CodexLastUpdateUtc.ToString("O", CultureInfo.InvariantCulture)
-                : null
+                : null,
+            [RateLimitDefaultCooldownSettingName] = RateLimitDefaultCooldown,
+            [ProviderCooldownsSettingName] = activeCooldowns
         }, JsonOptions);
         File.WriteAllText(configPath, serializedSettings);
+    }
+
+    /// <summary>
+    ///     Creates a copy of the current settings with an updated provider cooldowns map.
+    ///     Expired entries are removed automatically.
+    /// </summary>
+    /// <param name="providerCooldowns">New provider cooldowns map.</param>
+    /// <returns>A new settings instance with the updated cooldowns.</returns>
+    internal AgsSettings WithProviderCooldowns(IReadOnlyDictionary<string, DateTimeOffset> providerCooldowns)
+    {
+        return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
+            RateLimitDefaultCooldown, providerCooldowns);
     }
 
     /// <summary>
@@ -269,7 +332,11 @@ internal readonly struct AgsSettings
                 TryReadOptionalTimestamp(rootElement, ClaudeLastUpdateUtcSettingName);
             var codexLastUpdateUtc =
                 TryReadOptionalTimestamp(rootElement, CodexLastUpdateUtcSettingName);
-            settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc, codexLastUpdateUtc);
+            var rateLimitDefaultCooldown = TryReadOptionalInt(
+                rootElement, RateLimitDefaultCooldownSettingName, DefaultRateLimitCooldownSeconds);
+            var providerCooldowns = TryReadProviderCooldowns(rootElement);
+            settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc, codexLastUpdateUtc,
+                rateLimitDefaultCooldown, providerCooldowns);
             return true;
         }
         catch (JsonException)
@@ -280,6 +347,47 @@ internal readonly struct AgsSettings
         {
             return false;
         }
+    }
+
+    /// <summary>
+    ///     Attempts to read an optional integer property from a JSON object.
+    /// </summary>
+    /// <param name="configElement">JSON object that contains persisted settings.</param>
+    /// <param name="propertyName">Property name to read.</param>
+    /// <param name="defaultValue">Value returned when the property is absent or invalid.</param>
+    /// <returns>Parsed integer value when present and valid; otherwise <paramref name="defaultValue" />.</returns>
+    private static int TryReadOptionalInt(JsonElement configElement, string propertyName,
+        int defaultValue)
+    {
+        if (!configElement.TryGetProperty(propertyName, out var propertyElement))
+            return defaultValue;
+        if (propertyElement.ValueKind != JsonValueKind.Number) return defaultValue;
+        return propertyElement.TryGetInt32(out var value) ? value : defaultValue;
+    }
+
+    /// <summary>
+    ///     Reads the provider cooldowns map from a JSON object, filtering out expired entries.
+    /// </summary>
+    private static IReadOnlyDictionary<string, DateTimeOffset> TryReadProviderCooldowns(
+        JsonElement configElement)
+    {
+        var result = new Dictionary<string, DateTimeOffset>();
+        if (!configElement.TryGetProperty(ProviderCooldownsSettingName, out var cooldownsElement))
+            return result;
+        if (cooldownsElement.ValueKind != JsonValueKind.Object) return result;
+        var now = DateTimeOffset.UtcNow;
+        foreach (var property in cooldownsElement.EnumerateObject())
+        {
+            if (property.Value.ValueKind != JsonValueKind.String) continue;
+            var rawValue = property.Value.GetString();
+            if (string.IsNullOrWhiteSpace(rawValue)) continue;
+            if (!DateTimeOffset.TryParse(rawValue, CultureInfo.InvariantCulture,
+                    DateTimeStyles.RoundtripKind, out var expiry)) continue;
+            var expiryUtc = expiry.ToUniversalTime();
+            if (expiryUtc > now)
+                result[property.Name] = expiryUtc;
+        }
+        return result;
     }
 
     /// <summary>

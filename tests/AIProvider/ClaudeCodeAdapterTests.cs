@@ -253,6 +253,113 @@ public sealed class ClaudeCodeAdapterTests
         Assert.Contains("claude-opus-4-6", capturedStartInfo.Arguments);
     }
 
+    // ── Rate-limit detection ──────────────────────────────────────────────────
+
+    /// <summary>
+    ///     Verifies that "rate limit" in stderr produces a rate-limited result.
+    /// </summary>
+    [Fact]
+    public void InvokeReturnsRateLimitedResultWhenStderrContainsRateLimit()
+    {
+        var adapter = new ClaudeCodeAdapter(si => (1, string.Empty, "Error: rate limit exceeded"));
+
+        using var tempDir = new TemporaryDirectoryScope();
+        var request = new AIProviderRequest("", "task", tempDir.Path, TimeSpan.FromMinutes(1));
+        var result = adapter.Invoke(request);
+
+        Assert.False(result.Success);
+        Assert.True(result.IsRateLimited);
+    }
+
+    /// <summary>
+    ///     Verifies that "429" in stdout produces a rate-limited result.
+    /// </summary>
+    [Fact]
+    public void InvokeReturnsRateLimitedResultWhenOutputContains429()
+    {
+        var adapter = new ClaudeCodeAdapter(si => (1, "HTTP 429 Too Many Requests", string.Empty));
+
+        using var tempDir = new TemporaryDirectoryScope();
+        var request = new AIProviderRequest("", "task", tempDir.Path, TimeSpan.FromMinutes(1));
+        var result = adapter.Invoke(request);
+
+        Assert.True(result.IsRateLimited);
+    }
+
+    /// <summary>
+    ///     Verifies that "overloaded" in stderr triggers rate-limited (Claude-specific signal).
+    /// </summary>
+    [Fact]
+    public void InvokeReturnsRateLimitedResultWhenStderrContainsOverloaded()
+    {
+        var adapter = new ClaudeCodeAdapter(si => (1, string.Empty, "API overloaded"));
+
+        using var tempDir = new TemporaryDirectoryScope();
+        var request = new AIProviderRequest("", "task", tempDir.Path, TimeSpan.FromMinutes(1));
+        var result = adapter.Invoke(request);
+
+        Assert.True(result.IsRateLimited);
+    }
+
+    /// <summary>
+    ///     Verifies that a generic non-zero exit with no rate-limit keywords is NOT flagged.
+    /// </summary>
+    [Fact]
+    public void InvokeDoesNotFlagRateLimitOnUnrelatedError()
+    {
+        var adapter = new ClaudeCodeAdapter(si => (1, string.Empty, "fatal: config not found"));
+
+        using var tempDir = new TemporaryDirectoryScope();
+        var request = new AIProviderRequest("", "task", tempDir.Path, TimeSpan.FromMinutes(1));
+        var result = adapter.Invoke(request);
+
+        Assert.False(result.Success);
+        Assert.False(result.IsRateLimited);
+    }
+
+    /// <summary>
+    ///     Verifies that "retry after N seconds" sets RateLimitResetsAt.
+    /// </summary>
+    [Fact]
+    public void DetectRateLimitParsesRetryAfterSeconds()
+    {
+        var before = DateTimeOffset.UtcNow;
+        var (isRateLimited, resetsAt) = ClaudeCodeAdapter.DetectRateLimit(
+            string.Empty, "rate limit exceeded, retry after 60s");
+
+        Assert.True(isRateLimited);
+        Assert.NotNull(resetsAt);
+        Assert.True(resetsAt.Value >= before.AddSeconds(55));
+        Assert.True(resetsAt.Value <= before.AddSeconds(65));
+    }
+
+    /// <summary>
+    ///     Verifies that an ISO 8601 reset timestamp after "reset" is parsed correctly.
+    /// </summary>
+    [Fact]
+    public void DetectRateLimitParsesIsoTimestampAfterReset()
+    {
+        var expected = new DateTimeOffset(2026, 4, 1, 14, 32, 0, TimeSpan.Zero);
+        var (isRateLimited, resetsAt) = ClaudeCodeAdapter.DetectRateLimit(
+            string.Empty, "rate limit hit, reset at 2026-04-01T14:32:00Z");
+
+        Assert.True(isRateLimited);
+        Assert.Equal(expected, resetsAt);
+    }
+
+    /// <summary>
+    ///     Verifies that rate-limit text with no parsable time returns null for ResetsAt.
+    /// </summary>
+    [Fact]
+    public void DetectRateLimitReturnsNullResetsAtWhenNoParsableTime()
+    {
+        var (isRateLimited, resetsAt) = ClaudeCodeAdapter.DetectRateLimit(
+            string.Empty, "quota exceeded");
+
+        Assert.True(isRateLimited);
+        Assert.Null(resetsAt);
+    }
+
     private static Func<ProcessStartInfo, (int, string, string)> AlwaysSucceedRunner()
         => _ => (0, string.Empty, string.Empty);
 

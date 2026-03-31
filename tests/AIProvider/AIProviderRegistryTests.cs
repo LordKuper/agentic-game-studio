@@ -295,6 +295,288 @@ public sealed class AIProviderRegistryTests : IDisposable
         Assert.Same(claude, resolved);
     }
 
+    // ── Cooldown / Rate-limit ─────────────────────────────────────────────────
+
+    /// <summary>
+    ///     Verifies that MarkRateLimited throws when provider ID is null or empty.
+    /// </summary>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("")]
+    public void MarkRateLimitedThrowsForNullOrEmptyProviderId(string providerId)
+    {
+        var registry = new AIProviderRegistry();
+        Assert.Throws<ArgumentException>(() =>
+            registry.MarkRateLimited(providerId, DateTimeOffset.UtcNow.AddMinutes(30)));
+    }
+
+    /// <summary>
+    ///     Verifies that GetCooldownExpiry returns null for a provider that has not been marked.
+    /// </summary>
+    [Fact]
+    public void GetCooldownExpiryReturnsNullForUnmarkedProvider()
+    {
+        var registry = new AIProviderRegistry();
+        Assert.Null(registry.GetCooldownExpiry(ClaudeCodeAdapter.Id));
+    }
+
+    /// <summary>
+    ///     Verifies that GetCooldownExpiry returns the expiry time after MarkRateLimited.
+    /// </summary>
+    [Fact]
+    public void GetCooldownExpiryReturnsExpiryAfterMarkRateLimited()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, false));
+        var expiry = DateTimeOffset.UtcNow.AddMinutes(30);
+        var registry = new AIProviderRegistry();
+        registry.MarkRateLimited(ClaudeCodeAdapter.Id, expiry);
+
+        var result = registry.GetCooldownExpiry(ClaudeCodeAdapter.Id);
+
+        Assert.NotNull(result);
+        Assert.Equal(expiry.ToUniversalTime(), result!.Value, TimeSpan.FromSeconds(1));
+    }
+
+    /// <summary>
+    ///     Verifies that GetCooldownExpiry returns null once the cooldown has expired.
+    /// </summary>
+    [Fact]
+    public void GetCooldownExpiryReturnsNullAfterExpiry()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, false));
+        var registry = new AIProviderRegistry();
+        registry.MarkRateLimited(ClaudeCodeAdapter.Id, DateTimeOffset.UtcNow.AddSeconds(-1));
+
+        Assert.Null(registry.GetCooldownExpiry(ClaudeCodeAdapter.Id));
+    }
+
+    /// <summary>
+    ///     Verifies that IsInCooldown returns true while within the cooldown window.
+    /// </summary>
+    [Fact]
+    public void IsInCooldownReturnsTrueForActiveCooldown()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, false));
+        var registry = new AIProviderRegistry();
+        registry.MarkRateLimited(ClaudeCodeAdapter.Id, DateTimeOffset.UtcNow.AddMinutes(30));
+
+        Assert.True(registry.IsInCooldown(ClaudeCodeAdapter.Id));
+    }
+
+    /// <summary>
+    ///     Verifies that IsInCooldown returns false once the cooldown has expired.
+    /// </summary>
+    [Fact]
+    public void IsInCooldownReturnsFalseAfterExpiry()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, false));
+        var registry = new AIProviderRegistry();
+        registry.MarkRateLimited(ClaudeCodeAdapter.Id, DateTimeOffset.UtcNow.AddSeconds(-1));
+
+        Assert.False(registry.IsInCooldown(ClaudeCodeAdapter.Id));
+    }
+
+    /// <summary>
+    ///     Verifies that ResolveProvider skips a rate-limited provider.
+    /// </summary>
+    [Fact]
+    public void ResolveProviderSkipsRateLimitedProvider()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, true));
+        var registry = new AIProviderRegistry();
+        var claude = new StubProvider(ClaudeCodeAdapter.Id);
+        var codex = new StubProvider(CodexAdapter.Id);
+        registry.Register(claude);
+        registry.Register(codex);
+        registry.MarkRateLimited(ClaudeCodeAdapter.Id, DateTimeOffset.UtcNow.AddMinutes(30));
+
+        var resolved = registry.ResolveProvider(["claude-sonnet", "chatgpt"]);
+
+        Assert.Same(codex, resolved);
+    }
+
+    /// <summary>
+    ///     Verifies that ResolveProvider returns null when all providers are rate-limited.
+    /// </summary>
+    [Fact]
+    public void ResolveProviderReturnsNullWhenAllProvidersRateLimited()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, true));
+        var registry = new AIProviderRegistry();
+        registry.Register(new StubProvider(ClaudeCodeAdapter.Id));
+        registry.Register(new StubProvider(CodexAdapter.Id));
+        registry.MarkRateLimited(ClaudeCodeAdapter.Id, DateTimeOffset.UtcNow.AddMinutes(30));
+        registry.MarkRateLimited(CodexAdapter.Id, DateTimeOffset.UtcNow.AddMinutes(30));
+
+        Assert.Null(registry.ResolveProvider());
+    }
+
+    /// <summary>
+    ///     Verifies that ResolveProvider uses a provider once its cooldown expires.
+    /// </summary>
+    [Fact]
+    public void ResolveProviderUsesProviderAfterCooldownExpires()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, false));
+        var registry = new AIProviderRegistry();
+        var claude = new StubProvider(ClaudeCodeAdapter.Id);
+        registry.Register(claude);
+        // Expired cooldown — provider should be available
+        registry.MarkRateLimited(ClaudeCodeAdapter.Id, DateTimeOffset.UtcNow.AddSeconds(-1));
+
+        var resolved = registry.ResolveProvider();
+
+        Assert.Same(claude, resolved);
+    }
+
+    /// <summary>
+    ///     Verifies that GetNextAvailableProvider skips the current provider.
+    /// </summary>
+    [Fact]
+    public void GetNextAvailableProviderSkipsCurrentProvider()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, true));
+        var registry = new AIProviderRegistry();
+        var claude = new StubProvider(ClaudeCodeAdapter.Id);
+        var codex = new StubProvider(CodexAdapter.Id);
+        registry.Register(claude);
+        registry.Register(codex);
+
+        var next = registry.GetNextAvailableProvider(ClaudeCodeAdapter.Id,
+            ["claude-sonnet", "chatgpt"]);
+
+        Assert.Same(codex, next);
+    }
+
+    /// <summary>
+    ///     Verifies that GetNextAvailableProvider returns null when the only other provider is
+    ///     also in cooldown.
+    /// </summary>
+    [Fact]
+    public void GetNextAvailableProviderReturnsNullWhenAllOthersRateLimited()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, true));
+        var registry = new AIProviderRegistry();
+        registry.Register(new StubProvider(ClaudeCodeAdapter.Id));
+        registry.Register(new StubProvider(CodexAdapter.Id));
+        registry.MarkRateLimited(CodexAdapter.Id, DateTimeOffset.UtcNow.AddMinutes(30));
+
+        var next = registry.GetNextAvailableProvider(ClaudeCodeAdapter.Id);
+
+        Assert.Null(next);
+    }
+
+    /// <summary>
+    ///     Verifies that GetEarliestCooldownExpiry returns null when no providers are cooled down.
+    /// </summary>
+    [Fact]
+    public void GetEarliestCooldownExpiryReturnsNullWhenNoCooldowns()
+    {
+        var registry = new AIProviderRegistry();
+        Assert.Null(registry.GetEarliestCooldownExpiry());
+    }
+
+    /// <summary>
+    ///     Verifies that GetEarliestCooldownExpiry returns null when all cooldowns have expired.
+    /// </summary>
+    [Fact]
+    public void GetEarliestCooldownExpiryReturnsNullWhenAllExpired()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, true));
+        var registry = new AIProviderRegistry();
+        registry.MarkRateLimited(ClaudeCodeAdapter.Id, DateTimeOffset.UtcNow.AddSeconds(-10));
+        registry.MarkRateLimited(CodexAdapter.Id, DateTimeOffset.UtcNow.AddSeconds(-5));
+
+        Assert.Null(registry.GetEarliestCooldownExpiry());
+    }
+
+    /// <summary>
+    ///     Verifies that GetEarliestCooldownExpiry returns the earliest active expiry.
+    /// </summary>
+    [Fact]
+    public void GetEarliestCooldownExpiryReturnsEarliestActiveExpiry()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, true));
+        var registry = new AIProviderRegistry();
+        var earlier = DateTimeOffset.UtcNow.AddMinutes(10);
+        var later = DateTimeOffset.UtcNow.AddMinutes(30);
+        registry.MarkRateLimited(ClaudeCodeAdapter.Id, earlier);
+        registry.MarkRateLimited(CodexAdapter.Id, later);
+
+        var earliest = registry.GetEarliestCooldownExpiry();
+
+        Assert.NotNull(earliest);
+        Assert.Equal(earlier.ToUniversalTime(), earliest!.Value, TimeSpan.FromSeconds(1));
+    }
+
+    /// <summary>
+    ///     Verifies that cooldowns loaded from settings at construction are respected by
+    ///     ResolveProvider.
+    /// </summary>
+    [Fact]
+    public void RegistryLoadsCooldownsFromSettingsOnConstruction()
+    {
+        var cooldowns = new Dictionary<string, DateTimeOffset>
+        {
+            [ClaudeCodeAdapter.Id] = DateTimeOffset.UtcNow.AddMinutes(30)
+        };
+        AgsSettings.SetCurrent(new AgsSettings(true, true,
+            DateTimeOffset.MinValue, DateTimeOffset.MinValue,
+            AgsSettings.DefaultRateLimitCooldownSeconds, cooldowns));
+        var registry = new AIProviderRegistry();
+        var codex = new StubProvider(CodexAdapter.Id);
+        registry.Register(new StubProvider(ClaudeCodeAdapter.Id));
+        registry.Register(codex);
+
+        // Claude should be skipped (in cooldown loaded from settings)
+        var resolved = registry.ResolveProvider(["claude-sonnet", "chatgpt"]);
+
+        Assert.Same(codex, resolved);
+    }
+
+    /// <summary>
+    ///     Verifies that expired cooldowns loaded from settings are not applied.
+    /// </summary>
+    [Fact]
+    public void RegistryIgnoresExpiredCooldownsFromSettings()
+    {
+        var cooldowns = new Dictionary<string, DateTimeOffset>
+        {
+            [ClaudeCodeAdapter.Id] = DateTimeOffset.UtcNow.AddSeconds(-60)  // already expired
+        };
+        AgsSettings.SetCurrent(new AgsSettings(true, false,
+            DateTimeOffset.MinValue, DateTimeOffset.MinValue,
+            AgsSettings.DefaultRateLimitCooldownSeconds, cooldowns));
+        var claude = new StubProvider(ClaudeCodeAdapter.Id);
+        var registry = new AIProviderRegistry();
+        registry.Register(claude);
+
+        var resolved = registry.ResolveProvider();
+
+        Assert.Same(claude, resolved);
+    }
+
+    /// <summary>
+    ///     Verifies that MarkRateLimited persists cooldowns to config.json when a project root is
+    ///     supplied.
+    /// </summary>
+    [Fact]
+    public void MarkRateLimitedPersistsCooldownToConfig()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, false));
+        using var tempDir = new TemporaryDirectoryScope();
+        var registry = new AIProviderRegistry(tempDir.Path);
+        var expiry = DateTimeOffset.UtcNow.AddMinutes(30);
+
+        registry.MarkRateLimited(ClaudeCodeAdapter.Id, expiry);
+
+        var configPath = AgsSettings.GetConfigPath(tempDir.Path);
+        Assert.True(File.Exists(configPath));
+        var content = File.ReadAllText(configPath);
+        Assert.Contains("provider-cooldowns", content);
+        Assert.Contains(ClaudeCodeAdapter.Id, content);
+    }
+
     /// <summary>
     ///     Minimal <see cref="IAIProvider" /> stub for registry tests.
     /// </summary>

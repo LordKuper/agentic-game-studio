@@ -59,4 +59,71 @@ public sealed class AIProviderResultTests
 
         Assert.Equal(string.Empty, result.ErrorMessage);
     }
+
+    // ── IsRateLimited / RateLimitResetsAt ─────────────────────────────────────
+
+    /// <summary>
+    ///     Verifies that Succeeded results are not rate-limited.
+    /// </summary>
+    [Fact]
+    public void SucceededResultIsNotRateLimited()
+    {
+        var result = AIProviderResult.Succeeded("output", 0, []);
+
+        Assert.False(result.IsRateLimited);
+        Assert.Null(result.RateLimitResetsAt);
+    }
+
+    /// <summary>
+    ///     Verifies that Failed results are not rate-limited.
+    /// </summary>
+    [Fact]
+    public void FailedResultIsNotRateLimited()
+    {
+        var result = AIProviderResult.Failed("error", 1);
+
+        Assert.False(result.IsRateLimited);
+        Assert.Null(result.RateLimitResetsAt);
+    }
+
+    /// <summary>
+    ///     Verifies that a rate-limited result sets IsRateLimited and carries the reset time.
+    /// </summary>
+    [Fact]
+    public void RateLimitedResultHasCorrectProperties()
+    {
+        var resetsAt = new DateTimeOffset(2026, 4, 1, 12, 0, 0, TimeSpan.Zero);
+        var result = AIProviderResult.RateLimited("rate limit exceeded", 1, resetsAt, "partial");
+
+        Assert.False(result.Success);
+        Assert.True(result.IsRateLimited);
+        Assert.Equal(resetsAt, result.RateLimitResetsAt);
+        Assert.Equal("rate limit exceeded", result.ErrorMessage);
+        Assert.Equal("partial", result.Output);
+        Assert.Equal(1, result.ExitCode);
+        Assert.Empty(result.ModifiedFiles);
+    }
+
+    /// <summary>
+    ///     Verifies that a rate-limited result accepts a null reset time.
+    /// </summary>
+    [Fact]
+    public void RateLimitedResultAcceptsNullResetTime()
+    {
+        var result = AIProviderResult.RateLimited("quota exceeded", 1, null);
+
+        Assert.True(result.IsRateLimited);
+        Assert.Null(result.RateLimitResetsAt);
+    }
+
+    /// <summary>
+    ///     Verifies that a null error message in a rate-limited result is normalized to empty.
+    /// </summary>
+    [Fact]
+    public void RateLimitedResultNormalizesNullErrorMessage()
+    {
+        var result = AIProviderResult.RateLimited(null, 1, null);
+
+        Assert.Equal(string.Empty, result.ErrorMessage);
+    }
 }
