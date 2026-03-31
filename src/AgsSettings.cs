@@ -269,8 +269,7 @@ internal readonly struct AgsSettings
                 TryReadOptionalTimestamp(rootElement, ClaudeLastUpdateUtcSettingName);
             var codexLastUpdateUtc =
                 TryReadOptionalTimestamp(rootElement, CodexLastUpdateUtcSettingName);
-            settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc,
-                codexLastUpdateUtc);
+            settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc, codexLastUpdateUtc);
             return true;
         }
         catch (JsonException)
@@ -376,8 +375,7 @@ internal readonly struct AgsSettings
                     codexLastUpdateUtc = TryParseTimestamp(value);
             }
             if (!hasUseClaude || !hasUseCodex) return false;
-            settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc,
-                codexLastUpdateUtc);
+            settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc, codexLastUpdateUtc);
             return true;
         }
         catch (ArgumentException)

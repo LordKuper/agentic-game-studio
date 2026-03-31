@@ -161,4 +161,5 @@ public sealed class AgsSettingsTests
         Assert.Equal(claudeTimestamp.ToUniversalTime(), reloadedSettings.ClaudeLastUpdateUtc);
         Assert.Equal(codexTimestamp.ToUniversalTime(), reloadedSettings.CodexLastUpdateUtc);
     }
+
 }

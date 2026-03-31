@@ -2,7 +2,9 @@
   "permissions": {
     "allow": [
       "Bash(dotnet build:*)",
-      "Bash(dotnet test:*)"
+      "Bash(dotnet test:*)",
+      "Bash(ls -lh /d/Projects/agentic-game-studio/tests/*.cs)",
+      "Bash(grep -A 3 \"^| \\\\`models\\\\`\" D:/Projects/agentic-game-studio/agents/game-designer.md D:/Projects/agentic-game-studio/agents/engine-programmer.md D:/Projects/agentic-game-studio/agents/lead-programmer.md)"
     ]
   }
 }
