@@ -965,12 +965,12 @@ Establish the core infrastructure that everything else builds on.
   selection, all-exhausted wait behavior
 
 **1.2 Git Manager**
-- [ ] Implement branch creation (`session/<id>`)
-- [ ] Implement task commit logic
-- [ ] Implement conflict detection with main
-- [ ] Implement PR description generation
-- [ ] Implement merge and branch cleanup
-- [ ] Tests: integration tests with a test git repo
+- [x] Implement branch creation (`session/<id>`)
+- [x] Implement task commit logic
+- [x] Implement conflict detection with main
+- [x] Implement PR description generation
+- [x] Implement merge and branch cleanup
+- [x] Tests: integration tests with a test git repo
 
 **1.3 Prompt Assembly Engine**
 - [ ] Build prompt assembler that reads agent .md files
