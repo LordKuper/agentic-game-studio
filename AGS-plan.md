@@ -951,10 +951,8 @@ Establish the core infrastructure that everything else builds on.
 - [x] `IsAvailable` returns `false` while provider is in cooldown
 - [x] Add `RateLimitDefaultCooldown` setting to `.ags/config.json` schema
   (default: 30 minutes)
-- [ ] Implement task failover in Agent Orchestrator: on rate-limit, select next
+- [x] Implement task failover in Agent Orchestrator: on rate-limit, select next
   available provider from agent's `models` list and restart task
-  (infrastructure ready: `GetNextAvailableProvider` on registry; wiring deferred
-  to Phase 3 when the Agent Orchestrator is built)
 - [ ] Implement wait-and-retry when all providers are rate-limited (wait for
   earliest cooldown expiry, then retry)
   (infrastructure ready: `GetEarliestCooldownExpiry` on registry; wiring deferred
