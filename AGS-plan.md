@@ -450,6 +450,97 @@ class AIProviderRegistry
 
 The active provider is stored in the project-local `.ags/config.json`.
 
+### 6.6 Rate Limit Handling and Provider Failover
+
+AI providers may reject requests when the usage quota (tokens, requests per
+minute, etc.) is exhausted. The application must detect these situations and
+handle them transparently.
+
+#### Detection
+
+`AIProviderResult` is extended with a rate-limit signal:
+
+```csharp
+/// Whether the invocation failed due to a rate limit or quota exhaustion.
+bool IsRateLimited { get; }
+
+/// The time at which the provider is expected to become available again,
+/// as parsed from the provider's error response. Null if the reset time
+/// could not be determined.
+DateTimeOffset? RateLimitResetsAt { get; }
+```
+
+Each adapter is responsible for recognizing rate-limit errors in the CLI
+subprocess output (exit code, stderr, or structured error JSON) and populating
+these fields.
+
+#### Provider Cooldown
+
+When a rate-limit response is detected:
+
+1. The `AIProviderRegistry` marks the provider as **temporarily unavailable**
+   until `RateLimitResetsAt`.
+2. If the reset time could not be parsed from the response, the provider is
+   marked unavailable for a configurable default cooldown period
+   (`RateLimitDefaultCooldown` in `.ags/config.json`, default: 1800 seconds /
+   30 minutes).
+3. `IsAvailable` returns `false` for cooled-down providers.
+4. The cooldown expires automatically; no manual re-enable is required.
+
+#### Cooldown Persistence
+
+Cooldown state is persisted to `.ags/config.json` so that it survives
+application restarts. The config stores a map of provider IDs to their cooldown
+expiry timestamps:
+
+```json
+{
+  "ProviderCooldowns": {
+    "claude-sonnet": "2026-03-31T14:32:00+03:00",
+    "chatgpt": "2026-03-31T14:45:00+03:00"
+  }
+}
+```
+
+On startup, the `AIProviderRegistry` reads `ProviderCooldowns` from the config
+and restores the cooldown state. Expired entries (where the timestamp is in the
+past) are ignored and cleaned up on the next config write. When a provider is
+marked rate-limited or when a cooldown expires, the config is updated on disk
+immediately.
+
+```csharp
+/// Marks a provider as temporarily unavailable due to rate limiting.
+/// Persists the cooldown expiry to .ags/config.json.
+void MarkRateLimited(string providerId, DateTimeOffset availableAfter);
+
+/// Gets the time at which a rate-limited provider becomes available again.
+/// Returns null if the provider is not rate-limited.
+DateTimeOffset? GetCooldownExpiry(string providerId);
+```
+
+#### Task Failover
+
+When a rate limit is hit during task execution:
+
+1. The Agent Orchestrator logs the rate-limit event.
+2. It consults the current agent's `models` list (priority-ordered) to find the
+   next available provider.
+3. If an available provider is found, the orchestrator **restarts the current
+   task from the beginning** using that provider. Any partial output from the
+   failed invocation is discarded.
+4. If no providers are available (all are rate-limited), the orchestrator reports
+   the situation to the CEO and waits until the earliest cooldown expires, then
+   retries automatically.
+5. The CEO is informed of provider switches via a status message (e.g.,
+   `"claude-sonnet rate-limited until 14:32, switching to chatgpt"`).
+
+#### Configuration
+
+| Setting | Location | Default | Description |
+|---|---|---|---|
+| `RateLimitDefaultCooldown` | `.ags/config.json` | `1800` (seconds / 30 minutes) | Cooldown period when the reset time cannot be parsed from the provider response |
+| `ProviderCooldowns` | `.ags/config.json` | `{}` | Map of provider ID to cooldown expiry timestamp (ISO 8601). Persisted across restarts; expired entries are cleaned up automatically |
+
 ---
 
 ## 7. Agent Orchestrator
@@ -734,7 +825,7 @@ Key state files:
 
 | File | Purpose |
 |---|---|
-| `.ags/config.json` | Application settings (active provider, engine, preferences) |
+| `.ags/config.json` | Application settings (active provider, engine, preferences, provider cooldowns) |
 | `.ags/sessions/index.md` | Session registry |
 | `.ags/sessions/<id>/state.md` | Session metadata and current status |
 | `.ags/sessions/<id>/session-scope.md` | Approved scope |
@@ -847,6 +938,26 @@ Establish the core infrastructure that everything else builds on.
 - [ ] Implement `AIProviderRegistry`
 - [ ] Add provider selection to settings
 - [ ] Tests: unit tests for adapters with mock CLI, registry tests
+
+**1.1.1 Rate Limit Handling and Provider Failover**
+- [ ] Extend `AIProviderResult` with `IsRateLimited` and `RateLimitResetsAt`
+- [ ] Implement rate-limit detection in `ClaudeCodeAdapter` (parse stderr / exit
+  code / error JSON for quota-exceeded signals)
+- [ ] Implement rate-limit detection in `CodexAdapter`
+- [ ] Add provider cooldown tracking to `AIProviderRegistry`
+  (`MarkRateLimited`, `GetCooldownExpiry`, automatic expiry)
+- [ ] Persist cooldown state (`ProviderCooldowns`) to `.ags/config.json`;
+  restore on startup; clean up expired entries on write
+- [ ] `IsAvailable` returns `false` while provider is in cooldown
+- [ ] Add `RateLimitDefaultCooldown` setting to `.ags/config.json` schema
+  (default: 1800 seconds)
+- [ ] Implement task failover in Agent Orchestrator: on rate-limit, select next
+  available provider from agent's `models` list and restart task
+- [ ] Implement wait-and-retry when all providers are rate-limited (wait for
+  earliest cooldown expiry, then retry)
+- [ ] Add CEO notification on provider switch and on all-providers-exhausted
+- [ ] Tests: rate-limit detection per adapter, cooldown expiry, failover
+  selection, all-exhausted wait behavior
 
 **1.2 Git Manager**
 - [ ] Implement branch creation (`session/<id>`)
@@ -1032,6 +1143,7 @@ Wire up agent invocations through the AI provider.
 | AI provider output is unpredictable | Agents may produce unexpected file changes | Git diff review before commit; CEO approval gate |
 | Large projects slow down file scanning | Stage detection becomes slow | Incremental scanning; cache last-known state |
 | Context limits in AI providers | Complex tasks may not fit in one call | Provider's responsibility (per design decision); split tasks smaller in planning |
+| AI provider rate limits mid-task | Task fails partway, wasted tokens and time | Detect rate-limit responses, mark provider on cooldown, failover to next provider in agent's `models` list, restart task |
 | Git conflicts between sessions | Merging session branches may fail | Conflict detection before merge; agent-assisted resolution |
 
 ---
