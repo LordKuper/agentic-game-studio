@@ -973,11 +973,11 @@ Establish the core infrastructure that everything else builds on.
 - [x] Tests: integration tests with a test git repo
 
 **1.3 Prompt Assembly Engine**
-- [ ] Build prompt assembler that reads agent .md files
-- [ ] Build rule loader that reads rules/*.md
-- [ ] Build context assembler that reads task briefs and session state
-- [ ] Define prompt template structure (agent def + rules + task context + CEO input)
-- [ ] Tests: unit tests for prompt composition
+- [x] Build prompt assembler that reads agent .md files
+- [x] Build rule loader that reads rules/*.md
+- [x] Build context assembler that reads task briefs and session state
+- [x] Define prompt template structure (agent def + rules + task context + CEO input)
+- [x] Tests: unit tests for prompt composition
 
 ### Phase 2: Session System
 
