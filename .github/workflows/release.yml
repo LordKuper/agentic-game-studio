@@ -1,0 +1,60 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    name: Build and publish release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.x'
+
+      - name: Run tests
+        run: dotnet test tests/agentic-game-studio.Tests.csproj --configuration Release
+
+      - name: Publish
+        run: >
+          dotnet publish src/agentic-game-studio.csproj
+          --configuration Release
+          --runtime win-x64
+          --self-contained true
+          -p:PublishSingleFile=true
+          --output ./publish
+
+      - name: Copy standard resources
+        shell: pwsh
+        run: |
+          foreach ($dir in @('agents', 'rules', 'skills', 'templates', 'scripts')) {
+            if (Test-Path $dir) {
+              Copy-Item -Path $dir -Destination ./publish/$dir -Recurse -Force
+            }
+          }
+
+      - name: Create release archive
+        id: archive
+        shell: pwsh
+        run: |
+          $version = '${{ github.ref_name }}'
+          $archiveName = "ags-$version-win-x64.zip"
+          Compress-Archive -Path ./publish/* -DestinationPath $archiveName
+          "ARCHIVE_NAME=$archiveName" | Out-File -FilePath $env:GITHUB_OUTPUT -Append
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ steps.archive.outputs.ARCHIVE_NAME }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true

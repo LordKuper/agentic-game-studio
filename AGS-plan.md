@@ -831,10 +831,10 @@ Set up the global installation model, resource overlay, and installer script.
 - [x] Tests: manual testing on clean Windows install
 
 **0.4 GitHub Release Packaging**
-- [ ] Configure CI or release script to produce a self-contained .zip with
+- [x] Configure CI or release script to produce a self-contained .zip with
   `ags.exe` + standard resources
-- [ ] Publish .zip as a GitHub Release asset
-- [ ] Add release notes template
+- [x] Publish .zip as a GitHub Release asset
+- [x] Add release notes template
 
 ### Phase 1: Foundation (Infrastructure)
 
