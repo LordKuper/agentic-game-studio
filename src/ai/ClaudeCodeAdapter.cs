@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using System.Globalization;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace AGS.ai;
 
@@ -105,7 +107,8 @@ internal sealed class ClaudeCodeAdapter : IAIProvider
         if (!combined.Contains("rate limit") && !combined.Contains("ratelimit") &&
             !combined.Contains("rate_limit") && !combined.Contains("quota exceeded") &&
             !combined.Contains("quota_exceeded") && !combined.Contains("too many requests") &&
-            !combined.Contains("429") && !combined.Contains("overloaded"))
+            !combined.Contains("429") && !combined.Contains("overloaded") &&
+            !combined.Contains("hit your limit"))
             return (false, null);
         var resetsAt = TryParseResetTime(output + "\n" + error);
         return (true, resetsAt);
@@ -113,27 +116,173 @@ internal sealed class ClaudeCodeAdapter : IAIProvider
 
     /// <summary>
     ///     Attempts to parse a reset timestamp from provider error output.
-    ///     Looks for "retry after N seconds", "retry after HH:MM:SS", or an ISO 8601 timestamp
-    ///     following "retry" or "reset" keywords.
+    ///     Looks for "retry after N seconds", an ISO 8601 timestamp following "retry" or
+    ///     "reset" keywords, or a localized time such as "resets 2pm (Europe/Moscow)".
     /// </summary>
     private static DateTimeOffset? TryParseResetTime(string text)
     {
-        // "retry after N seconds" / "retry-after: N"
-        var retryAfterPattern = System.Text.RegularExpressions.Regex.Match(
-            text, @"retry.after[:\s]+(\d+)\s*s", System.Text.RegularExpressions.RegexOptions.IgnoreCase);
-        if (retryAfterPattern.Success && int.TryParse(retryAfterPattern.Groups[1].Value, out var seconds))
+        var retryAfterSeconds = TryParseRetryAfterSeconds(text);
+        if (retryAfterSeconds.HasValue) return retryAfterSeconds.Value;
+
+        var absoluteResetTime = TryParseAbsoluteResetTime(text);
+        if (absoluteResetTime.HasValue) return absoluteResetTime.Value;
+
+        var localizedResetTime = TryParseLocalizedResetTime(text);
+        if (localizedResetTime.HasValue) return localizedResetTime.Value;
+
+        return null;
+    }
+
+    /// <summary>
+    ///     Attempts to parse a relative "retry after N seconds" directive.
+    /// </summary>
+    private static DateTimeOffset? TryParseRetryAfterSeconds(string text)
+    {
+        var retryAfterPattern = Regex.Match(text, @"retry.after[:\s]+(\d+)\s*s",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        if (retryAfterPattern.Success &&
+            int.TryParse(retryAfterPattern.Groups[1].Value, out var seconds))
             return DateTimeOffset.UtcNow.AddSeconds(seconds);
 
-        // ISO 8601 timestamp after "reset" or "available" or "retry"
-        var isoPattern = System.Text.RegularExpressions.Regex.Match(
-            text, @"(?:reset|available|retry)[^\d]*(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[^\s]*)",
-            System.Text.RegularExpressions.RegexOptions.IgnoreCase);
+        return null;
+    }
+
+    /// <summary>
+    ///     Attempts to parse an ISO 8601 reset timestamp after "reset", "available", or "retry".
+    /// </summary>
+    private static DateTimeOffset? TryParseAbsoluteResetTime(string text)
+    {
+        var isoPattern = Regex.Match(text,
+            @"(?:reset|available|retry)[^\d]*(\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}[^\s]*)",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
         if (isoPattern.Success && DateTimeOffset.TryParse(isoPattern.Groups[1].Value,
-                System.Globalization.CultureInfo.InvariantCulture,
-                System.Globalization.DateTimeStyles.RoundtripKind, out var parsed))
+                CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsed))
             return parsed.ToUniversalTime();
 
         return null;
+    }
+
+    /// <summary>
+    ///     Attempts to parse a localized reset time such as "resets 2pm (Europe/Moscow)".
+    /// </summary>
+    private static DateTimeOffset? TryParseLocalizedResetTime(string text)
+    {
+        var resetPattern = Regex.Match(text,
+            @"resets?\s+(?:at\s+)?(?<time>\d{1,2}(?::\d{2})?\s*(?:am|pm)?)(?:\s*\((?<timezone>[^)]+)\))?",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        if (!resetPattern.Success) return null;
+
+        var clockText = resetPattern.Groups["time"].Value;
+        var timeZoneId = resetPattern.Groups["timezone"].Success
+            ? resetPattern.Groups["timezone"].Value.Trim()
+            : string.Empty;
+
+        if (!TryParseClockTime(clockText, out var clockTime)) return null;
+        if (!TryResolveTimeZone(timeZoneId, out var timeZone)) return null;
+
+        var currentTimeInZone = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZone);
+        var resetDateTime = currentTimeInZone.Date.Add(clockTime);
+        if (resetDateTime <= currentTimeInZone.DateTime)
+            resetDateTime = resetDateTime.AddDays(1);
+
+        var offset = timeZone.GetUtcOffset(resetDateTime);
+        return new DateTimeOffset(resetDateTime, offset).ToUniversalTime();
+    }
+
+    /// <summary>
+    ///     Attempts to resolve the supplied time zone identifier.
+    /// </summary>
+    private static bool TryResolveTimeZone(string timeZoneId, out TimeZoneInfo timeZone)
+    {
+        if (string.IsNullOrWhiteSpace(timeZoneId))
+        {
+            timeZone = TimeZoneInfo.Local;
+            return true;
+        }
+
+        if (TryFindTimeZone(timeZoneId, out timeZone))
+            return true;
+
+        if (TimeZoneInfo.TryConvertIanaIdToWindowsId(timeZoneId, out var windowsId) &&
+            TryFindTimeZone(windowsId, out timeZone))
+            return true;
+
+        timeZone = TimeZoneInfo.Utc;
+        return false;
+    }
+
+    /// <summary>
+    ///     Attempts to find a system time zone by its identifier.
+    /// </summary>
+    private static bool TryFindTimeZone(string timeZoneId, out TimeZoneInfo timeZone)
+    {
+        try
+        {
+            timeZone = TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+            return true;
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            timeZone = TimeZoneInfo.Utc;
+            return false;
+        }
+        catch (InvalidTimeZoneException)
+        {
+            timeZone = TimeZoneInfo.Utc;
+            return false;
+        }
+    }
+
+    /// <summary>
+    ///     Attempts to parse a 12-hour or 24-hour clock time.
+    /// </summary>
+    private static bool TryParseClockTime(string text, out TimeSpan clockTime)
+    {
+        var timePattern = Regex.Match(text.Trim(),
+            @"^(?<hour>\d{1,2})(?::(?<minute>\d{2}))?\s*(?<period>am|pm)?$",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant);
+        if (!timePattern.Success)
+        {
+            clockTime = TimeSpan.Zero;
+            return false;
+        }
+
+        if (!int.TryParse(timePattern.Groups["hour"].Value, out var hour))
+        {
+            clockTime = TimeSpan.Zero;
+            return false;
+        }
+
+        var minuteText = timePattern.Groups["minute"].Success
+            ? timePattern.Groups["minute"].Value
+            : "0";
+        if (!int.TryParse(minuteText, out var minute) || minute < 0 || minute > 59)
+        {
+            clockTime = TimeSpan.Zero;
+            return false;
+        }
+
+        var period = timePattern.Groups["period"].Value;
+        if (period.Length > 0)
+        {
+            if (hour < 1 || hour > 12)
+            {
+                clockTime = TimeSpan.Zero;
+                return false;
+            }
+
+            if (hour == 12) hour = 0;
+            if (period.Equals("pm", StringComparison.OrdinalIgnoreCase))
+                hour += 12;
+        }
+        else if (hour < 0 || hour > 23)
+        {
+            clockTime = TimeSpan.Zero;
+            return false;
+        }
+
+        clockTime = new TimeSpan(hour, minute, 0);
+        return true;
     }
 
     /// <summary>

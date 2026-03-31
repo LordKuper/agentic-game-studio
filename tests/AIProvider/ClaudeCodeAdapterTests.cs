@@ -348,6 +348,47 @@ public sealed class ClaudeCodeAdapterTests
     }
 
     /// <summary>
+    ///     Verifies that Claude-specific limit messages with a localized reset time are detected
+    ///     and parsed correctly.
+    /// </summary>
+    [Fact]
+    public void DetectRateLimitParsesLocalizedResetTimeFromClaudeLimitMessage()
+    {
+        var timeZone = ResolveTimeZone("Europe/Moscow");
+        var localNow = TimeZoneInfo.ConvertTime(DateTimeOffset.UtcNow, timeZone);
+        var (isRateLimited, resetsAt) = ClaudeCodeAdapter.DetectRateLimit(
+            string.Empty, "You've hit your limit \u00B7 resets 2pm (Europe/Moscow)");
+
+        Assert.True(isRateLimited);
+        Assert.NotNull(resetsAt);
+
+        var localResetTime = TimeZoneInfo.ConvertTime(resetsAt.Value, timeZone);
+        Assert.Equal(14, localResetTime.Hour);
+        Assert.Equal(0, localResetTime.Minute);
+        Assert.Equal(0, localResetTime.Second);
+        Assert.True(localResetTime > localNow);
+        Assert.True(localResetTime <= localNow.AddHours(25));
+    }
+
+    /// <summary>
+    ///     Verifies that Claude limit messages are surfaced as rate-limited invocation results.
+    /// </summary>
+    [Fact]
+    public void InvokeReturnsRateLimitedResultForClaudeLimitMessage()
+    {
+        var adapter = new ClaudeCodeAdapter(si =>
+            (1, string.Empty, "You've hit your limit \u00B7 resets 2pm (Europe/Moscow)"));
+
+        using var tempDir = new TemporaryDirectoryScope();
+        var request = new AIProviderRequest("", "task", tempDir.Path, TimeSpan.FromMinutes(1));
+        var result = adapter.Invoke(request);
+
+        Assert.False(result.Success);
+        Assert.True(result.IsRateLimited);
+        Assert.NotNull(result.RateLimitResetsAt);
+    }
+
+    /// <summary>
     ///     Verifies that rate-limit text with no parsable time returns null for ResetsAt.
     /// </summary>
     [Fact]
@@ -368,4 +409,21 @@ public sealed class ClaudeCodeAdapterTests
 
     private static Func<ProcessStartInfo, (int, string, string)> ThrowingRunner()
         => _ => throw new InvalidOperationException("simulated failure");
+
+    /// <summary>
+    ///     Resolves a time zone using either its native identifier or the Windows equivalent for
+    ///     IANA IDs.
+    /// </summary>
+    private static TimeZoneInfo ResolveTimeZone(string timeZoneId)
+    {
+        try
+        {
+            return TimeZoneInfo.FindSystemTimeZoneById(timeZoneId);
+        }
+        catch (TimeZoneNotFoundException)
+        {
+            Assert.True(TimeZoneInfo.TryConvertIanaIdToWindowsId(timeZoneId, out var windowsId));
+            return TimeZoneInfo.FindSystemTimeZoneById(windowsId);
+        }
+    }
 }
