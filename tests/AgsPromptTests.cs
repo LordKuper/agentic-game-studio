@@ -30,6 +30,19 @@ public sealed class AgsPromptTests
     }
 
     /// <summary>
+    ///     Verifies that text input prompts delegate to the configured handler.
+    /// </summary>
+    [Fact]
+    public void InputReturnsConfiguredHandlerValue()
+    {
+        using var prompts = new PromptStubScope(inputs: ["45"]);
+        var value = AgsPrompt.Input("Enter timeout", "30");
+        Assert.Equal("45", value);
+        Assert.Equal(["Enter timeout"], prompts.InputMessages);
+        Assert.Equal(["30"], prompts.InputDefaultValues);
+    }
+
+    /// <summary>
     ///     Verifies that prompt argument validation rejects invalid messages and option sets.
     /// </summary>
     [Fact]
@@ -37,6 +50,7 @@ public sealed class AgsPromptTests
     {
         IReadOnlyList<string> missingOptions = null;
         Assert.Throws<ArgumentException>(() => AgsPrompt.Confirm(string.Empty, false));
+        Assert.Throws<ArgumentException>(() => AgsPrompt.Input(string.Empty, "30"));
         Assert.Throws<ArgumentNullException>(() => AgsPrompt.Select("Question", missingOptions));
         Assert.Throws<ArgumentException>(() => AgsPrompt.Select(string.Empty, ["Only option"]));
         Assert.Throws<ArgumentException>(() =>

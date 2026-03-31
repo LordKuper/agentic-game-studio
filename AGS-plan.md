@@ -482,8 +482,8 @@ When a rate-limit response is detected:
    until `RateLimitResetsAt`.
 2. If the reset time could not be parsed from the response, the provider is
    marked unavailable for a configurable default cooldown period
-   (`RateLimitDefaultCooldown` in `.ags/config.json`, default: 1800 seconds /
-   30 minutes).
+   (`RateLimitDefaultCooldown` in `.ags/config.json`, default: 30 minutes,
+   stored as minutes).
 3. `IsAvailable` returns `false` for cooled-down providers.
 4. The cooldown expires automatically; no manual re-enable is required.
 
@@ -538,7 +538,7 @@ When a rate limit is hit during task execution:
 
 | Setting | Location | Default | Description |
 |---|---|---|---|
-| `RateLimitDefaultCooldown` | `.ags/config.json` | `1800` (seconds / 30 minutes) | Cooldown period when the reset time cannot be parsed from the provider response |
+| `RateLimitDefaultCooldown` | `.ags/config.json` | `30` (minutes) | Cooldown period when the reset time cannot be parsed from the provider response |
 | `ProviderCooldowns` | `.ags/config.json` | `{}` | Map of provider ID to cooldown expiry timestamp (ISO 8601). Persisted across restarts; expired entries are cleaned up automatically |
 
 ---
@@ -950,7 +950,7 @@ Establish the core infrastructure that everything else builds on.
   restore on startup; clean up expired entries on write
 - [x] `IsAvailable` returns `false` while provider is in cooldown
 - [x] Add `RateLimitDefaultCooldown` setting to `.ags/config.json` schema
-  (default: 1800 seconds)
+  (default: 30 minutes)
 - [ ] Implement task failover in Agent Orchestrator: on rate-limit, select next
   available provider from agent's `models` list and restart task
   (infrastructure ready: `GetNextAvailableProvider` on registry; wiring deferred

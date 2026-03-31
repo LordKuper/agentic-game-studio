@@ -137,7 +137,7 @@ public sealed class MainMenuSubsystemTests
         AgsSettings.SetCurrent(new AgsSettings(false, false));
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
-        using var prompts = new PromptStubScope(selectionIndexes: [1, 2, 2]);
+        using var prompts = new PromptStubScope(selectionIndexes: [1, 3, 2]);
         using var console = new ConsoleRedirectionScope(string.Empty);
         MainMenuSubsystem.Run();
         Assert.Equal(["Main menu", "Settings", "Main menu"], prompts.SelectMessages);

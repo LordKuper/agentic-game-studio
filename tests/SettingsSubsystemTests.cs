@@ -14,8 +14,15 @@ public sealed class SettingsSubsystemTests
     public void BuildOptionLabelsReflectCurrentSettings()
     {
         var labels = (string[])PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
-            "BuildOptionLabels", new AgsSettings(true, false));
-        Assert.Equal(["use-codex: no", "use-claude: yes", "Return to main menu"], labels);
+            "BuildOptionLabels",
+            new AgsSettings(true, false, DateTimeOffset.MinValue, DateTimeOffset.MinValue, 45, null));
+        Assert.Equal(
+        [
+            "use-codex: no",
+            "use-claude: yes",
+            "default-model-timeout: 45 minutes",
+            "Return to main menu"
+        ], labels);
     }
 
     /// <summary>
@@ -33,6 +40,19 @@ public sealed class SettingsSubsystemTests
     }
 
     /// <summary>
+    ///     Verifies that minute values are formatted consistently for display.
+    /// </summary>
+    [Theory]
+    [InlineData(1, "1 minute")]
+    [InlineData(30, "30 minutes")]
+    public void FormatMinutesValueReturnsExpectedText(int minutes, string expectedValue)
+    {
+        var formattedValue = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
+            "FormatMinutesValue", minutes);
+        Assert.Equal(expectedValue, formattedValue);
+    }
+
+    /// <summary>
     ///     Verifies that setting display names match the editable rows.
     /// </summary>
     [Fact]
@@ -42,15 +62,18 @@ public sealed class SettingsSubsystemTests
             "GetSettingDisplayName", 0);
         var claudeName = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
             "GetSettingDisplayName", 1);
-        var unsupportedName = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
+        var timeoutName = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
             "GetSettingDisplayName", 2);
+        var unsupportedName = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
+            "GetSettingDisplayName", 3);
         Assert.Equal("use-codex", codexName);
         Assert.Equal("use-claude", claudeName);
+        Assert.Equal("default model timeout", timeoutName);
         Assert.Equal(string.Empty, unsupportedName);
     }
 
     /// <summary>
-    ///     Verifies that current setting values are exposed for editable rows.
+    ///     Verifies that current setting values are exposed for editable Boolean rows.
     /// </summary>
     [Fact]
     public void GetSettingValueReturnsCurrentFlagValues()
@@ -77,10 +100,12 @@ public sealed class SettingsSubsystemTests
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
         var errorMessage = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
-            "PersistSettings", new AgsSettings(true, true));
+            "PersistSettings", new AgsSettings(true, true, DateTimeOffset.MinValue,
+                DateTimeOffset.MinValue, 45, null));
         Assert.Equal(string.Empty, errorMessage);
         Assert.True(AgsSettings.Current.UseClaude);
         Assert.True(AgsSettings.Current.UseCodex);
+        Assert.Equal(45, AgsSettings.Current.RateLimitDefaultCooldownMinutes);
         Assert.True(File.Exists(AgsSettings.GetConfigPath(tempDirectory.Path)));
     }
 
@@ -92,10 +117,11 @@ public sealed class SettingsSubsystemTests
     {
         AgsTestState.ResetCurrentSettings();
         AgsSettings.SetCurrent(new AgsSettings(false, false));
-        using var prompts = new PromptStubScope(selectionIndexes: [2]);
+        using var prompts = new PromptStubScope(selectionIndexes: [3]);
         SettingsSubsystem.Run();
         Assert.Equal(["Settings"], prompts.SelectMessages);
         Assert.Empty(prompts.ConfirmMessages);
+        Assert.Empty(prompts.InputMessages);
     }
 
     /// <summary>
@@ -111,6 +137,7 @@ public sealed class SettingsSubsystemTests
         Assert.Equal(string.Empty, console.Output);
         Assert.Empty(prompts.SelectMessages);
         Assert.Empty(prompts.ConfirmMessages);
+        Assert.Empty(prompts.InputMessages);
     }
 
     /// <summary>
@@ -123,17 +150,38 @@ public sealed class SettingsSubsystemTests
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
         using var prompts = new PromptStubScope(confirmations: [true, true],
-            selectionIndexes: [1, 0, 2]);
+            selectionIndexes: [1, 0, 2, 3], inputs: ["45"]);
         AgsSettings.SetCurrent(new AgsSettings(false, false));
         SettingsSubsystem.Run();
         Assert.True(AgsSettings.Current.UseClaude);
         Assert.True(AgsSettings.Current.UseCodex);
-        Assert.Equal(["Settings", "Settings", "Settings"], prompts.SelectMessages);
+        Assert.Equal(45, AgsSettings.Current.RateLimitDefaultCooldownMinutes);
+        Assert.Equal(["Settings", "Settings", "Settings", "Settings"], prompts.SelectMessages);
         Assert.Equal(["Enable use-claude?", "Enable use-codex?"], prompts.ConfirmMessages);
+        Assert.Equal(["Enter default model timeout in minutes:"], prompts.InputMessages);
+        Assert.Equal(["30"], prompts.InputDefaultValues);
     }
 
     /// <summary>
-    ///     Verifies that changing a selected setting persists the new value and updates current state.
+    ///     Verifies that invalid timeout input prints an error and returns to the menu loop.
+    /// </summary>
+    [Fact]
+    public void RunPrintsErrorWhenTimeoutInputIsInvalid()
+    {
+        AgsTestState.ResetCurrentSettings();
+        using var prompts = new PromptStubScope(selectionIndexes: [2, 3], inputs: ["invalid"]);
+        using var console = new ConsoleRedirectionScope(string.Empty);
+        AgsSettings.SetCurrent(new AgsSettings(false, false));
+        SettingsSubsystem.Run();
+        Assert.Contains("The default model timeout must be a positive whole number of minutes.",
+            console.Output);
+        Assert.Equal(AgsSettings.DefaultRateLimitCooldownMinutes,
+            AgsSettings.Current.RateLimitDefaultCooldownMinutes);
+    }
+
+    /// <summary>
+    ///     Verifies that changing a selected Boolean setting persists the new value and updates
+    ///     current state.
     /// </summary>
     [Fact]
     public void SetSettingValuePersistsChangedValue()
@@ -152,6 +200,26 @@ public sealed class SettingsSubsystemTests
     }
 
     /// <summary>
+    ///     Verifies that changing the timeout persists the new minute value and updates current
+    ///     state.
+    /// </summary>
+    [Fact]
+    public void SetRateLimitDefaultCooldownMinutesPersistsChangedValue()
+    {
+        AgsTestState.ResetCurrentSettings();
+        using var tempDirectory = new TemporaryDirectoryScope();
+        using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
+        AgsSettings.SetCurrent(new AgsSettings(false, false));
+        var errorMessage = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
+            "SetRateLimitDefaultCooldownMinutes", 45);
+        Assert.Equal(string.Empty, errorMessage);
+        Assert.Equal(45, AgsSettings.Current.RateLimitDefaultCooldownMinutes);
+        Assert.True(AgsSettings.TryReadFromConfig(AgsSettings.GetConfigPath(tempDirectory.Path),
+            out var persistedSettings));
+        Assert.Equal(45, persistedSettings.RateLimitDefaultCooldownMinutes);
+    }
+
+    /// <summary>
     ///     Verifies that setting helpers return without changes for unsupported or redundant input.
     /// </summary>
     [Fact]
@@ -160,12 +228,16 @@ public sealed class SettingsSubsystemTests
         AgsTestState.ResetCurrentSettings();
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
-        AgsSettings.SetCurrent(new AgsSettings(true, false));
+        AgsSettings.SetCurrent(new AgsSettings(true, false, DateTimeOffset.MinValue,
+            DateTimeOffset.MinValue, 45, null));
         var unchangedValue = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
             "SetSettingValue", 1, true);
+        var unchangedTimeout = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
+            "SetRateLimitDefaultCooldownMinutes", 45);
         var unsupportedValue = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
-            "SetSettingValue", 2, true);
+            "SetSettingValue", 3, true);
         Assert.Equal(string.Empty, unchangedValue);
+        Assert.Equal(string.Empty, unchangedTimeout);
         Assert.Equal(string.Empty, unsupportedValue);
     }
 }

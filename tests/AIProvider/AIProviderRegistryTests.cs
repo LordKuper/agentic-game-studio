@@ -522,7 +522,7 @@ public sealed class AIProviderRegistryTests : IDisposable
         };
         AgsSettings.SetCurrent(new AgsSettings(true, true,
             DateTimeOffset.MinValue, DateTimeOffset.MinValue,
-            AgsSettings.DefaultRateLimitCooldownSeconds, cooldowns));
+            AgsSettings.DefaultRateLimitCooldownMinutes, cooldowns));
         var registry = new AIProviderRegistry();
         var codex = new StubProvider(CodexAdapter.Id);
         registry.Register(new StubProvider(ClaudeCodeAdapter.Id));
@@ -546,7 +546,7 @@ public sealed class AIProviderRegistryTests : IDisposable
         };
         AgsSettings.SetCurrent(new AgsSettings(true, false,
             DateTimeOffset.MinValue, DateTimeOffset.MinValue,
-            AgsSettings.DefaultRateLimitCooldownSeconds, cooldowns));
+            AgsSettings.DefaultRateLimitCooldownMinutes, cooldowns));
         var claude = new StubProvider(ClaudeCodeAdapter.Id);
         var registry = new AIProviderRegistry();
         registry.Register(claude);

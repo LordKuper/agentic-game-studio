@@ -4,8 +4,9 @@ using System.Text.Json;
 namespace AGS;
 
 /// <summary>
-///     Represents persisted configuration flags and last successful update timestamps for the
-///     local <c>.ags/config.json</c> file and stores the current process-wide settings instance.
+///     Represents persisted configuration flags, provider cooldown settings, and last successful
+///     update timestamps for the local <c>.ags/config.json</c> file and stores the current
+///     process-wide settings instance.
 /// </summary>
 internal readonly struct AgsSettings
 {
@@ -15,9 +16,12 @@ internal readonly struct AgsSettings
     private const string UseCodexSettingName = "use-codex";
     private const string ClaudeLastUpdateUtcSettingName = "claude-last-update-utc";
     private const string CodexLastUpdateUtcSettingName = "codex-last-update-utc";
-    private const string RateLimitDefaultCooldownSettingName = "rate-limit-default-cooldown";
+    private const string LegacyRateLimitDefaultCooldownSecondsSettingName =
+        "rate-limit-default-cooldown";
+    private const string RateLimitDefaultCooldownMinutesSettingName =
+        "rate-limit-default-cooldown-minutes";
     private const string ProviderCooldownsSettingName = "provider-cooldowns";
-    internal const int DefaultRateLimitCooldownSeconds = 1800;
+    internal const int DefaultRateLimitCooldownMinutes = 30;
     private static AgsSettings currentSettings = new(false, false);
     private static bool hasCurrentSettings;
 
@@ -49,7 +53,7 @@ internal readonly struct AgsSettings
     /// </param>
     internal AgsSettings(bool useClaude, bool useCodex, DateTimeOffset claudeLastUpdateUtc,
         DateTimeOffset codexLastUpdateUtc) : this(useClaude, useCodex, claudeLastUpdateUtc,
-        codexLastUpdateUtc, DefaultRateLimitCooldownSeconds, null) { }
+        codexLastUpdateUtc, DefaultRateLimitCooldownMinutes, null) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AgsSettings" /> struct.
@@ -64,25 +68,25 @@ internal readonly struct AgsSettings
     ///     UTC timestamp of the last successful Codex update, or
     ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
     /// </param>
-    /// <param name="rateLimitDefaultCooldown">
-    ///     Cooldown period in seconds applied when the provider response does not include a reset
-    ///     time. Defaults to <see cref="DefaultRateLimitCooldownSeconds" />.
+    /// <param name="rateLimitDefaultCooldownMinutes">
+    ///     Cooldown period in minutes applied when the provider response does not include a reset
+    ///     time. Defaults to <see cref="DefaultRateLimitCooldownMinutes" />.
     /// </param>
     /// <param name="providerCooldowns">
     ///     Map of provider ID to cooldown expiry timestamp. Pass <see langword="null" /> for an
     ///     empty map.
     /// </param>
     internal AgsSettings(bool useClaude, bool useCodex, DateTimeOffset claudeLastUpdateUtc,
-        DateTimeOffset codexLastUpdateUtc, int rateLimitDefaultCooldown,
+        DateTimeOffset codexLastUpdateUtc, int rateLimitDefaultCooldownMinutes,
         IReadOnlyDictionary<string, DateTimeOffset> providerCooldowns)
     {
         UseClaude = useClaude;
         UseCodex = useCodex;
         ClaudeLastUpdateUtc = NormalizeTimestamp(claudeLastUpdateUtc);
         CodexLastUpdateUtc = NormalizeTimestamp(codexLastUpdateUtc);
-        RateLimitDefaultCooldown = rateLimitDefaultCooldown > 0
-            ? rateLimitDefaultCooldown
-            : DefaultRateLimitCooldownSeconds;
+        RateLimitDefaultCooldownMinutes = rateLimitDefaultCooldownMinutes > 0
+            ? rateLimitDefaultCooldownMinutes
+            : DefaultRateLimitCooldownMinutes;
         ProviderCooldowns = providerCooldowns ?? new Dictionary<string, DateTimeOffset>();
     }
 
@@ -124,10 +128,15 @@ internal readonly struct AgsSettings
     internal bool AreAllModelsDisabled => !UseClaude && !UseCodex;
 
     /// <summary>
-    ///     Gets the cooldown period in seconds applied when the provider response does not include
-    ///     a reset time. Defaults to <see cref="DefaultRateLimitCooldownSeconds" />.
+    ///     Gets the cooldown period in minutes applied when the provider response does not include
+    ///     a reset time. Defaults to <see cref="DefaultRateLimitCooldownMinutes" />.
     /// </summary>
-    internal int RateLimitDefaultCooldown { get; }
+    internal int RateLimitDefaultCooldownMinutes { get; }
+
+    /// <summary>
+    ///     Gets the cooldown period as a <see cref="TimeSpan" />.
+    /// </summary>
+    internal TimeSpan RateLimitDefaultCooldown => TimeSpan.FromMinutes(RateLimitDefaultCooldownMinutes);
 
     /// <summary>
     ///     Gets the map of provider IDs to their cooldown expiry timestamps.
@@ -214,7 +223,7 @@ internal readonly struct AgsSettings
             [CodexLastUpdateUtcSettingName] = HasCodexLastUpdateUtc
                 ? CodexLastUpdateUtc.ToString("O", CultureInfo.InvariantCulture)
                 : null,
-            [RateLimitDefaultCooldownSettingName] = RateLimitDefaultCooldown,
+            [RateLimitDefaultCooldownMinutesSettingName] = RateLimitDefaultCooldownMinutes,
             [ProviderCooldownsSettingName] = activeCooldowns
         }, JsonOptions);
         File.WriteAllText(configPath, serializedSettings);
@@ -226,10 +235,11 @@ internal readonly struct AgsSettings
     /// </summary>
     /// <param name="providerCooldowns">New provider cooldowns map.</param>
     /// <returns>A new settings instance with the updated cooldowns.</returns>
-    internal AgsSettings WithProviderCooldowns(IReadOnlyDictionary<string, DateTimeOffset> providerCooldowns)
+    internal AgsSettings WithProviderCooldowns(
+        IReadOnlyDictionary<string, DateTimeOffset> providerCooldowns)
     {
         return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
-            RateLimitDefaultCooldown, providerCooldowns);
+            RateLimitDefaultCooldownMinutes, providerCooldowns);
     }
 
     /// <summary>
@@ -239,7 +249,8 @@ internal readonly struct AgsSettings
     /// <returns>A new settings instance with the updated Claude timestamp.</returns>
     internal AgsSettings WithClaudeLastUpdateUtc(DateTimeOffset claudeLastUpdateUtc)
     {
-        return new AgsSettings(UseClaude, UseCodex, claudeLastUpdateUtc, CodexLastUpdateUtc);
+        return new AgsSettings(UseClaude, UseCodex, claudeLastUpdateUtc, CodexLastUpdateUtc,
+            RateLimitDefaultCooldownMinutes, ProviderCooldowns);
     }
 
     /// <summary>
@@ -249,7 +260,8 @@ internal readonly struct AgsSettings
     /// <returns>A new settings instance with the updated Claude enabled flag.</returns>
     internal AgsSettings WithUseClaude(bool useClaude)
     {
-        return new AgsSettings(useClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc);
+        return new AgsSettings(useClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
+            RateLimitDefaultCooldownMinutes, ProviderCooldowns);
     }
 
     /// <summary>
@@ -259,7 +271,8 @@ internal readonly struct AgsSettings
     /// <returns>A new settings instance with the updated Codex timestamp.</returns>
     internal AgsSettings WithCodexLastUpdateUtc(DateTimeOffset codexLastUpdateUtc)
     {
-        return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, codexLastUpdateUtc);
+        return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, codexLastUpdateUtc,
+            RateLimitDefaultCooldownMinutes, ProviderCooldowns);
     }
 
     /// <summary>
@@ -269,7 +282,22 @@ internal readonly struct AgsSettings
     /// <returns>A new settings instance with the updated Codex enabled flag.</returns>
     internal AgsSettings WithUseCodex(bool useCodex)
     {
-        return new AgsSettings(UseClaude, useCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc);
+        return new AgsSettings(UseClaude, useCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
+            RateLimitDefaultCooldownMinutes, ProviderCooldowns);
+    }
+
+    /// <summary>
+    ///     Creates a copy of the current settings with an updated default rate-limit cooldown.
+    /// </summary>
+    /// <param name="rateLimitDefaultCooldownMinutes">
+    ///     Cooldown period in minutes applied when the provider response does not include a reset
+    ///     time.
+    /// </param>
+    /// <returns>A new settings instance with the updated default cooldown.</returns>
+    internal AgsSettings WithRateLimitDefaultCooldownMinutes(int rateLimitDefaultCooldownMinutes)
+    {
+        return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
+            rateLimitDefaultCooldownMinutes, ProviderCooldowns);
     }
 
     /// <summary>
@@ -332,11 +360,11 @@ internal readonly struct AgsSettings
                 TryReadOptionalTimestamp(rootElement, ClaudeLastUpdateUtcSettingName);
             var codexLastUpdateUtc =
                 TryReadOptionalTimestamp(rootElement, CodexLastUpdateUtcSettingName);
-            var rateLimitDefaultCooldown = TryReadOptionalInt(
-                rootElement, RateLimitDefaultCooldownSettingName, DefaultRateLimitCooldownSeconds);
+            var rateLimitDefaultCooldownMinutes =
+                TryReadRateLimitDefaultCooldownMinutes(rootElement);
             var providerCooldowns = TryReadProviderCooldowns(rootElement);
             settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc, codexLastUpdateUtc,
-                rateLimitDefaultCooldown, providerCooldowns);
+                rateLimitDefaultCooldownMinutes, providerCooldowns);
             return true;
         }
         catch (JsonException)
@@ -363,6 +391,35 @@ internal readonly struct AgsSettings
             return defaultValue;
         if (propertyElement.ValueKind != JsonValueKind.Number) return defaultValue;
         return propertyElement.TryGetInt32(out var value) ? value : defaultValue;
+    }
+
+    /// <summary>
+    ///     Reads the default cooldown value in minutes, falling back to the legacy seconds-based
+    ///     property when present.
+    /// </summary>
+    /// <param name="configElement">JSON object that contains persisted settings.</param>
+    /// <returns>Cooldown period in minutes.</returns>
+    private static int TryReadRateLimitDefaultCooldownMinutes(JsonElement configElement)
+    {
+        var configuredMinutes = TryReadOptionalInt(configElement,
+            RateLimitDefaultCooldownMinutesSettingName, 0);
+        if (configuredMinutes > 0) return configuredMinutes;
+
+        var legacySeconds = TryReadOptionalInt(configElement,
+            LegacyRateLimitDefaultCooldownSecondsSettingName, 0);
+        if (legacySeconds > 0) return ConvertLegacyCooldownSecondsToMinutes(legacySeconds);
+
+        return DefaultRateLimitCooldownMinutes;
+    }
+
+    /// <summary>
+    ///     Converts a legacy seconds-based cooldown value to whole minutes.
+    /// </summary>
+    /// <param name="legacySeconds">Cooldown value persisted in seconds.</param>
+    /// <returns>Equivalent cooldown in whole minutes, rounded up.</returns>
+    private static int ConvertLegacyCooldownSecondsToMinutes(int legacySeconds)
+    {
+        return (int)Math.Ceiling(legacySeconds / 60d);
     }
 
     /// <summary>

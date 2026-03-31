@@ -23,6 +23,10 @@ public sealed class AgsSettingsTests
         Assert.True(settings.HasClaudeLastUpdateUtc);
         Assert.True(settings.HasCodexLastUpdateUtc);
         Assert.False(settings.AreAllModelsDisabled);
+        Assert.Equal(AgsSettings.DefaultRateLimitCooldownMinutes,
+            settings.RateLimitDefaultCooldownMinutes);
+        Assert.Equal(TimeSpan.FromMinutes(AgsSettings.DefaultRateLimitCooldownMinutes),
+            settings.RateLimitDefaultCooldown);
     }
 
     /// <summary>
@@ -99,6 +103,8 @@ public sealed class AgsSettingsTests
         Assert.False(settings.UseCodex);
         Assert.Equal(claudeTimestamp, settings.ClaudeLastUpdateUtc);
         Assert.Equal(codexTimestamp.ToUniversalTime(), settings.CodexLastUpdateUtc);
+        Assert.Equal(AgsSettings.DefaultRateLimitCooldownMinutes,
+            settings.RateLimitDefaultCooldownMinutes);
     }
 
     /// <summary>
@@ -120,26 +126,48 @@ public sealed class AgsSettingsTests
     }
 
     /// <summary>
-    ///     Verifies that copy helpers update only the requested values.
+    ///     Verifies that copy helpers update only the requested values and preserve cooldown
+    ///     configuration.
     /// </summary>
     [Fact]
     public void WithMethodsReturnUpdatedCopies()
     {
         var originalTimestamp = new DateTimeOffset(2026, 3, 27, 12, 30, 0, TimeSpan.Zero);
         var updatedTimestamp = originalTimestamp.AddHours(4);
-        var settings = new AgsSettings(false, false, originalTimestamp, originalTimestamp);
+        var cooldowns = new Dictionary<string, DateTimeOffset>
+        {
+            ["claude-code"] = DateTimeOffset.UtcNow.AddMinutes(10)
+        };
+        var settings = new AgsSettings(false, false, originalTimestamp, originalTimestamp, 45,
+            cooldowns);
         var updatedClaude = settings.WithUseClaude(true);
         var updatedCodex = settings.WithUseCodex(true);
         var updatedClaudeTimestamp = settings.WithClaudeLastUpdateUtc(updatedTimestamp);
         var updatedCodexTimestamp = settings.WithCodexLastUpdateUtc(updatedTimestamp);
+        var updatedMinutes = settings.WithRateLimitDefaultCooldownMinutes(60);
+
         Assert.True(updatedClaude.UseClaude);
         Assert.False(updatedClaude.UseCodex);
+        Assert.Equal(45, updatedClaude.RateLimitDefaultCooldownMinutes);
+        Assert.Single(updatedClaude.ProviderCooldowns);
+
         Assert.False(updatedCodex.UseClaude);
         Assert.True(updatedCodex.UseCodex);
+        Assert.Equal(45, updatedCodex.RateLimitDefaultCooldownMinutes);
+        Assert.Single(updatedCodex.ProviderCooldowns);
+
         Assert.Equal(updatedTimestamp, updatedClaudeTimestamp.ClaudeLastUpdateUtc);
         Assert.Equal(originalTimestamp, updatedClaudeTimestamp.CodexLastUpdateUtc);
+        Assert.Equal(45, updatedClaudeTimestamp.RateLimitDefaultCooldownMinutes);
+        Assert.Single(updatedClaudeTimestamp.ProviderCooldowns);
+
         Assert.Equal(updatedTimestamp, updatedCodexTimestamp.CodexLastUpdateUtc);
         Assert.Equal(originalTimestamp, updatedCodexTimestamp.ClaudeLastUpdateUtc);
+        Assert.Equal(45, updatedCodexTimestamp.RateLimitDefaultCooldownMinutes);
+        Assert.Single(updatedCodexTimestamp.ProviderCooldowns);
+
+        Assert.Equal(60, updatedMinutes.RateLimitDefaultCooldownMinutes);
+        Assert.Single(updatedMinutes.ProviderCooldowns);
         Assert.True(new AgsSettings(false, false).AreAllModelsDisabled);
     }
 
@@ -153,26 +181,26 @@ public sealed class AgsSettingsTests
         var configPath = Path.Combine(tempDirectory.Path, "config.json");
         var claudeTimestamp = new DateTimeOffset(2026, 3, 25, 10, 0, 0, TimeSpan.FromHours(2));
         var codexTimestamp = new DateTimeOffset(2026, 3, 24, 18, 30, 0, TimeSpan.FromHours(-5));
-        var settings = new AgsSettings(true, false, claudeTimestamp, codexTimestamp);
+        var settings = new AgsSettings(true, false, claudeTimestamp, codexTimestamp, 45, null);
         settings.WriteToConfig(configPath);
         Assert.True(AgsSettings.TryReadFromConfig(configPath, out var reloadedSettings));
         Assert.True(reloadedSettings.UseClaude);
         Assert.False(reloadedSettings.UseCodex);
         Assert.Equal(claudeTimestamp.ToUniversalTime(), reloadedSettings.ClaudeLastUpdateUtc);
         Assert.Equal(codexTimestamp.ToUniversalTime(), reloadedSettings.CodexLastUpdateUtc);
+        Assert.Equal(45, reloadedSettings.RateLimitDefaultCooldownMinutes);
     }
 
-    // ── ProviderCooldowns / RateLimitDefaultCooldown ──────────────────────────
-
     /// <summary>
-    ///     Verifies default values for the cooldown properties.
+    ///     Verifies that default values for the cooldown properties use minutes.
     /// </summary>
     [Fact]
-    public void DefaultSettingsHaveEmptyCooldownsAndDefaultCooldownSeconds()
+    public void DefaultSettingsHaveEmptyCooldownsAndDefaultCooldownMinutes()
     {
         var settings = new AgsSettings(true, false);
 
-        Assert.Equal(AgsSettings.DefaultRateLimitCooldownSeconds, settings.RateLimitDefaultCooldown);
+        Assert.Equal(AgsSettings.DefaultRateLimitCooldownMinutes,
+            settings.RateLimitDefaultCooldownMinutes);
         Assert.Empty(settings.ProviderCooldowns);
     }
 
@@ -193,34 +221,35 @@ public sealed class AgsSettingsTests
             ["codex"] = pastExpiry
         };
         var settings = new AgsSettings(true, true, DateTimeOffset.MinValue, DateTimeOffset.MinValue,
-            AgsSettings.DefaultRateLimitCooldownSeconds, cooldowns);
+            AgsSettings.DefaultRateLimitCooldownMinutes, cooldowns);
 
         settings.WriteToConfig(configPath);
         Assert.True(AgsSettings.TryReadFromConfig(configPath, out var reloaded));
 
-        // Active cooldown is preserved
         Assert.True(reloaded.ProviderCooldowns.ContainsKey("claude-code"));
         Assert.Equal(futureExpiry.ToUniversalTime(), reloaded.ProviderCooldowns["claude-code"],
             TimeSpan.FromSeconds(1));
-        // Expired cooldown is dropped
         Assert.False(reloaded.ProviderCooldowns.ContainsKey("codex"));
     }
 
     /// <summary>
-    ///     Verifies that RateLimitDefaultCooldown round-trips through JSON.
+    ///     Verifies that the default cooldown in minutes round-trips through JSON.
     /// </summary>
     [Fact]
-    public void WriteToConfigRoundTripsRateLimitDefaultCooldown()
+    public void WriteToConfigRoundTripsRateLimitDefaultCooldownMinutes()
     {
         using var tempDirectory = new TemporaryDirectoryScope();
         var configPath = Path.Combine(tempDirectory.Path, "config.json");
         var settings = new AgsSettings(true, false, DateTimeOffset.MinValue, DateTimeOffset.MinValue,
-            3600, null);
+            60, null);
 
         settings.WriteToConfig(configPath);
+        var content = File.ReadAllText(configPath);
+        Assert.Contains("rate-limit-default-cooldown-minutes", content);
+        Assert.DoesNotContain("\"rate-limit-default-cooldown\":", content);
         Assert.True(AgsSettings.TryReadFromConfig(configPath, out var reloaded));
 
-        Assert.Equal(3600, reloaded.RateLimitDefaultCooldown);
+        Assert.Equal(60, reloaded.RateLimitDefaultCooldownMinutes);
     }
 
     /// <summary>
@@ -238,7 +267,6 @@ public sealed class AgsSettingsTests
         Assert.True(updated.ProviderCooldowns.ContainsKey("claude-code"));
         Assert.Equal(expiry.ToUniversalTime(), updated.ProviderCooldowns["claude-code"],
             TimeSpan.FromSeconds(1));
-        // Original is unchanged
         Assert.Empty(settings.ProviderCooldowns);
     }
 
@@ -258,7 +286,8 @@ public sealed class AgsSettingsTests
 
         Assert.True(canRead);
         Assert.Empty(settings.ProviderCooldowns);
-        Assert.Equal(AgsSettings.DefaultRateLimitCooldownSeconds, settings.RateLimitDefaultCooldown);
+        Assert.Equal(AgsSettings.DefaultRateLimitCooldownMinutes,
+            settings.RateLimitDefaultCooldownMinutes);
     }
 
     /// <summary>
@@ -275,7 +304,7 @@ public sealed class AgsSettingsTests
   ""use-codex"": false,
   ""claude-last-update-utc"": null,
   ""codex-last-update-utc"": null,
-  ""rate-limit-default-cooldown"": 900,
+  ""rate-limit-default-cooldown-minutes"": 15,
   ""provider-cooldowns"": {{
     ""claude-code"": ""{expiry:O}""
   }}
@@ -283,10 +312,29 @@ public sealed class AgsSettingsTests
         File.WriteAllText(configPath, json);
 
         Assert.True(AgsSettings.TryReadFromConfig(configPath, out var settings));
-        Assert.Equal(900, settings.RateLimitDefaultCooldown);
+        Assert.Equal(15, settings.RateLimitDefaultCooldownMinutes);
         Assert.True(settings.ProviderCooldowns.ContainsKey("claude-code"));
         Assert.Equal(expiry.ToUniversalTime(), settings.ProviderCooldowns["claude-code"],
             TimeSpan.FromSeconds(1));
     }
 
+    /// <summary>
+    ///     Verifies that legacy seconds-based cooldown values are migrated to whole minutes.
+    /// </summary>
+    [Fact]
+    public void TryReadFromConfigMigratesLegacySecondsCooldownToMinutes()
+    {
+        using var tempDirectory = new TemporaryDirectoryScope();
+        var configPath = Path.Combine(tempDirectory.Path, "config.json");
+        File.WriteAllText(configPath, @"{
+  ""use-claude"": true,
+  ""use-codex"": true,
+  ""claude-last-update-utc"": null,
+  ""codex-last-update-utc"": null,
+  ""rate-limit-default-cooldown"": 1800
+}");
+
+        Assert.True(AgsSettings.TryReadFromConfig(configPath, out var settings));
+        Assert.Equal(30, settings.RateLimitDefaultCooldownMinutes);
+    }
 }

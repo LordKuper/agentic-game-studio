@@ -1,3 +1,5 @@
+using System.Globalization;
+
 namespace AGS.subsystems;
 
 /// <summary>
@@ -5,7 +7,8 @@ namespace AGS.subsystems;
 /// </summary>
 internal static class SettingsSubsystem
 {
-    private const int ReturnOptionIndex = 2;
+    private const int DefaultModelTimeoutOptionIndex = 2;
+    private const int ReturnOptionIndex = 3;
     private const string Title = "Settings";
     private const int UseClaudeOptionIndex = 1;
     private const int UseCodexOptionIndex = 0;
@@ -21,6 +24,7 @@ internal static class SettingsSubsystem
         [
             $"use-codex: {FormatBooleanValue(settings.UseCodex)}",
             $"use-claude: {FormatBooleanValue(settings.UseClaude)}",
+            $"default-model-timeout: {FormatMinutesValue(settings.RateLimitDefaultCooldownMinutes)}",
             "Return to main menu"
         ];
     }
@@ -36,6 +40,16 @@ internal static class SettingsSubsystem
     }
 
     /// <summary>
+    ///     Formats a minute-based setting value for display in the settings screen.
+    /// </summary>
+    /// <param name="minutes">Minute value to format.</param>
+    /// <returns>Human-readable minute text.</returns>
+    private static string FormatMinutesValue(int minutes)
+    {
+        return minutes == 1 ? "1 minute" : $"{minutes} minutes";
+    }
+
+    /// <summary>
     ///     Gets the visible display name for the selected settings row.
     /// </summary>
     /// <param name="selectedIndex">Zero-based index of the selected settings row.</param>
@@ -44,6 +58,7 @@ internal static class SettingsSubsystem
     {
         if (selectedIndex == UseCodexOptionIndex) return "use-codex";
         if (selectedIndex == UseClaudeOptionIndex) return "use-claude";
+        if (selectedIndex == DefaultModelTimeoutOptionIndex) return "default model timeout";
         return string.Empty;
     }
 
@@ -81,6 +96,22 @@ internal static class SettingsSubsystem
     }
 
     /// <summary>
+    ///     Prompts for a positive whole-number minute value.
+    /// </summary>
+    /// <param name="currentValue">Currently configured minute value.</param>
+    /// <param name="minutes">Parsed minute value.</param>
+    /// <returns>Error message when the input cannot be parsed; otherwise, an empty string.</returns>
+    private static string PromptForMinutesValue(int currentValue, out int minutes)
+    {
+        var rawValue = AgsPrompt.Input("Enter default model timeout in minutes:",
+            currentValue.ToString(CultureInfo.InvariantCulture));
+        if (!int.TryParse(rawValue, NumberStyles.Integer, CultureInfo.InvariantCulture,
+                out minutes) || minutes <= 0)
+            return "The default model timeout must be a positive whole number of minutes.";
+        return string.Empty;
+    }
+
+    /// <summary>
     ///     Shows the settings screen and persists any configuration changes made by the user.
     /// </summary>
     internal static void Run()
@@ -91,12 +122,40 @@ internal static class SettingsSubsystem
             var currentSettings = AgsSettings.Current;
             var selectedIndex = AgsPrompt.Select(Title, BuildOptionLabels(currentSettings));
             if (selectedIndex == ReturnOptionIndex) return;
+            if (selectedIndex == DefaultModelTimeoutOptionIndex)
+            {
+                var inputErrorMessage = PromptForMinutesValue(
+                    currentSettings.RateLimitDefaultCooldownMinutes, out var updatedMinutes);
+                if (!string.IsNullOrEmpty(inputErrorMessage))
+                {
+                    Console.WriteLine(inputErrorMessage);
+                    continue;
+                }
+                var timeoutErrorMessage = SetRateLimitDefaultCooldownMinutes(updatedMinutes);
+                if (!string.IsNullOrEmpty(timeoutErrorMessage))
+                    Console.WriteLine(timeoutErrorMessage);
+                continue;
+            }
             var settingDisplayName = GetSettingDisplayName(selectedIndex);
             var updatedValue = AgsPrompt.Confirm($"Enable {settingDisplayName}?",
                 GetSettingValue(currentSettings, selectedIndex));
             var errorMessage = SetSettingValue(selectedIndex, updatedValue);
             if (!string.IsNullOrEmpty(errorMessage)) Console.WriteLine(errorMessage);
         }
+    }
+
+    /// <summary>
+    ///     Sets the default timeout in minutes and persists the updated configuration.
+    /// </summary>
+    /// <param name="minutes">Positive whole-number minute value to persist.</param>
+    /// <returns>
+    ///     Error message when persistence fails; otherwise, an empty string.
+    /// </returns>
+    private static string SetRateLimitDefaultCooldownMinutes(int minutes)
+    {
+        var currentSettings = AgsSettings.Current;
+        if (currentSettings.RateLimitDefaultCooldownMinutes == minutes) return string.Empty;
+        return PersistSettings(currentSettings.WithRateLimitDefaultCooldownMinutes(minutes));
     }
 
     /// <summary>

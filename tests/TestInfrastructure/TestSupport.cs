@@ -216,6 +216,9 @@ internal static class AgsTestState
         PrivateAccess.SetStaticField(typeof(AgsPrompt), "selectHandler",
             (Func<string, IReadOnlyList<string>, string>)((message, options) =>
                 Sharprompt.Prompt.Select(message, [.. options])));
+        PrivateAccess.SetStaticField(typeof(AgsPrompt), "textHandler",
+            (Func<string, string, string>)((message, defaultValue) =>
+                Sharprompt.Prompt.Input<string>(message, defaultValue: defaultValue)));
     }
 }
 
@@ -226,7 +229,9 @@ internal sealed class PromptStubScope : IDisposable
 {
     private readonly Func<string, bool, bool> originalConfirmHandler;
     private readonly Func<string, IReadOnlyList<string>, string> originalSelectHandler;
+    private readonly Func<string, string, string> originalTextHandler;
     private readonly Queue<bool> queuedConfirmations;
+    private readonly Queue<string> queuedInputs;
     private readonly Queue<int> queuedSelections;
 
     /// <summary>
@@ -234,17 +239,24 @@ internal sealed class PromptStubScope : IDisposable
     /// </summary>
     /// <param name="confirmations">Queued confirmation responses returned to the caller.</param>
     /// <param name="selectionIndexes">Queued zero-based selection indexes returned to the caller.</param>
+    /// <param name="inputs">Queued text inputs returned to the caller.</param>
     internal PromptStubScope(IEnumerable<bool> confirmations = null,
-        IEnumerable<int> selectionIndexes = null)
+        IEnumerable<int> selectionIndexes = null, IEnumerable<string> inputs = null)
     {
         originalConfirmHandler = PrivateAccess.GetStaticField<Func<string, bool, bool>>(
             typeof(AgsPrompt), "confirmHandler");
         originalSelectHandler =
             PrivateAccess.GetStaticField<Func<string, IReadOnlyList<string>, string>>(
                 typeof(AgsPrompt), "selectHandler");
+        originalTextHandler =
+            PrivateAccess.GetStaticField<Func<string, string, string>>(
+                typeof(AgsPrompt), "textHandler");
         queuedConfirmations = confirmations == null ? [] : new Queue<bool>(confirmations);
         queuedSelections = selectionIndexes == null ? [] : new Queue<int>(selectionIndexes);
+        queuedInputs = inputs == null ? [] : new Queue<string>(inputs);
         ConfirmMessages = [];
+        InputDefaultValues = [];
+        InputMessages = [];
         SelectMessages = [];
         SelectOptions = [];
         PrivateAccess.SetStaticField(typeof(AgsPrompt), "confirmHandler",
@@ -266,12 +278,30 @@ internal sealed class PromptStubScope : IDisposable
                 Assert.InRange(selectedIndex, 0, options.Count - 1);
                 return options[selectedIndex];
             }));
+        PrivateAccess.SetStaticField(typeof(AgsPrompt), "textHandler",
+            (Func<string, string, string>)((message, defaultValue) =>
+            {
+                InputMessages.Add(message);
+                InputDefaultValues.Add(defaultValue);
+                if (queuedInputs.Count == 0) return defaultValue;
+                return queuedInputs.Dequeue();
+            }));
     }
 
     /// <summary>
     ///     Gets the confirmation prompt messages that were shown during the scope lifetime.
     /// </summary>
     internal List<string> ConfirmMessages { get; }
+
+    /// <summary>
+    ///     Gets the default values shown for each text input prompt during the scope lifetime.
+    /// </summary>
+    internal List<string> InputDefaultValues { get; }
+
+    /// <summary>
+    ///     Gets the text input prompt messages that were shown during the scope lifetime.
+    /// </summary>
+    internal List<string> InputMessages { get; }
 
     /// <summary>
     ///     Gets the selection prompt messages that were shown during the scope lifetime.
@@ -290,6 +320,7 @@ internal sealed class PromptStubScope : IDisposable
     {
         PrivateAccess.SetStaticField(typeof(AgsPrompt), "confirmHandler", originalConfirmHandler);
         PrivateAccess.SetStaticField(typeof(AgsPrompt), "selectHandler", originalSelectHandler);
+        PrivateAccess.SetStaticField(typeof(AgsPrompt), "textHandler", originalTextHandler);
     }
 }
 

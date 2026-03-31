@@ -13,6 +13,9 @@ internal static class AgsPrompt
     private static Func<string, IReadOnlyList<string>, string> selectHandler =
         (message, options) => Prompt.Select(message, [.. options]);
 
+    private static Func<string, string, string> textHandler =
+        (message, defaultValue) => Prompt.Input<string>(message, defaultValue: defaultValue);
+
     /// <summary>
     ///     Shows a confirmation prompt and returns the selected Boolean value.
     /// </summary>
@@ -50,5 +53,18 @@ internal static class AgsPrompt
         }
         throw new InvalidOperationException(
             $"Prompt returned an unknown option: {selectedOption}");
+    }
+
+    /// <summary>
+    ///     Shows a text input prompt and returns the entered value.
+    /// </summary>
+    /// <param name="message">Question text shown to the user.</param>
+    /// <param name="defaultValue">Default text used when the user accepts the default.</param>
+    /// <returns>Text entered by the user, or <paramref name="defaultValue" /> when accepted.</returns>
+    internal static string Input(string message, string defaultValue = "")
+    {
+        if (string.IsNullOrWhiteSpace(message))
+            throw new ArgumentException("Prompt message must be provided.", nameof(message));
+        return textHandler(message, defaultValue ?? string.Empty);
     }
 }
