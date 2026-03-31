@@ -821,14 +821,14 @@ Set up the global installation model, resource overlay, and installer script.
   fallback
 
 **0.3 Windows Installation Script**
-- [ ] Write `scripts/install.ps1` PowerShell script
-- [ ] Detect or prompt for install directory (default `%USERPROFILE%\ags`)
-- [ ] Download latest release .zip from GitHub Releases API
-- [ ] Extract archive to install directory
-- [ ] Add install directory to user `PATH` (idempotent, no duplicates)
-- [ ] Verify installation by running `ags -version`
-- [ ] Print success message with next steps
-- [ ] Tests: manual testing on clean Windows install
+- [x] Write `scripts/install.ps1` PowerShell script
+- [x] Detect or prompt for install directory (default `%USERPROFILE%\ags`)
+- [x] Download latest release .zip from GitHub Releases API
+- [x] Extract archive to install directory
+- [x] Add install directory to user `PATH` (idempotent, no duplicates)
+- [x] Verify installation by running `ags -version`
+- [x] Print success message with next steps
+- [x] Tests: manual testing on clean Windows install
 
 **0.4 GitHub Release Packaging**
 - [ ] Configure CI or release script to produce a self-contained .zip with
