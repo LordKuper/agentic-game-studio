@@ -18,3 +18,6 @@ These rules apply to source code output produced by agents (C# files, test files
 # Agent Definition Rules
 - Agent definitions live in `agents` folder and must be named `<agent-name>.md`
 - Agent definitions must conform to the template defined in `agent-template.md`
+
+# Skill Definition Rules
+- Skill definitions live in `skills` folder and must comply to skill specification provided at `https://agentskills.io/specification`

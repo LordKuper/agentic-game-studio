@@ -325,106 +325,53 @@ internal sealed class PromptStubScope : IDisposable
 }
 
 /// <summary>
-///     Temporarily replaces installer script files in the test output directory.
+///     Temporarily replaces the provider factory in <see cref="AGS.subsystems.ProviderCheckSubsystem" />
+///     with a stub that returns a single always-available or always-unavailable provider.
 /// </summary>
-internal sealed class InstallerScriptsScope : IDisposable
+internal sealed class ProviderCheckStubScope : IDisposable
 {
-    private readonly List<InstallerScriptBackup> backups = [];
+    private readonly Func<IReadOnlyList<AGS.ai.IAIProvider>> originalFactory;
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="InstallerScriptsScope" /> class.
+    ///     Initializes a new instance of the <see cref="ProviderCheckStubScope" /> class.
     /// </summary>
-    /// <param name="definitions">Installer scripts to create for the scope lifetime.</param>
-    internal InstallerScriptsScope(params InstallerScriptDefinition[] definitions)
+    /// <param name="available">
+    ///     <see langword="true" /> to simulate an installed provider;
+    ///     <see langword="false" /> to simulate no installed providers.
+    /// </param>
+    internal ProviderCheckStubScope(bool available)
     {
-        var scriptsDirectoryPath = Path.Combine(AppContext.BaseDirectory, "scripts");
-        Directory.CreateDirectory(scriptsDirectoryPath);
-        foreach (var definition in definitions)
-        {
-            var scriptPath = Path.Combine(scriptsDirectoryPath, definition.FileName);
-            var hadOriginalContent = File.Exists(scriptPath);
-            var originalContent = hadOriginalContent ? File.ReadAllText(scriptPath) : string.Empty;
-            backups.Add(new InstallerScriptBackup(scriptPath, hadOriginalContent, originalContent));
-            File.WriteAllText(scriptPath, definition.Content, Encoding.UTF8);
-        }
+        originalFactory = PrivateAccess
+            .GetStaticField<Func<IReadOnlyList<AGS.ai.IAIProvider>>>(
+                typeof(AGS.subsystems.ProviderCheckSubsystem), "providersFactory");
+        PrivateAccess.SetStaticField(
+            typeof(AGS.subsystems.ProviderCheckSubsystem),
+            "providersFactory",
+            (Func<IReadOnlyList<AGS.ai.IAIProvider>>)(() =>
+                new[] { (AGS.ai.IAIProvider)new StubProvider(available) }));
     }
 
     /// <summary>
-    ///     Restores the original installer scripts.
+    ///     Restores the original provider factory.
     /// </summary>
     public void Dispose()
     {
-        foreach (var backup in backups)
+        PrivateAccess.SetStaticField(
+            typeof(AGS.subsystems.ProviderCheckSubsystem), "providersFactory", originalFactory);
+    }
+
+    private sealed class StubProvider : AGS.ai.IAIProvider
+    {
+        private readonly bool available;
+        internal StubProvider(bool available) => this.available = available;
+        public string ProviderId => "stub";
+        public bool IsAvailable => available;
+        public bool TryGetVersion(out string version)
         {
-            if (backup.HadOriginalContent)
-                File.WriteAllText(backup.ScriptPath, backup.OriginalContent, Encoding.UTF8);
-            else if (File.Exists(backup.ScriptPath))
-                File.Delete(backup.ScriptPath);
+            version = available ? "1.0.0-stub" : string.Empty;
+            return available;
         }
+        public AGS.ai.AIProviderResult Invoke(AGS.ai.AIProviderRequest request)
+            => AGS.ai.AIProviderResult.Succeeded(string.Empty, 0, []);
     }
-}
-
-/// <summary>
-///     Describes a temporary installer script file used by a test.
-/// </summary>
-internal readonly struct InstallerScriptDefinition
-{
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="InstallerScriptDefinition" /> struct.
-    /// </summary>
-    /// <param name="fileName">Installer file name created in the scripts directory.</param>
-    /// <param name="content">PowerShell script content written to the file.</param>
-    internal InstallerScriptDefinition(string fileName, string content)
-    {
-        FileName = fileName;
-        Content = content;
-    }
-
-    /// <summary>
-    ///     Gets the installer file name created in the scripts directory.
-    /// </summary>
-    internal string FileName { get; }
-
-    /// <summary>
-    ///     Gets the PowerShell script content written to the file.
-    /// </summary>
-    internal string Content { get; }
-}
-
-/// <summary>
-///     Stores the original state of a script file that is temporarily replaced during a test.
-/// </summary>
-internal readonly struct InstallerScriptBackup
-{
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="InstallerScriptBackup" /> struct.
-    /// </summary>
-    /// <param name="scriptPath">Absolute path to the script file.</param>
-    /// <param name="hadOriginalContent">
-    ///     <see langword="true" /> when the file existed before the test; otherwise,
-    ///     <see langword="false" />.
-    /// </param>
-    /// <param name="originalContent">Original script content when the file existed.</param>
-    internal InstallerScriptBackup(string scriptPath, bool hadOriginalContent,
-        string originalContent)
-    {
-        ScriptPath = scriptPath;
-        HadOriginalContent = hadOriginalContent;
-        OriginalContent = originalContent;
-    }
-
-    /// <summary>
-    ///     Gets the absolute path to the script file.
-    /// </summary>
-    internal string ScriptPath { get; }
-
-    /// <summary>
-    ///     Gets a value indicating whether the file existed before the test.
-    /// </summary>
-    internal bool HadOriginalContent { get; }
-
-    /// <summary>
-    ///     Gets the original script content when the file existed before the test.
-    /// </summary>
-    internal string OriginalContent { get; }
 }

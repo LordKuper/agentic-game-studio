@@ -521,7 +521,6 @@ public sealed class AIProviderRegistryTests : IDisposable
             [ClaudeCodeAdapter.Id] = DateTimeOffset.UtcNow.AddMinutes(30)
         };
         AgsSettings.SetCurrent(new AgsSettings(true, true,
-            DateTimeOffset.MinValue, DateTimeOffset.MinValue,
             AgsSettings.DefaultRateLimitCooldownMinutes, cooldowns));
         var registry = new AIProviderRegistry();
         var codex = new StubProvider(CodexAdapter.Id);
@@ -545,7 +544,6 @@ public sealed class AIProviderRegistryTests : IDisposable
             [ClaudeCodeAdapter.Id] = DateTimeOffset.UtcNow.AddSeconds(-60)  // already expired
         };
         AgsSettings.SetCurrent(new AgsSettings(true, false,
-            DateTimeOffset.MinValue, DateTimeOffset.MinValue,
             AgsSettings.DefaultRateLimitCooldownMinutes, cooldowns));
         var claude = new StubProvider(ClaudeCodeAdapter.Id);
         var registry = new AIProviderRegistry();
@@ -585,6 +583,7 @@ public sealed class AIProviderRegistryTests : IDisposable
         internal StubProvider(string providerId) => ProviderId = providerId;
         public string ProviderId { get; }
         public bool IsAvailable => true;
+        public bool TryGetVersion(out string version) { version = string.Empty; return true; }
         public AIProviderResult Invoke(AIProviderRequest request)
             => AIProviderResult.Succeeded(string.Empty, 0, []);
     }

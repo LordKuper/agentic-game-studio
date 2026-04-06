@@ -1,5 +1,3 @@
-using System.Globalization;
-
 namespace AGS.Tests;
 
 /// <summary>
@@ -8,20 +6,14 @@ namespace AGS.Tests;
 public sealed class AgsSettingsTests
 {
     /// <summary>
-    ///     Verifies that timestamps are normalized to UTC and state flags are exposed correctly.
+    ///     Verifies that flags and defaults are set correctly by the constructor.
     /// </summary>
     [Fact]
-    public void ConstructorNormalizesTimestampsAndFlags()
+    public void ConstructorSetsFlags()
     {
-        var claudeTimestamp = new DateTimeOffset(2026, 3, 27, 12, 30, 0, TimeSpan.FromHours(3));
-        var codexTimestamp = new DateTimeOffset(2026, 3, 26, 7, 15, 0, TimeSpan.FromHours(-4));
-        var settings = new AgsSettings(true, false, claudeTimestamp, codexTimestamp);
+        var settings = new AgsSettings(true, false);
         Assert.True(settings.UseClaude);
         Assert.False(settings.UseCodex);
-        Assert.Equal(claudeTimestamp.ToUniversalTime(), settings.ClaudeLastUpdateUtc);
-        Assert.Equal(codexTimestamp.ToUniversalTime(), settings.CodexLastUpdateUtc);
-        Assert.True(settings.HasClaudeLastUpdateUtc);
-        Assert.True(settings.HasCodexLastUpdateUtc);
         Assert.False(settings.AreAllModelsDisabled);
         Assert.Equal(AgsSettings.DefaultRateLimitCooldownMinutes,
             settings.RateLimitDefaultCooldownMinutes);
@@ -90,19 +82,13 @@ public sealed class AgsSettingsTests
     {
         using var tempDirectory = new TemporaryDirectoryScope();
         var configPath = Path.Combine(tempDirectory.Path, "config.json");
-        var claudeTimestamp = new DateTimeOffset(2026, 3, 23, 8, 45, 0, TimeSpan.Zero);
-        var codexTimestamp = new DateTimeOffset(2026, 3, 22, 21, 15, 0, TimeSpan.FromHours(3));
-        var legacyContent = string.Join(Environment.NewLine, "use-claude=true", "use-codex=false",
-            "ignored-entry=ignored",
-            "claude-last-update-utc=" + claudeTimestamp.ToString("O", CultureInfo.InvariantCulture),
-            "codex-last-update-utc=" + codexTimestamp.ToString("O", CultureInfo.InvariantCulture));
+        var legacyContent = string.Join(Environment.NewLine,
+            "use-claude=true", "use-codex=false", "ignored-entry=ignored");
         File.WriteAllText(configPath, legacyContent);
         var canRead = AgsSettings.TryReadFromConfig(configPath, out var settings);
         Assert.True(canRead);
         Assert.True(settings.UseClaude);
         Assert.False(settings.UseCodex);
-        Assert.Equal(claudeTimestamp, settings.ClaudeLastUpdateUtc);
-        Assert.Equal(codexTimestamp.ToUniversalTime(), settings.CodexLastUpdateUtc);
         Assert.Equal(AgsSettings.DefaultRateLimitCooldownMinutes,
             settings.RateLimitDefaultCooldownMinutes);
     }
@@ -132,18 +118,13 @@ public sealed class AgsSettingsTests
     [Fact]
     public void WithMethodsReturnUpdatedCopies()
     {
-        var originalTimestamp = new DateTimeOffset(2026, 3, 27, 12, 30, 0, TimeSpan.Zero);
-        var updatedTimestamp = originalTimestamp.AddHours(4);
         var cooldowns = new Dictionary<string, DateTimeOffset>
         {
             ["claude-code"] = DateTimeOffset.UtcNow.AddMinutes(10)
         };
-        var settings = new AgsSettings(false, false, originalTimestamp, originalTimestamp, 45,
-            cooldowns);
+        var settings = new AgsSettings(false, false, 45, cooldowns);
         var updatedClaude = settings.WithUseClaude(true);
         var updatedCodex = settings.WithUseCodex(true);
-        var updatedClaudeTimestamp = settings.WithClaudeLastUpdateUtc(updatedTimestamp);
-        var updatedCodexTimestamp = settings.WithCodexLastUpdateUtc(updatedTimestamp);
         var updatedMinutes = settings.WithRateLimitDefaultCooldownMinutes(60);
 
         Assert.True(updatedClaude.UseClaude);
@@ -155,16 +136,6 @@ public sealed class AgsSettingsTests
         Assert.True(updatedCodex.UseCodex);
         Assert.Equal(45, updatedCodex.RateLimitDefaultCooldownMinutes);
         Assert.Single(updatedCodex.ProviderCooldowns);
-
-        Assert.Equal(updatedTimestamp, updatedClaudeTimestamp.ClaudeLastUpdateUtc);
-        Assert.Equal(originalTimestamp, updatedClaudeTimestamp.CodexLastUpdateUtc);
-        Assert.Equal(45, updatedClaudeTimestamp.RateLimitDefaultCooldownMinutes);
-        Assert.Single(updatedClaudeTimestamp.ProviderCooldowns);
-
-        Assert.Equal(updatedTimestamp, updatedCodexTimestamp.CodexLastUpdateUtc);
-        Assert.Equal(originalTimestamp, updatedCodexTimestamp.ClaudeLastUpdateUtc);
-        Assert.Equal(45, updatedCodexTimestamp.RateLimitDefaultCooldownMinutes);
-        Assert.Single(updatedCodexTimestamp.ProviderCooldowns);
 
         Assert.Equal(60, updatedMinutes.RateLimitDefaultCooldownMinutes);
         Assert.Single(updatedMinutes.ProviderCooldowns);
@@ -179,15 +150,11 @@ public sealed class AgsSettingsTests
     {
         using var tempDirectory = new TemporaryDirectoryScope();
         var configPath = Path.Combine(tempDirectory.Path, "config.json");
-        var claudeTimestamp = new DateTimeOffset(2026, 3, 25, 10, 0, 0, TimeSpan.FromHours(2));
-        var codexTimestamp = new DateTimeOffset(2026, 3, 24, 18, 30, 0, TimeSpan.FromHours(-5));
-        var settings = new AgsSettings(true, false, claudeTimestamp, codexTimestamp, 45, null);
+        var settings = new AgsSettings(true, false, 45, null);
         settings.WriteToConfig(configPath);
         Assert.True(AgsSettings.TryReadFromConfig(configPath, out var reloadedSettings));
         Assert.True(reloadedSettings.UseClaude);
         Assert.False(reloadedSettings.UseCodex);
-        Assert.Equal(claudeTimestamp.ToUniversalTime(), reloadedSettings.ClaudeLastUpdateUtc);
-        Assert.Equal(codexTimestamp.ToUniversalTime(), reloadedSettings.CodexLastUpdateUtc);
         Assert.Equal(45, reloadedSettings.RateLimitDefaultCooldownMinutes);
     }
 
@@ -220,8 +187,8 @@ public sealed class AgsSettingsTests
             ["claude-code"] = futureExpiry,
             ["codex"] = pastExpiry
         };
-        var settings = new AgsSettings(true, true, DateTimeOffset.MinValue, DateTimeOffset.MinValue,
-            AgsSettings.DefaultRateLimitCooldownMinutes, cooldowns);
+        var settings = new AgsSettings(true, true, AgsSettings.DefaultRateLimitCooldownMinutes,
+            cooldowns);
 
         settings.WriteToConfig(configPath);
         Assert.True(AgsSettings.TryReadFromConfig(configPath, out var reloaded));
@@ -240,8 +207,7 @@ public sealed class AgsSettingsTests
     {
         using var tempDirectory = new TemporaryDirectoryScope();
         var configPath = Path.Combine(tempDirectory.Path, "config.json");
-        var settings = new AgsSettings(true, false, DateTimeOffset.MinValue, DateTimeOffset.MinValue,
-            60, null);
+        var settings = new AgsSettings(true, false, 60, null);
 
         settings.WriteToConfig(configPath);
         var content = File.ReadAllText(configPath);
@@ -279,8 +245,7 @@ public sealed class AgsSettingsTests
     {
         using var tempDirectory = new TemporaryDirectoryScope();
         var configPath = Path.Combine(tempDirectory.Path, "config.json");
-        File.WriteAllText(configPath,
-            "{\"use-claude\":true,\"use-codex\":false,\"claude-last-update-utc\":null,\"codex-last-update-utc\":null}");
+        File.WriteAllText(configPath, "{\"use-claude\":true,\"use-codex\":false}");
 
         var canRead = AgsSettings.TryReadFromConfig(configPath, out var settings);
 
@@ -302,8 +267,6 @@ public sealed class AgsSettingsTests
         var json = $@"{{
   ""use-claude"": true,
   ""use-codex"": false,
-  ""claude-last-update-utc"": null,
-  ""codex-last-update-utc"": null,
   ""rate-limit-default-cooldown-minutes"": 15,
   ""provider-cooldowns"": {{
     ""claude-code"": ""{expiry:O}""
@@ -329,8 +292,6 @@ public sealed class AgsSettingsTests
         File.WriteAllText(configPath, @"{
   ""use-claude"": true,
   ""use-codex"": true,
-  ""claude-last-update-utc"": null,
-  ""codex-last-update-utc"": null,
   ""rate-limit-default-cooldown"": 1800
 }");
 
@@ -363,7 +324,7 @@ public sealed class AgsSettingsTests
         Assert.Equal(["claude-sonnet", "chatgpt"], updated.DefaultModels);
         Assert.True(updated.UseClaude);
         Assert.False(updated.UseCodex);
-        Assert.Empty(settings.DefaultModels);  // original unchanged
+        Assert.Empty(settings.DefaultModels);
     }
 
     /// <summary>
@@ -391,8 +352,8 @@ public sealed class AgsSettingsTests
     {
         using var tempDirectory = new TemporaryDirectoryScope();
         var configPath = Path.Combine(tempDirectory.Path, "config.json");
-        var settings = new AgsSettings(true, false, DateTimeOffset.MinValue, DateTimeOffset.MinValue,
-            AgsSettings.DefaultRateLimitCooldownMinutes, null, ["claude-sonnet", "chatgpt"]);
+        var settings = new AgsSettings(true, false, AgsSettings.DefaultRateLimitCooldownMinutes,
+            null, ["claude-sonnet", "chatgpt"]);
 
         settings.WriteToConfig(configPath);
         Assert.True(AgsSettings.TryReadFromConfig(configPath, out var reloaded));
@@ -408,8 +369,7 @@ public sealed class AgsSettingsTests
     {
         using var tempDirectory = new TemporaryDirectoryScope();
         var configPath = Path.Combine(tempDirectory.Path, "config.json");
-        File.WriteAllText(configPath,
-            "{\"use-claude\":true,\"use-codex\":false,\"claude-last-update-utc\":null,\"codex-last-update-utc\":null}");
+        File.WriteAllText(configPath, "{\"use-claude\":true,\"use-codex\":false}");
 
         Assert.True(AgsSettings.TryReadFromConfig(configPath, out var settings));
         Assert.Empty(settings.DefaultModels);

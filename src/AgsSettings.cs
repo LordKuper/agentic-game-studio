@@ -14,8 +14,6 @@ internal readonly struct AgsSettings
     internal const string ConfigFileName = "config.json";
     private const string UseClaudeSettingName = "use-claude";
     private const string UseCodexSettingName = "use-codex";
-    private const string ClaudeLastUpdateUtcSettingName = "claude-last-update-utc";
-    private const string CodexLastUpdateUtcSettingName = "codex-last-update-utc";
     private const string LegacyRateLimitDefaultCooldownSecondsSettingName =
         "rate-limit-default-cooldown";
     private const string RateLimitDefaultCooldownMinutesSettingName =
@@ -36,39 +34,14 @@ internal readonly struct AgsSettings
     /// </summary>
     /// <param name="useClaude">Whether Claude Code integration is enabled.</param>
     /// <param name="useCodex">Whether Codex integration is enabled.</param>
-    internal AgsSettings(bool useClaude, bool useCodex) : this(useClaude, useCodex,
-        DateTimeOffset.MinValue, DateTimeOffset.MinValue) { }
+    internal AgsSettings(bool useClaude, bool useCodex)
+        : this(useClaude, useCodex, DefaultRateLimitCooldownMinutes, null) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AgsSettings" /> struct.
     /// </summary>
     /// <param name="useClaude">Whether Claude Code integration is enabled.</param>
     /// <param name="useCodex">Whether Codex integration is enabled.</param>
-    /// <param name="claudeLastUpdateUtc">
-    ///     UTC timestamp of the last successful Claude Code update, or
-    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
-    /// </param>
-    /// <param name="codexLastUpdateUtc">
-    ///     UTC timestamp of the last successful Codex update, or
-    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
-    /// </param>
-    internal AgsSettings(bool useClaude, bool useCodex, DateTimeOffset claudeLastUpdateUtc,
-        DateTimeOffset codexLastUpdateUtc) : this(useClaude, useCodex, claudeLastUpdateUtc,
-        codexLastUpdateUtc, DefaultRateLimitCooldownMinutes, null) { }
-
-    /// <summary>
-    ///     Initializes a new instance of the <see cref="AgsSettings" /> struct.
-    /// </summary>
-    /// <param name="useClaude">Whether Claude Code integration is enabled.</param>
-    /// <param name="useCodex">Whether Codex integration is enabled.</param>
-    /// <param name="claudeLastUpdateUtc">
-    ///     UTC timestamp of the last successful Claude Code update, or
-    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
-    /// </param>
-    /// <param name="codexLastUpdateUtc">
-    ///     UTC timestamp of the last successful Codex update, or
-    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
-    /// </param>
     /// <param name="rateLimitDefaultCooldownMinutes">
     ///     Cooldown period in minutes applied when the provider response does not include a reset
     ///     time. Defaults to <see cref="DefaultRateLimitCooldownMinutes" />.
@@ -77,25 +50,15 @@ internal readonly struct AgsSettings
     ///     Map of provider ID to cooldown expiry timestamp. Pass <see langword="null" /> for an
     ///     empty map.
     /// </param>
-    internal AgsSettings(bool useClaude, bool useCodex, DateTimeOffset claudeLastUpdateUtc,
-        DateTimeOffset codexLastUpdateUtc, int rateLimitDefaultCooldownMinutes,
+    internal AgsSettings(bool useClaude, bool useCodex, int rateLimitDefaultCooldownMinutes,
         IReadOnlyDictionary<string, DateTimeOffset> providerCooldowns)
-        : this(useClaude, useCodex, claudeLastUpdateUtc, codexLastUpdateUtc,
-            rateLimitDefaultCooldownMinutes, providerCooldowns, null) { }
+        : this(useClaude, useCodex, rateLimitDefaultCooldownMinutes, providerCooldowns, null) { }
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="AgsSettings" /> struct.
     /// </summary>
     /// <param name="useClaude">Whether Claude Code integration is enabled.</param>
     /// <param name="useCodex">Whether Codex integration is enabled.</param>
-    /// <param name="claudeLastUpdateUtc">
-    ///     UTC timestamp of the last successful Claude Code update, or
-    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
-    /// </param>
-    /// <param name="codexLastUpdateUtc">
-    ///     UTC timestamp of the last successful Codex update, or
-    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
-    /// </param>
     /// <param name="rateLimitDefaultCooldownMinutes">
     ///     Cooldown period in minutes applied when the provider response does not include a reset
     ///     time. Defaults to <see cref="DefaultRateLimitCooldownMinutes" />.
@@ -108,15 +71,12 @@ internal readonly struct AgsSettings
     ///     Priority-ordered list of model names used for general AI tasks (e.g. reading and
     ///     interpreting coordination documents). Pass <see langword="null" /> for an empty list.
     /// </param>
-    internal AgsSettings(bool useClaude, bool useCodex, DateTimeOffset claudeLastUpdateUtc,
-        DateTimeOffset codexLastUpdateUtc, int rateLimitDefaultCooldownMinutes,
+    internal AgsSettings(bool useClaude, bool useCodex, int rateLimitDefaultCooldownMinutes,
         IReadOnlyDictionary<string, DateTimeOffset> providerCooldowns,
         IReadOnlyList<string> defaultModels)
     {
         UseClaude = useClaude;
         UseCodex = useCodex;
-        ClaudeLastUpdateUtc = NormalizeTimestamp(claudeLastUpdateUtc);
-        CodexLastUpdateUtc = NormalizeTimestamp(codexLastUpdateUtc);
         RateLimitDefaultCooldownMinutes = rateLimitDefaultCooldownMinutes > 0
             ? rateLimitDefaultCooldownMinutes
             : DefaultRateLimitCooldownMinutes;
@@ -133,28 +93,6 @@ internal readonly struct AgsSettings
     ///     Gets a value indicating whether Codex integration is enabled.
     /// </summary>
     internal bool UseCodex { get; }
-
-    /// <summary>
-    ///     Gets the UTC timestamp of the last successful Claude Code update, or
-    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
-    /// </summary>
-    internal DateTimeOffset ClaudeLastUpdateUtc { get; }
-
-    /// <summary>
-    ///     Gets the UTC timestamp of the last successful Codex update, or
-    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
-    /// </summary>
-    internal DateTimeOffset CodexLastUpdateUtc { get; }
-
-    /// <summary>
-    ///     Gets a value indicating whether a successful Claude Code update timestamp is stored.
-    /// </summary>
-    internal bool HasClaudeLastUpdateUtc => ClaudeLastUpdateUtc != DateTimeOffset.MinValue;
-
-    /// <summary>
-    ///     Gets a value indicating whether a successful Codex update timestamp is stored.
-    /// </summary>
-    internal bool HasCodexLastUpdateUtc => CodexLastUpdateUtc != DateTimeOffset.MinValue;
 
     /// <summary>
     ///     Gets a value indicating whether both integrations are disabled.
@@ -257,12 +195,6 @@ internal readonly struct AgsSettings
         {
             [UseClaudeSettingName] = UseClaude,
             [UseCodexSettingName] = UseCodex,
-            [ClaudeLastUpdateUtcSettingName] = HasClaudeLastUpdateUtc
-                ? ClaudeLastUpdateUtc.ToString("O", CultureInfo.InvariantCulture)
-                : null,
-            [CodexLastUpdateUtcSettingName] = HasCodexLastUpdateUtc
-                ? CodexLastUpdateUtc.ToString("O", CultureInfo.InvariantCulture)
-                : null,
             [RateLimitDefaultCooldownMinutesSettingName] = RateLimitDefaultCooldownMinutes,
             [ProviderCooldownsSettingName] = activeCooldowns,
             [DefaultModelsSettingName] = DefaultModels.ToArray()
@@ -279,19 +211,8 @@ internal readonly struct AgsSettings
     internal AgsSettings WithProviderCooldowns(
         IReadOnlyDictionary<string, DateTimeOffset> providerCooldowns)
     {
-        return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
-            RateLimitDefaultCooldownMinutes, providerCooldowns, DefaultModels);
-    }
-
-    /// <summary>
-    ///     Creates a copy of the current settings with an updated Claude Code timestamp.
-    /// </summary>
-    /// <param name="claudeLastUpdateUtc">UTC timestamp of the last successful Claude update.</param>
-    /// <returns>A new settings instance with the updated Claude timestamp.</returns>
-    internal AgsSettings WithClaudeLastUpdateUtc(DateTimeOffset claudeLastUpdateUtc)
-    {
-        return new AgsSettings(UseClaude, UseCodex, claudeLastUpdateUtc, CodexLastUpdateUtc,
-            RateLimitDefaultCooldownMinutes, ProviderCooldowns, DefaultModels);
+        return new AgsSettings(UseClaude, UseCodex, RateLimitDefaultCooldownMinutes,
+            providerCooldowns, DefaultModels);
     }
 
     /// <summary>
@@ -301,19 +222,8 @@ internal readonly struct AgsSettings
     /// <returns>A new settings instance with the updated Claude enabled flag.</returns>
     internal AgsSettings WithUseClaude(bool useClaude)
     {
-        return new AgsSettings(useClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
-            RateLimitDefaultCooldownMinutes, ProviderCooldowns, DefaultModels);
-    }
-
-    /// <summary>
-    ///     Creates a copy of the current settings with an updated Codex timestamp.
-    /// </summary>
-    /// <param name="codexLastUpdateUtc">UTC timestamp of the last successful Codex update.</param>
-    /// <returns>A new settings instance with the updated Codex timestamp.</returns>
-    internal AgsSettings WithCodexLastUpdateUtc(DateTimeOffset codexLastUpdateUtc)
-    {
-        return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, codexLastUpdateUtc,
-            RateLimitDefaultCooldownMinutes, ProviderCooldowns, DefaultModels);
+        return new AgsSettings(useClaude, UseCodex, RateLimitDefaultCooldownMinutes,
+            ProviderCooldowns, DefaultModels);
     }
 
     /// <summary>
@@ -323,8 +233,8 @@ internal readonly struct AgsSettings
     /// <returns>A new settings instance with the updated Codex enabled flag.</returns>
     internal AgsSettings WithUseCodex(bool useCodex)
     {
-        return new AgsSettings(UseClaude, useCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
-            RateLimitDefaultCooldownMinutes, ProviderCooldowns, DefaultModels);
+        return new AgsSettings(UseClaude, useCodex, RateLimitDefaultCooldownMinutes,
+            ProviderCooldowns, DefaultModels);
     }
 
     /// <summary>
@@ -337,8 +247,8 @@ internal readonly struct AgsSettings
     /// <returns>A new settings instance with the updated default cooldown.</returns>
     internal AgsSettings WithRateLimitDefaultCooldownMinutes(int rateLimitDefaultCooldownMinutes)
     {
-        return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
-            rateLimitDefaultCooldownMinutes, ProviderCooldowns, DefaultModels);
+        return new AgsSettings(UseClaude, UseCodex, rateLimitDefaultCooldownMinutes,
+            ProviderCooldowns, DefaultModels);
     }
 
     /// <summary>
@@ -350,8 +260,8 @@ internal readonly struct AgsSettings
     /// <returns>A new settings instance with the updated default models.</returns>
     internal AgsSettings WithDefaultModels(IReadOnlyList<string> defaultModels)
     {
-        return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
-            RateLimitDefaultCooldownMinutes, ProviderCooldowns, defaultModels);
+        return new AgsSettings(UseClaude, UseCodex, RateLimitDefaultCooldownMinutes,
+            ProviderCooldowns, defaultModels);
     }
 
     /// <summary>
@@ -410,16 +320,12 @@ internal readonly struct AgsSettings
                 return false;
             if (!TryReadRequiredBoolean(rootElement, UseCodexSettingName, out var useCodex))
                 return false;
-            var claudeLastUpdateUtc =
-                TryReadOptionalTimestamp(rootElement, ClaudeLastUpdateUtcSettingName);
-            var codexLastUpdateUtc =
-                TryReadOptionalTimestamp(rootElement, CodexLastUpdateUtcSettingName);
             var rateLimitDefaultCooldownMinutes =
                 TryReadRateLimitDefaultCooldownMinutes(rootElement);
             var providerCooldowns = TryReadProviderCooldowns(rootElement);
             var defaultModels = TryReadStringList(rootElement, DefaultModelsSettingName);
-            settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc, codexLastUpdateUtc,
-                rateLimitDefaultCooldownMinutes, providerCooldowns, defaultModels);
+            settings = new AgsSettings(useClaude, useCodex, rateLimitDefaultCooldownMinutes,
+                providerCooldowns, defaultModels);
             return true;
         }
         catch (JsonException)
@@ -545,27 +451,6 @@ internal readonly struct AgsSettings
     }
 
     /// <summary>
-    ///     Attempts to read an optional UTC timestamp property from a JSON object.
-    /// </summary>
-    /// <param name="configElement">JSON object that contains persisted settings.</param>
-    /// <param name="propertyName">Property name to read.</param>
-    /// <returns>
-    ///     Parsed UTC timestamp when a valid value is present; otherwise,
-    ///     <see cref="DateTimeOffset.MinValue" />.
-    /// </returns>
-    private static DateTimeOffset TryReadOptionalTimestamp(JsonElement configElement,
-        string propertyName)
-    {
-        if (!configElement.TryGetProperty(propertyName, out var propertyElement))
-            return DateTimeOffset.MinValue;
-        if (propertyElement.ValueKind == JsonValueKind.Null) return DateTimeOffset.MinValue;
-        if (propertyElement.ValueKind != JsonValueKind.String) return DateTimeOffset.MinValue;
-        var rawTimestamp = propertyElement.GetString();
-        if (string.IsNullOrWhiteSpace(rawTimestamp)) return DateTimeOffset.MinValue;
-        return TryParseTimestamp(rawTimestamp);
-    }
-
-    /// <summary>
     ///     Attempts to read settings from the legacy plain-text configuration file content.
     /// </summary>
     /// <param name="configContent">Raw content of the legacy configuration file.</param>
@@ -584,8 +469,6 @@ internal readonly struct AgsSettings
             var hasUseCodex = false;
             var useClaude = false;
             var useCodex = false;
-            var claudeLastUpdateUtc = DateTimeOffset.MinValue;
-            var codexLastUpdateUtc = DateTimeOffset.MinValue;
             foreach (var line in lines)
             {
                 var trimmedLine = line.Trim();
@@ -604,18 +487,10 @@ internal readonly struct AgsSettings
                 {
                     useCodex = parsedUseCodex;
                     hasUseCodex = true;
-                    continue;
                 }
-                if (key == ClaudeLastUpdateUtcSettingName)
-                {
-                    claudeLastUpdateUtc = TryParseTimestamp(value);
-                    continue;
-                }
-                if (key == CodexLastUpdateUtcSettingName)
-                    codexLastUpdateUtc = TryParseTimestamp(value);
             }
             if (!hasUseClaude || !hasUseCodex) return false;
-            settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc, codexLastUpdateUtc);
+            settings = new AgsSettings(useClaude, useCodex);
             return true;
         }
         catch (ArgumentException)
@@ -624,33 +499,4 @@ internal readonly struct AgsSettings
         }
     }
 
-    /// <summary>
-    ///     Normalizes a persisted timestamp to UTC.
-    /// </summary>
-    /// <param name="timestamp">Timestamp to normalize.</param>
-    /// <returns>
-    ///     <paramref name="timestamp" /> converted to UTC, or
-    ///     <see cref="DateTimeOffset.MinValue" /> when the value is not set.
-    /// </returns>
-    private static DateTimeOffset NormalizeTimestamp(DateTimeOffset timestamp)
-    {
-        if (timestamp == DateTimeOffset.MinValue) return DateTimeOffset.MinValue;
-        return timestamp.ToUniversalTime();
-    }
-
-    /// <summary>
-    ///     Parses a persisted timestamp string into a UTC value.
-    /// </summary>
-    /// <param name="rawTimestamp">Timestamp string read from configuration.</param>
-    /// <returns>
-    ///     Parsed UTC timestamp when the input is valid; otherwise,
-    ///     <see cref="DateTimeOffset.MinValue" />.
-    /// </returns>
-    private static DateTimeOffset TryParseTimestamp(string rawTimestamp)
-    {
-        if (!DateTimeOffset.TryParse(rawTimestamp, CultureInfo.InvariantCulture,
-                DateTimeStyles.RoundtripKind, out var parsedTimestamp))
-            return DateTimeOffset.MinValue;
-        return NormalizeTimestamp(parsedTimestamp);
-    }
 }

@@ -1,4 +1,6 @@
 using System.Reflection;
+using AGS.ai;
+using AGS.subsystems;
 
 namespace AGS.Tests;
 
@@ -28,14 +30,13 @@ public sealed class ProgramTests
         AgsTestState.ResetCurrentSettings();
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
+        using var providers = new ProviderCheckStubScope(available: true);
         using var prompts = new PromptStubScope(selectionIndexes: [2]);
         using var console = new ConsoleRedirectionScope(string.Empty);
         var settings = new AgsSettings(false, false);
         settings.TryWriteToProjectConfig(tempDirectory.Path, out _);
         InvokeProgramMain(Array.Empty<string>());
         Assert.Contains("AGS configuration found and loaded. Initialization is not required.",
-            console.Output);
-        Assert.Contains("No enabled integrations were selected. Update is skipped.",
             console.Output);
         Assert.Equal(["Main menu"], prompts.SelectMessages);
     }
@@ -67,7 +68,7 @@ public sealed class ProgramTests
     }
 
     /// <summary>
-    ///     Verifies that missing configuration triggers setup, installer checks, and the main menu.
+    ///     Verifies that missing configuration triggers setup and the main menu.
     /// </summary>
     [Fact]
     public void MainRunsSetupWhenConfigurationIsMissing()
@@ -75,6 +76,7 @@ public sealed class ProgramTests
         AgsTestState.ResetCurrentSettings();
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
+        using var providers = new ProviderCheckStubScope(available: true);
         using var prompts = new PromptStubScope(confirmations: [true, false, false],
             selectionIndexes: [2]);
         using var console = new ConsoleRedirectionScope(string.Empty);
@@ -85,8 +87,6 @@ public sealed class ProgramTests
         Assert.False(persistedSettings.UseClaude);
         Assert.False(persistedSettings.UseCodex);
         Assert.Contains("Setup required. Starting setup...", console.Output);
-        Assert.Contains("No enabled integrations were selected. Update is skipped.",
-            console.Output);
         Assert.Contains("Application is shutting down.", console.Output);
         Assert.Equal(
         [

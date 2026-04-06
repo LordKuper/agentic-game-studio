@@ -25,7 +25,7 @@ internal static class Program
         }
         if (!TryInitializeApplication(out var settings)) return;
         AgsSettings.SetCurrent(settings);
-        InstallAISubsystem.Run();
+        if (!ProviderCheckSubsystem.Run()) return;
         MainMenuSubsystem.Run();
     }
 

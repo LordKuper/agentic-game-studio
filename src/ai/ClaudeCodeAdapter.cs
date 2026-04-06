@@ -46,20 +46,23 @@ internal sealed class ClaudeCodeAdapter : IAIProvider
     public string ProviderId => Id;
 
     /// <inheritdoc />
-    public bool IsAvailable
+    public bool IsAvailable => TryGetVersion(out _);
+
+    /// <inheritdoc />
+    public bool TryGetVersion(out string version)
     {
-        get
+        version = string.Empty;
+        try
         {
-            try
-            {
-                var startInfo = BuildStartInfo(ClaudeExecutable, "--version", null);
-                var (exitCode, _, _) = RunProcess(startInfo, AvailabilityCheckTimeoutMs);
-                return exitCode == 0;
-            }
-            catch
-            {
-                return false;
-            }
+            var startInfo = BuildStartInfo(ClaudeExecutable, "--version", null);
+            var (exitCode, output, _) = RunProcess(startInfo, AvailabilityCheckTimeoutMs);
+            if (exitCode != 0) return false;
+            version = output.Trim();
+            return true;
+        }
+        catch
+        {
+            return false;
         }
     }
 
@@ -368,6 +371,7 @@ internal sealed class ClaudeCodeAdapter : IAIProvider
     private static (int ExitCode, string StandardOutput, string StandardError) DefaultRunProcess(
         ProcessStartInfo startInfo, int timeoutMs)
     {
+        CliProcessStartInfoResolver.PrepareForExecution(startInfo);
         using var process = new Process();
         process.StartInfo = startInfo;
         var outputBuilder = new StringBuilder();

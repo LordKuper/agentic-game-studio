@@ -58,8 +58,7 @@ public sealed class AgentOrchestratorTests : IDisposable
     public void InvokeAgentUsesConfiguredDefaultCooldownWhenProviderDoesNotReturnResetTime()
     {
         var now = new DateTimeOffset(2030, 3, 31, 9, 0, 0, TimeSpan.Zero);
-        AgsSettings.SetCurrent(new AgsSettings(true, true, DateTimeOffset.MinValue,
-            DateTimeOffset.MinValue, 45, null));
+        AgsSettings.SetCurrent(new AgsSettings(true, true, 45, null));
         using var projectRoot = new TemporaryDirectoryScope();
         WriteAgentDefinition(projectRoot.Path, "test-agent", ["claude-sonnet", "chatgpt"]);
 
@@ -314,6 +313,9 @@ public sealed class AgentOrchestratorTests : IDisposable
         ///     Gets a value indicating whether the provider is considered installed.
         /// </summary>
         public bool IsAvailable { get; }
+
+        /// <inheritdoc />
+        public bool TryGetVersion(out string version) { version = string.Empty; return IsAvailable; }
 
         /// <summary>
         ///     Gets the number of invocations received by the stub.

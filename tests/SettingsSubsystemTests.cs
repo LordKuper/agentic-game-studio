@@ -15,7 +15,7 @@ public sealed class SettingsSubsystemTests
     {
         var labels = (string[])PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
             "BuildOptionLabels",
-            new AgsSettings(true, false, DateTimeOffset.MinValue, DateTimeOffset.MinValue, 45, null));
+            new AgsSettings(true, false, 45, null));
         Assert.Equal(
         [
             "use-codex: no",
@@ -100,8 +100,7 @@ public sealed class SettingsSubsystemTests
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
         var errorMessage = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
-            "PersistSettings", new AgsSettings(true, true, DateTimeOffset.MinValue,
-                DateTimeOffset.MinValue, 45, null));
+            "PersistSettings", new AgsSettings(true, true, 45, null));
         Assert.Equal(string.Empty, errorMessage);
         Assert.True(AgsSettings.Current.UseClaude);
         Assert.True(AgsSettings.Current.UseCodex);
@@ -228,8 +227,7 @@ public sealed class SettingsSubsystemTests
         AgsTestState.ResetCurrentSettings();
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
-        AgsSettings.SetCurrent(new AgsSettings(true, false, DateTimeOffset.MinValue,
-            DateTimeOffset.MinValue, 45, null));
+        AgsSettings.SetCurrent(new AgsSettings(true, false, 45, null));
         var unchangedValue = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),
             "SetSettingValue", 1, true);
         var unchangedTimeout = (string)PrivateAccess.InvokeStatic(typeof(SettingsSubsystem),

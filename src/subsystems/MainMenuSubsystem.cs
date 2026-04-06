@@ -5,26 +5,18 @@ namespace AGS.subsystems;
 /// </summary>
 internal static class MainMenuSubsystem
 {
-    private static Func<IReadOnlyList<string>> unfinishedSessionNamesProvider =
-        GetUnfinishedSessionNames;
-
     /// <summary>
-    ///     Builds the visible main menu options for the current application state.
+    ///     Builds the main menu options.
     /// </summary>
     /// <returns>Ordered menu options to display.</returns>
     private static MainMenuOption[] BuildOptions()
     {
-        var options = new List<MainMenuOption>();
-        foreach (var sessionName in unfinishedSessionNamesProvider())
-        {
-            options.Add(new MainMenuOption($"Continue session {sessionName}",
-                MainMenuOptionKind.ContinueSession, sessionName));
-        }
-        options.Add(new MainMenuOption("Start a new session", MainMenuOptionKind.StartNewSession,
-            string.Empty));
-        options.Add(new MainMenuOption("Settings", MainMenuOptionKind.Settings, string.Empty));
-        options.Add(new MainMenuOption("Exit", MainMenuOptionKind.Exit, string.Empty));
-        return [.. options];
+        return
+        [
+            new MainMenuOption("Start", MainMenuOptionKind.Start),
+            new MainMenuOption("Settings", MainMenuOptionKind.Settings),
+            new MainMenuOption("Exit", MainMenuOptionKind.Exit)
+        ];
     }
 
     /// <summary>
@@ -37,18 +29,6 @@ internal static class MainMenuSubsystem
         var labels = new string[options.Count];
         for (var index = 0; index < options.Count; index++) labels[index] = options[index].Label;
         return labels;
-    }
-
-    /// <summary>
-    ///     Gets unfinished session names that should appear in the main menu.
-    /// </summary>
-    /// <returns>
-    ///     Ordered unfinished session names. The current implementation returns no sessions until
-    ///     session persistence is added.
-    /// </returns>
-    private static IReadOnlyList<string> GetUnfinishedSessionNames()
-    {
-        return [];
     }
 
     /// <summary>
@@ -71,9 +51,11 @@ internal static class MainMenuSubsystem
                 SettingsSubsystem.Run();
                 continue;
             }
-            if (selectedOption.Kind == MainMenuOptionKind.ContinueSession ||
-                selectedOption.Kind == MainMenuOptionKind.StartNewSession)
+            if (selectedOption.Kind == MainMenuOptionKind.Start)
+            {
+                // TODO: invoke ags-start skill via skill runner
                 continue;
+            }
         }
     }
 
@@ -87,14 +69,10 @@ internal static class MainMenuSubsystem
         /// </summary>
         /// <param name="label">Visible label shown in the main menu.</param>
         /// <param name="kind">Behavior associated with the option.</param>
-        /// <param name="sessionName">
-        ///     Session name associated with the option, or an empty string when not applicable.
-        /// </param>
-        internal MainMenuOption(string label, MainMenuOptionKind kind, string sessionName)
+        internal MainMenuOption(string label, MainMenuOptionKind kind)
         {
             Label = label;
             Kind = kind;
-            SessionName = sessionName;
         }
 
         /// <summary>
@@ -106,12 +84,6 @@ internal static class MainMenuSubsystem
         ///     Gets the behavior associated with the option.
         /// </summary>
         internal MainMenuOptionKind Kind { get; }
-
-        /// <summary>
-        ///     Gets the session name associated with the option, or an empty string when not
-        ///     applicable.
-        /// </summary>
-        internal string SessionName { get; }
     }
 
     /// <summary>
@@ -120,14 +92,9 @@ internal static class MainMenuSubsystem
     private enum MainMenuOptionKind
     {
         /// <summary>
-        ///     Continues an unfinished session.
+        ///     Starts the AGS workflow by invoking the ags-start skill.
         /// </summary>
-        ContinueSession,
-
-        /// <summary>
-        ///     Starts a new session.
-        /// </summary>
-        StartNewSession,
+        Start,
 
         /// <summary>
         ///     Opens application settings.

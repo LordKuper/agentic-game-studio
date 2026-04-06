@@ -38,7 +38,7 @@ CLI -> Resource Loader -> Settings (AI provider priority list)
 
 ## Skill Format
 
-Skills live in `skills/<skill-name>/SKILL.md` and follow the Codex skill spec:
+Skills live in `skills/<skill-name>/SKILL.md` and follow the skill spec:
 
 ```
 skills/

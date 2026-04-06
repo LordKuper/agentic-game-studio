@@ -16,6 +16,19 @@ internal interface IAIProvider
     bool IsAvailable { get; }
 
     /// <summary>
+    ///     Attempts to retrieve the installed version string for this provider.
+    /// </summary>
+    /// <param name="version">
+    ///     The version string reported by the provider CLI when the call succeeds;
+    ///     otherwise, an empty string.
+    /// </param>
+    /// <returns>
+    ///     <see langword="true" /> when the provider is installed and returned a version;
+    ///     otherwise, <see langword="false" />.
+    /// </returns>
+    bool TryGetVersion(out string version);
+
+    /// <summary>
     ///     Invokes an AI agent with the given prompt and returns the result.
     /// </summary>
     /// <param name="request">Request containing prompts, working directory, and timeout.</param>
