@@ -1,10 +1,10 @@
 ---
-name: ags-start
+name: ags-onboard
 description: "Entry-point onboarding for AGS game projects. Use when beginning a new project or resuming a loosely defined one and you need to inspect the repository, converge on a documented project concept in gdd/game-concept.md, make an explicit engine decision in gdd/engine-decision.md, and recommend the first AGS sessions to create."
 compatibility: "Designed for AGS repositories that use the local .ags/, gdd/, assets/, src/, and rules/ layout and allow local filesystem inspection."
 ---
 
-# Start
+# Onboard
 
 This skill is the default first touchpoint for project work in AGS.
 Its job is to turn an undefined or partially defined game project into:
@@ -25,8 +25,7 @@ Before asking questions, gather just enough context to tailor the conversation.
 
 Check:
 
-- `.ags/config.json` if it exists
-- `.ags/sessions/index.md` and any active or paused sessions
+- markdown documents in `.ags/`
 - markdown documents in `gdd/`
 - implementation and asset roots such as `assets/` and `src/`
 - signs of an existing engine choice
