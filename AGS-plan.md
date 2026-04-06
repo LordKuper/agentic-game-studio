@@ -2,6 +2,12 @@
 
 A C# CLI application that orchestrates AI agents across the full game development cycle — from concept to post-release support. The CEO (human user) sets direction and approves decisions; agents handle everything else.
 
+## Working Agreement
+
+Before implementing any checklist item, provide a short description of the planned approach (affected files, key decisions, expected behaviour). Wait for confirmation before proceeding.
+
+---
+
 ## Core Design
 
 - **CEO approves everything** — agents propose options with rationale, CEO decides.
@@ -11,34 +17,39 @@ A C# CLI application that orchestrates AI agents across the full game developmen
 - **Global install** — `%USERPROFILE%\ags\`, binary + standard resources (agents, rules, skills, templates).
 - **Resource overlay** — project-local `.ags/` overrides standard resources (full file replacement, no merge).
 - **Unity priority** — Unreal and Godot formally supported.
+- **No game development logic in code** — the app does not contain game development stages, transitions, or workflow rules. All such logic lives in `rules/` (md files) and `skills/` (skill directories per the Codex skill spec). The app only discovers AI providers and invokes skills.
 
 ## Architecture
 
 ```
-CLI -> Resource Loader -> Subsystems (Setup, Settings, MainMenu, ...)
-                       -> Stage Detection Engine (disk artifacts -> lifecycle stage)
-                       -> Next Steps Recommender (stage + state -> actions)
-                       -> Session Manager (lifecycle, persistence, git branches)
-                       -> Agent Orchestrator (prompt assembly, sequencing, inter-agent comms)
-                       -> AI Provider Abstraction (IAIProvider -> adapters -> CLI subprocesses)
-                       -> Build System Integration (build, test runner)
-                       -> Git Manager (branches, commits, PRs)
+CLI -> Resource Loader -> Settings (AI provider priority list)
+    -> AI Provider Registry (discover available providers, track cooldowns, failover)
+    -> Skill Runner (load skill from skills/, assemble prompt, invoke via default AI)
+         -> ags-start skill (entry point — reads rules/, drives all further workflow)
+    -> Session Manager (lifecycle, persistence, git branches)
+    -> Prompt Assembly Engine (skill/agent content + rules + context)
+    -> Git Manager (branches, commits, PRs)
+    -> Build System Integration (build, test runner)
 ```
 
-**Data flow:** CEO input -> Session Manager -> Agent Orchestrator -> AI Provider -> agent output (files) -> state update -> Next Steps -> CEO approval.
+**Startup flow:** check available AI providers (from enabled providers in settings) → invoke `ags-start` skill via the highest-priority available provider → `ags-start` determines all further workflow, reads `rules/`, and coordinates sessions and agents.
 
-## Project Lifecycle
+**Data flow:** CEO input → Session Manager → Skill Runner / Agent Orchestrator → AI Provider → output (files) → state update → CEO approval.
 
-6 stages, derived from disk artifacts (not a stored label):
+## Skill Format
 
-1. **Concept** — no `gdd/game-concept.md` or not approved
-2. **Pre-production** — concept approved, engine/prototype/plan in progress
-3. **Production** — all pre-production gates passed, content creation underway
-4. **Testing/QA** — core features ready, QA sessions active
-5. **Release Preparation** — QA passed, preparing release
-6. **Post-release/Live Ops** — release shipped
+Skills live in `skills/<skill-name>/SKILL.md` and follow the Codex skill spec:
 
-Transitions proposed by the application, confirmed by CEO.
+```
+skills/
+  ags-start/
+    SKILL.md          # required: frontmatter (name, description) + imperative steps
+    references/       # optional: rule references, docs
+    agents/
+      openai.yaml     # optional: UI config, tool dependencies
+```
+
+`SKILL.md` opens with YAML frontmatter (`name`, `description`) followed by imperative steps describing inputs, outputs, and tool invocations.
 
 ## Session Lifecycle
 
@@ -49,6 +60,13 @@ Each session: directory `.ags/sessions/<id>/`, files state/scope/plan/tasks, git
 ## Agent Orchestrator
 
 Prompt = agent definition + rules + task context + project context + CEO instructions. Inter-agent communication via files (handoff files). CEO approves every key decision.
+
+## AI Agent Usage Rules
+
+- **No hardcoded agent lists** — agent names are never enumerated in code. The set of agents for any task is derived at runtime from `agent-coordination.md`.
+- **Default AI** (`DefaultModels` setting, priority-ordered model list) — used for skill invocation and general file-level tasks.
+- **Named agents** (`InvokeAgent`) — used for domain-specific tasks where the agent's definition, rules, and practical guidance are required. Agent names come from `agent-coordination.md` or from task context, never from constants in code.
+- **agent-coordination.md** is the authoritative source for agent hierarchy and responsibilities. If it is missing from the project overlay, the default AI creates it before any agent resolution is attempted.
 
 ## Non-Goals
 
@@ -79,66 +97,69 @@ Art/audio asset generation, game launching, databases, Web UI/GUI, multi-user co
 - [x] Provider cooldown tracking in AIProviderRegistry (mark, expiry, persistence to config.json)
 - [x] `IsAvailable` returns false during cooldown; `RateLimitDefaultCooldown` setting (default 30min)
 - [x] Task failover: on rate-limit, select next available provider from agent's `models` list, restart task
-- [ ] Wait-and-retry when all providers rate-limited (infrastructure ready: `GetEarliestCooldownExpiry`; wiring deferred to Phase 3)
-- [ ] CEO notification on provider switch / all-providers-exhausted (deferred to Phase 3 / Phase 6 UX)
+- [ ] Wait-and-retry when all providers rate-limited (infrastructure ready: `GetEarliestCooldownExpiry`; wiring deferred to Phase 4)
+- [ ] CEO notification on provider switch / all-providers-exhausted (deferred to Phase 4 / Phase 6 UX)
 - [x] Tests: rate-limit detection, cooldown expiry, failover selection, all-exhausted wait
 
 - [x] **1.2 Git Manager** — branch creation, task commits, conflict detection, PR generation, merge/cleanup
 - [x] **1.3 Prompt Assembly Engine** — agent .md loader, rule loader, context assembler, prompt template
 
-### Phase 2: Session System
+### Phase 2: Skill Runner
 
-- [x] **2.1 Session Manager Core** — creation, state transitions, pause/resume, directory management, git branch on start
+**2.1 Skill Loader**
+- [ ] Skill discovery from `skills/` directory (global install + project overlay)
+- [ ] `SKILL.md` parser: frontmatter extraction (`name`, `description`) + body
+- [ ] Skill prompt assembly: SKILL.md body + optional `references/` content + session context
+- [ ] Tests: loader with fixture skill directories, overlay override behaviour
 
-**2.2 Scoping Protocol**
-- [ ] Agent selection for scoping
-- [ ] Q&A loop (agent asks -> CEO answers -> repeat)
-- [ ] Scope document generation (session-scope.md)
-- [ ] CEO approval flow for scope
-- [ ] Tests: mock agent interaction, scope document validation
+**2.2 Skill Invocation**
+- [ ] `ISkillRunner` interface + implementation: load skill, assemble prompt, invoke via default AI provider
+- [ ] Result handling: parse AI output, apply file writes described in skill output
+- [ ] Tests: end-to-end with mock AI provider
 
-**2.3 Planning Protocol**
+**2.3 ags-start Skill**
+- [ ] `skills/ags-start/SKILL.md`: repo inspection, entry-state routing (new repo / existing project / in-progress session / post-release), first-run onboarding
+- [ ] References to `rules/` files for stage definitions and workflow logic
+- [ ] Invoked automatically on app startup after provider availability check
+- [ ] Tests: each entry path with fixture repo states
+
+### Phase 3: Session System
+
+- [x] **3.1 Session Manager Core** — creation, state transitions, pause/resume, directory management, git branch on start
+- [x] **3.2 Scoping Protocol** — agent selection via default AI from agent-coordination.md, Q&A loop, session-scope.md generation, CEO approval flow
+
+**3.3 Planning Protocol**
 - [ ] Agent selection for planning
 - [ ] Execution plan generation from approved scope
 - [ ] Task decomposition into atomic tasks
 - [ ] CEO approval flow for plan
 - [ ] Tests: plan structure validation, task dependency ordering
 
-**2.4 Task Execution Engine**
+**3.4 Task Execution Engine**
 - [ ] Sequential task execution from plan
 - [ ] Task brief creation and management
 - [ ] Task start/complete/skip protocol
 - [ ] Task switch protocol within session
 - [ ] Tests: execution order enforcement, state persistence
 
-### Phase 3: Agent Orchestrator
+### Phase 4: Agent Orchestrator
 
-**3.1 Single-Agent Invocation**
+**4.1 Single-Agent Invocation**
 - [ ] Assemble prompt for single agent (definition + rules + task context)
 - [ ] Invoke via AI provider, capture and parse result
 - [ ] Detect modified files via git diff, update task brief
+- [ ] Wait-and-retry when all providers rate-limited (wire up `GetEarliestCooldownExpiry`)
+- [ ] CEO notification on provider switch / all-providers-exhausted
 - [ ] Tests: end-to-end with mock provider
 
-**3.2 Inter-Agent Communication**
+**4.2 Inter-Agent Communication**
 - [ ] Detect dependency, invoke agent B, write handoff file, feed back to agent A
 - [ ] Tests: multi-agent handoff scenarios
 
-**3.3 CEO Interaction Loop**
+**4.3 CEO Interaction Loop**
 - [ ] Present proposals with options, capture choice, feed back to agent
 - [ ] Handle corrections and re-invocations
 - [ ] Tests: interaction flow with simulated CEO input
-
-### Phase 4: Stage Detection and Recommendations
-
-**4.1 Stage Detection Engine**
-- [ ] Artifact scanner + stage determination logic
-- [ ] Stage display in main menu
-- [ ] Tests: one test per stage with fixture directories
-
-**4.2 Next Steps Recommender**
-- [ ] Recommendation rules per stage + agent involvement lookup
-- [ ] Complexity estimation + presentation in main menu
-- [ ] Tests: recommendation output per stage scenario
 
 ### Phase 5: Build System Integration
 
@@ -158,7 +179,8 @@ Art/audio asset generation, game launching, databases, Web UI/GUI, multi-user co
 ### Phase 6: Main Menu and UX Polish
 
 **6.1 Enhanced Main Menu**
-- [ ] Project info, recommended steps, resumable sessions, contextual options
+- [ ] Project info, resumable sessions, contextual options
+- [ ] Stage and recommended next steps provided by ags-start skill output (not derived in code)
 - [ ] Tests: menu rendering with various states
 
 **6.2 Session Progress Display**
@@ -169,20 +191,13 @@ Art/audio asset generation, game launching, databases, Web UI/GUI, multi-user co
 - [ ] AI provider failures, session/git state recovery, clear error messages
 - [ ] Tests: failure scenarios
 
-### Phase 7: ags-start Skill
+### Phase 7: Hardening
 
-**7.1 Onboarding Flow**
-- [ ] Repo inspection, entry state routing (A/B/C/D), concept/engine doc generation
-- [ ] First session recommendations
-- [ ] Tests: each entry path, document generation
-
-### Phase 8: Hardening
-
-**8.1 Edge Cases**
+**7.1 Edge Cases**
 - [ ] Empty repo, corrupted state, multiple engine fingerprints, empty session, timeout handling
 
-**8.2 Documentation**
+**7.2 Documentation**
 - [ ] README, CLI help text, configuration reference
 
-**8.3 Performance**
+**7.3 Performance**
 - [ ] Optimize file scanning and git operations for large projects/repos

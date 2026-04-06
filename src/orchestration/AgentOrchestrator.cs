@@ -7,7 +7,7 @@ namespace AGS.orchestration;
 ///     Coordinates agent invocations by assembling prompts, selecting an eligible AI provider,
 ///     and applying rate-limit failover when a provider reports quota exhaustion.
 /// </summary>
-internal sealed class AgentOrchestrator
+internal sealed class AgentOrchestrator : IAgentOrchestrator
 {
     private readonly PromptAssembler promptAssembler;
     private readonly AIProviderRegistry providerRegistry;
@@ -39,7 +39,7 @@ internal sealed class AgentOrchestrator
     /// </summary>
     /// <param name="request">Agent invocation request.</param>
     /// <returns>The terminal result of the invocation.</returns>
-    internal AgentInvocationResult InvokeAgent(AgentInvocationRequest request)
+    public AgentInvocationResult InvokeAgent(AgentInvocationRequest request)
     {
         if (request == null) throw new ArgumentNullException(nameof(request));
         if (string.IsNullOrWhiteSpace(request.AgentName))
@@ -49,16 +49,59 @@ internal sealed class AgentOrchestrator
         var providerRequest = promptAssembler.BuildRequest(request.AgentName, request.RuleNames,
             request.Context, request.TaskPrompt, request.WorkingDirectory, request.Timeout,
             request.ProviderArguments);
+        return ExecuteWithFailover(providerRequest, agentDefinition.Models,
+            $"No enabled AI provider is currently available for agent '{request.AgentName}'.");
+    }
+
+    /// <summary>
+    ///     Invokes the default AI provider for a general task using the model priority list from
+    ///     <see cref="AgsSettings.DefaultModels" />, with the same rate-limit failover logic as
+    ///     <see cref="InvokeAgent" />.
+    /// </summary>
+    /// <param name="systemPrompt">System-level instructions for the AI.</param>
+    /// <param name="taskPrompt">Primary task instruction sent to the AI.</param>
+    /// <param name="workingDirectory">Working directory for the AI subprocess.</param>
+    /// <param name="timeout">Maximum time to wait for a provider response.</param>
+    /// <returns>The terminal result of the invocation.</returns>
+    public AgentInvocationResult InvokeDefault(string systemPrompt, string taskPrompt,
+        string workingDirectory, TimeSpan timeout)
+    {
+        var models = AgsSettings.HasCurrentSettings
+            ? AgsSettings.Current.DefaultModels
+            : Array.Empty<string>();
+
+        if (models.Count == 0)
+        {
+            var noProviderResult = AIProviderResult.Failed(
+                "No default AI provider is configured. " +
+                "Set 'default-models' in the project settings.", -1);
+            return new AgentInvocationResult(string.Empty, noProviderResult, []);
+        }
+
+        var request = new AIProviderRequest(
+            systemPrompt ?? string.Empty,
+            taskPrompt ?? string.Empty,
+            workingDirectory ?? string.Empty,
+            timeout,
+            null);
+
+        return ExecuteWithFailover(request, models,
+            "No enabled default AI provider is currently available.");
+    }
+
+    /// <summary>
+    ///     Runs the provider invocation loop with rate-limit failover for the given model priority
+    ///     list, returning the terminal result.
+    /// </summary>
+    private AgentInvocationResult ExecuteWithFailover(AIProviderRequest providerRequest,
+        IReadOnlyList<string> models, string noProviderMessage)
+    {
         var attemptedProviderIds = new List<string>();
-        var provider = ResolveAvailableProvider(agentDefinition.Models);
+        var provider = ResolveAvailableProvider(models);
 
         if (provider == null)
-        {
-            var unavailableResult = AIProviderResult.Failed(
-                $"No enabled AI provider is currently available for agent '{request.AgentName}'.",
-                -1);
-            return new AgentInvocationResult(string.Empty, unavailableResult, attemptedProviderIds);
-        }
+            return new AgentInvocationResult(string.Empty,
+                AIProviderResult.Failed(noProviderMessage, -1), attemptedProviderIds);
 
         AIProviderResult lastProviderResult = null;
         var lastProviderId = string.Empty;
@@ -77,7 +120,7 @@ internal sealed class AgentOrchestrator
 
             var cooldownExpiry = GetCooldownExpiry(providerResult);
             providerRegistry.MarkRateLimited(provider.ProviderId, cooldownExpiry);
-            provider = ResolveNextAvailableProvider(provider.ProviderId, agentDefinition.Models);
+            provider = ResolveNextAvailableProvider(provider.ProviderId, models);
         }
 
         return new AgentInvocationResult(lastProviderId,

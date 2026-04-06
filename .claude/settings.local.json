@@ -5,7 +5,10 @@
       "Bash(dotnet test:*)",
       "Bash(ls -lh /d/Projects/agentic-game-studio/tests/*.cs)",
       "Bash(grep -A 3 \"^| \\\\`models\\\\`\" D:/Projects/agentic-game-studio/agents/game-designer.md D:/Projects/agentic-game-studio/agents/engine-programmer.md D:/Projects/agentic-game-studio/agents/lead-programmer.md)",
-      "Bash(find D:/Projects/agentic-game-studio -name *.cs -maxdepth 4)"
+      "Bash(find D:/Projects/agentic-game-studio -name *.cs -maxdepth 4)",
+      "Bash(find /d/Projects/agentic-game-studio -type d ! -path */obj ! -path */bin)",
+      "WebFetch(domain:developers.openai.com)",
+      "Bash(ls \"C:\\\\Users\\\\Michieru\\\\.claude\\\\projects\\\\D--Projects-agentic-game-studio\\\\memory\"\" 2>/dev/null || echo \"dir empty or missing \")"
     ]
   }
 }

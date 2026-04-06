@@ -21,6 +21,7 @@ internal readonly struct AgsSettings
     private const string RateLimitDefaultCooldownMinutesSettingName =
         "rate-limit-default-cooldown-minutes";
     private const string ProviderCooldownsSettingName = "provider-cooldowns";
+    private const string DefaultModelsSettingName = "default-models";
     internal const int DefaultRateLimitCooldownMinutes = 30;
     private static AgsSettings currentSettings = new(false, false);
     private static bool hasCurrentSettings;
@@ -79,6 +80,38 @@ internal readonly struct AgsSettings
     internal AgsSettings(bool useClaude, bool useCodex, DateTimeOffset claudeLastUpdateUtc,
         DateTimeOffset codexLastUpdateUtc, int rateLimitDefaultCooldownMinutes,
         IReadOnlyDictionary<string, DateTimeOffset> providerCooldowns)
+        : this(useClaude, useCodex, claudeLastUpdateUtc, codexLastUpdateUtc,
+            rateLimitDefaultCooldownMinutes, providerCooldowns, null) { }
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="AgsSettings" /> struct.
+    /// </summary>
+    /// <param name="useClaude">Whether Claude Code integration is enabled.</param>
+    /// <param name="useCodex">Whether Codex integration is enabled.</param>
+    /// <param name="claudeLastUpdateUtc">
+    ///     UTC timestamp of the last successful Claude Code update, or
+    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
+    /// </param>
+    /// <param name="codexLastUpdateUtc">
+    ///     UTC timestamp of the last successful Codex update, or
+    ///     <see cref="DateTimeOffset.MinValue" /> when no update has been recorded.
+    /// </param>
+    /// <param name="rateLimitDefaultCooldownMinutes">
+    ///     Cooldown period in minutes applied when the provider response does not include a reset
+    ///     time. Defaults to <see cref="DefaultRateLimitCooldownMinutes" />.
+    /// </param>
+    /// <param name="providerCooldowns">
+    ///     Map of provider ID to cooldown expiry timestamp. Pass <see langword="null" /> for an
+    ///     empty map.
+    /// </param>
+    /// <param name="defaultModels">
+    ///     Priority-ordered list of model names used for general AI tasks (e.g. reading and
+    ///     interpreting coordination documents). Pass <see langword="null" /> for an empty list.
+    /// </param>
+    internal AgsSettings(bool useClaude, bool useCodex, DateTimeOffset claudeLastUpdateUtc,
+        DateTimeOffset codexLastUpdateUtc, int rateLimitDefaultCooldownMinutes,
+        IReadOnlyDictionary<string, DateTimeOffset> providerCooldowns,
+        IReadOnlyList<string> defaultModels)
     {
         UseClaude = useClaude;
         UseCodex = useCodex;
@@ -88,6 +121,7 @@ internal readonly struct AgsSettings
             ? rateLimitDefaultCooldownMinutes
             : DefaultRateLimitCooldownMinutes;
         ProviderCooldowns = providerCooldowns ?? new Dictionary<string, DateTimeOffset>();
+        DefaultModels = defaultModels ?? [];
     }
 
     /// <summary>
@@ -142,6 +176,12 @@ internal readonly struct AgsSettings
     ///     Gets the map of provider IDs to their cooldown expiry timestamps.
     /// </summary>
     internal IReadOnlyDictionary<string, DateTimeOffset> ProviderCooldowns { get; }
+
+    /// <summary>
+    ///     Gets the priority-ordered list of model names used for general AI tasks such as reading
+    ///     and interpreting coordination documents. An empty list means no default AI is configured.
+    /// </summary>
+    internal IReadOnlyList<string> DefaultModels { get; }
 
     /// <summary>
     ///     Gets the current application settings for this process.
@@ -224,7 +264,8 @@ internal readonly struct AgsSettings
                 ? CodexLastUpdateUtc.ToString("O", CultureInfo.InvariantCulture)
                 : null,
             [RateLimitDefaultCooldownMinutesSettingName] = RateLimitDefaultCooldownMinutes,
-            [ProviderCooldownsSettingName] = activeCooldowns
+            [ProviderCooldownsSettingName] = activeCooldowns,
+            [DefaultModelsSettingName] = DefaultModels.ToArray()
         }, JsonOptions);
         File.WriteAllText(configPath, serializedSettings);
     }
@@ -239,7 +280,7 @@ internal readonly struct AgsSettings
         IReadOnlyDictionary<string, DateTimeOffset> providerCooldowns)
     {
         return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
-            RateLimitDefaultCooldownMinutes, providerCooldowns);
+            RateLimitDefaultCooldownMinutes, providerCooldowns, DefaultModels);
     }
 
     /// <summary>
@@ -250,7 +291,7 @@ internal readonly struct AgsSettings
     internal AgsSettings WithClaudeLastUpdateUtc(DateTimeOffset claudeLastUpdateUtc)
     {
         return new AgsSettings(UseClaude, UseCodex, claudeLastUpdateUtc, CodexLastUpdateUtc,
-            RateLimitDefaultCooldownMinutes, ProviderCooldowns);
+            RateLimitDefaultCooldownMinutes, ProviderCooldowns, DefaultModels);
     }
 
     /// <summary>
@@ -261,7 +302,7 @@ internal readonly struct AgsSettings
     internal AgsSettings WithUseClaude(bool useClaude)
     {
         return new AgsSettings(useClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
-            RateLimitDefaultCooldownMinutes, ProviderCooldowns);
+            RateLimitDefaultCooldownMinutes, ProviderCooldowns, DefaultModels);
     }
 
     /// <summary>
@@ -272,7 +313,7 @@ internal readonly struct AgsSettings
     internal AgsSettings WithCodexLastUpdateUtc(DateTimeOffset codexLastUpdateUtc)
     {
         return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, codexLastUpdateUtc,
-            RateLimitDefaultCooldownMinutes, ProviderCooldowns);
+            RateLimitDefaultCooldownMinutes, ProviderCooldowns, DefaultModels);
     }
 
     /// <summary>
@@ -283,7 +324,7 @@ internal readonly struct AgsSettings
     internal AgsSettings WithUseCodex(bool useCodex)
     {
         return new AgsSettings(UseClaude, useCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
-            RateLimitDefaultCooldownMinutes, ProviderCooldowns);
+            RateLimitDefaultCooldownMinutes, ProviderCooldowns, DefaultModels);
     }
 
     /// <summary>
@@ -297,7 +338,20 @@ internal readonly struct AgsSettings
     internal AgsSettings WithRateLimitDefaultCooldownMinutes(int rateLimitDefaultCooldownMinutes)
     {
         return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
-            rateLimitDefaultCooldownMinutes, ProviderCooldowns);
+            rateLimitDefaultCooldownMinutes, ProviderCooldowns, DefaultModels);
+    }
+
+    /// <summary>
+    ///     Creates a copy of the current settings with an updated default models list.
+    /// </summary>
+    /// <param name="defaultModels">
+    ///     Priority-ordered list of model names for general AI tasks.
+    /// </param>
+    /// <returns>A new settings instance with the updated default models.</returns>
+    internal AgsSettings WithDefaultModels(IReadOnlyList<string> defaultModels)
+    {
+        return new AgsSettings(UseClaude, UseCodex, ClaudeLastUpdateUtc, CodexLastUpdateUtc,
+            RateLimitDefaultCooldownMinutes, ProviderCooldowns, defaultModels);
     }
 
     /// <summary>
@@ -363,8 +417,9 @@ internal readonly struct AgsSettings
             var rateLimitDefaultCooldownMinutes =
                 TryReadRateLimitDefaultCooldownMinutes(rootElement);
             var providerCooldowns = TryReadProviderCooldowns(rootElement);
+            var defaultModels = TryReadStringList(rootElement, DefaultModelsSettingName);
             settings = new AgsSettings(useClaude, useCodex, claudeLastUpdateUtc, codexLastUpdateUtc,
-                rateLimitDefaultCooldownMinutes, providerCooldowns);
+                rateLimitDefaultCooldownMinutes, providerCooldowns, defaultModels);
             return true;
         }
         catch (JsonException)
@@ -443,6 +498,26 @@ internal readonly struct AgsSettings
             var expiryUtc = expiry.ToUniversalTime();
             if (expiryUtc > now)
                 result[property.Name] = expiryUtc;
+        }
+        return result;
+    }
+
+    /// <summary>
+    ///     Reads a JSON array of strings from an optional property, returning an empty list when
+    ///     the property is absent or not a valid string array.
+    /// </summary>
+    private static IReadOnlyList<string> TryReadStringList(JsonElement configElement,
+        string propertyName)
+    {
+        var result = new List<string>();
+        if (!configElement.TryGetProperty(propertyName, out var arrayElement)) return result;
+        if (arrayElement.ValueKind != JsonValueKind.Array) return result;
+        foreach (var item in arrayElement.EnumerateArray())
+        {
+            if (item.ValueKind != JsonValueKind.String) continue;
+            var value = item.GetString();
+            if (!string.IsNullOrWhiteSpace(value))
+                result.Add(value.Trim());
         }
         return result;
     }

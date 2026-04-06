@@ -109,6 +109,82 @@ public sealed class AgentOrchestratorTests : IDisposable
         Assert.Equal([ClaudeCodeAdapter.Id], result.AttemptedProviderIds);
     }
 
+    // ── InvokeDefault ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    ///     Verifies that InvokeDefault uses the DefaultModels list from settings to select a
+    ///     provider and returns a successful result.
+    /// </summary>
+    [Fact]
+    public void InvokeDefaultUsesDefaultModelsFromSettingsToSelectProvider()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, true)
+            .WithDefaultModels(["claude-sonnet"]));
+        using var projectRoot = new TemporaryDirectoryScope();
+
+        var claude = new StubProvider(ClaudeCodeAdapter.Id, true,
+            AIProviderResult.Succeeded("default ai response", 0, []));
+        var registry = CreateRegistry(claude);
+        var orchestrator = CreateOrchestrator(projectRoot.Path, registry);
+
+        var result = orchestrator.InvokeDefault("system prompt", "task prompt",
+            projectRoot.Path, TimeSpan.FromSeconds(30));
+
+        Assert.True(result.ProviderResult.Success);
+        Assert.Equal("default ai response", result.ProviderResult.Output);
+        Assert.Equal(ClaudeCodeAdapter.Id, result.ProviderId);
+        Assert.Equal(1, claude.InvocationCount);
+    }
+
+    /// <summary>
+    ///     Verifies that InvokeDefault returns a failure result when DefaultModels is empty.
+    /// </summary>
+    [Fact]
+    public void InvokeDefaultReturnsFailureWhenDefaultModelsIsEmpty()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, true));  // DefaultModels = []
+        using var projectRoot = new TemporaryDirectoryScope();
+
+        var claude = new StubProvider(ClaudeCodeAdapter.Id, true,
+            AIProviderResult.Succeeded("unused", 0, []));
+        var registry = CreateRegistry(claude);
+        var orchestrator = CreateOrchestrator(projectRoot.Path, registry);
+
+        var result = orchestrator.InvokeDefault("system", "task",
+            projectRoot.Path, TimeSpan.FromSeconds(30));
+
+        Assert.False(result.ProviderResult.Success);
+        Assert.Equal(0, claude.InvocationCount);
+    }
+
+    /// <summary>
+    ///     Verifies that InvokeDefault applies rate-limit failover using DefaultModels, just
+    ///     like InvokeAgent does for agent-defined model lists.
+    /// </summary>
+    [Fact]
+    public void InvokeDefaultAppliesRateLimitFailoverUsingDefaultModels()
+    {
+        AgsSettings.SetCurrent(new AgsSettings(true, true)
+            .WithDefaultModels(["claude-sonnet", "chatgpt"]));
+        using var projectRoot = new TemporaryDirectoryScope();
+
+        var cooldownExpiry = DateTimeOffset.UtcNow.AddMinutes(10);
+        var claude = new StubProvider(ClaudeCodeAdapter.Id, true,
+            AIProviderResult.RateLimited("rate limit", 429, cooldownExpiry, "partial"));
+        var codex = new StubProvider(CodexAdapter.Id, true,
+            AIProviderResult.Succeeded("fallback response", 0, []));
+        var registry = CreateRegistry(claude, codex);
+        var orchestrator = CreateOrchestrator(projectRoot.Path, registry);
+
+        var result = orchestrator.InvokeDefault("system", "task",
+            projectRoot.Path, TimeSpan.FromSeconds(30));
+
+        Assert.True(result.ProviderResult.Success);
+        Assert.Equal("fallback response", result.ProviderResult.Output);
+        Assert.Equal(CodexAdapter.Id, result.ProviderId);
+        Assert.True(registry.IsInCooldown(ClaudeCodeAdapter.Id));
+    }
+
     /// <summary>
     ///     Creates an orchestrator for the specified temporary project root.
     /// </summary>

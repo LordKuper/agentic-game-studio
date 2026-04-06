@@ -99,6 +99,10 @@ internal sealed class SessionManager
     internal static string GetArchiveDirectoryPath(string projectRootPath, string sessionId) =>
         Path.Combine(GetSessionDirectoryPath(projectRootPath, sessionId), "archive");
 
+    /// <summary>Returns the absolute path to a session's <c>session-scope.md</c> file.</summary>
+    internal static string GetScopeFilePath(string projectRootPath, string sessionId) =>
+        Path.Combine(GetSessionDirectoryPath(projectRootPath, sessionId), "session-scope.md");
+
     // ── Session Creation ──────────────────────────────────────────────────────
 
     /// <summary>

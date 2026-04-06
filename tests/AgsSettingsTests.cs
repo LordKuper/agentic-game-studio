@@ -337,4 +337,81 @@ public sealed class AgsSettingsTests
         Assert.True(AgsSettings.TryReadFromConfig(configPath, out var settings));
         Assert.Equal(30, settings.RateLimitDefaultCooldownMinutes);
     }
+
+    // ── DefaultModels ─────────────────────────────────────────────────────────
+
+    /// <summary>
+    ///     Verifies that DefaultModels defaults to an empty list when not supplied.
+    /// </summary>
+    [Fact]
+    public void DefaultModelsIsEmptyWhenNotConfigured()
+    {
+        var settings = new AgsSettings(true, true);
+        Assert.Empty(settings.DefaultModels);
+    }
+
+    /// <summary>
+    ///     Verifies that WithDefaultModels returns a copy with the specified model list and
+    ///     preserves all other fields.
+    /// </summary>
+    [Fact]
+    public void WithDefaultModelsReturnsUpdatedCopy()
+    {
+        var settings = new AgsSettings(true, false);
+        var updated = settings.WithDefaultModels(["claude-sonnet", "chatgpt"]);
+
+        Assert.Equal(["claude-sonnet", "chatgpt"], updated.DefaultModels);
+        Assert.True(updated.UseClaude);
+        Assert.False(updated.UseCodex);
+        Assert.Empty(settings.DefaultModels);  // original unchanged
+    }
+
+    /// <summary>
+    ///     Verifies that other With* methods preserve the DefaultModels list.
+    /// </summary>
+    [Fact]
+    public void WithMethodsPreserveDefaultModels()
+    {
+        var settings = new AgsSettings(true, false)
+            .WithDefaultModels(["claude-opus"]);
+
+        Assert.Equal(["claude-opus"], settings.WithUseClaude(false).DefaultModels);
+        Assert.Equal(["claude-opus"], settings.WithUseCodex(true).DefaultModels);
+        Assert.Equal(["claude-opus"],
+            settings.WithRateLimitDefaultCooldownMinutes(60).DefaultModels);
+        Assert.Equal(["claude-opus"],
+            settings.WithProviderCooldowns(new Dictionary<string, DateTimeOffset>()).DefaultModels);
+    }
+
+    /// <summary>
+    ///     Verifies that DefaultModels round-trips through JSON serialization.
+    /// </summary>
+    [Fact]
+    public void WriteToConfigRoundTripsDefaultModels()
+    {
+        using var tempDirectory = new TemporaryDirectoryScope();
+        var configPath = Path.Combine(tempDirectory.Path, "config.json");
+        var settings = new AgsSettings(true, false, DateTimeOffset.MinValue, DateTimeOffset.MinValue,
+            AgsSettings.DefaultRateLimitCooldownMinutes, null, ["claude-sonnet", "chatgpt"]);
+
+        settings.WriteToConfig(configPath);
+        Assert.True(AgsSettings.TryReadFromConfig(configPath, out var reloaded));
+
+        Assert.Equal(["claude-sonnet", "chatgpt"], reloaded.DefaultModels);
+    }
+
+    /// <summary>
+    ///     Verifies that a JSON config without default-models key parses with an empty list.
+    /// </summary>
+    [Fact]
+    public void TryReadFromConfigReturnsEmptyDefaultModelsWhenKeyAbsent()
+    {
+        using var tempDirectory = new TemporaryDirectoryScope();
+        var configPath = Path.Combine(tempDirectory.Path, "config.json");
+        File.WriteAllText(configPath,
+            "{\"use-claude\":true,\"use-codex\":false,\"claude-last-update-utc\":null,\"codex-last-update-utc\":null}");
+
+        Assert.True(AgsSettings.TryReadFromConfig(configPath, out var settings));
+        Assert.Empty(settings.DefaultModels);
+    }
 }
