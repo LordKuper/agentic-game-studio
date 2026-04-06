@@ -982,13 +982,13 @@ Establish the core infrastructure that everything else builds on.
 Implement the session lifecycle from `rules/session-workflow.md`.
 
 **2.1 Session Manager Core**
-- [ ] Session creation (directory, state.md, index.md registration)
-- [ ] Session state transitions (scoping -> scope-approved -> planning -> ... ->
+- [x] Session creation (directory, state.md, index.md registration)
+- [x] Session state transitions (scoping -> scope-approved -> planning -> ... ->
   completed)
-- [ ] Session pause and resume
-- [ ] Session directory structure management
-- [ ] Git branch creation on session start
-- [ ] Tests: lifecycle state machine tests
+- [x] Session pause and resume
+- [x] Session directory structure management
+- [x] Git branch creation on session start
+- [x] Tests: lifecycle state machine tests
 
 **2.2 Scoping Protocol**
 - [ ] Agent selection for scoping (from agent-coordination.md)

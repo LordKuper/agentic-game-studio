@@ -511,7 +511,8 @@ internal sealed class SessionManager
         var trimmed = line.Trim();
         if (!trimmed.StartsWith("- **", StringComparison.Ordinal)) return false;
         var afterPrefix = trimmed[4..]; // after "- **"
-        var endMarker = afterPrefix.IndexOf("**:", StringComparison.Ordinal);
+        // Format: "key:** value" — colon is inside the bold markers (**key:**)
+        var endMarker = afterPrefix.IndexOf(":**", StringComparison.Ordinal);
         if (endMarker < 0) return false;
         key = afterPrefix[..endMarker].Trim();
         value = afterPrefix[(endMarker + 3)..].Trim();
