@@ -25,6 +25,11 @@ if (-not $PSBoundParameters.ContainsKey("InstallDir"))
 
 Write-Host "Installing AGS to: $installDir"
 
+if ([string]::IsNullOrWhiteSpace($installDir))
+{
+    throw "Install directory cannot be empty."
+}
+
 if (-not (Test-Path -Path $installDir))
 {
     New-Item -ItemType Directory -Path $installDir -Force | Out-Null
@@ -72,7 +77,14 @@ try
 {
     Expand-Archive -Path $zipPath -DestinationPath $extractTemp -Force
 
-    # Copy all extracted files into the install directory, overwriting existing ones
+    Write-Host "Clearing install directory..."
+    $installedItems = Get-ChildItem -Path $installDir -Force
+    foreach ($installedItem in $installedItems)
+    {
+        Remove-Item -Path $installedItem.FullName -Recurse -Force
+    }
+
+    # Copy all extracted files into the install directory
     $extractedItems = Get-ChildItem -Path $extractTemp -Recurse -File
     foreach ($item in $extractedItems)
     {
