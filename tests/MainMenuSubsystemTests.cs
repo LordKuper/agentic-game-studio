@@ -45,7 +45,7 @@ public sealed class MainMenuSubsystemTests
         using var startStub = new StartSkillActionStubScope();
         using var prompts = new PromptStubScope(selectionIndexes: [2]);
         using var console = new ConsoleRedirectionScope(string.Empty);
-        MainMenuSubsystem.Run();
+        MainMenuSubsystem.Run(new DependencyCheckResult(false));
         Assert.Equal(["Main menu"], prompts.SelectMessages);
         Assert.Contains("Application is shutting down.", console.Output);
     }
@@ -59,7 +59,7 @@ public sealed class MainMenuSubsystemTests
         using var startStub = new StartSkillActionStubScope();
         using var prompts = new PromptStubScope(selectionIndexes: [0, 2]);
         using var console = new ConsoleRedirectionScope(string.Empty);
-        MainMenuSubsystem.Run();
+        MainMenuSubsystem.Run(new DependencyCheckResult(false));
         Assert.Equal(1, startStub.InvocationCount);
     }
 
@@ -72,7 +72,7 @@ public sealed class MainMenuSubsystemTests
         using var startStub = new StartSkillActionStubScope();
         using var prompts = new PromptStubScope(selectionIndexes: [0, 2]);
         using var console = new ConsoleRedirectionScope(string.Empty);
-        MainMenuSubsystem.Run();
+        MainMenuSubsystem.Run(new DependencyCheckResult(false));
         Assert.Equal(["Main menu", "Main menu"], prompts.SelectMessages);
         Assert.Contains("Application is shutting down.", console.Output);
     }
@@ -91,7 +91,7 @@ public sealed class MainMenuSubsystemTests
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
         using var prompts = new PromptStubScope(selectionIndexes: [1, 4, 2]);
         using var console = new ConsoleRedirectionScope(string.Empty);
-        MainMenuSubsystem.Run();
+        MainMenuSubsystem.Run(new DependencyCheckResult(false));
         Assert.Equal(["Main menu", "Settings", "Main menu"], prompts.SelectMessages);
         Assert.Contains("Application is shutting down.", console.Output);
     }

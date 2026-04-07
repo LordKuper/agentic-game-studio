@@ -157,6 +157,11 @@ internal sealed class CodexAdapter : IAIProvider
             ? $"{request.SystemPrompt}\n\n{request.TaskPrompt}"
             : request.TaskPrompt;
         builder.Append(QuoteArgument(effectivePrompt));
+        if (request.OutputSchemaPath.Length > 0)
+        {
+            builder.Append(" --output-schema ");
+            builder.Append(QuoteArgument(request.OutputSchemaPath));
+        }
         foreach (var (key, value) in request.ProviderArguments)
         {
             builder.Append(' ');

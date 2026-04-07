@@ -151,7 +151,7 @@ internal sealed class ResourceLoader
     {
         var normalizedResourceName = NormalizeRelativeResourceName(resourceName);
         if (IsDirectoryBackedResourceType(resourceType)) return normalizedResourceName;
-        if (normalizedResourceName.EndsWith(MarkdownExtension, StringComparison.OrdinalIgnoreCase))
+        if (Path.HasExtension(normalizedResourceName))
             return normalizedResourceName;
         return normalizedResourceName + MarkdownExtension;
     }

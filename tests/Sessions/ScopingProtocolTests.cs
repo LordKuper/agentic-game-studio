@@ -561,7 +561,7 @@ public sealed class ScopingProtocolTests : IDisposable
         }
 
         public AgentInvocationResult InvokeDefault(string systemPrompt, string taskPrompt,
-            string workingDirectory, TimeSpan timeout)
+            string workingDirectory, TimeSpan timeout, string outputSchemaPath = null)
         {
             DefaultRequests.Add((systemPrompt, taskPrompt, workingDirectory, timeout));
             if (defaultResults.Count > 0) return defaultResults.Dequeue();

@@ -1,7 +1,9 @@
 using AGS.ai;
 using AGS.orchestration;
+using AGS.output;
 using AGS.prompt;
 using AGS.skills;
+using AGS.ui;
 
 namespace AGS.subsystems;
 
@@ -14,7 +16,7 @@ internal static class MainMenuSubsystem
     ///     Replaceable action invoked when the user selects "Start". Defaults to
     ///     <see cref="DefaultStartSkillAction" />. Tests replace this with a stub via reflection.
     /// </summary>
-    private static Action startSkillAction = DefaultStartSkillAction;
+    private static Action<DependencyCheckResult> startSkillAction = DefaultStartSkillAction;
 
     /// <summary>
     ///     Builds the main menu options.
@@ -45,7 +47,8 @@ internal static class MainMenuSubsystem
     /// <summary>
     ///     Shows the main menu until the user chooses to exit the application.
     /// </summary>
-    internal static void Run()
+    /// <param name="dependencies">Dependency availability flags from the startup check.</param>
+    internal static void Run(DependencyCheckResult dependencies)
     {
         while (true)
         {
@@ -64,7 +67,7 @@ internal static class MainMenuSubsystem
             }
             if (selectedOption.Kind == MainMenuOptionKind.Start)
             {
-                startSkillAction();
+                startSkillAction(dependencies);
                 continue;
             }
         }
@@ -72,9 +75,10 @@ internal static class MainMenuSubsystem
 
     /// <summary>
     ///     Default start action: synchronizes AGS skills into every enabled provider's native
-    ///     directory, then invokes the <c>ags-start</c> skill via the skill runner.
+    ///     directory, then invokes the <c>ags-start</c> skill via the skill runner, displays the
+    ///     model response, and shows a choice menu when the response offers multiple options.
     /// </summary>
-    private static void DefaultStartSkillAction()
+    private static void DefaultStartSkillAction(DependencyCheckResult dependencies)
     {
         var projectRoot = Directory.GetCurrentDirectory();
         var resourceLoader = new ResourceLoader(projectRoot);
@@ -88,11 +92,34 @@ internal static class MainMenuSubsystem
 
         var promptAssembler = new PromptAssembler(resourceLoader);
         var orchestrator = new AgentOrchestrator(resourceLoader, promptAssembler, registry);
-        var runner = new SkillRunner(orchestrator);
-        var result = runner.InvokeSkill(new SkillInvocationRequest("ags-start", projectRoot,
-            TimeSpan.Zero));
-        if (!result.Success)
-            PrintStartFailure(result);
+        var runner = new SkillRunner(orchestrator, resourceLoader);
+        var processor = new StructuredOutputProcessor(dependencies.JqAvailable);
+
+        var context = string.Empty;
+        while (true)
+        {
+            var request = new SkillInvocationRequest("ags-start", projectRoot, TimeSpan.Zero,
+                context.Length > 0 ? context : null);
+            var result = runner.InvokeSkill(request);
+
+            if (!result.Success)
+            {
+                PrintStartFailure(result);
+                return;
+            }
+
+            var structured = processor.Process(
+                result.InvocationResult.ProviderResult.Output,
+                result.InvocationResult.ProviderId);
+
+            if (!string.IsNullOrWhiteSpace(structured.Message))
+                Console.WriteLine(structured.Message);
+
+            if (structured.Choices.Count > 0)
+                context = ChoiceMenu.Show(structured.Choices);
+            else
+                break;
+        }
     }
 
     /// <summary>

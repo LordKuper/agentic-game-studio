@@ -64,7 +64,7 @@ internal sealed class AgentOrchestrator : IAgentOrchestrator
     /// <param name="timeout">Maximum time to wait for a provider response.</param>
     /// <returns>The terminal result of the invocation.</returns>
     public AgentInvocationResult InvokeDefault(string systemPrompt, string taskPrompt,
-        string workingDirectory, TimeSpan timeout)
+        string workingDirectory, TimeSpan timeout, string outputSchemaPath = null)
     {
         var models = AgsSettings.HasCurrentSettings
             ? AgsSettings.Current.DefaultModels
@@ -83,7 +83,8 @@ internal sealed class AgentOrchestrator : IAgentOrchestrator
             taskPrompt ?? string.Empty,
             workingDirectory ?? string.Empty,
             timeout,
-            null);
+            null,
+            outputSchemaPath);
 
         return ExecuteWithFailover(request, models,
             "No enabled default AI provider is currently available.");
@@ -111,6 +112,7 @@ internal sealed class AgentOrchestrator : IAgentOrchestrator
             lastProviderId = provider.ProviderId;
             attemptedProviderIds.Add(provider.ProviderId);
 
+            Console.WriteLine($"Asking {GetDisplayName(provider.ProviderId)}...");
             var providerResult = provider.Invoke(providerRequest);
             lastProviderResult = providerResult;
 
@@ -186,6 +188,16 @@ internal sealed class AgentOrchestrator : IAgentOrchestrator
 
         return provider;
     }
+
+    /// <summary>
+    ///     Returns a human-readable display name for the given provider ID.
+    /// </summary>
+    private static string GetDisplayName(string providerId) => providerId switch
+    {
+        "claude-code" => "Claude Code",
+        "codex" => "Codex",
+        _ => providerId
+    };
 
     /// <summary>
     ///     Gets the cooldown expiry for a rate-limited provider result, falling back to the

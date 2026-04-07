@@ -25,5 +25,5 @@ internal interface IAgentOrchestrator
     /// <param name="timeout">Maximum time to wait for a provider response.</param>
     /// <returns>The terminal result of the invocation.</returns>
     AgentInvocationResult InvokeDefault(string systemPrompt, string taskPrompt,
-        string workingDirectory, TimeSpan timeout);
+        string workingDirectory, TimeSpan timeout, string outputSchemaPath = null);
 }

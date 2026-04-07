@@ -1,0 +1,19 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "required": ["message", "choices"],
+  "additionalProperties": false,
+  "properties": {
+    "message": {
+      "type": "string",
+      "description": "The meaningful response to display to the user. Do not include intermediate reasoning or tool call traces — only the final conclusion or status."
+    },
+    "choices": {
+      "type": "array",
+      "description": "List of distinct options for the user to choose from. Use an empty array when the response does not present a decision point.",
+      "items": {
+        "type": "string"
+      }
+    }
+  }
+}

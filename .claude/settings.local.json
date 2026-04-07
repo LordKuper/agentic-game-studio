@@ -14,7 +14,11 @@
       "WebFetch(domain:docs.anthropic.com)",
       "WebSearch",
       "Bash(codex --help)",
-      "Bash(codex exec:*)"
+      "Bash(codex exec:*)",
+      "Bash(cat D:/Projects/agentic-game-studio/templates/*.json)",
+      "Bash(grep Spectre D:/Projects/agentic-game-studio/*.csproj D:/Projects/agentic-game-studio/src/*.csproj)",
+      "Bash(find D:/Projects/agentic-game-studio -name *.csproj)",
+      "Bash(xargs grep:*)"
     ]
   }
 }

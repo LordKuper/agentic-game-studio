@@ -305,6 +305,8 @@ internal sealed class ClaudeCodeAdapter : IAIProvider
             builder.Append(" --system-prompt ");
             builder.Append(QuoteArgument(request.SystemPrompt));
         }
+        if (request.OutputSchemaPath.Length > 0)
+            builder.Append(" --output-format json");
         foreach (var (key, value) in request.ProviderArguments)
         {
             builder.Append(' ');

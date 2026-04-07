@@ -25,8 +25,9 @@ internal static class Program
         }
         if (!TryInitializeApplication(out var settings)) return;
         AgsSettings.SetCurrent(settings);
-        if (!ProviderCheckSubsystem.Run()) return;
-        MainMenuSubsystem.Run();
+        var dependencyResult = DependencyCheckSubsystem.Run();
+        if (dependencyResult == null) return;
+        MainMenuSubsystem.Run(dependencyResult);
     }
 
     /// <summary>

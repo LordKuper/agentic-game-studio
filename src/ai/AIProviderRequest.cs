@@ -14,13 +14,15 @@ internal sealed class AIProviderRequest
     /// <param name="timeout">Maximum time to wait for a response.</param>
     /// <param name="providerArguments">Additional provider-specific arguments.</param>
     internal AIProviderRequest(string systemPrompt, string taskPrompt, string workingDirectory,
-        TimeSpan timeout, IReadOnlyDictionary<string, string> providerArguments = null)
+        TimeSpan timeout, IReadOnlyDictionary<string, string> providerArguments = null,
+        string outputSchemaPath = null)
     {
         SystemPrompt = systemPrompt ?? string.Empty;
         TaskPrompt = taskPrompt ?? string.Empty;
         WorkingDirectory = workingDirectory ?? string.Empty;
         Timeout = timeout;
         ProviderArguments = providerArguments ?? new Dictionary<string, string>();
+        OutputSchemaPath = outputSchemaPath ?? string.Empty;
     }
 
     /// <summary>
@@ -47,4 +49,13 @@ internal sealed class AIProviderRequest
     ///     Gets additional provider-specific arguments.
     /// </summary>
     internal IReadOnlyDictionary<string, string> ProviderArguments { get; }
+
+    /// <summary>
+    ///     Gets the absolute path to the JSON Schema file that describes the expected output
+    ///     structure. Each provider adapter interprets this path according to its own CLI:
+    ///     Codex uses <c>--output-schema</c>; Claude Code uses <c>--output-format json</c>
+    ///     (the schema drives jq/regex extraction on the AGS side). Empty when no schema is
+    ///     configured.
+    /// </summary>
+    internal string OutputSchemaPath { get; }
 }

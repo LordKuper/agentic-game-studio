@@ -385,19 +385,20 @@ internal sealed class ProviderCheckStubScope : IDisposable
 /// </summary>
 internal sealed class StartSkillActionStubScope : IDisposable
 {
-    private readonly Action originalAction;
+    private readonly Action<AGS.subsystems.DependencyCheckResult> originalAction;
 
     /// <summary>
     ///     Initializes a new instance of the <see cref="StartSkillActionStubScope" /> class.
     /// </summary>
     internal StartSkillActionStubScope()
     {
-        originalAction = PrivateAccess.GetStaticField<Action>(
-            typeof(AGS.subsystems.MainMenuSubsystem), "startSkillAction");
+        originalAction = PrivateAccess
+            .GetStaticField<Action<AGS.subsystems.DependencyCheckResult>>(
+                typeof(AGS.subsystems.MainMenuSubsystem), "startSkillAction");
         PrivateAccess.SetStaticField(
             typeof(AGS.subsystems.MainMenuSubsystem),
             "startSkillAction",
-            (Action)(() => InvocationCount++));
+            (Action<AGS.subsystems.DependencyCheckResult>)(_ => InvocationCount++));
     }
 
     /// <summary>

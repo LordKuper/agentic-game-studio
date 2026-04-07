@@ -16,7 +16,7 @@ public sealed class SkillRunnerTests
     public void InvokeSkillIncludesSkillNameInTaskPrompt()
     {
         var stub = new StubOrchestrator();
-        var runner = new SkillRunner(stub);
+        var runner = new SkillRunner(stub, new ResourceLoader(Path.GetTempPath()));
 
         runner.InvokeSkill(new SkillInvocationRequest("ags-start", "C:\\project",
             TimeSpan.FromMinutes(1)));
@@ -31,7 +31,7 @@ public sealed class SkillRunnerTests
     public void InvokeSkillAppendsContextWhenProvided()
     {
         var stub = new StubOrchestrator();
-        var runner = new SkillRunner(stub);
+        var runner = new SkillRunner(stub, new ResourceLoader(Path.GetTempPath()));
 
         runner.InvokeSkill(new SkillInvocationRequest("ags-start", "C:\\project",
             TimeSpan.FromMinutes(1), "stage: pre-production"));
@@ -47,7 +47,7 @@ public sealed class SkillRunnerTests
     public void InvokeSkillOmitsContextWhenNotProvided()
     {
         var stub = new StubOrchestrator();
-        var runner = new SkillRunner(stub);
+        var runner = new SkillRunner(stub, new ResourceLoader(Path.GetTempPath()));
 
         runner.InvokeSkill(new SkillInvocationRequest("ags-start", "C:\\project",
             TimeSpan.FromMinutes(1)));
@@ -63,7 +63,7 @@ public sealed class SkillRunnerTests
     public void InvokeSkillSendsEmptySystemPrompt()
     {
         var stub = new StubOrchestrator();
-        var runner = new SkillRunner(stub);
+        var runner = new SkillRunner(stub, new ResourceLoader(Path.GetTempPath()));
 
         runner.InvokeSkill(new SkillInvocationRequest("ags-start", "C:\\project",
             TimeSpan.FromMinutes(1)));
@@ -78,7 +78,7 @@ public sealed class SkillRunnerTests
     public void InvokeSkillForwardsWorkingDirectory()
     {
         var stub = new StubOrchestrator();
-        var runner = new SkillRunner(stub);
+        var runner = new SkillRunner(stub, new ResourceLoader(Path.GetTempPath()));
 
         runner.InvokeSkill(new SkillInvocationRequest("ags-start", "C:\\my-project",
             TimeSpan.FromMinutes(1)));
@@ -93,7 +93,7 @@ public sealed class SkillRunnerTests
     public void InvokeSkillUsesDefaultTimeoutWhenTimeoutIsZero()
     {
         var stub = new StubOrchestrator();
-        var runner = new SkillRunner(stub);
+        var runner = new SkillRunner(stub, new ResourceLoader(Path.GetTempPath()));
 
         runner.InvokeSkill(new SkillInvocationRequest("ags-start", "C:\\project", TimeSpan.Zero));
 
@@ -107,7 +107,7 @@ public sealed class SkillRunnerTests
     public void InvokeSkillForwardsExplicitTimeout()
     {
         var stub = new StubOrchestrator();
-        var runner = new SkillRunner(stub);
+        var runner = new SkillRunner(stub, new ResourceLoader(Path.GetTempPath()));
         var timeout = TimeSpan.FromMinutes(7);
 
         runner.InvokeSkill(new SkillInvocationRequest("ags-start", "C:\\project", timeout));
@@ -122,7 +122,7 @@ public sealed class SkillRunnerTests
     public void InvokeSkillReturnsResultWithSkillNameAndSuccess()
     {
         var stub = new StubOrchestrator(success: true);
-        var runner = new SkillRunner(stub);
+        var runner = new SkillRunner(stub, new ResourceLoader(Path.GetTempPath()));
 
         var result = runner.InvokeSkill(new SkillInvocationRequest("ags-start", "C:\\project",
             TimeSpan.FromMinutes(1)));
@@ -138,7 +138,7 @@ public sealed class SkillRunnerTests
     public void InvokeSkillReturnsFailedResultWhenOrchestratorFails()
     {
         var stub = new StubOrchestrator(success: false);
-        var runner = new SkillRunner(stub);
+        var runner = new SkillRunner(stub, new ResourceLoader(Path.GetTempPath()));
 
         var result = runner.InvokeSkill(new SkillInvocationRequest("ags-start", "C:\\project",
             TimeSpan.FromMinutes(1)));
@@ -152,7 +152,7 @@ public sealed class SkillRunnerTests
     [Fact]
     public void InvokeSkillThrowsOnNullRequest()
     {
-        var runner = new SkillRunner(new StubOrchestrator());
+        var runner = new SkillRunner(new StubOrchestrator(), new ResourceLoader(Path.GetTempPath()));
         Assert.Throws<ArgumentNullException>(() => runner.InvokeSkill(null));
     }
 
@@ -162,7 +162,8 @@ public sealed class SkillRunnerTests
     [Fact]
     public void ConstructorThrowsOnNullOrchestrator()
     {
-        Assert.Throws<ArgumentNullException>(() => new SkillRunner(null));
+        Assert.Throws<ArgumentNullException>(() =>
+            new SkillRunner(null, new ResourceLoader(Path.GetTempPath())));
     }
 
     /// <summary>
@@ -184,7 +185,7 @@ public sealed class SkillRunnerTests
             throw new NotSupportedException("SkillRunner does not use InvokeAgent.");
 
         public AgentInvocationResult InvokeDefault(string systemPrompt, string taskPrompt,
-            string workingDirectory, TimeSpan timeout)
+            string workingDirectory, TimeSpan timeout, string outputSchemaPath = null)
         {
             LastSystemPrompt = systemPrompt;
             LastTaskPrompt = taskPrompt;
