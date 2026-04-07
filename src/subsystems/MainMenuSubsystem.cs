@@ -1,3 +1,8 @@
+using AGS.ai;
+using AGS.orchestration;
+using AGS.prompt;
+using AGS.skills;
+
 namespace AGS.subsystems;
 
 /// <summary>
@@ -5,6 +10,12 @@ namespace AGS.subsystems;
 /// </summary>
 internal static class MainMenuSubsystem
 {
+    /// <summary>
+    ///     Replaceable action invoked when the user selects "Start". Defaults to
+    ///     <see cref="DefaultStartSkillAction" />. Tests replace this with a stub via reflection.
+    /// </summary>
+    private static Action startSkillAction = DefaultStartSkillAction;
+
     /// <summary>
     ///     Builds the main menu options.
     /// </summary>
@@ -53,10 +64,53 @@ internal static class MainMenuSubsystem
             }
             if (selectedOption.Kind == MainMenuOptionKind.Start)
             {
-                // TODO: invoke ags-start skill via skill runner
+                startSkillAction();
                 continue;
             }
         }
+    }
+
+    /// <summary>
+    ///     Default start action: synchronizes AGS skills into every enabled provider's native
+    ///     directory, then invokes the <c>ags-start</c> skill via the skill runner.
+    /// </summary>
+    private static void DefaultStartSkillAction()
+    {
+        var projectRoot = Directory.GetCurrentDirectory();
+        var resourceLoader = new ResourceLoader(projectRoot);
+
+        var registry = new AIProviderRegistry(projectRoot);
+        registry.Register(new ClaudeCodeAdapter());
+        registry.Register(new CodexAdapter());
+
+        var synchronizer = new SkillSynchronizer(resourceLoader, registry.GetAllProviders());
+        synchronizer.Synchronize(registry.GetEnabledProviders());
+
+        var promptAssembler = new PromptAssembler(resourceLoader);
+        var orchestrator = new AgentOrchestrator(resourceLoader, promptAssembler, registry);
+        var runner = new SkillRunner(orchestrator);
+        var result = runner.InvokeSkill(new SkillInvocationRequest("ags-start", projectRoot,
+            TimeSpan.Zero));
+        if (!result.Success)
+            PrintStartFailure(result);
+    }
+
+    /// <summary>
+    ///     Writes a user-visible error message when the startup skill cannot be invoked
+    ///     successfully.
+    /// </summary>
+    /// <param name="result">Failed skill invocation result.</param>
+    private static void PrintStartFailure(SkillInvocationResult result)
+    {
+        var providerResult = result.InvocationResult.ProviderResult;
+        Console.WriteLine("Failed to start AGS workflow.");
+        if (!string.IsNullOrWhiteSpace(providerResult.ErrorMessage))
+            Console.WriteLine(providerResult.ErrorMessage);
+        if (!string.IsNullOrWhiteSpace(providerResult.Output))
+            Console.WriteLine(providerResult.Output);
+        if (providerResult.ExitCode != 0)
+            Console.WriteLine($"Exit code: {providerResult.ExitCode}");
+        Console.WriteLine("Update Settings and try again.");
     }
 
     /// <summary>
@@ -92,7 +146,7 @@ internal static class MainMenuSubsystem
     private enum MainMenuOptionKind
     {
         /// <summary>
-        ///     Starts the AGS workflow by invoking the ags-start skill.
+        ///     Starts the AGS workflow by synchronizing skills and invoking the ags-start skill.
         /// </summary>
         Start,
 

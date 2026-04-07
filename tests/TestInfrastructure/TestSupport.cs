@@ -373,5 +373,44 @@ internal sealed class ProviderCheckStubScope : IDisposable
         }
         public AGS.ai.AIProviderResult Invoke(AGS.ai.AIProviderRequest request)
             => AGS.ai.AIProviderResult.Succeeded(string.Empty, 0, []);
+
+        public string GetSkillDirectory(string projectRootPath) =>
+            System.IO.Path.Combine(projectRootPath, "stub-skills");
+    }
+}
+
+/// <summary>
+///     Temporarily replaces the start skill action in <see cref="AGS.subsystems.MainMenuSubsystem" />
+///     with a stub that records invocations.
+/// </summary>
+internal sealed class StartSkillActionStubScope : IDisposable
+{
+    private readonly Action originalAction;
+
+    /// <summary>
+    ///     Initializes a new instance of the <see cref="StartSkillActionStubScope" /> class.
+    /// </summary>
+    internal StartSkillActionStubScope()
+    {
+        originalAction = PrivateAccess.GetStaticField<Action>(
+            typeof(AGS.subsystems.MainMenuSubsystem), "startSkillAction");
+        PrivateAccess.SetStaticField(
+            typeof(AGS.subsystems.MainMenuSubsystem),
+            "startSkillAction",
+            (Action)(() => InvocationCount++));
+    }
+
+    /// <summary>
+    ///     Gets the number of times the start skill action was invoked within the scope lifetime.
+    /// </summary>
+    internal int InvocationCount { get; private set; }
+
+    /// <summary>
+    ///     Restores the original start skill action.
+    /// </summary>
+    public void Dispose()
+    {
+        PrivateAccess.SetStaticField(
+            typeof(AGS.subsystems.MainMenuSubsystem), "startSkillAction", originalAction);
     }
 }

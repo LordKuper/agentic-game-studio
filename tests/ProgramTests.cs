@@ -33,7 +33,8 @@ public sealed class ProgramTests
         using var providers = new ProviderCheckStubScope(available: true);
         using var prompts = new PromptStubScope(selectionIndexes: [2]);
         using var console = new ConsoleRedirectionScope(string.Empty);
-        var settings = new AgsSettings(false, false);
+        var settings = new AgsSettings(false, true, AgsSettings.DefaultRateLimitCooldownMinutes,
+            null, ["chatgpt"]);
         settings.TryWriteToProjectConfig(tempDirectory.Path, out _);
         InvokeProgramMain(Array.Empty<string>());
         Assert.Contains("AGS configuration found and loaded. Initialization is not required.",
@@ -63,6 +64,7 @@ public sealed class ProgramTests
             out var settings));
         Assert.False(settings.UseClaude);
         Assert.False(settings.UseCodex);
+        Assert.Empty(settings.DefaultModels);
         Assert.Equal(["Do you want to use Claude Code?", "Do you want to use Codex?"],
             prompts.ConfirmMessages);
     }
@@ -77,15 +79,16 @@ public sealed class ProgramTests
         using var tempDirectory = new TemporaryDirectoryScope();
         using var currentDirectory = new CurrentDirectoryScope(tempDirectory.Path);
         using var providers = new ProviderCheckStubScope(available: true);
-        using var prompts = new PromptStubScope(confirmations: [true, false, false],
+        using var prompts = new PromptStubScope(confirmations: [true, true, false],
             selectionIndexes: [2]);
         using var console = new ConsoleRedirectionScope(string.Empty);
         InvokeProgramMain(Array.Empty<string>());
         var configPath = AgsSettings.GetConfigPath(tempDirectory.Path);
         Assert.True(File.Exists(configPath));
         Assert.True(AgsSettings.TryReadFromConfig(configPath, out var persistedSettings));
-        Assert.False(persistedSettings.UseClaude);
+        Assert.True(persistedSettings.UseClaude);
         Assert.False(persistedSettings.UseCodex);
+        Assert.Equal(["claude-sonnet"], persistedSettings.DefaultModels);
         Assert.Contains("Setup required. Starting setup...", console.Output);
         Assert.Contains("Application is shutting down.", console.Output);
         Assert.Equal(

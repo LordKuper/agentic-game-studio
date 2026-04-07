@@ -338,5 +338,8 @@ public sealed class AgentOrchestratorTests : IDisposable
             Assert.NotEmpty(results);
             return results.Dequeue();
         }
+
+        public string GetSkillDirectory(string projectRootPath) =>
+            System.IO.Path.Combine(projectRootPath, "stub-skills", ProviderId);
     }
 }

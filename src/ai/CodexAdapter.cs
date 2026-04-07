@@ -44,6 +44,10 @@ internal sealed class CodexAdapter : IAIProvider
     public string ProviderId => Id;
 
     /// <inheritdoc />
+    public string GetSkillDirectory(string projectRootPath) =>
+        Path.Combine(projectRootPath, ".agents", "skills");
+
+    /// <inheritdoc />
     public bool IsAvailable => TryGetVersion(out _);
 
     /// <inheritdoc />
@@ -141,17 +145,18 @@ internal sealed class CodexAdapter : IAIProvider
 
     /// <summary>
     ///     Builds the CLI argument string for a Codex invocation.
+    ///     Uses the <c>exec</c> subcommand with <c>--full-auto</c> for non-interactive execution.
+    ///     The <c>codex exec</c> interface does not support a separate system-prompt flag, so a
+    ///     non-empty system prompt is prepended to the task prompt.
     /// </summary>
     private static string BuildInvocationArguments(AIProviderRequest request)
     {
         var builder = new StringBuilder();
-        builder.Append("--approval-mode full-auto ");
-        builder.Append(QuoteArgument(request.TaskPrompt));
-        if (request.SystemPrompt.Length > 0)
-        {
-            builder.Append(" --system-prompt ");
-            builder.Append(QuoteArgument(request.SystemPrompt));
-        }
+        builder.Append("exec --full-auto ");
+        var effectivePrompt = request.SystemPrompt.Length > 0
+            ? $"{request.SystemPrompt}\n\n{request.TaskPrompt}"
+            : request.TaskPrompt;
+        builder.Append(QuoteArgument(effectivePrompt));
         foreach (var (key, value) in request.ProviderArguments)
         {
             builder.Append(' ');
@@ -242,6 +247,7 @@ internal sealed class CodexAdapter : IAIProvider
         if (!exited)
         {
             try { process.Kill(true); } catch { }
+            try { Task.WaitAll([outputTask, errorTask], 5_000); } catch { }
             return (-1, outputBuilder.ToString(), $"Process timed out after {timeoutMs} ms.");
         }
         outputTask.Wait();

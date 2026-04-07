@@ -9,7 +9,6 @@
 		<AssemblyName>ags</AssemblyName>
 	</PropertyGroup>
 	<ItemGroup>
-		<Compile Remove="skills\**" />
 		<Compile Remove="tests\**" />
 		<EmbeddedResource Remove="skills\**" />
 		<EmbeddedResource Remove="tests\**" />

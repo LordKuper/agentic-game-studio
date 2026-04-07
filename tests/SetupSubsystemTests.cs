@@ -25,6 +25,7 @@ public sealed class SetupSubsystemTests
         Assert.True(AgsSettings.TryReadFromConfig(configPath, out var persistedSettings));
         Assert.True(persistedSettings.UseClaude);
         Assert.False(persistedSettings.UseCodex);
+        Assert.Equal(["claude-sonnet"], persistedSettings.DefaultModels);
         Assert.Equal(["Do you want to use Claude Code?", "Do you want to use Codex?"],
             prompts.ConfirmMessages);
         Assert.Contains("Setup required. Starting setup...", console.Output);

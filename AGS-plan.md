@@ -38,16 +38,7 @@ CLI -> Resource Loader -> Settings (AI provider priority list)
 
 ## Skill Format
 
-Skills live in `skills/<skill-name>/SKILL.md` and follow the skill spec:
-
-```
-skills/
-  ags-start/
-    SKILL.md          # required: frontmatter (name, description) + imperative steps
-    references/       # optional: rule references, docs
-    agents/
-      openai.yaml     # optional: UI config, tool dependencies
-```
+Skills live in `skills/<skill-name>/SKILL.md` and follow the skill spec located at https://agentskills.io/specification
 
 `SKILL.md` opens with YAML frontmatter (`name`, `description`) followed by imperative steps describing inputs, outputs, and tool invocations.
 
@@ -105,23 +96,7 @@ Art/audio asset generation, game launching, databases, Web UI/GUI, multi-user co
 - [x] **1.3 Prompt Assembly Engine** — agent .md loader, rule loader, context assembler, prompt template
 
 ### Phase 2: Skill Runner
-
-**2.1 Skill Loader**
-- [ ] Skill discovery from `skills/` directory (global install + project overlay)
-- [ ] `SKILL.md` parser: frontmatter extraction (`name`, `description`) + body
-- [ ] Skill prompt assembly: SKILL.md body + optional `references/` content + session context
-- [ ] Tests: loader with fixture skill directories, overlay override behaviour
-
-**2.2 Skill Invocation**
-- [ ] `ISkillRunner` interface + implementation: load skill, assemble prompt, invoke via default AI provider
-- [ ] Result handling: parse AI output, apply file writes described in skill output
-- [ ] Tests: end-to-end with mock AI provider
-
-**2.3 ags-start Skill**
-- [ ] `skills/ags-start/SKILL.md`: repo inspection, entry-state routing (new repo / existing project / in-progress session / post-release), first-run onboarding
-- [ ] References to `rules/` files for stage definitions and workflow logic
-- [ ] Invoked automatically on app startup after provider availability check
-- [ ] Tests: each entry path with fixture repo states
+- [x] Skill runner, skill sync, ags-start wiring
 
 ### Phase 3: Session System
 

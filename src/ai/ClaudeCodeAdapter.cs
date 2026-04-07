@@ -46,6 +46,10 @@ internal sealed class ClaudeCodeAdapter : IAIProvider
     public string ProviderId => Id;
 
     /// <inheritdoc />
+    public string GetSkillDirectory(string projectRootPath) =>
+        Path.Combine(projectRootPath, ".claude", "skills");
+
+    /// <inheritdoc />
     public bool IsAvailable => TryGetVersion(out _);
 
     /// <inheritdoc />

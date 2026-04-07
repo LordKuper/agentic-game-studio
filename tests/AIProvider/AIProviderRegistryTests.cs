@@ -586,5 +586,8 @@ public sealed class AIProviderRegistryTests : IDisposable
         public bool TryGetVersion(out string version) { version = string.Empty; return true; }
         public AIProviderResult Invoke(AIProviderRequest request)
             => AIProviderResult.Succeeded(string.Empty, 0, []);
+
+        public string GetSkillDirectory(string projectRootPath) =>
+            System.IO.Path.Combine(projectRootPath, "stub-skills", ProviderId);
     }
 }

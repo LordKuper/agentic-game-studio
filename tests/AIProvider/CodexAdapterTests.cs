@@ -71,7 +71,29 @@ public sealed class CodexAdapterTests
     }
 
     /// <summary>
-    ///     Verifies that Invoke includes --system-prompt when a system prompt is provided.
+    ///     Verifies that Invoke uses the exec subcommand with --full-auto.
+    /// </summary>
+    [Fact]
+    public void InvokeUsesExecSubcommandWithFullAuto()
+    {
+        ProcessStartInfo capturedStartInfo = null;
+        var adapter = new CodexAdapter(si =>
+        {
+            if (si.FileName != "git") capturedStartInfo = si;
+            return (0, "output", string.Empty);
+        });
+
+        using var tempDir = new TemporaryDirectoryScope();
+        var request = new AIProviderRequest("", "write the shader", tempDir.Path,
+            TimeSpan.FromMinutes(1));
+        adapter.Invoke(request);
+
+        Assert.StartsWith("exec --full-auto ", capturedStartInfo.Arguments);
+    }
+
+    /// <summary>
+    ///     Verifies that Invoke prepends the system prompt to the task prompt when provided,
+    ///     without using a separate --system-prompt flag.
     /// </summary>
     [Fact]
     public void InvokeIncludesSystemPromptWhenProvided()
@@ -88,8 +110,9 @@ public sealed class CodexAdapterTests
             tempDir.Path, TimeSpan.FromMinutes(1));
         adapter.Invoke(request);
 
-        Assert.Contains("--system-prompt", capturedStartInfo.Arguments);
+        Assert.DoesNotContain("--system-prompt", capturedStartInfo.Arguments);
         Assert.Contains("you are a programmer", capturedStartInfo.Arguments);
+        Assert.Contains("write the shader", capturedStartInfo.Arguments);
     }
 
     /// <summary>

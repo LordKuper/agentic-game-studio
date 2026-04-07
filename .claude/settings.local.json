@@ -8,7 +8,13 @@
       "Bash(find D:/Projects/agentic-game-studio -name *.cs -maxdepth 4)",
       "Bash(find /d/Projects/agentic-game-studio -type d ! -path */obj ! -path */bin)",
       "WebFetch(domain:developers.openai.com)",
-      "Bash(ls \"C:\\\\Users\\\\Michieru\\\\.claude\\\\projects\\\\D--Projects-agentic-game-studio\\\\memory\"\" 2>/dev/null || echo \"dir empty or missing \")"
+      "Bash(ls \"C:\\\\Users\\\\Michieru\\\\.claude\\\\projects\\\\D--Projects-agentic-game-studio\\\\memory\"\" 2>/dev/null || echo \"dir empty or missing \")",
+      "Bash(grep -E \"\\\\.cs$\")",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:docs.anthropic.com)",
+      "WebSearch",
+      "Bash(codex --help)",
+      "Bash(codex exec:*)"
     ]
   }
 }
