@@ -1,2 +1,5 @@
 # Visual Studio cache directory
 .vs/
+
+# Project AGS-settings
+.ags/project/
