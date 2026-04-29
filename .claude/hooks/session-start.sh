@@ -17,21 +17,41 @@ if [ -n "$BRANCH" ]; then
     done
 fi
 
-# --- Active session state recovery ---
-STATE_FILE=".ags/project/session-state.md"
-if [ -f "$STATE_FILE" ]; then
-    echo ""
-    echo "= SESSION STATE DETECTED ="
-    echo "A previous session left state at: $STATE_FILE"
-    echo "Read this file to recover context and continue where you left off."
-    echo ""
-    echo "Quick summary:"
-    head -20 "$STATE_FILE" 2>/dev/null
-    TOTAL_LINES=$(wc -l < "$STATE_FILE" 2>/dev/null)
-    if [ "$TOTAL_LINES" -gt 20 ]; then
-        echo "  ... ($TOTAL_LINES total lines — read the full file to continue)"
+# --- Sessions overview ---
+SESSIONS_DIR=".ags/project/sessions"
+CURRENT_FILE="$SESSIONS_DIR/.current"
+
+if [ -d "$SESSIONS_DIR" ]; then
+    # Active (pointer)
+    if [ -f "$CURRENT_FILE" ]; then
+        SLUG=$(head -1 "$CURRENT_FILE" 2>/dev/null | tr -d '[:space:]')
+        ACTIVE_FILE="$SESSIONS_DIR/$SLUG.md"
+        if [ -n "$SLUG" ] && [ -f "$ACTIVE_FILE" ]; then
+            echo ""
+            echo "= ACTIVE SESSION: $SLUG ="
+            echo "File: $ACTIVE_FILE"
+            head -10 "$ACTIVE_FILE" 2>/dev/null
+            echo "= END ACTIVE PREVIEW ="
+        fi
     fi
-    echo "= END SESSION STATE PREVIEW ="
+
+    # Other unfinished sessions (excluding active + archived/)
+    UNFINISHED=$(find "$SESSIONS_DIR" -maxdepth 1 -name '*.md' -type f 2>/dev/null | sort)
+    if [ -n "$UNFINISHED" ]; then
+        OTHERS=""
+        for f in $UNFINISHED; do
+            base=$(basename "$f" .md)
+            if [ "$base" != "$SLUG" ]; then
+                OTHERS="$OTHERS$f\n"
+            fi
+        done
+        if [ -n "$OTHERS" ]; then
+            echo ""
+            echo "= UNFINISHED SESSIONS ="
+            printf "$OTHERS"
+            echo "Run /ags-start to resume one or start a new session."
+        fi
+    fi
 fi
 
 echo "==================================="

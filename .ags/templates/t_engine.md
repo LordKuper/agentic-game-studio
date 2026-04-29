@@ -2,24 +2,18 @@
 
 ## Choice
 
-<!--
-Options:
-- Unity
-- Godot
-- Unreal
-- Other (free-form, user-supplied)
--->
+<!-- The studio currently supports Unity only. -->
 
-{{engine_name}}
+Unity
 
 ## Version
 
-<!-- Pinned engine version. Example: "Unity 6000.0.23f1", "Godot 4.3", "Unreal 5.4". -->
+<!-- Pinned engine version. Example: "Unity 6000.0.30f1". -->
 
 {{engine_version}}
 
 ## Rationale
 
-<!-- Why this engine. Constraints, target platform fit, team expertise, licensing. -->
+<!-- Why Unity for this project. Constraints, target platform fit, team expertise, licensing. -->
 
 {{rationale}}

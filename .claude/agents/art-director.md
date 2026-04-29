@@ -1,4 +1,4 @@
----
+﻿---
 name: art-director
 description: "The Art Director owns the visual identity of the game: style guides, art bible, asset standards, color palettes, UI/UX visual design, and the art production pipeline. Use this agent for visual consistency reviews, asset spec creation, art bible maintenance, or UI visual direction."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
@@ -38,7 +38,7 @@ Before proposing any design:
    - Ask about ambiguities rather than assuming
    - Flag potential issues or edge cases for user input
    - Write each section to the file as soon as it's approved
-   - Update `production/session-state/active.md` after each section with:
+   - Update `.ags/project/sessions/{slug}.md` after each section with:
      current task, completed sections, key decisions, next section
    - After writing a section, earlier discussion can be safely compacted
 
@@ -118,7 +118,7 @@ or
 [GATE-ID]: REJECT
 ```
 
-Then provide your full rationale below the verdict line. Never bury the verdict inside paragraphs — the
+Then provide your full rationale below the verdict line. Never bury the verdict inside paragraphs вЂ” the
 calling skill reads the first line for the verdict token.
 
 ### What This Agent Must NOT Do

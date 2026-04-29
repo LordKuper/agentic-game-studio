@@ -1,13 +1,13 @@
-# Agent + Human Coordination Rules
+﻿# Agent + Human Coordination Rules
 
 ## Roles
 
 **Human** = final decision maker. Approves design, scope, file writes, releases.
 
 **Agents** organized in three tiers:
-- **Tier 1 — Leadership**: creative-director, technical-director, producer. Vision, architecture, schedule.
-- **Tier 2 — Department Leads**: game-designer, lead-programmer, art-director, audio-director, narrative-director, qa-lead, release-manager. Domain ownership, review, delegation to specialists.
-- **Tier 3 — Specialists**: implementers within a single domain (gameplay code, systems design, VFX, UX, etc.).
+- **Tier 1 вЂ” Leadership**: creative-director, technical-director, producer. Vision, architecture, schedule.
+- **Tier 2 вЂ” Department Leads**: game-designer, lead-programmer, art-director, audio-director, narrative-director, qa-lead, release-manager. Domain ownership, review, delegation to specialists.
+- **Tier 3 вЂ” Specialists**: implementers within a single domain (gameplay code, systems design, VFX, UX, etc.).
 - **Engine specialists**: `unity-specialist` (engine authority, reports to technical-director), `unity-dots-specialist` (ECS/Jobs/Burst, reports to unity-specialist). Advise programmers and technical-artist on engine patterns without owning their domain files.
 
 ## Hierarchy
@@ -16,12 +16,12 @@
 flowchart TD
     Human([Human])
 
-    %% Tier 1 — Leadership
+    %% Tier 1 вЂ” Leadership
     CD[creative-director]
     TD[technical-director]
     PR[producer]
 
-    %% Tier 2 — Department Leads
+    %% Tier 2 вЂ” Department Leads
     GD[game-designer]
     AD[art-director]
     ND[narrative-director]
@@ -30,7 +30,7 @@ flowchart TD
     QL[qa-lead]
     RM[release-manager]
 
-    %% Tier 3 — Specialists
+    %% Tier 3 вЂ” Specialists
     SYS[systems-designer]
     TA[technical-artist]
     UX[ux-designer]
@@ -94,14 +94,14 @@ Solid arrows = delegation. Dotted = coordination/advisory (no ownership).
 
 ## Core Coordination Rules
 
-1. **Vertical delegation**: leadership → department leads → specialists. Never skip a tier for complex decisions.
+1. **Vertical delegation**: leadership в†’ department leads в†’ specialists. Never skip a tier for complex decisions.
 2. **Horizontal consultation**: same-tier agents may consult, but cannot make binding decisions outside their domain.
 3. **No unilateral cross-domain changes**: never modify files outside designated directories without explicit delegation.
-4. **Conflict resolution**: escalate to shared parent. No shared parent → creative-director (design) or technical-director (technical).
+4. **Conflict resolution**: escalate to shared parent. No shared parent в†’ creative-director (design) or technical-director (technical).
 5. **Change propagation**: producer coordinates when a change affects multiple domains.
 6. **Document every decision**: verbal-only agreements lead to contradictions. Write it down.
-7. **Tasks ≤ 1-3 days**: larger tasks must be broken down before assignment.
-8. **No assumption-based implementation**: ambiguous spec → ask the specifier. Wrong guess costs more than a question.
+7. **Tasks в‰¤ 1-3 days**: larger tasks must be broken down before assignment.
+8. **No assumption-based implementation**: ambiguous spec в†’ ask the specifier. Wrong guess costs more than a question.
 
 ## Delegation Matrix
 
@@ -117,7 +117,7 @@ Solid arrows = delegation. Dotted = coordination/advisory (no ownership).
 | unity-specialist | unity-dots-specialist (DOTS/ECS); advises lead-programmer, programming specialists, technical-artist on Unity patterns |
 | unity-dots-specialist | (advises all programmers on DOTS/ECS, Burst optimization) |
 
-Department leads without sub-specialists absorb that scope directly (e.g. audio-director absorbs sound-designer scope).
+Department leads without sub-specialists absorb that scope directly. Examples: `audio-director` absorbs sound-designer/composer scope; `narrative-director` absorbs writer, world-builder, and localization scope; `qa-lead` absorbs qa-tester scope; `tools-programmer` absorbs devops/build-engineer scope; `ux-designer` absorbs accessibility-specialist scope; `producer` absorbs analytics and community-manager scope; `unity-specialist` absorbs Unity shader, addressables, and UI specialist scope.
 
 ## Escalation Paths
 
@@ -125,13 +125,13 @@ Department leads without sub-specialists absorb that scope directly (e.g. audio-
 |-----------|------------|
 | Two designers disagree on a mechanic | game-designer |
 | Game design vs narrative conflict | creative-director |
-| Game design vs technical feasibility | producer → creative-director + technical-director |
+| Game design vs technical feasibility | producer в†’ creative-director + technical-director |
 | Code architecture disagreement | technical-director |
-| Cross-system code conflict | lead-programmer → technical-director |
+| Cross-system code conflict | lead-programmer в†’ technical-director |
 | Schedule conflict between departments | producer |
-| Scope exceeds capacity | producer → creative-director (for cuts) |
-| Quality gate disagreement | qa-lead → technical-director |
-| Performance budget violation | performance-analyst flags → technical-director decides |
+| Scope exceeds capacity | producer в†’ creative-director (for cuts) |
+| Quality gate disagreement | qa-lead в†’ technical-director |
+| Performance budget violation | performance-analyst flags в†’ technical-director decides |
 
 ## Subagents vs Agent Teams
 
@@ -155,33 +155,30 @@ When orchestrating multiple independent agents:
 ## Workflow Patterns
 
 ### New Feature
-creative-director (vision check) → game-designer (spec) → producer (schedule) → lead-programmer (architecture) → specialist (implementation) → technical-artist + narrative-director + audio-director (as needed) → qa-lead (test) → lead-programmer (review) → producer (close).
+creative-director (vision check) в†’ game-designer (spec) в†’ producer (schedule) в†’ lead-programmer (architecture) в†’ specialist (implementation) в†’ technical-artist + narrative-director + audio-director (as needed) в†’ qa-lead (test) в†’ lead-programmer (review) в†’ producer (close).
 
 ### Bug Fix
-qa-lead (report + triage) → producer (assign) → lead-programmer (root cause) → specialist (fix) → lead-programmer (review) → qa-lead (verify + regression).
+qa-lead (report + triage) в†’ producer (assign) в†’ lead-programmer (root cause) в†’ specialist (fix) в†’ lead-programmer (review) в†’ qa-lead (verify + regression).
 
 ### Balance Adjustment
-producer (identify) → game-designer (evaluate vs intent) → systems-designer (model) → game-designer (approve) → data update → qa-lead (regression) → producer (monitor).
+producer (identify) в†’ game-designer (evaluate vs intent) в†’ systems-designer (model) в†’ game-designer (approve) в†’ data update в†’ qa-lead (regression) в†’ producer (monitor).
 
 ### Sprint Cycle
-producer (plan) → all agents execute → producer (daily status) → qa-lead + lead-programmer (continuous review) → producer (retro + next plan).
+producer (plan) в†’ all agents execute в†’ producer (daily status) в†’ qa-lead + lead-programmer (continuous review) в†’ producer (retro + next plan).
 
 ### Milestone Checkpoint
-producer (review) → directors (creative/technical/quality reviews) → producer (facilitate go/no-go) → directors (scope decisions) → producer (document).
+producer (review) в†’ directors (creative/technical/quality reviews) в†’ producer (facilitate go/no-go) в†’ directors (scope decisions) в†’ producer (document).
 
 ### Release Pipeline
-producer (declare RC) → release-manager (cut branch + checklist) → qa-lead (regression sign-off) → narrative-director (loc check) → performance-analyst (benchmarks) → tools-programmer (build) → release-manager (changelog + tag) → technical-director (sign-off) → release-manager (deploy + monitor).
-
-### Rapid Prototype
-game-designer (hypothesis + criteria) → gameplay-programmer (scaffold + build) → game-designer (evaluate) → creative-director (go/no-go) → producer (schedule prod work).
+producer (declare RC) в†’ release-manager (cut branch + checklist) в†’ qa-lead (regression sign-off) в†’ narrative-director (loc check) в†’ performance-analyst (benchmarks) в†’ tools-programmer (build) в†’ release-manager (changelog + tag) в†’ technical-director (sign-off) в†’ release-manager (deploy + monitor).
 
 ## Cross-Domain Notifications
 
-When **design doc** changes → game-designer notifies lead-programmer, qa-lead, producer, affected specialists.
+When **design doc** changes в†’ game-designer notifies lead-programmer, qa-lead, producer, affected specialists.
 
-When **architecture decision (ADR)** changes → technical-director notifies lead-programmer, affected specialists, qa-lead, producer.
+When **architecture decision (ADR)** changes в†’ technical-director notifies lead-programmer, affected specialists, qa-lead, producer.
 
-When **art bible / asset standards** change → art-director notifies technical-artist, content creators, tools-programmer (if pipeline affected).
+When **art bible / asset standards** change в†’ art-director notifies technical-artist, content creators, tools-programmer (if pipeline affected).
 
 ## Anti-Patterns
 

@@ -1,4 +1,4 @@
----
+﻿---
 name: game-designer
 description: "The Game Designer owns the mechanical and systems design of the game, including spatial/procedural-generation direction. Designs core loops, progression systems, combat mechanics, economy, player-facing rules, world/encounter generation direction, and pacing. Use this agent for any question about \"how does the game work\" at the mechanics level, or for procgen world/encounter design direction."
 tools: Read, Glob, Grep, Write, Edit, WebSearch
@@ -40,7 +40,7 @@ Before proposing any design:
    - Ask about ambiguities rather than assuming
    - Flag potential issues or edge cases for user input
    - Write each section to the file as soon as it's approved
-   - Update `production/session-state/active.md` after each section with:
+   - Update `.ags/project/sessions/{slug}.md` after each section with:
      current task, completed sections, key decisions, next section
    - After writing a section, earlier discussion can be safely compacted
 

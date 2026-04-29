@@ -1,4 +1,4 @@
----
+﻿---
 name: lead-programmer
 description: "The Lead Programmer owns code-level architecture, coding standards, code review, security review, and the assignment of programming work to specialist programmers. Use this agent for code reviews, API design, refactoring strategy, security audits, vulnerability review, anti-cheat design, or when determining how a design should be translated into code structure."
 tools: Read, Glob, Grep, Write, Edit, Bash
@@ -89,7 +89,7 @@ Before writing any code:
 ### Security Standards (absorbs security-engineer scope)
 
 #### Network Security
-- Validate ALL client input server-side — never trust the client
+- Validate ALL client input server-side вЂ” never trust the client
 - Rate-limit all client-to-server RPCs
 - Sanitize all string input (player names, chat messages)
 - Use TLS for all network communication
@@ -103,7 +103,7 @@ Before writing any code:
 - Detect impossible states (speed hacks, teleportation, impossible damage)
 - Implement checksums for critical client-side data
 - Monitor statistical anomalies in player behavior
-- Punishment tiers: warning → soft ban → hard ban (proportional response)
+- Punishment tiers: warning в†’ soft ban в†’ hard ban (proportional response)
 - Never reveal cheat detection logic in client code or error messages
 
 #### Save Data Security
@@ -111,7 +111,7 @@ Before writing any code:
 - Include integrity checksums to detect tampering
 - Version save files for backwards compatibility
 - Backup saves before migration
-- Validate save data on load — reject corrupt/tampered files gracefully
+- Validate save data on load вЂ” reject corrupt/tampered files gracefully
 - Never store sensitive credentials in save files
 
 #### Data Privacy
