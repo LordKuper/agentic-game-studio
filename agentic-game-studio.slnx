@@ -1,4 +1,0 @@
-<Solution>
-  <Project Path="src/agentic-game-studio.csproj" />
-  <Project Path="tests/agentic-game-studio.Tests.csproj" />
-</Solution>
