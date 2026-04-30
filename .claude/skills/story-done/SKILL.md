@@ -22,7 +22,7 @@ forgotten, and the story file reflects actual completion status.
 
 Resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed в†’ use that
-2. Else read `.ags/project/review-mode.txt` в†’ use that value
+2. Else read `.ags/project/review-mode.md` в†’ use that value
 3. Else в†’ default to `lean`
 
 See `.ags/rules/director-gates.md` for the full check pattern.
@@ -32,7 +32,7 @@ read that file directly.
 
 **If no argument is provided:**
 
-1. Check `.ags/project/sessions/{slug}.md` for the currently active story.
+1. Check `.ags/project/state.md` for the currently active story.
 2. If not found there, read the most recent file in `.ags/project/sprints/` and
    look for stories marked IN PROGRESS.
 3. If multiple in-progress stories are found, use `AskUserQuestion`:
@@ -350,7 +350,7 @@ If yes, edit the story file:
 ### Session State Update
 
 After updating the story file, silently append to
-`.ags/project/sessions/{slug}.md`:
+`.ags/project/state.md`:
 
     ## Session Extract вЂ” /story-done [date]
     - Verdict: [COMPLETE / COMPLETE WITH NOTES / BLOCKED]

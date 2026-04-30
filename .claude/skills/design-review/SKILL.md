@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 
 Extract `--depth [full|lean|solo]` if present. Default is `full` when no flag is given.
 
-**Note**: `--depth` controls the *analysis depth* of this skill (how many specialist agents are spawned). It is independent of the global review mode in `.ags/project/review-mode.txt`, which controls director gate spawning. These are two different concepts вЂ” `--depth` is about how thoroughly *this* skill analyses the document.
+**Note**: `--depth` controls the *analysis depth* of this skill (how many specialist agents are spawned). It is independent of the global review mode in `.ags/project/review-mode.md`, which controls director gate spawning. These are two different concepts вЂ” `--depth` is about how thoroughly *this* skill analyses the document.
 
 - **`full`**: Complete review вЂ” all phases + specialist agent delegation (Phase 3b)
 - **`lean`**: All phases, no specialist agents вЂ” faster, single-session analysis

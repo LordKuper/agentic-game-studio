@@ -31,7 +31,7 @@ drives implementation to completion вЂ” including writing the test.
 
 **If a path is provided**: read that file directly.
 
-**If no argument**: check `.ags/project/sessions/{slug}.md` for the active
+**If no argument**: check `.ags/project/state.md` for the active
 story. If found, confirm: "Continuing work on [story title] вЂ” is that correct?"
 If not found, ask: "Which story are we implementing?" Glob
 `.ags/project/epics/**/*.md` and list stories with Status: Ready.
@@ -257,7 +257,7 @@ Ready for: `/code-review [file1] [file2]` then `/story-done [story-path]`
 
 ## Phase 7: Update Session State
 
-Silently append to `.ags/project/sessions/{slug}.md`:
+Silently append to `.ags/project/state.md`:
 
 ```
 ## Session Extract вЂ” /dev-story [date]

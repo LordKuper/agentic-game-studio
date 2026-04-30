@@ -12,7 +12,7 @@ When this skill is invoked:
 
 Resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed в†’ use that
-2. Else read `.ags/project/review-mode.txt` в†’ use that value
+2. Else read `.ags/project/review-mode.md` в†’ use that value
 3. Else в†’ default to `lean`
 
 See `.ags/rules/director-gates.md` for the full check pattern.
@@ -281,7 +281,7 @@ Use the template structure from `.ags/templates/game-design-document.md`:
 
 Ask: "May I create the skeleton file at `design/gdd/[system-name].md`?"
 
-After writing, update `.ags/project/sessions/{slug}.md`:
+After writing, update `.ags/project/state.md`:
 - Use Glob to check if the file exists.
 - If it **does not exist**: use the **Write** tool to create it. Never attempt Edit on a file that may not exist.
 - If it **already exists**: use the **Edit** tool to update the relevant fields.
@@ -349,7 +349,7 @@ Context  ->  Questions  ->  Options  ->  Decision  ->  Draft  ->  Approval  ->  
    - If new (not in registry): flag it as a candidate for registry registration
      (will be handled in Phase 5).
 
-After writing each section, update `.ags/project/sessions/{slug}.md` with the
+After writing each section, update `.ags/project/state.md` with the
 completed section name. Use Glob to check if the file exists вЂ” use Write to create
 it if absent, Edit to update it if present.
 
@@ -733,7 +733,7 @@ Ask: "May I update the systems index at `design/gdd/systems-index.md`?"
 
 ### 5d: Update Session State
 
-Update `.ags/project/sessions/{slug}.md` with:
+Update `.ags/project/state.md` with:
 - Task: [system-name] GDD
 - Status: Complete (or In Review if design-review was run)
 - File: design/gdd/[system-name].md
@@ -788,7 +788,7 @@ orchestrates the overall flow; agents provide expert content.
 
 If the session is interrupted (compaction, crash, new session):
 
-1. Read `.ags/project/sessions/{slug}.md` вЂ” it records the current system and
+1. Read `.ags/project/state.md` вЂ” it records the current system and
    which sections are complete
 2. Read `design/gdd/[system-name].md` вЂ” sections with real content are done;
    sections with `[To be designed]` still need work

@@ -27,7 +27,7 @@ then Core, and so on вЂ” matching the dependency order.
 ## 1. Parse Argument
 
 Extract `--review [full|lean|solo]` if present and store as the review mode
-override for this run. If not provided, read `.ags/project/review-mode.txt`
+override for this run. If not provided, read `.ags/project/review-mode.md`
 (default `full` if missing). This resolved mode applies to all gate spawns
 in this skill вЂ” apply the check pattern from `.ags/rules/director-gates.md`
 before every gate invocation.

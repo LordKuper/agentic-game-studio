@@ -10,7 +10,7 @@ allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 
 Resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed в†’ use that
-2. Else read `.ags/project/review-mode.txt` в†’ use that value
+2. Else read `.ags/project/review-mode.md` в†’ use that value
 3. Else в†’ default to `lean`
 
 See `.ags/rules/director-gates.md` for the full check pattern.

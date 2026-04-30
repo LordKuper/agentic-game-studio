@@ -19,7 +19,7 @@ Two modes:
 
 Also resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed в†’ use that
-2. Else read `.ags/project/review-mode.txt` в†’ use that value
+2. Else read `.ags/project/review-mode.md` в†’ use that value
 3. Else в†’ default to `lean`
 
 See `.ags/rules/director-gates.md` for the full check pattern.
@@ -249,7 +249,7 @@ Present the assessment. If REJECT, revise the system set with the user before GD
 
 ### Step 5c: Update Session State
 
-After writing, create `.ags/project/sessions/{slug}.md` if it does not exist, then update it with:
+After writing, create `.ags/project/state.md` if it does not exist, then update it with:
 - Task: Systems decomposition
 - Status: Systems index created
 - File: design/gdd/systems-index.md
@@ -338,7 +338,7 @@ This skill follows the collaborative design principle at every phase:
 4. **Incremental writing**: Update the systems index after each system is designed
 5. **Handoff**: Individual GDD authoring is owned by `/design-system`, which handles
    incremental section writing, cross-referencing, design review, and index updates
-6. **Session state updates**: Write to `.ags/project/sessions/{slug}.md` after
+6. **Session state updates**: Write to `.ags/project/state.md` after
    each milestone (index created, system designed, priorities changed)
 
 **Never** auto-generate the full systems list and write it without review.

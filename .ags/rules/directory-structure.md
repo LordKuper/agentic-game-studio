@@ -12,13 +12,9 @@
 ├── .ags/                              # Studio workflow: rules, templates, project state
 │   ├── docs/                          # Technical documentation, curated engine API snapshots (version-pinned), examples
 │   ├── project/                       # Project-state working directory (gitignored except patterns below)
-│   │   ├── sessions/                  # Per-session working files
-│   │   │   ├── {slug}.md              # Active session checkpoints
-│   │   │   ├── archived/              # Completed sessions
-│   │   │   │   └── {slug}.md
-│   │   │   └── .current               # One-line pointer file: slug of the active session
+│   │   ├── state.md                   # Active session state (single file, overwritten on new task)
 │   │   ├── stage.txt                  # Current development phase
-│   │   ├── review-mode.txt            # Director-gate intensity (full / lean / solo)
+│   │   ├── review-mode.md             # Director-gate intensity (full / lean / solo)
 │   │   ├── sprint-status.yaml         # Sprint snapshot
 │   │   ├── sprints/                   # Sprint plans
 │   │   ├── epics/                     # Epic definitions and story files
@@ -47,10 +43,10 @@
 
 - **Production code** lives in the engine's source root (e.g. `Assets/` for Unity).
   Tests live in `tests/` regardless of engine.
-- **Sessions**: every working session writes to `.ags/project/sessions/{slug}.md`.
-  The active session slug is recorded in `.ags/project/sessions/.current`.
-  Completed sessions are moved to `.ags/project/sessions/archived/`.
-- **Project state files** (`stage.txt`, `review-mode.txt`, `sprint-status.yaml`)
-  live directly under `.ags/project/` and persist across sessions.
+- **Active session**: a single file `.ags/project/state.md` holds the entire
+  working session. Only one active session at a time. Starting a new task
+  overwrites it. History lives in git.
+- **Project state files** (`stage.txt`, `review-mode.md  `, `sprint-status.yaml`)
+  live directly under `.ags/project/` and persist across `state.md` overwrites.
 - **`.ags/project/`** subtree is mostly working state — keep it gitignored
   unless the project has explicit reasons to track sprint/epic history in git.
