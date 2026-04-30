@@ -365,7 +365,7 @@ are resolved. The new run will reflect the current state of the project.
 ## Phase 6b: Set Review Mode
 
 After writing the adoption plan (or if the user cancels writing), check whether
-`.ags/project/review-mode.txt` exists.
+`.ags/project/review-mode.md` exists.
 
 **If it exists**: Read it and note the current mode вЂ” "Review mode is already set to `[current]`." вЂ” skip the prompt.
 
@@ -377,7 +377,7 @@ After writing the adoption plan (or if the user cancels writing), check whether
   - `Lean (recommended)` вЂ” Directors only at phase gate transitions (/gate-check). Skips per-skill reviews. Balanced for solo devs and small teams.
   - `Solo` вЂ” No director reviews at all. Maximum speed. Best for game jams or if reviews feel like overhead.
 
-Write the choice to `.ags/project/review-mode.txt` immediately after selection вЂ” no separate "May I write?" needed:
+Write the choice to `.ags/project/review-mode.md` immediately after selection вЂ” no separate "May I write?" needed:
 - `Full` в†’ write `full`
 - `Lean (recommended)` в†’ write `lean`
 - `Solo` в†’ write `solo`

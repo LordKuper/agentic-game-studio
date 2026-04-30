@@ -28,7 +28,7 @@ the verdict using the **Verdict handling** rules below.
 Review intensity controls whether director gates run. It can be set globally
 (persists across sessions) or overridden per skill run.
 
-**Global config**: `.ags/project/review-mode.txt` вЂ” one word: `full`, `lean`, or `solo`.
+**Global config**: `.ags/project/review-mode.md` вЂ” one word: `full`, `lean`, or `solo`.
 Set once during `/ags-start`. Edit the file directly to change it at any time.
 
 **Per-run override**: any gate-using skill accepts `--review [full|lean|solo]` as an
@@ -52,7 +52,7 @@ Examples:
 ```
 Before spawning gate [GATE-ID]:
 1. If skill was called with --review [mode], use that
-2. Else read .ags/project/review-mode.txt
+2. Else read .ags/project/review-mode.md
 3. Else default to full
 
 Apply the resolved mode:
@@ -68,7 +68,7 @@ Apply the resolved mode:
 
 **MANDATORY: Resolve review mode before every gate spawn.** Never spawn a gate without checking. The resolved mode is determined once per skill run:
 1. If skill was called with `--review [mode]`, use that
-2. Else read `.ags/project/review-mode.txt`
+2. Else read `.ags/project/review-mode.md`
 3. Else default to `lean`
 
 Apply the resolved mode:
@@ -118,7 +118,7 @@ After a gate resolves, record the verdict in the relevant document's status head
 ```
 
 For phase gates, record in `design/architecture/architecture.md` or
-`.ags/project/sessions/{slug}.md` as appropriate.
+`.ags/project/state.md` as appropriate.
 
 ---
 

@@ -556,7 +556,7 @@ append when it already exists.
 ### Session State Update
 
 After writing all approved files, silently append to
-`.ags/project/sessions/{slug}.md`:
+`.ags/project/state.md`:
 
     ## Session Extract вЂ” /architecture-review [date]
     - Verdict: [PASS / CONCERNS / FAIL]

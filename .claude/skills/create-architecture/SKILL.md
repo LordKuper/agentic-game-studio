@@ -18,7 +18,7 @@ This skill creates the whole-system blueprint that gives ADRs their context.
 
 Resolve the review mode (once, store for all gate spawns this run):
 1. If `--review [full|lean|solo]` was passed в†’ use that
-2. Else read `.ags/project/review-mode.txt` в†’ use that value
+2. Else read `.ags/project/review-mode.md` в†’ use that value
 3. Else в†’ default to `lean`
 
 See `.ags/rules/director-gates.md` for the full check pattern.
@@ -375,7 +375,7 @@ After writing the document, provide a clear handoff:
 1. **Run these ADRs next** (from Phase 6, prioritised): list the top 3
 2. **Gate check**: "The master architecture document is complete. Run `/gate-check
    pre-production` when all required ADRs are also written."
-3. **Update session state**: Write a summary to `.ags/project/sessions/{slug}.md`
+3. **Update session state**: Write a summary to `.ags/project/state.md`
 
 ---
 

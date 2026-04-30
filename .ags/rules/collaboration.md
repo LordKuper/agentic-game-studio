@@ -81,9 +81,9 @@ Multi-section docs (GDD, lore, architecture): write each approved section to fil
    - Draft in conversation
    - User reviews, revises
    - "May I write this section?" в†’ write
-   - Update `.ags/project/sessions/{slug}.md`
+   - Update `.ags/project/state.md`
    - Previous section discussion safe to compact (decisions in file)
-3. On crash/compact: read file (completed sections preserved) + read active session file `.ags/project/sessions/{slug}.md` (slug from `.ags/project/sessions/.current`)
+3. On crash/compact: read file (completed sections preserved) + read `.ags/project/state.md`
 
 Why: 8-section doc with 2-3 revisions = 30-50k tokens. Incremental keeps live context at 3-5k.
 

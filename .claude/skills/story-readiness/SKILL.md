@@ -26,7 +26,7 @@ gap list for each non-ready story.
 Resolve the review mode once at startup (store for all gate spawns this run):
 
 1. If skill was called with `--review [full|lean|solo]` в†’ use that value
-2. Else read `.ags/project/review-mode.txt` в†’ use that value
+2. Else read `.ags/project/review-mode.md` в†’ use that value
 3. Else в†’ default to `lean`
 
 See `.ags/rules/director-gates.md` for the full check pattern and mode definitions.

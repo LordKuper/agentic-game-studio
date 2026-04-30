@@ -558,7 +558,7 @@ If any GDDs are flagged for revision, use a second `AskUserQuestion`:
 ### Session State Update
 
 After writing the report (and updating systems index if approved), silently
-append to `.ags/project/sessions/{slug}.md`:
+append to `.ags/project/state.md`:
 
     ## Session Extract вЂ” /review-all-gdds [date]
     - Verdict: [PASS / CONCERNS / FAIL]

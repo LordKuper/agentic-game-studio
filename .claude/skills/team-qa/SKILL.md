@@ -36,7 +36,7 @@ Before doing anything else, gather the full scope:
 1. Detect the current sprint or feature scope from the argument:
    - If argument is a sprint identifier (e.g., `sprint-03`): read all story files in `.ags/project/sprints/[sprint]/`
    - If argument is `feature: [system-name]`: glob story files tagged for that system
-   - If no argument: read `.ags/project/sessions/{slug}.md` and `.ags/project/sprint-status.yaml` (if present) to infer the active sprint
+   - If no argument: read `.ags/project/state.md` and `.ags/project/sprint-status.yaml` (if present) to infer the active sprint
 
 2. Read `.ags/project/stage.txt` to confirm the current project phase.
 
