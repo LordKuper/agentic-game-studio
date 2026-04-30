@@ -8,10 +8,9 @@ allowed-tools: Read, Glob, Grep, Write
 
 # Test Helpers
 
-Writing test cases is faster and more consistent when common setup, teardown,
-and assertion patterns are abstracted into helpers. This skill generates a
-`tests/helpers/` library tailored to the project's actual engine, language,
-and systems вЂ” so every developer writes less boilerplate and more assertions.
+Generates `tests/helpers/` library tailored to project's engine, language, and
+systems. Abstracts common setup/teardown/assertion patterns — less boilerplate,
+more assertions.
 
 **Output:** `tests/helpers/` directory with engine-specific helper files
 
@@ -25,12 +24,12 @@ and systems вЂ” so every developer writes less boilerplate and more assertio
 ## 1. Parse Arguments
 
 **Modes:**
-- `/test-helpers [system-name]` вЂ” generate helpers for a specific system
+- `/test-helpers [system-name]` — generate helpers for a specific system
   (e.g., `/test-helpers combat`)
-- `/test-helpers all` вЂ” generate helpers for all systems with test files
-- `/test-helpers scaffold` вЂ” generate only the base helper library (no
+- `/test-helpers all` — generate helpers for all systems with test files
+- `/test-helpers scaffold` — generate only the base helper library (no
   system-specific helpers); use this on first run
-- No argument вЂ” run `scaffold` if no helpers exist, else `all`
+- No argument — run `scaffold` if no helpers exist, else `all`
 
 ---
 
@@ -63,9 +62,9 @@ This ensures generated helpers match the project's existing style, not a
 generic template.
 
 Also read:
-- `design/gdd/systems-index.md` вЂ” to know which systems exist
-- In-scope GDD(s) вЂ” to understand what data types and values need testing
-- `design/architecture/tr-registry.yaml` вЂ” to map requirements to tested systems
+- `design/gdd/systems-index.md` — to know which systems exist
+- In-scope GDD(s) — to understand what data types and values need testing
+- `design/architecture/tr-registry.yaml` — to map requirements to tested systems
 
 ---
 
@@ -208,16 +207,16 @@ Base helpers (engine: [engine]):
 [engine-specific extras]
 
 System helpers ([mode]):
-- tests/helpers/[system]_factory.[ext]  в†ђ from [system] GDD
+- tests/helpers/[system]_factory.[ext]  ← from [system] GDD
 ```
 
 Ask: "May I write these helper files to `tests/helpers/`?"
 
 **Never overwrite existing files.** If a file already exists, report:
-"Skipping `[path]` вЂ” already exists. Remove the file manually if you want it
+"Skipping `[path]` — already exists. Remove the file manually if you want it
 regenerated."
 
-After writing: Verdict: **COMPLETE** вЂ” helper files created.
+After writing: Verdict: **COMPLETE** — helper files created.
 
 "Helper files created. To use them in a Unity test, add a `using` directive or reference the helper assembly definition (e.g. `Tests.Helpers.asmdef`)."
 
@@ -225,17 +224,17 @@ After writing: Verdict: **COMPLETE** вЂ” helper files created.
 
 ## Collaborative Protocol
 
-- **Never overwrite existing helpers** вЂ” they may contain hand-written
+- **Never overwrite existing helpers** — they may contain hand-written
   customisations. Only generate new files that don't exist yet
-- **Generated code is a starting point** вЂ” the generated factory functions use
+- **Generated code is a starting point** — the generated factory functions use
   metadata patterns for simplicity; adapt to the actual class structure once
   the code exists
-- **Helpers should reflect the GDD** вЂ” bounds and constants in helpers should
+- **Helpers should reflect the GDD** — bounds and constants in helpers should
   trace to GDD Formulas sections, not invented values
-- **Ask before writing** вЂ” always confirm before creating files in `tests/`
+- **Ask before writing** — always confirm before creating files in `tests/`
 
 ## Next Steps
 
 - Run `/test-setup` if the test framework has not been scaffolded yet.
-- Use `/dev-story` to implement stories вЂ” helpers reduce boilerplate in new test files.
+- Use `/dev-story` to implement stories — helpers reduce boilerplate in new test files.
 - Run `/skill-test` to validate other skills that may need helper coverage.

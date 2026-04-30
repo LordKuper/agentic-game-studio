@@ -8,14 +8,9 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 
 # Consistency Check
 
-Detects cross-document inconsistencies by comparing all GDDs against the
-entity registry (`design/registry/entities.yaml`). Uses a grep-first approach:
-reads the registry once, then targets only the GDD sections that mention
-registered names — no full document reads unless a conflict needs investigation.
+Detects cross-document inconsistencies by comparing GDDs against entity registry (`design/registry/entities.yaml`). Grep-first: reads registry once, targets only GDD sections mentioning registered names — no full reads unless conflict needs investigation.
 
-**This skill is the write-time safety net.** It catches what `/design-system`'s
-per-section checks may have missed and what `/review-all-gdds`'s holistic review
-catches too late.
+**Write-time safety net.** Catches what `/design-system`'s per-section checks miss and what `/review-all-gdds`'s holistic review catches too late.
 
 **When to run:**
 - After writing each new GDD (before moving to the next system)
@@ -266,10 +261,7 @@ skip this step silently — do not create the file from this skill.
 
 ## Next Steps
 
-- **If PASS**: Run `/review-all-gdds` for holistic design-theory review, or
-  `/create-architecture` if all MVP GDDs are complete.
-- **If CONFLICTS FOUND**: Fix the flagged GDDs, then re-run
-  `/consistency-check` to confirm resolution.
-- **If STALE REGISTRY**: Update the registry (Phase 6), then re-run to verify.
-- Run `/consistency-check` after writing each new GDD to catch issues early,
-  not at architecture time.
+- **PASS**: `/review-all-gdds` for holistic review, or `/create-architecture` if all MVP GDDs complete.
+- **CONFLICTS FOUND**: Fix flagged GDDs, re-run `/consistency-check` to confirm.
+- **STALE REGISTRY**: Update registry (Phase 6), re-run to verify.
+- Run `/consistency-check` after each new GDD — catch issues early, not at architecture time.

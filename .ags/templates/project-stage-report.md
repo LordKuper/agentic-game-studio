@@ -1,17 +1,17 @@
-﻿# Project Stage Analysis Report
+# Project Stage Analysis Report
 
 **Generated**: [DATE]
 **Stage**: [Concept | Systems Design | Technical Setup | Pre-Production | Production | Polish | Release]
-**Analysis Scope**: [Full project | Specific role: programmer/designer/producer]
+**Analysis Scope**: [Full | Role: programmer/designer/producer]
 
 ---
 
 ## Executive Summary
 
-[1-2 paragraph overview of project state, primary gaps, and recommended priority]
+[1-2 paragraphs: project state, primary gaps, recommended priority]
 
-**Current Focus**: [What the project is actively working on]
-**Blocking Issues**: [Critical gaps preventing progress]
+**Current Focus**: [Active work]
+**Blocking Issues**: [Critical gaps blocking progress]
 **Estimated Time to Next Stage**: [If applicable]
 
 ---
@@ -20,35 +20,35 @@
 
 ### Design Documentation
 - **Status**: [X%] complete
-- **Files Found**: [N] documents in `design/`
-  - GDD sections: [N] files in `design/gdd/`
-  - Narrative docs: [N] files in `design/narrative/`
-  - Level designs: [N] files in `design/levels/`
+- **Files Found**: [N] in `design/`
+  - GDD: [N] in `design/gdd/`
+  - Narrative: [N] in `design/narrative/`
+  - Levels: [N] in `design/levels/`
 - **Key Gaps**:
-  - [ ] [Missing doc 1 + why it matters]
-  - [ ] [Missing doc 2 + why it matters]
+  - [ ] [Missing doc 1 + why matters]
+  - [ ] [Missing doc 2 + why matters]
 
 ### Source Code
 - **Status**: [X%] complete
-- **Files Found**: [N] source files in `src/`
-- **Major Systems Identified**:
-  - вњ… [System 1] (`src/path/`) вЂ” [brief status]
-  - вњ… [System 2] (`src/path/`) вЂ” [brief status]
-  - вљ пёЏ  [System 3] (`src/path/`) вЂ” [issue or incomplete]
+- **Files Found**: [N] source in `Assets/Scripts/`
+- **Major Systems**:
+  - [System 1] (`Assets/Scripts/path/`) — [status]
+  - [System 2] (`Assets/Scripts/path/`) — [status]
+  - [System 3] (`Assets/Scripts/path/`) — [issue or incomplete]
 - **Key Gaps**:
-  - [ ] [Missing system 1 + impact]
-  - [ ] [Missing system 2 + impact]
+  - [ ] [Missing system + impact]
+  - [ ] [Missing system + impact]
 
 ### Architecture Documentation
 - **Status**: [X%] complete
-- **ADRs Found**: [N] decisions documented in `design/architecture/`
+- **ADRs Found**: [N] in `design/architecture/`
 - **Coverage**:
-  - вњ… [Decision area 1] вЂ” documented
-  - вљ пёЏ  [Decision area 2] вЂ” undocumented but implemented
-  - вќЊ [Decision area 3] вЂ” neither documented nor decided
+  - [Decision area 1] — documented
+  - [Decision area 2] — undocumented but implemented
+  - [Decision area 3] — neither documented nor decided
 - **Key Gaps**:
-  - [ ] [Missing ADR 1 + why it's needed]
-  - [ ] [Missing ADR 2 + why it's needed]
+  - [ ] [Missing ADR + why needed]
+  - [ ] [Missing ADR + why needed]
 
 ### Production Management
 - **Status**: [X%] complete
@@ -57,16 +57,16 @@
   - Milestones: [N] in `.ags/project/milestones/`
   - Roadmap: [Exists | Missing]
 - **Key Gaps**:
-  - [ ] [Missing production artifact + impact]
+  - [ ] [Missing artifact + impact]
 
 ### Testing
 - **Status**: [X%] coverage (estimated)
 - **Test Files**: [N] in `tests/`
 - **Coverage by System**:
-  - [System 1]: [X%] (estimated)
-  - [System 2]: [X%] (estimated)
+  - [System 1]: [X%]
+  - [System 2]: [X%]
 - **Key Gaps**:
-  - [ ] [Missing test area + risk]
+  - [ ] [Missing test + risk]
 
 ---
 
@@ -74,16 +74,16 @@
 
 **Why [Stage]?**
 
-[Explain why the project is classified at this stage based on indicators found]
+[Why classified at this stage based on indicators]
 
 **Indicators for this stage**:
-- [Indicator 1 that matches this stage]
-- [Indicator 2 that matches this stage]
+- [Indicator 1]
+- [Indicator 2]
 
 **Next stage requirements**:
-- [ ] [Requirement 1 to reach next stage]
-- [ ] [Requirement 2 to reach next stage]
-- [ ] [Requirement 3 to reach next stage]
+- [ ] [Requirement 1]
+- [ ] [Requirement 2]
+- [ ] [Requirement 3]
 
 ---
 
@@ -92,54 +92,54 @@
 ### Critical Gaps (block progress)
 
 1. **[Gap Name]**
-   - **Impact**: [Why this blocks progress]
-   - **Question**: [Clarifying question before assuming solution]
-   - **Suggested Action**: [What could be done, pending clarification]
+   - **Impact**: [Why blocks progress]
+   - **Question**: [Clarify before assuming]
+   - **Suggested Action**: [What could be done]
 
 ### Important Gaps (affect quality/velocity)
 
 2. **[Gap Name]**
-   - **Impact**: [Why this matters]
-   - **Question**: [Clarifying question]
-   - **Suggested Action**: [Proposed solution]
+   - **Impact**: [Why matters]
+   - **Question**: [Clarify]
+   - **Suggested Action**: [Proposal]
 
 ### Nice-to-Have Gaps (polish/best practices)
 
 3. **[Gap Name]**
    - **Impact**: [Minor but valuable]
-   - **Question**: [Clarifying question]
+   - **Question**: [Clarify]
    - **Suggested Action**: [Optional improvement]
 
 ---
 
 ## Recommended Next Steps
 
-### Immediate Priority (Do First)
-1. **[Action 1]** вЂ” [Why it's priority 1]
-   - Suggested skill: `/[skill-name]` or manual work
-   - Estimated effort: [S/M/L]
+### Immediate Priority
+1. **[Action 1]** — [Why P1]
+   - Suggested skill: `/[skill]` or manual
+   - Effort: [S/M/L]
 
-2. **[Action 2]** вЂ” [Why it's priority 2]
-   - Suggested skill: `/[skill-name]`
-   - Estimated effort: [S/M/L]
+2. **[Action 2]** — [Why P2]
+   - Suggested skill: `/[skill]`
+   - Effort: [S/M/L]
 
 ### Short-Term (This Sprint/Week)
-3. **[Action 3]** вЂ” [Why it's important soon]
-4. **[Action 4]** вЂ” [Why it's important soon]
+3. **[Action 3]** — [Why important soon]
+4. **[Action 4]** — [Why important soon]
 
 ### Medium-Term (Next Milestone)
-5. **[Action 5]** вЂ” [Future need]
-6. **[Action 6]** вЂ” [Future need]
+5. **[Action 5]** — [Future need]
+6. **[Action 6]** — [Future need]
 
 ---
 
 ## Role-Specific Recommendations
 
-[If role filter was used, provide role-specific guidance]
+[If role filter used]
 
 ### For [Role]:
-- **Focus areas**: [What this role should prioritize]
-- **Blockers**: [What's blocking this role's work]
+- **Focus areas**: [Priorities]
+- **Blockers**: [Blocking work]
 - **Next tasks**:
   1. [Task 1]
   2. [Task 2]
@@ -148,13 +148,13 @@
 
 ## Follow-Up Skills to Run
 
-Based on gaps identified, consider running:
+Based on gaps:
 
-- `/reverse-document [type] [path]` вЂ” [For which gap]
-- `/architecture-decision` вЂ” [For which gap]
-- `/sprint-plan` вЂ” [If production planning missing]
-- `/milestone-review` вЂ” [If approaching deadline]
-- `/onboard [role]` вЂ” [If new contributor joining]
+- `/reverse-document [type] [path]` — [For which gap]
+- `/architecture-decision` — [For which gap]
+- `/sprint-plan` — [If production planning missing]
+- `/milestone-review` — [If approaching deadline]
+- `/onboard [role]` — [If new contributor]
 
 ---
 
@@ -166,7 +166,7 @@ design/
   narrative/     [N] files
   levels/        [N] files
 
-src/
+Assets/Scripts/
   core/          [N] files
   gameplay/      [N] files
   ai/            [N] files

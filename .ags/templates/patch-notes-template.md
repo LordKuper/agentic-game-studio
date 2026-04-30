@@ -8,9 +8,7 @@
 
 ## Highlights
 
-[2-4 short bullet points covering the most exciting things in this patch.
-Lead with new content, then with the most player-impacting fixes. Each
-bullet should be one line of player-friendly language.]
+[2-4 short bullets covering most exciting things. Lead with new content, then most player-impacting fixes. One line each, player-friendly language.]
 
 - [Highlight 1]
 - [Highlight 2]
@@ -20,29 +18,25 @@ bullet should be one line of player-friendly language.]
 
 ## New Content
 
-[New features, maps, characters, items, modes, cosmetics, and any net-new
-gameplay surface area. Skip this section if the patch is all fixes.]
+[New features, maps, characters, items, modes, cosmetics, net-new gameplay surface. Skip if all fixes.]
 
-- **[Feature name]** — [one-line description, focus on what the player can do]
-- **[Item / cosmetic]** — [where to find it, how to unlock]
+- **[Feature]** — [one-line, what player can do]
+- **[Item / cosmetic]** — [where to find, how to unlock]
 
 ---
 
 ## Gameplay Changes
 
-[Balance tweaks, mechanic adjustments, progression shifts. Always show
-specific numbers when balance values changed (`50 → 45`). Explain the
-intent behind major changes in one sentence.]
+[Balance tweaks, mechanic adjustments, progression shifts. Always show numbers when balance changed (`50 → 45`). Explain intent for major changes in one sentence.]
 
-- **[Mechanic]** — [change + intent]. (e.g., "Fireball cooldown 8s → 6s.
-  Goal: keep mid-combat options open without making spam viable.")
+- **[Mechanic]** — [change + intent]. (e.g., "Fireball cooldown 8s → 6s. Goal: keep mid-combat options open without making spam viable.")
 - **[Progression item]** — [change]
 
 ---
 
 ## Quality of Life
 
-[UI improvements, convenience features, accessibility additions, settings.]
+[UI improvements, convenience, accessibility, settings.]
 
 - [Improvement]
 - [Accessibility addition]
@@ -51,8 +45,7 @@ intent behind major changes in one sentence.]
 
 ## Bug Fixes
 
-[Group by system. Use player-language descriptions, not internal change
-descriptions. Drop fixes that no player ever saw.]
+[Group by system. Player-language descriptions. Drop fixes no player saw.]
 
 ### Combat
 - Fixed [bug player would have noticed]
@@ -65,38 +58,33 @@ descriptions. Drop fixes that no player ever saw.]
 - Fixed [desync]
 
 ### Other
-- Fixed [misc fix]
+- Fixed [misc]
 
 ---
 
 ## Performance
 
-[Optimizations players will actually feel. Skip if there is nothing measurable.]
+[Optimizations players will feel. Skip if nothing measurable.]
 
-- Improved [system] performance — [observable result, e.g. "smoother frame
-  pacing during large fights"]
+- Improved [system] — [observable result, e.g. "smoother frame pacing during large fights"]
 
 ---
 
 ## Known Issues
 
-[Be honest. Listing known issues builds trust and reduces support load.]
+[Be honest. Listing builds trust + reduces support load.]
 
-- [Issue + what you are doing about it]
+- [Issue + what doing about it]
 - [Issue + workaround if any]
 
 ---
 
 ## Developer Notes (style: full only)
 
-[Optional. One short section where the team can talk directly to the
-community about why a controversial change was made, what the next focus
-is, or anything that does not fit the categories above. Omit this section
-in `brief` and `detailed` styles.]
+[Optional. Team talks directly to community about controversial change, next focus, or things not fitting categories. Omit in `brief` and `detailed`.]
 
 ---
 
 ## Credits / Thanks
 
-[Optional. Community testers, bug reporters, contributors who shaped this
-patch. Use real names or handles only with consent.]
+[Optional. Community testers, bug reporters, contributors. Real names/handles only with consent.]

@@ -7,17 +7,17 @@
 
 ## Overview
 
-Unity 6.3 LTS uses **Scriptable Render Pipelines (SRP)** as the modern rendering architecture:
-- **URP (Universal Render Pipeline)**: Cross-platform, mobile-friendly (RECOMMENDED)
-- **HDRP (High Definition Render Pipeline)**: High-end PC/console, photorealistic
-- **Built-in Pipeline**: Deprecated, avoid for new projects
+Unity 6.3 LTS uses **Scriptable Render Pipelines (SRP)**:
+- **URP (Universal Render Pipeline)**: Cross-platform, mobile-friendly (RECOMMENDED).
+- **HDRP (High Definition Render Pipeline)**: High-end PC/console, photorealistic.
+- **Built-in Pipeline**: Deprecated, avoid for new projects.
 
 ---
 
 ## Key Changes from 2022 LTS
 
 ### RenderGraph API (Unity 6+)
-Custom render passes now use RenderGraph instead of CommandBuffer:
+Custom render passes use RenderGraph instead of CommandBuffer:
 
 ```csharp
 // ✅ Unity 6+ (RenderGraph)
@@ -33,7 +33,7 @@ public override void Execute(ScriptableRenderContext context, ref RenderingData 
 ```
 
 ### GPU Resident Drawer (Unity 6+)
-Automatic batching for massive draw call reduction:
+Auto batching for massive draw call reduction:
 
 ```csharp
 // Enable in URP Asset settings:
@@ -47,7 +47,7 @@ Automatic batching for massive draw call reduction:
 
 ### Creating a URP Asset
 1. `Assets > Create > Rendering > URP Asset (with Universal Renderer)`
-2. Assign to `Project Settings > Graphics > Scriptable Render Pipeline Settings`
+2. Assign to `Project Settings > Graphics > Scriptable Render Pipeline Settings`.
 
 ### URP Renderer Features
 Add custom render passes:
@@ -73,7 +73,7 @@ public class OutlineRendererFeature : ScriptableRendererFeature {
 ## Materials & Shaders
 
 ### Shader Graph (Visual Shader Editor)
-Unity 6 Shader Graph is production-ready for all shader types:
+Unity 6 Shader Graph production-ready for all shader types:
 
 ```csharp
 // Create: Assets > Create > Shader Graph > URP > Lit Shader Graph
@@ -225,11 +225,11 @@ var colorTarget = cameraData.renderer.cameraColorTargetHandle;
 
 ### Frame Debugger
 - `Window > Analysis > Frame Debugger`
-- Step through draw calls, inspect state
+- Step through draw calls, inspect state.
 
 ### Rendering Debugger (Unity 6+)
 - `Window > Analysis > Rendering Debugger`
-- Live view of URP settings, overdraw, lighting
+- Live view of URP settings, overdraw, lighting.
 
 ---
 

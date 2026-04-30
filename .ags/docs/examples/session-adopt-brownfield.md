@@ -1,19 +1,19 @@
-﻿# Example Session: /adopt вЂ” Brownfield Project Onboarding
+# Example Session: /adopt — Brownfield Project Onboarding
 
-**Context:** Developer has been building a game for 3 months before discovering this agent system. They have code, some design docs, and rough notes вЂ” but nothing in the right format for the skills to use.
+**Context:** Dev built game 3 months before discovering agent system. Has code, some design docs, rough notes — nothing in right format for skills.
 
 **Starting State:**
-- `src/gameplay/` вЂ” ~4000 lines of Godot 4.6 GDScript
-- `design/` вЂ” 3 markdown files with rough design notes (not in GDD template format)
-- No `design/gdd/` directory
-- No `design/architecture/` directory
-- No `.ags/project/` directory
+- `Assets/Scripts/Gameplay/` — ~4000 lines C# (Unity 6)
+- `design/` — 3 markdown files, rough notes, not GDD format
+- No `design/gdd/`
+- No `design/architecture/`
+- No `.ags/project/`
 - No `design/gdd/systems-index.md`
-- CLAUDE.md exists (engine configured: Godot 4.6)
+- CLAUDE.md exists (Unity 6000.0.30f1)
 
-**Session Duration:** ~30 minutes
+**Session Duration:** ~30 min
 **Turns:** 8
-**Outcome:** Adoption plan written, most urgent gap (missing system index) fixed immediately
+**Outcome:** Adoption plan written, urgent gap (missing systems index) fixed inline
 
 ---
 
@@ -31,118 +31,118 @@
 >
 > | Artifact Category | Found | Notes |
 > |------------------|-------|-------|
-> | Engine configuration | вњ… | Godot 4.6 in CLAUDE.md |
-> | Source code | вњ… | ~4000 lines in `src/gameplay/` |
-> | Design docs | вљ пёЏ | 3 files in `design/`, not in GDD format |
-> | Architecture docs | вќЊ | `design/architecture/` missing |
-> | Systems index | вќЊ | `design/gdd/systems-index.md` missing |
-> | Production tracking | вќЊ | `.ags/project/` directory missing |
-> | Sprint/story files | вќЊ | None |
+> | Engine configuration | ✅ | Unity 6000.0.30f1 in CLAUDE.md |
+> | Source code | ✅ | ~4000 lines in `Assets/Scripts/Gameplay/` |
+> | Design docs | ⚠️ | 3 files in `design/`, not GDD format |
+> | Architecture docs | ❌ | `design/architecture/` missing |
+> | Systems index | ❌ | `design/gdd/systems-index.md` missing |
+> | Production tracking | ❌ | `.ags/project/` missing |
+> | Sprint/story files | ❌ | None |
 >
 > **Phase 2: Format Audit (existing files)**
 >
-> Checking internal structure of the 3 design files...
+> Checking internal structure of 3 design files...
 >
 > *`design/combat-notes.md`:*
-> - Has informal notes, no GDD template sections
-> - Contains: some rule descriptions, a damage formula, rough balance numbers
-> - Missing from GDD template: Overview, Player Fantasy, Edge Cases, Dependencies, Tuning Knobs, Acceptance Criteria (6 of 8 sections)
+> - Informal notes, no GDD template sections
+> - Has: rule descriptions, damage formula, rough balance numbers
+> - Missing: Overview, Player Fantasy, Edge Cases, Dependencies, Tuning Knobs, Acceptance Criteria (6/8 sections)
 >
 > *`design/crafting-ideas.md`:*
-> - Brainstorm-style notes, no structure
-> - No formulas, no acceptance criteria
-> - Represents early concept thinking вЂ” useful as input for a GDD, not yet a GDD
+> - Brainstorm-style, no structure
+> - No formulas, no AC
+> - Pre-GDD content — useful as input, not yet a GDD
 >
 > *`design/inventory.md`:*
-> - Closest to a GDD вЂ” has Overview and Rules sections
-> - Missing: Player Fantasy, Formulas, Edge Cases, Tuning Knobs, Acceptance Criteria (5 of 8 sections)
+> - Closest to GDD — has Overview + Rules
+> - Missing: Player Fantasy, Formulas, Edge Cases, Tuning Knobs, AC (5/8 sections)
 >
 > **Phase 3: Gap Classification**
 >
 > | Gap | Severity | Reason |
 > |-----|----------|--------|
-> | No systems index | BLOCKING | `/design-system`, `/create-stories`, `/gate-check` all require it |
-> | GDD files not in template format | HIGH | Skills cannot reference TR-IDs from malformed GDDs |
-> | No architecture docs | HIGH | Cannot run `/architecture-review` or `/create-control-manifest` |
-> | No production tracking | MEDIUM | Sprint and story skills won't work, but not needed until production phase |
-> | `design/crafting-ideas.md` вЂ” pre-GDD content | LOW | Useful as input; needs full GDD authoring before it blocks anything |
+> | No systems index | BLOCKING | `/design-system`, `/create-stories`, `/gate-check` all need it |
+> | GDD files not template format | HIGH | Skills can't ref TR-IDs from malformed GDDs |
+> | No architecture docs | HIGH | Can't run `/architecture-review` or `/create-control-manifest` |
+> | No production tracking | MEDIUM | Sprint/story skills won't work; not needed til production |
+> | `crafting-ideas.md` — pre-GDD | LOW | Useful as input; needs full authoring before blocks anything |
 
-## Turn 3: Agent Presents the Migration Plan
+## Turn 3: Agent Presents Migration Plan
 
 **Agent:**
 > **Phase 4: Migration Plan**
 >
-> 7 ordered steps to bring your project into full alignment. NEVER overwrites your existing content вЂ” each step fills gaps only.
+> 7 ordered steps. NEVER overwrites existing content — fills gaps only.
 >
 > | # | Step | Skill | Priority | Notes |
 > |---|------|-------|----------|-------|
-> | 1 | Create `design/gdd/systems-index.md` | `/map-systems` or `/adopt` inline | BLOCKING | Unblocks all downstream skills |
-> | 2 | Retrofit `design/inventory.md` в†’ GDD format | `/design-system retrofit design/inventory.md` | HIGH | Adds 5 missing sections, keeps your existing content |
-> | 3 | Retrofit `design/combat-notes.md` в†’ GDD format | `/design-system retrofit design/combat-notes.md` | HIGH | Adds 6 missing sections |
-> | 4 | Convert `design/crafting-ideas.md` в†’ full GDD | `/design-system crafting` (new authoring, uses ideas as input) | MEDIUM | Not a retrofit вЂ” too informal to retrofit |
-> | 5 | Create architecture ADRs from existing code | `/reverse-document` + `/architecture-decision` | HIGH | Captures decisions already made in code |
-> | 6 | Create master architecture document | `/create-architecture` | HIGH | After ADRs |
-> | 7 | Set up production tracking | `/sprint-plan new` | MEDIUM | After architecture phase |
+> | 1 | Create `design/gdd/systems-index.md` | `/map-systems` or `/adopt` inline | BLOCKING | Unblocks downstream skills |
+> | 2 | Retrofit `design/inventory.md` → GDD | `/design-system retrofit design/inventory.md` | HIGH | Adds 5 missing sections |
+> | 3 | Retrofit `design/combat-notes.md` → GDD | `/design-system retrofit design/combat-notes.md` | HIGH | Adds 6 missing sections |
+> | 4 | Convert `design/crafting-ideas.md` → full GDD | `/design-system crafting` (new authoring) | MEDIUM | Too informal to retrofit |
+> | 5 | Create architecture ADRs from code | `/reverse-document` + `/architecture-decision` | HIGH | Captures decisions in code |
+> | 6 | Create master architecture doc | `/create-architecture` | HIGH | After ADRs |
+> | 7 | Set up production tracking | `/sprint-plan new` | MEDIUM | After architecture |
 >
-> **Important:** Step 1 must happen before any other step. Everything else can be done in parallel or reordered based on your priorities.
+> **Important:** Step 1 first. Rest can parallel/reorder.
 >
-> May I write this plan to `docs/adoption-plan-2026-03-12.md`?
+> May I write this to `docs/adoption-plan-2026-03-12.md`?
 
 **User:**
 > Yes. Write it.
 
 **Agent writes adoption plan.**
 
-## Turn 4: Agent Offers to Fix the Most Urgent Gap
+## Turn 4: Agent Offers to Fix Most Urgent Gap
 
 **Agent:**
-> The BLOCKING gap is the missing `design/gdd/systems-index.md`.
+> BLOCKING gap: missing `design/gdd/systems-index.md`.
 >
-> I can create one now by reading your existing code and design docs to infer what systems you've built. This is faster than running `/map-systems` from scratch вЂ” I'll populate it based on what already exists, then you confirm or adjust.
+> I can create one now by reading code + design docs to infer systems. Faster than `/map-systems` from scratch — populated from what exists, you confirm/adjust.
 >
-> Would you like me to do that now?
+> Do that now?
 
 **User:**
 > Yes, do it.
 
-## Turn 5: Agent Reads Codebase and Drafts Systems Index
+## Turn 5: Agent Reads Codebase, Drafts Systems Index
 
 **Agent:**
-> Reading `src/gameplay/` to infer systems...
+> Reading `Assets/Scripts/Gameplay/`...
 >
-> Found these system boundaries in the code:
+> System boundaries found in code:
 >
-> - `src/gameplay/combat/` вЂ” damage calculation, hit detection, status effects
-> - `src/gameplay/inventory/` вЂ” item management, weight, stacks
-> - `src/gameplay/crafting/` вЂ” recipe lookup, result generation (references inventory)
-> - `src/gameplay/movement/` вЂ” CharacterBody2D, terrain modifiers (referenced by combat for positioning)
-> - `src/gameplay/ui/` вЂ” HUD, inventory screen, dialogue box
-> - `src/gameplay/world/` вЂ” tile map, terrain types, chunk loading
+> - `Assets/Scripts/Gameplay/Combat/` — damage, hit detection, status effects
+> - `Assets/Scripts/Gameplay/Inventory/` — item mgmt, weight, stacks
+> - `Assets/Scripts/Gameplay/Crafting/` — recipe lookup, result gen (refs inventory)
+> - `Assets/Scripts/Gameplay/Movement/` — CharacterController movement, terrain mods (ref'd by combat)
+> - `Assets/Scripts/Gameplay/UI/` — HUD, inventory screen, dialogue
+> - `Assets/Scripts/Gameplay/World/` — tile map, terrain, chunks
 >
 > **Draft systems index:**
 >
 > | System | Category | Priority | Dependencies | GDD Status |
 > |--------|----------|----------|--------------|------------|
-> | Movement | Foundation | MVP | None | вќЊ Missing |
-> | World/Terrain | Foundation | MVP | Movement | вќЊ Missing |
-> | Combat | Core | MVP | Movement | вљ пёЏ Needs retrofit |
-> | Inventory | Core | MVP | None | вљ пёЏ Needs retrofit |
-> | Crafting | Feature | MVP | Inventory | вќЊ Pre-GDD only |
-> | UI / HUD | Presentation | MVP | Combat, Inventory, Movement | вќЊ Missing |
+> | Movement | Foundation | MVP | None | ❌ Missing |
+> | World/Terrain | Foundation | MVP | Movement | ❌ Missing |
+> | Combat | Core | MVP | Movement | ⚠️ Needs retrofit |
+> | Inventory | Core | MVP | None | ⚠️ Needs retrofit |
+> | Crafting | Feature | MVP | Inventory | ❌ Pre-GDD only |
+> | UI / HUD | Presentation | MVP | Combat, Inventory, Movement | ❌ Missing |
 >
-> Does this look right? Anything I missed or miscategorized?
+> Look right? Anything missed/miscategorized?
 
 **User:**
-> Looks right. Add a Stamina system вЂ” it's in combat/ but should be its own system.
+> Looks right. Add a Stamina system — it's in combat/ but should be its own system.
 
 **Agent:**
-> Added Stamina as a Core / MVP system:
+> Added Stamina as Core / MVP:
 >
-> | Stamina | Core | MVP | Movement, Combat | вќЊ Missing |
+> | Stamina | Core | MVP | Movement, Combat | ❌ Missing |
 >
-> Updated dependency: Movement depends on Stamina (movement drains it).
+> Updated dep: Movement depends on Stamina (drains it).
 >
-> May I write this to `design/gdd/systems-index.md`?
+> May I write to `design/gdd/systems-index.md`?
 
 ## Turn 6: User Approves
 
@@ -156,20 +156,20 @@
 **Agent:**
 > `design/gdd/systems-index.md` created.
 >
-> **BLOCKING gap resolved.** The following skills can now run:
+> **BLOCKING gap resolved.** Skills now run:
 >
-> - вњ… `/design-system [name]` вЂ” guided GDD authoring for any system
-> - вњ… `/design-system retrofit [path]` вЂ” fill missing sections in existing docs
-> - вњ… `/gate-check` вЂ” now has a systems index to validate
-> - вњ… `/help` вЂ” can now show correct phase workflow
+> - ✅ `/design-system [name]` — guided GDD authoring
+> - ✅ `/design-system retrofit [path]` — fill gaps in existing docs
+> - ✅ `/gate-check` — has systems index to validate
+> - ✅ `/help` — shows correct phase workflow
 >
-> **Recommended next steps (from adoption plan):**
+> **Recommended next steps (from plan):**
 >
-> 1. Run `/design-system retrofit design/inventory.md` вЂ” your most complete existing doc, easiest win
-> 2. Run `/design-system retrofit design/combat-notes.md`
-> 3. Run `/design-system crafting` вЂ” author crafting GDD using your ideas file as input
+> 1. `/design-system retrofit design/inventory.md` — most complete existing doc, easiest win
+> 2. `/design-system retrofit design/combat-notes.md`
+> 3. `/design-system crafting` — author crafting GDD using ideas file as input
 >
-> After those 3, you'll have 5 of 7 systems with complete GDDs. Then run `/review-all-gdds` to catch cross-system consistency issues before architecture work.
+> After those 3: 5/7 systems with complete GDDs. Then `/review-all-gdds` for cross-system consistency before architecture work.
 
 ## Turn 8: User Confirms Plan
 
@@ -182,16 +182,16 @@
 > /design-system retrofit design/inventory.md
 > ```
 >
-> The skill will detect your existing Overview and Rules sections, show you which of the 8 sections are missing, and run the section cycle only for the gaps. Your existing content won't be touched.
+> Skill detects existing Overview + Rules sections, shows missing sections, runs section cycle for gaps only. Existing content untouched.
 
 ---
 
-## What This Example Demonstrates
+## What This Demonstrates
 
-- **FORMAT audit, not existence audit**: `/adopt` doesn't just check whether files exist вЂ” it checks whether their internal structure matches what skills expect. A file named `gdd.md` with no template sections is flagged as a gap.
-- **Migration, not replacement**: existing content is never overwritten. The plan fills gaps only.
-- **BLOCKING gaps surface first**: the missing systems index is identified as BLOCKING because it prevents the most skills from functioning.
-- **Inline creation of the urgent gap**: rather than just reporting the gap, the agent offers to fix it immediately in the same session.
-- **Inferred from code**: the systems index is bootstrapped from the codebase structure, not written from scratch вЂ” brownfield code already contains the answer.
-- **Retrofit vs. new authoring**: `/design-system retrofit` handles existing-but-incomplete docs; full `/design-system` handles net-new docs. The adoption plan distinguishes which applies to each file.
-- **Context: fork**: `/adopt` runs in a forked context to avoid polluting the main session with large file reads across the whole codebase.
+- **FORMAT audit, not existence audit**: `/adopt` checks internal structure vs skill expectations. File named `gdd.md` with no template sections = gap.
+- **Migration, not replacement**: existing content never overwritten. Plan fills gaps only.
+- **BLOCKING gaps surface first**: missing systems index identified BLOCKING because most skills depend on it.
+- **Inline urgent gap fix**: agent fixes immediately in same session, not just reports.
+- **Inferred from code**: systems index bootstrapped from codebase — brownfield code already contains answer.
+- **Retrofit vs new authoring**: `/design-system retrofit` for existing-but-incomplete; `/design-system` for net-new. Plan distinguishes per file.
+- **Context: fork**: `/adopt` runs in forked context, avoids polluting main session with large file reads.

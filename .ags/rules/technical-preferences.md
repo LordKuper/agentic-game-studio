@@ -1,26 +1,26 @@
-﻿# Technical Preferences
+# Technical Preferences
 
-<!-- Populated by /setup-engine. Updated as the user makes decisions throughout development. -->
-<!-- All agents reference this file for project-specific standards and conventions. -->
+<!-- Populated by /setup-engine. Updated as user makes decisions. -->
+<!-- All agents reference for project standards and conventions. -->
 
 ## Engine & Language
 
-- **Engine**: [TO BE CONFIGURED вЂ” run /setup-engine]
+- **Engine**: [TO BE CONFIGURED — run /setup-engine]
 - **Language**: [TO BE CONFIGURED]
 - **Rendering**: [TO BE CONFIGURED]
 - **Physics**: [TO BE CONFIGURED]
 
 ## Input & Platform
 
-<!-- Written by /setup-engine. Read by /ux-design, /ux-review, /test-setup, /team-ui, and /dev-story -->
-<!-- to scope interaction specs, test helpers, and implementation to the correct input methods. -->
+<!-- Written by /setup-engine. Read by /ux-design, /ux-review, /test-setup, /team-ui, /dev-story -->
+<!-- to scope interaction specs, test helpers, implementation to correct input methods. -->
 
-- **Target Platforms**: [TO BE CONFIGURED вЂ” e.g., PC, Console, Mobile, Web]
-- **Input Methods**: [TO BE CONFIGURED вЂ” e.g., Keyboard/Mouse, Gamepad, Touch, Mixed]
-- **Primary Input**: [TO BE CONFIGURED вЂ” the dominant input for this game]
-- **Gamepad Support**: [TO BE CONFIGURED вЂ” Full / Partial / None]
-- **Touch Support**: [TO BE CONFIGURED вЂ” Full / Partial / None]
-- **Platform Notes**: [TO BE CONFIGURED вЂ” any platform-specific UX constraints]
+- **Target Platforms**: [TO BE CONFIGURED — e.g., PC, Console, Mobile, Web]
+- **Input Methods**: [TO BE CONFIGURED — e.g., Keyboard/Mouse, Gamepad, Touch, Mixed]
+- **Primary Input**: [TO BE CONFIGURED — dominant input for this game]
+- **Gamepad Support**: [TO BE CONFIGURED — Full / Partial / None]
+- **Touch Support**: [TO BE CONFIGURED — Full / Partial / None]
+- **Platform Notes**: [TO BE CONFIGURED — platform-specific UX constraints]
 
 ## Naming Conventions
 
@@ -46,26 +46,26 @@
 
 ## Forbidden Patterns
 
-<!-- Add patterns that should never appear in this project's codebase -->
-- [None configured yet вЂ” add as architectural decisions are made]
+<!-- Patterns that must never appear in this project's codebase -->
+- [None configured yet — add as architectural decisions are made]
 
 ## Allowed Libraries / Addons
 
-<!-- Add approved third-party dependencies here -->
-- [None configured yet вЂ” add as dependencies are approved]
+<!-- Approved third-party dependencies -->
+- [None configured yet — add as dependencies are approved]
 
 ## Architecture Decisions Log
 
 <!-- Quick reference linking to full ADRs in design/architecture/ -->
-- [No ADRs yet вЂ” use /architecture-decision to create one]
+- [No ADRs yet — use /architecture-decision to create one]
 
 ## Engine Specialists
 
-<!-- Written by /setup-engine when engine is configured. -->
-<!-- Read by /code-review, /architecture-decision, /architecture-review, and team skills -->
+<!-- Written by /setup-engine when engine configured. -->
+<!-- Read by /code-review, /architecture-decision, /architecture-review, team skills -->
 <!-- to know which specialist to spawn for engine-specific validation. -->
 
-- **Primary**: [TO BE CONFIGURED вЂ” run /setup-engine]
+- **Primary**: [TO BE CONFIGURED — run /setup-engine]
 - **Language/Code Specialist**: [TO BE CONFIGURED]
 - **Shader Specialist**: [TO BE CONFIGURED]
 - **UI Specialist**: [TO BE CONFIGURED]
@@ -74,8 +74,8 @@
 
 ### File Extension Routing
 
-<!-- Skills use this table to select the right specialist per file type. -->
-<!-- If a row says [TO BE CONFIGURED], fall back to Primary for that file type. -->
+<!-- Skills use this table to select right specialist per file type. -->
+<!-- If row says [TO BE CONFIGURED], fall back to Primary for that file type. -->
 
 | File Extension / Type | Specialist to Spawn |
 |-----------------------|---------------------|

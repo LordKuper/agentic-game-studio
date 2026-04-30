@@ -2,21 +2,20 @@
 
 **Last verified:** 2026-02-13
 
-Modern Unity 6 patterns that may not be in the LLM's training data.
-These are production-ready recommendations as of Unity 6.3 LTS.
+Modern Unity 6 patterns possibly missing from LLM training. Production-ready as of Unity 6.3 LTS.
 
 ---
 
 ## Project Setup
 
 ### Use Unity 6.3 LTS for Production
-- **Tech Stream** (6.4+): Latest features, less stable
-- **LTS** (6.3): Production-ready, 2-year support (until Dec 2027)
+- **Tech Stream** (6.4+): Latest features, less stable.
+- **LTS** (6.3): Production-ready, 2-year support (until Dec 2027).
 
-### Choose the Right Render Pipeline
-- **URP (Universal)**: Mobile, cross-platform, good performance ✅ Recommended for most games
-- **HDRP (High Definition)**: High-end PC/console, photorealistic
-- **Built-in**: Deprecated, avoid for new projects
+### Choose Right Render Pipeline
+- **URP (Universal)**: Mobile, cross-platform, good perf ✅ Recommended for most games.
+- **HDRP (High Definition)**: High-end PC/console, photorealistic.
+- **Built-in**: Deprecated, avoid for new projects.
 
 ---
 
@@ -123,7 +122,7 @@ public class PlayerInput : MonoBehaviour {
 }
 ```
 
-Create Input Actions asset in editor, generate C# class via inspector.
+Create Input Actions asset in editor; generate C# class via inspector.
 
 ---
 
@@ -148,7 +147,7 @@ public class MainMenu : MonoBehaviour {
 }
 ```
 
-**UXML** (UI structure) + **USS** (styling) = HTML/CSS-like workflow.
+**UXML** (structure) + **USS** (style) = HTML/CSS-like workflow.
 
 ---
 
@@ -169,7 +168,7 @@ public async Task SpawnEnemyAsync(string enemyKey) {
 }
 ```
 
-**Benefits:** Async loading, remote content delivery, better memory control.
+**Benefits:** Async loading, remote content, better memory control.
 
 ---
 

@@ -6,7 +6,7 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
 If no argument is provided, output usage guidance and exit without spawning any agents:
-> Usage: `/team-polish [feature or area]` вЂ” specify the feature or area to polish (e.g., `combat`, `main menu`, `inventory system`, `level-1`). Do not use `AskUserQuestion` here; output the guidance directly.
+> Usage: `/team-polish [feature or area]` — specify the feature or area to polish (e.g., `combat`, `main menu`, `inventory system`, `level-1`). Do not use `AskUserQuestion` here; output the guidance directly.
 
 When this skill is invoked with an argument, orchestrate the polish team through a structured pipeline.
 
@@ -16,22 +16,22 @@ full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
 ## Team Composition
-- **performance-analyst** вЂ” Profiling, optimization, memory analysis, frame budget
-- **engine-programmer** вЂ” Engine-level bottlenecks: rendering pipeline, memory, resource loading (invoke when performance-analyst identifies low-level root causes)
-- **technical-artist** вЂ” VFX polish, shader optimization, visual quality
-- **audio-director** вЂ” Audio polish, mixing, ambient layers, feedback sounds
-- **tools-programmer** вЂ” Content pipeline tool verification, editor tool stability, automation fixes (invoke when content authoring tools are involved in the polished area)
-- **qa-lead** вЂ” Edge case testing, regression testing, soak testing
+- **performance-analyst** — Profiling, optimization, memory analysis, frame budget
+- **engine-programmer** — Engine-level bottlenecks: rendering pipeline, memory, resource loading (invoke when performance-analyst identifies low-level root causes)
+- **technical-artist** — VFX polish, shader optimization, visual quality
+- **audio-director** — Audio polish, mixing, ambient layers, feedback sounds
+- **tools-programmer** — Content pipeline tool verification, editor tool stability, automation fixes (invoke when content authoring tools are involved in the polished area)
+- **qa-lead** — Edge case testing, regression testing, soak testing
 
 ## How to Delegate
 
 Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: performance-analyst` вЂ” Profiling, optimization, memory analysis
-- `subagent_type: engine-programmer` вЂ” Engine-level fixes for rendering, memory, resource loading
-- `subagent_type: technical-artist` вЂ” VFX polish, shader optimization, visual quality
-- `subagent_type: audio-director` вЂ” Audio polish, mixing, ambient layers
-- `subagent_type: tools-programmer` вЂ” Content pipeline and editor tool verification
-- `subagent_type: qa-lead` вЂ” Edge case testing, regression testing, soak testing
+- `subagent_type: performance-analyst` — Profiling, optimization, memory analysis
+- `subagent_type: engine-programmer` — Engine-level fixes for rendering, memory, resource loading
+- `subagent_type: technical-artist` — VFX polish, shader optimization, visual quality
+- `subagent_type: audio-director` — Audio polish, mixing, ambient layers
+- `subagent_type: tools-programmer` — Content pipeline and editor tool verification
+- `subagent_type: qa-lead` — Edge case testing, regression testing, soak testing
 
 Always provide full context in each agent's prompt (target feature/area, performance budgets, known issues). Launch independent agents in parallel where the pipeline allows it (e.g., Phases 3 and 4 can run simultaneously).
 
@@ -69,7 +69,7 @@ Delegate to **technical-artist**:
 ### Phase 4: Audio Polish (parallel with Phase 2)
 Delegate to **audio-director**:
 - Review audio events for completeness (are any actions missing sound feedback?)
-- Check audio mix levels вЂ” nothing too loud or too quiet relative to the mix
+- Check audio mix levels — nothing too loud or too quiet relative to the mix
 - Add ambient audio layers for atmosphere
 - Verify audio plays correctly with spatial positioning
 - Output: audio polish list and mixing notes
@@ -93,19 +93,19 @@ Delegate to **qa-lead**:
 
 If any spawned agent (via Task) returns BLOCKED, errors, or cannot complete:
 
-1. **Surface immediately**: Report "[AgentName]: BLOCKED вЂ” [reason]" to the user before continuing to dependent phases
+1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" to the user before continuing to dependent phases
 2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
 3. **Offer options** via AskUserQuestion with choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** вЂ” output whatever was completed. Never discard work because one agent blocked.
+4. **Always produce a partial report** — output whatever was completed. Never discard work because one agent blocked.
 
 Common blockers:
-- Input file missing (story not found, GDD absent) в†’ redirect to the skill that creates it
-- ADR status is Proposed в†’ do not implement; run `/architecture-decision` first
-- Scope too large в†’ split into two stories via `/create-stories`
-- Conflicting instructions between ADR and story в†’ surface the conflict, do not guess
+- Input file missing (story not found, GDD absent) → redirect to the skill that creates it
+- ADR status is Proposed → do not implement; run `/architecture-decision` first
+- Scope too large → split into two stories via `/create-stories`
+- Conflicting instructions between ADR and story → surface the conflict, do not guess
 
 ## File Write Protocol
 

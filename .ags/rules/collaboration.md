@@ -1,4 +1,4 @@
-﻿# Collaboration Protocol
+# Collaboration Protocol
 
 ## Core Model
 Agent = expert consultant. User = decision maker.
@@ -9,7 +9,7 @@ User: decide direction, approve writes, sign off before file creation.
 Never: autonomous generation, decisions without input, file writes without approval.
 
 ## Workflow Pattern
-Every interaction: **Question в†’ Options в†’ Decision в†’ Draft в†’ Approval**
+Every interaction: **Question → Options → Decision → Draft → Approval**
 
 1. Agent asks clarifying questions (constrained, with context)
 2. User provides context
@@ -38,7 +38,7 @@ Bad:
 
 Use for structured decision UI (selectable options vs plain text).
 
-Pattern: **Explain в†’ Capture**
+Pattern: **Explain → Capture**
 1. Write full analysis in conversation (pros/cons, theory, examples)
 2. Call `AskUserQuestion` with concise labels + 1-sentence descriptions
 
@@ -69,7 +69,7 @@ Never write without explicit approval.
 ```
 Agent: "Draft summary: [key points]. May I write to [filepath]?"
 User: "Yes" / "No, change X" / "Show full draft"
-If yes в†’ write. If no в†’ revise, re-ask.
+If yes → write. If no → revise, re-ask.
 ```
 
 ### Incremental Section Writing
@@ -80,16 +80,16 @@ Multi-section docs (GDD, lore, architecture): write each approved section to fil
 2. Per section:
    - Draft in conversation
    - User reviews, revises
-   - "May I write this section?" в†’ write
+   - "May I write this section?" → write
    - Update `.ags/project/state.md`
-   - Previous section discussion safe to compact (decisions in file)
+   - Prior section discussion safe to compact (decisions in file)
 3. On crash/compact: read file (completed sections preserved) + read `.ags/project/state.md`
 
 Why: 8-section doc with 2-3 revisions = 30-50k tokens. Incremental keeps live context at 3-5k.
 
 ### Multi-File Writes
 
-When change spans multiple files, offer:
+Change spans multiple files, offer:
 - A) Show all code first, then write all
 - B) One file at a time with approval between (recommended for complex)
 - C) Write all now (fast, less review)
@@ -103,15 +103,15 @@ Be:
 
 Don't be:
 - Autonomous executor ("I designed your combat system")
-- Passive order-taker ("Okay" в†’ does without questions)
+- Passive order-taker ("Okay" → does without questions)
 
 ## Team Skills
 
-Multi-agent orchestration stays collaborative. Skill coordinator:
+Multi-agent orchestration stays collaborative. Coordinator:
 1. Asks initial scoping questions
-2. Runs phases (design в†’ architecture в†’ implementation)
+2. Runs phases (design → architecture → implementation)
 3. Each agent shows work, gets approval before writes
-4. Decision points stay with user; only orchestration is automated
+4. Decision points stay with user; only orchestration automated
 
 ## Validation Checklist
 
@@ -122,7 +122,7 @@ After interaction, confirm:
 - Approval received before file writes?
 - Agent explained reasoning?
 
-Any "no" в†’ not collaborative enough.
+Any "no" → not collaborative enough.
 
 ## Internal Agent Process
 

@@ -1,6 +1,6 @@
 ﻿---
 name: test-evidence-review
-description: "Quality review of test files and manual evidence documents. Goes beyond existence checks вЂ” evaluates assertion coverage, edge case handling, naming conventions, and evidence completeness. Produces ADEQUATE/INCOMPLETE/MISSING verdict per story. Run before QA sign-off or on demand."
+description: "Quality review of test files and manual evidence documents. Goes beyond existence checks — evaluates assertion coverage, edge case handling, naming conventions, and evidence completeness. Produces ADEQUATE/INCOMPLETE/MISSING verdict per story. Run before QA sign-off or on demand."
 argument-hint: "[story-path | sprint | system-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write
@@ -8,10 +8,9 @@ allowed-tools: Read, Glob, Grep, Write
 
 # Test Evidence Review
 
-`/smoke-check` verifies that test files **exist** and **pass**. This skill
-goes further вЂ” it reviews the **quality** of those tests and evidence documents.
-A test file that exists and passes may still leave critical behaviour uncovered.
-A manual evidence doc that exists may lack the sign-offs required for closure.
+`/smoke-check` verifies test files **exist** and **pass**. This skill reviews
+**quality** — a passing test may leave critical behaviour uncovered; a manual
+evidence doc may lack required sign-offs.
 
 **Output:** Summary report (in conversation) + optional `.ags/project/qa/evidence-review-[date].md`
 
@@ -25,10 +24,10 @@ A manual evidence doc that exists may lack the sign-offs required for closure.
 ## 1. Parse Arguments
 
 **Modes:**
-- `/test-evidence-review [story-path]` вЂ” review a single story's evidence
-- `/test-evidence-review sprint` вЂ” review all stories in the current sprint
-- `/test-evidence-review [system-name]` вЂ” review all stories in an epic/system
-- No argument вЂ” ask which scope: "Single story", "Current sprint", "A system"
+- `/test-evidence-review [story-path]` — review a single story's evidence
+- `/test-evidence-review sprint` — review all stories in the current sprint
+- `/test-evidence-review [system-name]` — review all stories in an epic/system
+- No argument — ask which scope: "Single story", "Current sprint", "A system"
 
 ---
 
@@ -46,7 +45,7 @@ Extract the list of story file paths from the sprint plan. Read each story file.
 
 For each story, collect:
 - `Type:` field (Logic / Integration / Visual/Feel / UI / Config/Data)
-- `## Test Evidence` section вЂ” the stated expected test file path or evidence doc
+- `## Test Evidence` section — the stated expected test file path or evidence doc
 - Story slug (from file name)
 - System name (from directory path)
 - Acceptance Criteria list (all checkbox items)
@@ -80,13 +79,13 @@ For each test file found, read it and evaluate:
 
 Count the number of distinct assertions (lines containing assert, expect,
 check, verify, or engine-specific assertion patterns). Low assertion count is
-a quality signal вЂ” a test that makes only 1 assertion per test function may
+a quality signal — a test that makes only 1 assertion per test function may
 not cover the range of expected behaviour.
 
 Thresholds:
-- **3+ assertions per test function** в†’ normal
-- **1-2 assertions per test function** в†’ note as potentially thin
-- **0 assertions** (test exists but no asserts) в†’ flag as BLOCKING вЂ” the
+- **3+ assertions per test function** → normal
+- **1-2 assertions per test function** → note as potentially thin
+- **0 assertions** (test exists but no asserts) → flag as BLOCKING — the
   test passes vacuously and proves nothing
 
 ### Edge case coverage
@@ -97,7 +96,7 @@ test body references that specific case.
 
 Heuristics:
 - Grep test file for "zero", "max", "null", "empty", "min", "invalid",
-  "boundary", "edge" вЂ” presence of any is a positive signal
+  "boundary", "edge" — presence of any is a positive signal
 - If the story has a Formulas section with specific bounds: check whether
   tests exercise at minimum/maximum values
 
@@ -107,7 +106,7 @@ Test function names should describe: the scenario + the expected result.
 Pattern: `test_[scenario]_[expected_outcome]`
 
 Flag functions named generically (`test_1`, `test_run`, `testBasic`) as
-**naming issues** вЂ” they make failures harder to diagnose.
+**naming issues** — they make failures harder to diagnose.
 
 ### Formula traceability
 
@@ -135,7 +134,7 @@ Check for three sign-off lines (or equivalent fields):
 - Designer / art-lead sign-off (for Visual/Feel)
 - QA lead sign-off
 
-If any are missing or blank: flag as INCOMPLETE вЂ” the story cannot be fully
+If any are missing or blank: flag as INCOMPLETE — the story cannot be fully
 closed without all required sign-offs.
 
 ### Screenshot / artefact completeness
@@ -150,7 +149,7 @@ log) is present.
 
 Evidence doc should have a date. If the date is earlier than the story's
 last major change (heuristic: compare against sprint start date from the sprint
-plan), flag as POTENTIALLY STALE вЂ” the evidence may not cover the final
+plan), flag as POTENTIALLY STALE — the evidence may not cover the final
 implementation.
 
 ---
@@ -179,21 +178,21 @@ The overall sprint/system verdict is the worst story verdict present.
 
 ### Story-by-Story Results
 
-#### [Story Title] вЂ” [Type] вЂ” [ADEQUATE/INCOMPLETE/MISSING]
+#### [Story Title] — [Type] — [ADEQUATE/INCOMPLETE/MISSING]
 
 **Test/evidence path**: `[path]` (found) / (not found)
 
 **Automated test quality** *(Logic/Integration only)*:
-- Assertion coverage: [N per function on average] вЂ” [adequate / thin / none]
+- Assertion coverage: [N per function on average] — [adequate / thin / none]
 - Edge cases: [covered / partial / not found]
 - Naming: [consistent / [N] generic names flagged]
-- Formula traceability: [yes / no вЂ” formula names not referenced in tests]
+- Formula traceability: [yes / no — formula names not referenced in tests]
 
 **Manual evidence quality** *(Visual/Feel/UI only)*:
 - Criterion linkage: [N/M criteria referenced]
-- Sign-offs: [Developer вњ“ | Designer вњ— | QA Lead вњ—]
+- Sign-offs: [Developer ✓ | Designer ✗ | QA Lead ✗]
 - Artefacts: [screenshots present / missing / N/A]
-- Freshness: [dated [date] вЂ” current / potentially stale]
+- Freshness: [dated [date] — current / potentially stale]
 
 **Issues**:
 - BLOCKING: [description] *(prevents story-done)*
@@ -223,7 +222,7 @@ Present the report in conversation.
 Ask: "May I write this test evidence review to
 `.ags/project/qa/evidence-review-[date].md`?"
 
-This is optional вЂ” the report is useful standalone. Write only if the user
+This is optional — the report is useful standalone. Write only if the user
 wants a persistent record.
 
 After the report:
@@ -235,16 +234,16 @@ After the report:
 - For missing sign-offs: "Manual sign-off is required from [role]. Share
   `[evidence-path]` with them to complete sign-off."
 
-Verdict: **COMPLETE** вЂ” evidence review finished. Use CONCERNS if BLOCKING items were found.
+Verdict: **COMPLETE** — evidence review finished. Use CONCERNS if BLOCKING items were found.
 
 ---
 
 ## Collaborative Protocol
 
-- **Report quality issues, do not fix them** вЂ” this skill reads and evaluates;
+- **Report quality issues, do not fix them** — this skill reads and evaluates;
   it does not modify test files or evidence documents
-- **ADEQUATE means adequate for shipping, not perfect** вЂ” avoid nitpicking
+- **ADEQUATE means adequate for shipping, not perfect** — avoid nitpicking
   tests that are functioning and comprehensive enough to give confidence
-- **BLOCKING vs. ADVISORY distinction is important** вЂ” only flag BLOCKING when
+- **BLOCKING vs. ADVISORY distinction is important** — only flag BLOCKING when
   the gap leaves a story criterion genuinely unverified
-- **Ask before writing** вЂ” the report file is optional; always confirm before writing
+- **Ask before writing** — the report file is optional; always confirm before writing

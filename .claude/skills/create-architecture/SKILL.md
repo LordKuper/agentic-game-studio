@@ -9,22 +9,19 @@ agent: technical-director
 
 # Create Architecture
 
-This skill produces `design/architecture/architecture.md` вЂ” the master architecture
-document that translates all approved GDDs into a concrete technical blueprint.
-It sits between design and implementation, and must exist before sprint planning begins.
+Produces `design/architecture/architecture.md` — master architecture document translating approved GDDs into a technical blueprint. Must exist before sprint planning.
 
-**Distinct from `/architecture-decision`**: ADRs record individual point decisions.
-This skill creates the whole-system blueprint that gives ADRs their context.
+**Distinct from `/architecture-decision`**: ADRs record individual decisions. This skill creates the whole-system blueprint that gives ADRs context.
 
 Resolve the review mode (once, store for all gate spawns this run):
-1. If `--review [full|lean|solo]` was passed в†’ use that
-2. Else read `.ags/project/review-mode.md` в†’ use that value
-3. Else в†’ default to `lean`
+1. If `--review [full|lean|solo]` was passed → use that
+2. Else read `.ags/project/review-mode.md` → use that value
+3. Else → default to `lean`
 
 See `.ags/rules/director-gates.md` for the full check pattern.
 
 **Argument modes:**
-- **No argument / `full`**: Full guided walkthrough вЂ” all sections, start to finish
+- **No argument / `full`**: Full guided walkthrough — all sections, start to finish
 - **`layers`**: Focus on the system layer diagram only
 - **`data-flow`**: Focus on data flow between modules only
 - **`api-boundaries`**: Focus on API boundary definitions only
@@ -41,15 +38,15 @@ Before anything else, load the full project context in this order:
 Read the engine reference library completely:
 
 1. `.ags/docs/engine-reference/[engine]/VERSION.md`
-   в†’ Extract: engine name, version, LLM cutoff, post-cutoff risk levels
+   → Extract: engine name, version, LLM cutoff, post-cutoff risk levels
 2. `.ags/docs/engine-reference/[engine]/breaking-changes.md`
-   в†’ Extract: all HIGH and MEDIUM risk changes
+   → Extract: all HIGH and MEDIUM risk changes
 3. `.ags/docs/engine-reference/[engine]/deprecated-apis.md`
-   в†’ Extract: APIs to avoid
+   → Extract: APIs to avoid
 4. `.ags/docs/engine-reference/[engine]/current-best-practices.md`
-   в†’ Extract: post-cutoff best practices that differ from training data
+   → Extract: post-cutoff best practices that differ from training data
 5. All files in `.ags/docs/engine-reference/[engine]/modules/`
-   в†’ Extract: current API patterns per domain
+   → Extract: current API patterns per domain
 
 If no engine is configured, stop and prompt:
 > "No engine is configured. Run `/setup-engine` first. Architecture cannot be
@@ -59,11 +56,11 @@ If no engine is configured, stop and prompt:
 
 Read all approved design documents and extract technical requirements from each:
 
-1. `design/gdd/concept.md` вЂ” game pillars, genre, core loop
-2. `design/gdd/systems-index.md` вЂ” all systems, dependencies, priority tiers
-3. `.ags/rules/technical-preferences.md` вЂ” naming conventions, performance budgets,
+1. `design/gdd/game-concept.md` — game pillars, genre, core loop
+2. `design/gdd/systems-index.md` — all systems, dependencies, priority tiers
+3. `.ags/rules/technical-preferences.md` — naming conventions, performance budgets,
    allowed libraries, forbidden patterns
-4. **Every GDD in `design/gdd/`** вЂ” for each, extract technical requirements:
+4. **Every GDD in `design/gdd/`** — for each, extract technical requirements:
    - Data structures implied by the game rules
    - Performance constraints stated or implied
    - Engine capabilities the system requires
@@ -71,7 +68,7 @@ Read all approved design documents and extract technical requirements from each:
    - State that must persist (save/load implications)
    - Threading or timing requirements
 
-Build a **Technical Requirements Baseline** вЂ” a flat list of all extracted
+Build a **Technical Requirements Baseline** — a flat list of all extracted
 requirements across all GDDs, numbered `TR-[gdd-slug]-[NNN]`. This is the
 complete set of what the architecture must cover. Present it as:
 
@@ -114,7 +111,7 @@ Post-Cutoff Versions: [list]
 - [Domain]: [no significant post-cutoff changes]
 
 ### Systems from GDD that touch HIGH/MEDIUM risk domains:
-- [GDD system name] в†’ [domain] в†’ [risk level]
+- [GDD system name] → [domain] → [risk level]
 ```
 
 Ask: "This inventory identifies [N] systems in HIGH RISK engine domains. Shall I
@@ -128,18 +125,18 @@ Map every system from `systems-index.md` into an architecture layer. The standar
 game architecture layers are:
 
 ```
-в”Њв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”ђ
-в”‚  PRESENTATION LAYER                         в”‚  в†ђ UI, HUD, menus, VFX, audio
-в”њв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”¤
-в”‚  FEATURE LAYER                              в”‚  в†ђ gameplay systems, AI, quests
-в”њв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”¤
-в”‚  CORE LAYER                                 в”‚  в†ђ physics, input, combat, movement
-в”њв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”¤
-в”‚  FOUNDATION LAYER                           в”‚  в†ђ engine integration, save/load,
-в”‚                                             в”‚    scene management, event bus
-в”њв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”¤
-в”‚  PLATFORM LAYER                             в”‚  в†ђ OS, hardware, engine API surface
-в””в”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”Ђв”
+┌─────────────────────────────────────────────┐
+│  PRESENTATION LAYER                         │  ← UI, HUD, menus, VFX, audio
+├─────────────────────────────────────────────┤
+│  FEATURE LAYER                              │  ← gameplay systems, AI, quests
+├─────────────────────────────────────────────┤
+│  CORE LAYER                                 │  ← physics, input, combat, movement
+├─────────────────────────────────────────────┤
+│  FOUNDATION LAYER                           │  ← engine integration, save/load,
+│                                             │    scene management, event bus
+├─────────────────────────────────────────────┤
+│  PLATFORM LAYER                             │  ← OS, hardware, engine API surface
+└─────────────────────────────────────────────┘
 ```
 
 For each GDD system, ask:
@@ -172,7 +169,7 @@ Format as a table per layer, then as an ASCII dependency diagram.
 relevant module reference doc. If an API is post-cutoff, flag it:
 
 ```
-вљ пёЏ  [ClassName.method()] вЂ” Unity 6000.x (post-cutoff, HIGH risk)
+⚠️  [ClassName.method()] — Unity 6000.x (post-cutoff, HIGH risk)
     Verified against: .ags/docs/engine-reference/unity/modules/[domain].md
     Behaviour confirmed: [yes / NEEDS VERIFICATION]
 ```
@@ -185,7 +182,7 @@ Get user approval on the ownership map before writing.
 
 Define how data moves between modules during key game scenarios. Cover at minimum:
 
-1. **Frame update path**: Input в†’ Core systems в†’ State в†’ Rendering
+1. **Frame update path**: Input → Core systems → State → Rendering
 2. **Event/signal path**: How systems communicate without tight coupling
 3. **Save/load path**: What state is serialised, which module owns serialisation
 4. **Initialisation order**: Which modules must boot before others
@@ -236,7 +233,7 @@ For each ADR:
 
 | ADR | Engine Compat | Version | GDD Linkage | Conflicts | Valid |
 |-----|--------------|---------|-------------|-----------|-------|
-| ADR-0001: [title] | вњ…/вќЊ | вњ…/вќЊ | вњ…/вќЊ | None/[conflict] | вњ…/вљ пёЏ |
+| ADR-0001: [title] | ✅/❌ | ✅/❌ | ✅/❌ | None/[conflict] | ✅/⚠️ |
 
 ### Traceability Coverage Check
 
@@ -246,8 +243,8 @@ or decision text covers it:
 
 | Req ID | Requirement | ADR Coverage | Status |
 |--------|-------------|--------------|--------|
-| TR-combat-001 | Hitbox detection per-frame | ADR-0003 | вњ… |
-| TR-combat-002 | Combo state machine | вЂ” | вќЊ GAP |
+| TR-combat-001 | Hitbox detection per-frame | ADR-0003 | ✅ |
+| TR-combat-002 | Combo state machine | — | ❌ GAP |
 
 Count: X covered, Y gaps. For each gap, it becomes a **Required New ADR**.
 
@@ -255,13 +252,13 @@ Count: X covered, Y gaps. For each gap, it becomes a **Required New ADR**.
 
 List all decisions made during this architecture session (Phases 1-4) that do
 not yet have a corresponding ADR, PLUS all uncovered Technical Requirements.
-Group by layer вЂ” Foundation first:
+Group by layer — Foundation first:
 
 **Foundation Layer (must create before any coding):**
-- `/architecture-decision [title]` в†’ covers: TR-[id], TR-[id]
+- `/architecture-decision [title]` → covers: TR-[id], TR-[id]
 
 **Core Layer:**
-- `/architecture-decision [title]` в†’ covers: TR-[id]
+- `/architecture-decision [title]` → covers: TR-[id]
 
 ---
 
@@ -292,7 +289,7 @@ Ask: "May I write the master architecture document to `design/architecture/archi
 The document structure:
 
 ```markdown
-# [Game Name] вЂ” Master Architecture
+# [Game Name] — Master Architecture
 
 ## Document Status
 - Version: [N]
@@ -302,7 +299,7 @@ The document structure:
 - ADRs Referenced: [list]
 
 ## Engine Knowledge Gap Summary
-[Condensed from Phase 0d inventory вЂ” HIGH/MEDIUM risk domains and their implications]
+[Condensed from Phase 0d inventory — HIGH/MEDIUM risk domains and their implications]
 
 ## System Layer Map
 [From Phase 1]
@@ -327,7 +324,7 @@ The document structure:
 derived from the game concept, GDDs, and technical preferences]
 
 ## Open Questions
-[Decisions deferred вЂ” must be resolved before the relevant layer is built]
+[Decisions deferred — must be resolved before the relevant layer is built]
 ```
 
 ---
@@ -336,31 +333,31 @@ derived from the game concept, GDDs, and technical preferences]
 
 After writing the master architecture document, perform an explicit sign-off before handoff.
 
-**Step 1 вЂ” Technical Director self-review** (this skill runs as technical-director):
+**Step 1 — Technical Director self-review** (this skill runs as technical-director):
 
 Apply gate **TD-ARCHITECTURE** (`.ags/rules/director-gates.md`) as a self-review. Check all four criteria from that gate definition against the completed document.
 
-**Review mode check** вЂ” apply before spawning LP-FEASIBILITY:
-- `solo` в†’ skip. Note: "LP-FEASIBILITY skipped вЂ” Solo mode." Proceed to Phase 8 handoff.
-- `lean` в†’ skip (not a PHASE-GATE). Note: "LP-FEASIBILITY skipped вЂ” Lean mode." Proceed to Phase 8 handoff.
-- `full` в†’ spawn as normal.
+**Review mode check** — apply before spawning LP-FEASIBILITY:
+- `solo` → skip. Note: "LP-FEASIBILITY skipped — Solo mode." Proceed to Phase 8 handoff.
+- `lean` → skip (not a PHASE-GATE). Note: "LP-FEASIBILITY skipped — Lean mode." Proceed to Phase 8 handoff.
+- `full` → spawn as normal.
 
-**Step 2 вЂ” Spawn `lead-programmer` via Task using gate LP-FEASIBILITY (`.ags/rules/director-gates.md`):**
+**Step 2 — Spawn `lead-programmer` via Task using gate LP-FEASIBILITY (`.ags/rules/director-gates.md`):**
 
 Pass: architecture document path, technical requirements baseline summary, ADR list.
 
-**Step 3 вЂ” Present both assessments to the user:**
+**Step 3 — Present both assessments to the user:**
 
 Show the Technical Director assessment and Lead Programmer verdict side by side.
 
-Use `AskUserQuestion` вЂ” "Technical Director and Lead Programmer have reviewed the architecture. How would you like to proceed?"
-Options: `Accept вЂ” proceed to handoff` / `Revise flagged items first` / `Discuss specific concerns`
+Use `AskUserQuestion` — "Technical Director and Lead Programmer have reviewed the architecture. How would you like to proceed?"
+Options: `Accept — proceed to handoff` / `Revise flagged items first` / `Discuss specific concerns`
 
-**Step 4 вЂ” Record sign-off in the architecture document:**
+**Step 4 — Record sign-off in the architecture document:**
 
 Update the Document Status section:
 ```
-- Technical Director Sign-Off: [date] вЂ” APPROVED / APPROVED WITH CONDITIONS
+- Technical Director Sign-Off: [date] — APPROVED / APPROVED WITH CONDITIONS
 - Lead Programmer Feasibility: FEASIBLE / CONCERNS ACCEPTED / REVISED
 ```
 
@@ -381,23 +378,20 @@ After writing the document, provide a clear handoff:
 
 ## Collaborative Protocol
 
-This skill follows the collaborative design principle at every phase:
+Every phase:
 
-1. **Load context silently** вЂ” do not narrate file reads
-2. **Present findings** вЂ” show the knowledge gap inventory and layer proposals
-3. **Ask before deciding** вЂ” present options for each architectural choice
-4. **Get approval before writing** вЂ” each phase section is written only after
-   user approves the content
-5. **Incremental writing** вЂ” write each approved section immediately; do not
-   accumulate everything and write at the end. This survives session crashes.
+1. **Load context silently** — do not narrate file reads
+2. **Present findings** — show knowledge gap inventory and layer proposals
+3. **Ask before deciding** — present options for each architectural choice
+4. **Get approval before writing** — each phase section written only after user approves
+5. **Incremental writing** — write each approved section immediately; do not accumulate. Survives crashes.
 
-Never make a binding architectural decision without user input. If the user is
-unsure, present 2-4 options with pros/cons before asking them to decide.
+Never make binding architectural decision without user input. If unsure, present 2-4 options with pros/cons.
 
 ---
 
 ## Recommended Next Steps
 
-- Run `/architecture-decision [title]` for each required ADR listed in Phase 6 вЂ” Foundation layer ADRs first
-- Run `/create-control-manifest` once the required ADRs are written to produce the layer rules manifest
-- Run `/gate-check pre-production` when all required ADRs are written and the architecture is signed off
+- `/architecture-decision [title]` for each required ADR from Phase 6 — Foundation first
+- `/create-control-manifest` once required ADRs written
+- `/gate-check pre-production` when all required ADRs written and architecture signed off

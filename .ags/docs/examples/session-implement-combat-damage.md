@@ -1,14 +1,14 @@
 # Example Session: Implementing Combat Damage Calculation
 
-**Context:** Solo indie dev, week 4 of project, implementing gameplay systems.
+**Context:** Solo indie dev, week 4, implementing gameplay.
 
 **Starting State:**
-- `design/gdd/combat-system.md` exists and reviewed
-- Godot 4.6 project set up with basic scene structure
-- No gameplay code written yet
+- `design/gdd/combat-system.md` exists, reviewed
+- Unity 6000.0.30f1 set up with basic scene
+- No gameplay code yet
 - Sprint goal: "Implement core combat damage calculation"
 
-**Session Duration:** ~30 minutes
+**Session Duration:** ~30 min
 **Turns:** 10
 **Outcome:** Working damage calculator with tests, ready for integration
 
@@ -19,37 +19,37 @@
 **User:**
 > Implement the damage calculation system from design/gdd/combat-system.md. The formula is in section 4.
 
-## Turn 2: Agent Reads Design and Asks Clarifying Questions
+## Turn 2: Agent Reads Design, Asks Clarifying Questions
 
 **Agent (gameplay-programmer):**
-> I've read `design/gdd/combat-system.md`. The damage formula is:
+> Read `design/gdd/combat-system.md`. Damage formula:
 >
 > ```
 > final_damage = base_damage * (1 + attack_stat * 0.1) * crit_multiplier * type_effectiveness * (1 - target_defense)
 > ```
 >
-> Before implementing, I need to clarify some details that aren't specified in the doc:
+> Need clarification on details not in doc:
 >
-> **Architecture Questions:**
-> 1. Should `DamageCalculator` be a static utility class (no state, just calculations) or an autoload singleton?
-> 2. Where should `base_damage` come from? (Weapon data? Character stats? Ability data?)
-> 3. Where should `type_effectiveness` values live? (Per weapon? Per damage type? Separate data file?)
+> **Architecture:**
+> 1. `DamageCalculator` static utility (no state) or singleton MonoBehaviour?
+> 2. Where does `base_damage` come from? (Weapon ScriptableObject? Character stats? Ability data?)
+> 3. Where do `type_effectiveness` values live? (Per weapon? Per damage type? Separate file?)
 >
 > **Spec Ambiguities:**
-> 4. Should `attack_stat` be clamped to a range? (Prevents exponential scaling bugs)
-> 5. The doc says "critical hits do 2x damage" but doesn't specify rounding. Should I `floor()`, `ceil()`, or `round()` the final damage?
-> 6. What happens if `target_defense` >= 1.0? (100% mitigation or higher) Should damage go negative or clamp to 0?
+> 4. Should `attack_stat` be clamped? (Prevents exponential bugs)
+> 5. Doc says "crits do 2x damage" but no rounding. `floor()`, `ceil()`, `round()`?
+> 6. What if `target_defense` >= 1.0? Negative damage or clamp to 0?
 >
 > **Integration:**
-> 7. I don't see a design doc for the Health/HP system. Should I create a minimal one, or is that coming separately?
+> 7. No design doc for Health/HP system. Create minimal one, or coming separately?
 >
-> Please clarify so I can implement this correctly the first time.
+> Clarify so I implement right first time.
 
 ## Turn 3: User Resolves Ambiguities
 
 **User:**
 > 1. Static utility - no state needed
-> 2. Base damage from Weapon resource. I'll create a simple Weapon class.
+> 2. Base damage from Weapon ScriptableObject. I'll create a simple Weapon class.
 > 3. Type effectiveness in a separate data file `assets/data/combat_damage.json`
 > 4. Yes, clamp attack_stat to 0-100
 > 5. Use `floor()` to round down to integers
@@ -59,61 +59,66 @@
 ## Turn 4: Agent Proposes Architecture
 
 **Agent:**
-> Got it! Here's my proposed architecture:
+> Got it. Proposed architecture:
 >
 > **Files I'll create:**
 > ```
-> src/gameplay/combat/damage_calculator.gd     # Static damage formula
-> src/gameplay/combat/health_component.gd      # HP tracking node component
-> src/gameplay/combat/weapon.gd                # Weapon resource
-> assets/data/combat_damage.json               # Type effectiveness values
-> design/gdd/health-system.md                  # Minimal health doc
-> tests/combat/test_damage_calculator.gd       # Unit tests
+> Assets/Scripts/Gameplay/Combat/DamageCalculator.cs   # Static damage formula
+> Assets/Scripts/Gameplay/Combat/HealthComponent.cs    # HP tracking MonoBehaviour
+> Assets/Scripts/Gameplay/Combat/Weapon.cs             # Weapon ScriptableObject
+> assets/data/combat_damage.json                       # Type effectiveness values
+> design/gdd/health-system.md                          # Minimal health doc
+> tests/Combat/DamageCalculatorTests.cs                # Unit tests
 > ```
 >
 > **Architecture Details:**
 >
-> **DamageCalculator** (static class):
-> ```gdscript
-> class_name DamageCalculator
-> extends RefCounted
->
-> static func calculate_damage(
->     attacker_stats: Dictionary,
->     weapon: Weapon,
->     defender_stats: Dictionary,
->     is_crit: bool = false
-> ) -> int:
->     # Implementation here
->     return floori(final_damage)
+> **DamageCalculator** (static):
+> ```csharp
+> namespace Game.Gameplay.Combat
+> {
+>     public static class DamageCalculator
+>     {
+>         public static int CalculateDamage(
+>             Dictionary<string, float> attackerStats,
+>             Weapon weapon,
+>             Dictionary<string, float> defenderStats,
+>             bool isCrit = false)
+>         {
+>             // Implementation here
+>             return Mathf.FloorToInt(finalDamage);
+>         }
+>     }
+> }
 > ```
 >
-> **HealthComponent** (node component):
-> ```gdscript
-> extends Node
-> class_name HealthComponent
+> **HealthComponent** (MonoBehaviour):
+> ```csharp
+> public class HealthComponent : MonoBehaviour
+> {
+>     public event Action<int, int> HealthChanged;
+>     public event Action Died;
 >
-> signal health_changed(old_hp: int, new_hp: int)
-> signal died()
+>     [SerializeField] private int maxHp = 100;
+>     private int currentHp;
 >
-> @export var max_hp: int = 100
-> var current_hp: int:
->     set(value):
->         # Clamp and emit signals
->
-> func take_damage(amount: int) -> void:
->     current_hp -= amount
->     if current_hp <= 0:
->         died.emit()
+>     public void TakeDamage(int amount)
+>     {
+>         currentHp -= amount;
+>         if (currentHp <= 0)
+>             Died?.Invoke();
+>     }
+> }
 > ```
 >
-> **Weapon** (resource):
-> ```gdscript
-> extends Resource
-> class_name Weapon
->
-> @export var base_damage: float
-> @export var damage_type: String  # "physical", "fire", "ice", etc.
+> **Weapon** (ScriptableObject):
+> ```csharp
+> [CreateAssetMenu(menuName = "Combat/Weapon")]
+> public class Weapon : ScriptableObject
+> {
+>     [SerializeField] private float baseDamage;
+>     [SerializeField] private string damageType; // "physical", "fire", "ice", etc.
+> }
 > ```
 >
 > **combat_damage.json**:
@@ -129,7 +134,7 @@
 > }
 > ```
 >
-> **Question:** This architecture makes `DamageCalculator` easily testable (pure function, no dependencies). The `HealthComponent` uses signals for VFX/SFX hookup. Does this match your expectations, or should I change anything before implementing?
+> **Question:** `DamageCalculator` easily testable (pure function, no deps). `HealthComponent` uses C# events for VFX/SFX. Match expectations, or change before impl?
 
 ## Turn 5: User Approves with Minor Change
 
@@ -139,28 +144,28 @@
 ## Turn 6: Agent Refines Architecture
 
 **Agent:**
-> Absolutely - type safety is important. I'll create a `CharacterStats` resource:
+> Type safety important. Creating `CharacterStats` ScriptableObject:
 >
-> ```gdscript
-> extends Resource
-> class_name CharacterStats
->
-> @export var attack_stat: int = 0  # 0-100
-> @export var defense: float = 0.0  # 0.0-1.0 (0-100% mitigation)
-> @export var armor_type: String = "flesh"  # for type effectiveness lookup
+> ```csharp
+> [CreateAssetMenu(menuName = "Combat/CharacterStats")]
+> public class CharacterStats : ScriptableObject
+> {
+>     [SerializeField] public int attackStat = 0;     // 0-100
+>     [SerializeField] public float defense = 0.0f;   // 0.0-1.0 (0-100% mitigation)
+>     [SerializeField] public string armorType = "flesh"; // for type effectiveness lookup
+> }
 > ```
 >
-> Then `DamageCalculator.calculate_damage()` signature becomes:
-> ```gdscript
-> static func calculate_damage(
->     attacker: CharacterStats,
->     weapon: Weapon,
->     defender: CharacterStats,
->     is_crit: bool = false
-> ) -> int
+> `DamageCalculator.CalculateDamage()` signature:
+> ```csharp
+> public static int CalculateDamage(
+>     CharacterStats attacker,
+>     Weapon weapon,
+>     CharacterStats defender,
+>     bool isCrit = false);
 > ```
 >
-> Much cleaner. May I proceed with implementation?
+> Cleaner. Proceed with impl?
 
 ## Turn 7: User Approves Implementation
 
@@ -170,127 +175,126 @@
 ## Turn 8: Agent Implements and Reports
 
 **Agent:**
-> Implementation complete! Here's what I created:
+> Done. Created:
 >
-> **Files Created:**
-> - ✅ `src/gameplay/combat/damage_calculator.gd` (82 lines)
-> - ✅ `src/gameplay/combat/health_component.gd` (45 lines)
-> - ✅ `src/gameplay/combat/weapon.gd` (12 lines)
-> - ✅ `src/gameplay/combat/character_stats.gd` (16 lines)
+> **Files:**
+> - ✅ `Assets/Scripts/Gameplay/Combat/DamageCalculator.cs` (82 lines)
+> - ✅ `Assets/Scripts/Gameplay/Combat/HealthComponent.cs` (45 lines)
+> - ✅ `Assets/Scripts/Gameplay/Combat/Weapon.cs` (12 lines)
+> - ✅ `Assets/Scripts/Gameplay/Combat/CharacterStats.cs` (16 lines)
 > - ✅ `assets/data/combat_damage.json` (validated JSON)
 > - ✅ `design/gdd/health-system.md` (minimal 8-section doc)
 >
-> **Rules Enforcement Results:**
+> **Rules Enforcement:**
 >
-> The `gameplay-code` rule automatically flagged 2 issues during implementation:
-> 1. ❌ `crit_multiplier` was hardcoded as `2.0` in damage_calculator.gd
->    - **Fixed:** Moved to `combat_damage.json` and loaded from config
-> 2. ❌ `HealthComponent` had direct `print()` debug output
->    - **Fixed:** Removed hardcoded debug, added proper signals instead
+> `gameplay-code` rule flagged 2 issues during impl:
+> 1. ❌ `critMultiplier` hardcoded `2.0f` in DamageCalculator.cs
+>    - **Fixed:** Moved to `combat_damage.json`, loaded from config
+> 2. ❌ `HealthComponent` had direct `Debug.Log()` debug
+>    - **Fixed:** Removed, added events instead
 >
-> The `data-files` rule validated:
-> - ✅ `combat_damage.json` is valid JSON
-> - ✅ Naming convention matches `[system]_[name].json`
-> - ✅ All values have comment documentation
+> `data-files` rule validated:
+> - ✅ `combat_damage.json` valid JSON
+> - ✅ Naming matches `[system]_[name].json`
+> - ✅ All values have comment docs
 >
-> **Implementation Notes:**
-> - Attack stat is clamped in `calculate_damage()` before use
-> - Damage always returns minimum of 1 (per your requirement)
-> - Type effectiveness defaults to 1.0 if combo not found in config
-> - All numeric values loaded from `combat_damage.json` for designer tuning
+> **Notes:**
+> - Attack stat clamped in `CalculateDamage()` before use
+> - Damage min 1 (per requirement)
+> - Type effectiveness defaults 1.0 if combo not found
+> - All numbers loaded from `combat_damage.json` for tuning
 >
-> **Manual Testing:**
-> I created a quick test scene and validated:
-> - Base damage: 10, attack_stat: 50 → Damage: 15 ✓
-> - Same but with crit → Damage: 30 ✓
-> - With 50% defense → Damage: 15 (before defense) → 7 (after) ✓
-> - With 100% defense → Damage: 1 (clamped) ✓
+> **Manual Test:**
+> - Base 10, attack_stat 50 → Damage: 15 ✓
+> - Same + crit → Damage: 30 ✓
+> - 50% defense → Damage: 15 (before) → 7 (after) ✓
+> - 100% defense → Damage: 1 (clamped) ✓
 >
 > **Next Steps - Your Choice:**
-> A) I can write formal unit tests now (recommended - verification-driven development)
-> B) You can review the code first via `/code-review src/gameplay/combat/damage_calculator.gd`
-> C) Skip tests for now and integrate into actual combat
+> A) Write formal unit tests now (recommended - verification-driven)
+> B) Review code first via `/code-review Assets/Scripts/Gameplay/Combat/DamageCalculator.cs`
+> C) Skip tests, integrate into combat
 >
-> What would you like?
+> What?
 
 ## Turn 9: User Requests Tests
 
 **User:**
 > A - write unit tests. Cover all the edge cases.
 
-## Turn 10: Agent Writes Tests and Completes
+## Turn 10: Agent Writes Tests, Completes
 
 **Agent:**
-> Unit tests created: `tests/combat/test_damage_calculator.gd`
+> Tests created: `tests/Combat/DamageCalculatorTests.cs`
 >
 > **Test Coverage (8 tests):**
 > ```
-> ✓ test_damage_basic_calculation() - Verify formula with known values
-> ✓ test_damage_with_crit() - Critical hits double damage
-> ✓ test_damage_with_defense() - Defense reduces damage correctly
-> ✓ test_damage_type_effectiveness() - Type modifiers apply
-> ✓ test_damage_min_clamp() - Never goes below 1
-> ✓ test_damage_attack_stat_clamp() - Attack stat clamped to 0-100
-> ✓ test_damage_missing_type_combo() - Defaults to 1.0 if not in config
-> ✓ test_damage_rounding() - Verifies floor() behavior
+> ✓ Damage_BasicCalculation() - Verify formula with known values
+> ✓ Damage_WithCrit() - Critical hits double damage
+> ✓ Damage_WithDefense() - Defense reduces damage correctly
+> ✓ Damage_TypeEffectiveness() - Type modifiers apply
+> ✓ Damage_MinClamp() - Never goes below 1
+> ✓ Damage_AttackStatClamp() - Attack stat clamped to 0-100
+> ✓ Damage_MissingTypeCombo() - Defaults to 1.0 if not in config
+> ✓ Damage_Rounding() - Verifies Mathf.FloorToInt() behavior
 > ```
 >
-> **Test Results:**
+> **Results:**
 > ```
-> Running tests/combat/test_damage_calculator.gd...
+> Running tests/Combat/DamageCalculatorTests.cs...
 > ✓ All 8 tests PASSED
 > Execution time: 12ms
 > ```
 >
-> **Code Review Self-Check:**
-> - ✅ All tests follow `test_[system]_[scenario]_[expected]` naming
-> - ✅ Arrange/Act/Assert structure used
-> - ✅ No external state dependencies
-> - ✅ Each test is independent and can run in any order
+> **Self-Check:**
+> - ✅ All tests follow `[System]_[Scenario]_[Expected]` naming
+> - ✅ Arrange/Act/Assert structure
+> - ✅ No external state deps
+> - ✅ Each test independent, any order
 >
-> **System is ready for integration!**
+> **Ready for integration!**
 >
-> Files you can now commit:
+> Files to commit:
 > ```bash
-> git add src/gameplay/combat/*.gd
+> git add Assets/Scripts/Gameplay/Combat/*.cs
 > git add assets/data/combat_damage.json
 > git add design/gdd/health-system.md
-> git add tests/combat/test_damage_calculator.gd
+> git add tests/Combat/DamageCalculatorTests.cs
 > git commit -m "Implement damage calculation system per design/gdd/combat-system.md"
 > ```
 >
-> The `validate-commit` hook will check:
-> - ✅ Design doc referenced in message
+> `validate-commit` hook checks:
+> - ✅ Design doc referenced
 > - ✅ JSON validity
 > - ✅ No hardcoded values (already fixed)
 >
-> Ready to commit?
+> Commit?
 
 ---
 
 ## Session Summary
 
-**What Worked Well:**
-- Agent read design doc first, identified 7 ambiguities upfront
-- Didn't assume or guess - asked for clarification on every unclear point
-- Proposed full architecture for user approval before writing code
-- Incorporated user's type safety feedback immediately
-- Rules caught issues automatically and agent fixed them transparently
-- Tests written proactively following verification-driven development
-- Agent offered next-step options rather than assuming what user wants
+**What Worked:**
+- Agent read design first, found 7 ambiguities upfront
+- Didn't guess — asked every unclear point
+- Full architecture proposal before code
+- Type safety feedback incorporated immediately
+- Rules caught issues, agent fixed transparently
+- Tests written proactively (verification-driven)
+- Agent offered next-step options, didn't assume
 
 **Key Collaborative Moments:**
-- Turn 2: Agent identified 7 spec gaps and asked rather than guessing
-- Turn 4: Full architecture proposal shown before implementation
-- Turn 5: User requested type safety, agent adapted
-- Turn 8: Agent transparently reported rule violations and fixes
-- Turn 10: Agent verified all acceptance criteria with tests
+- Turn 2: 7 spec gaps, asked instead of guessing
+- Turn 4: Full architecture proposal before impl
+- Turn 5: User type safety request, agent adapted
+- Turn 8: Transparent rule violation report + fixes
+- Turn 10: AC verified with tests
 
 **Files Created:**
-- 4 source files (damage_calculator, health_component, weapon, character_stats)
-- 1 config file (combat_damage.json)
+- 4 source files (DamageCalculator, HealthComponent, Weapon, CharacterStats)
+- 1 config (combat_damage.json)
 - 1 design doc (health-system.md)
-- 1 test file (test_damage_calculator.gd)
+- 1 test (DamageCalculatorTests.cs)
 
-**Context Usage:** ~25% (focused implementation task)
-**User Satisfaction:** High - spec ambiguities resolved early, no rework needed
+**Context Usage:** ~25%
+**User Satisfaction:** High — ambiguities resolved early, no rework

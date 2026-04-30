@@ -1,15 +1,12 @@
-﻿# Hook: pre-push-test-gate
+# Hook: pre-push-test-gate
 
 ## Trigger
 
-Runs before any push to a remote branch. Mandatory for pushes to `develop`
-and `main`.
+Runs before push to remote. Mandatory for `develop` and `main`.
 
 ## Purpose
 
-Ensures the build compiles, unit tests pass, and critical smoke tests pass
-before code reaches shared branches. This is the last automated quality gate
-before code affects other developers.
+Build compiles, unit tests pass, smoke tests pass before code hits shared branches. Last auto quality gate before code touches other devs.
 
 ## Implementation
 
@@ -73,8 +70,7 @@ exit 0
 
 ## Agent Integration
 
-When this hook fails:
-1. Build failure: invoke `lead-programmer` to diagnose
-2. Unit test failure: invoke `qa-lead` to identify the failing test and
-   `gameplay-programmer` or relevant programmer to fix
-3. Performance regression: invoke `performance-analyst` to analyze
+On fail:
+1. Build fail: call `lead-programmer` to diagnose.
+2. Unit test fail: call `qa-lead` to find failing test, `gameplay-programmer` or relevant programmer to fix.
+3. Perf regression: call `performance-analyst` to analyze.

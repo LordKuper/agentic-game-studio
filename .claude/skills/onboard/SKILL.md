@@ -17,7 +17,7 @@ Read the relevant agent definition from `.claude/agents/` if a specific role is 
 
 ## Phase 2: Scan Relevant Area
 
-- For programmers: scan `src/` for architecture, patterns, key files
+- For programmers: scan `Assets/Scripts/` for architecture, patterns, key files
 - For designers: scan `design/` for existing design documents
 - For narrative: scan `design/narrative/` for world-building and story docs
 - For QA: scan `tests/` for existing test coverage
@@ -89,7 +89,7 @@ If yes, write the file, creating the directory if needed.
 
 ## Phase 5: Next Steps
 
-Verdict: **COMPLETE** вЂ” onboarding document generated.
+Verdict: **COMPLETE** — onboarding document generated.
 
 - Share the onboarding doc with the new contributor before their first session.
 - Run `/sprint-status` to show the new contributor current progress.

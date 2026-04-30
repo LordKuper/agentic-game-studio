@@ -2,13 +2,11 @@
 
 ## Trigger
 
-Runs before any commit that modifies files in `design/` or `assets/data/`.
+Runs before commit touching `design/` or `assets/data/`.
 
 ## Purpose
 
-Ensures design documents and game data files maintain consistency and
-completeness before they enter version control. Catches missing sections,
-broken cross-references, and invalid data before they propagate.
+Keep design docs and game data consistent and complete pre-VCS. Catch missing sections, broken refs, invalid data before spread.
 
 ## Implementation
 
@@ -64,7 +62,6 @@ exit $EXIT_CODE
 
 ## Agent Integration
 
-When this hook fails, the committer should:
-1. For missing design sections: invoke the `game-designer` agent to complete
-   the document
-2. For invalid JSON: invoke the `tools-programmer` agent or fix manually
+On fail, committer must:
+1. Missing design sections: call `game-designer` to complete doc.
+2. Invalid JSON: call `tools-programmer` or fix manually.

@@ -15,11 +15,11 @@
 
 ## Description
 
-[Detailed description of the risk. What could go wrong? Under what conditions?]
+[Detailed: what could go wrong? Under what conditions?]
 
 ## Trigger Conditions
 
-[What observable conditions would indicate this risk is materializing?]
+[Observable conditions indicating risk materializing.]
 
 - [Condition 1]
 - [Condition 2]
@@ -28,10 +28,10 @@
 
 ### If This Risk Materializes
 
-- **Schedule Impact**: [How many days/weeks of delay]
-- **Quality Impact**: [What quality degradation]
-- **Scope Impact**: [What features affected]
-- **Cost Impact**: [Resource cost of dealing with it]
+- **Schedule Impact**: [Days/weeks of delay]
+- **Quality Impact**: [Quality degradation]
+- **Scope Impact**: [Features affected]
+- **Cost Impact**: [Resource cost to handle]
 
 ### Affected Systems/Features
 
@@ -42,17 +42,17 @@
 
 ### Prevention (reduce probability)
 
-- [Action to prevent this risk from occurring]
-- [Owner and deadline for prevention action]
+- [Action to prevent occurrence]
+- [Owner + deadline]
 
-### Contingency (reduce impact if it occurs)
+### Contingency (reduce impact if occurs)
 
-- [Action to take if this risk materializes]
-- [Owner responsible for contingency execution]
+- [Action if materializes]
+- [Owner for execution]
 
 ## Current Status
 
 - **Status**: [Open | Mitigating | Occurred | Closed]
 - **Last Reviewed**: [Date]
 - **Trend**: [Increasing | Stable | Decreasing]
-- **Notes**: [Any updates]
+- **Notes**: [Updates]

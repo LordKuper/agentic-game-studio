@@ -9,16 +9,16 @@ allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 ## Phase 1: Parse Arguments
 
 Resolve the review mode (once, store for all gate spawns this run):
-1. If `--review [full|lean|solo]` was passed в†’ use that
-2. Else read `.ags/project/review-mode.md` в†’ use that value
-3. Else в†’ default to `lean`
+1. If `--review [full|lean|solo]` was passed → use that
+2. Else read `.ags/project/review-mode.md` → use that value
+3. Else → default to `lean`
 
 See `.ags/rules/director-gates.md` for the full check pattern.
 
 Determine the mode:
 
-- `new` в†’ generate a blank playtest report template
-- `analyze [path]` в†’ read raw notes and fill in the template with structured findings
+- `new` → generate a blank playtest report template
+- `analyze [path]` → read raw notes and fill in the template with structured findings
 
 ---
 
@@ -100,10 +100,10 @@ Read the raw notes at the provided path. Cross-reference with existing design do
 
 Categorize all findings into four buckets:
 
-- **Design changes needed** вЂ” fun issues, player confusion, broken mechanics, observations that conflict with the GDD's intended experience
-- **Balance adjustments** вЂ” numbers feel wrong, difficulty too spiked or too flat
-- **Bug reports** вЂ” clear implementation defects that are reproducible
-- **Polish items** вЂ” not blocking progress, but friction or feel issues for later
+- **Design changes needed** — fun issues, player confusion, broken mechanics, observations that conflict with the GDD's intended experience
+- **Balance adjustments** — numbers feel wrong, difficulty too spiked or too flat
+- **Bug reports** — clear implementation defects that are reproducible
+- **Polish items** — not blocking progress, but friction or feel issues for later
 
 Present the categorized list, then route:
 
@@ -116,14 +116,14 @@ Present the categorized list, then route:
 
 ## Phase 3b: Creative Director Player Experience Review
 
-**Review mode check** вЂ” apply before spawning CD-PLAYTEST:
-- `solo` в†’ skip. Note: "CD-PLAYTEST skipped вЂ” Solo mode." Proceed to Phase 4 (save the report).
-- `lean` в†’ skip (not a PHASE-GATE). Note: "CD-PLAYTEST skipped вЂ” Lean mode." Proceed to Phase 4 (save the report).
-- `full` в†’ spawn as normal.
+**Review mode check** — apply before spawning CD-PLAYTEST:
+- `solo` → skip. Note: "CD-PLAYTEST skipped — Solo mode." Proceed to Phase 4 (save the report).
+- `lean` → skip (not a PHASE-GATE). Note: "CD-PLAYTEST skipped — Lean mode." Proceed to Phase 4 (save the report).
+- `full` → spawn as normal.
 
 After categorising findings, spawn `creative-director` via Task using gate **CD-PLAYTEST** (`.ags/rules/director-gates.md`).
 
-Pass: the structured report content, game pillars and core fantasy (from `design/gdd/concept.md`), the specific hypothesis being tested.
+Pass: the structured report content, game pillars and core fantasy (from `design/gdd/game-concept.md`), the specific hypothesis being tested.
 
 Present the creative director's assessment before saving the report. If CONCERNS or REJECT, add a `## Creative Director Assessment` section to the report capturing the verdict and feedback. If APPROVE, note the approval in the report.
 
@@ -139,7 +139,7 @@ If yes, write the file, creating the directory if needed.
 
 ## Phase 5: Next Steps
 
-Verdict: **COMPLETE** вЂ” playtest report generated.
+Verdict: **COMPLETE** — playtest report generated.
 
 - Act on the highest-priority finding category first.
 - After addressing design changes: re-run `/design-review` on the updated GDD.

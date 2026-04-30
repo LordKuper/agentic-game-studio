@@ -7,92 +7,83 @@
 
 ## The Hook
 
-> [One powerful sentence. If someone reads nothing else, this should make them
-> curious.]
+> [One powerful sentence. If reads nothing else, this makes them curious.]
 
 ---
 
 ## What Is It?
 
-[2-3 sentences expanding the hook into a clear picture. Genre, setting, core
-mechanic, and what makes it special.]
+[2-3 sentences: hook → clear picture. Genre, setting, core mechanic, unique angle.]
 
 ---
 
 ## Why Now?
 
-[Why is this the right game at the right time? Market trends, audience gaps,
-technology enablers, cultural relevance.]
+[Why right game right time? Market trends, audience gaps, tech enablers, cultural relevance.]
 
 ---
 
 ## Target Audience
 
-**Primary**: [Who is the core audience? Be specific — not "gamers" but
-"roguelike fans who enjoy build-crafting and short sessions"]
+**Primary**: [Specific. Not "gamers" — "roguelike fans who enjoy build-crafting + short sessions"]
 
-**Secondary**: [Adjacent audience who would also enjoy this]
+**Secondary**: [Adjacent audience]
 
-**Market Size**: [Estimated TAM based on comparable titles]
+**Market Size**: [Estimated TAM from comparables]
 
 ---
 
 ## Comparable Titles
 
-| Title | Similarity | Our Differentiation | Commercial Performance |
+| Title | Similarity | Differentiation | Performance |
 | ---- | ---- | ---- | ---- |
-| [Game 1] | [What's similar] | [What's different/better] | [Revenue/units if known] |
-| [Game 2] | [What's similar] | [What's different/better] | [Performance] |
-| [Game 3] | [What's similar] | [What's different/better] | [Performance] |
+| [Game 1] | [Similar] | [Different/better] | [Revenue/units if known] |
+| [Game 2] | [Similar] | [Different/better] | [Performance] |
+| [Game 3] | [Similar] | [Different/better] | [Performance] |
 
 ---
 
 ## Core Experience
 
 ### The Player Fantasy
-[What does the player get to BE or DO? The emotional promise.]
+[What does player BE or DO? Emotional promise.]
 
 ### Core Loop (30 seconds)
-[Describe the primary activity]
+[Primary activity]
 
 ### Session Flow (30 minutes)
-[What does a typical session look like start to finish?]
+[Typical session start to finish]
 
 ### Progression Hook
-[Why do players come back tomorrow?]
+[Why come back tomorrow?]
 
 ---
 
 ## Key Features
 
-1. **[Feature Name]**: [1-2 sentence description of what it is and why it
-   matters to the player]
-2. **[Feature Name]**: [Description]
-3. **[Feature Name]**: [Description]
-4. **[Feature Name]**: [Description]
-5. **[Feature Name]**: [Description]
+1. **[Feature]**: [1-2 sentences: what + why matters to player]
+2. **[Feature]**: [Description]
+3. **[Feature]**: [Description]
+4. **[Feature]**: [Description]
+5. **[Feature]**: [Description]
 
 ---
 
 ## Visual Identity
 
-[Brief description of the art style, mood, and visual tone. Include reference
-images or mood board link if available.]
+[Brief: art style, mood, visual tone. Reference images / mood board if available.]
 
-**Art Style**: [e.g., "Hand-painted 2D with dynamic lighting, inspired by
-Hollow Knight's atmosphere but with warmer colors"]
+**Art Style**: [e.g., "Hand-painted 2D with dynamic lighting, Hollow Knight atmosphere with warmer colors"]
 
 ---
 
 ## Audio Identity
 
-[Brief description of the sonic palette and musical direction.]
+[Brief: sonic palette + musical direction.]
 
-**Music**: [e.g., "Adaptive orchestral with folk instruments, shifting based
-on biome and combat intensity"]
+**Music**: [e.g., "Adaptive orchestral with folk instruments, shifts by biome + combat intensity"]
 
-**SFX**: [e.g., "Crunchy, satisfying impact sounds. Tactile feedback on every
-player action."]
+**SFX**: [e.g., "Crunchy, satisfying impact. Tactile feedback every player action."]
 
 ---
 
@@ -103,8 +94,8 @@ player action."]
 | **Model** | [Premium $X / F2P / etc.] |
 | **Platforms** | [Steam, Console, Mobile] |
 | **Price Point** | [$X.XX] |
-| **DLC/Expansion Plans** | [Post-launch content strategy] |
-| **Monetization Ethics** | [What we will and won't do] |
+| **DLC/Expansion** | [Post-launch strategy] |
+| **Monetization Ethics** | [Will / won't do] |
 
 ---
 
@@ -112,14 +103,14 @@ player action."]
 
 | Milestone | Duration | Deliverable |
 | ---- | ---- | ---- |
-| Concept & Pre-production | [X weeks] | Game concept, pillars, vertical slice plan |
+| Concept & Pre-production | [X weeks] | Concept, pillars, vertical slice plan |
 | Vertical Slice | [X weeks] | Playable slice demonstrating core loop |
 | Alpha | [X weeks] | All features in, content placeholder |
 | Beta | [X weeks] | Content complete, polish pass |
 | Launch | [Date] | Release build |
 
 **Team Size**: [X people, roles]
-**Engine**: [Godot / Unity / Unreal]
+**Engine**: Unity [version]
 **Estimated Budget**: [Range if applicable]
 
 ---
@@ -128,7 +119,7 @@ player action."]
 
 | Risk | Likelihood | Impact | Mitigation |
 | ---- | ---- | ---- | ---- |
-| [Risk 1] | [H/M/L] | [H/M/L] | [How we handle it] |
+| [Risk 1] | [H/M/L] | [H/M/L] | [Handling] |
 | [Risk 2] | [H/M/L] | [H/M/L] | [Mitigation] |
 | [Risk 3] | [H/M/L] | [H/M/L] | [Mitigation] |
 
@@ -136,5 +127,4 @@ player action."]
 
 ## The Ask
 
-[What do you need? Funding, publishing deal, team members, feedback? Be
-specific about what you're looking for and what you're offering in return.]
+[What you need? Funding, publishing, team, feedback? Specific about ask + offer in return.]

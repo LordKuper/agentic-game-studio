@@ -5,17 +5,14 @@ argument-hint: "[optional: role filter like 'programmer' or 'designer']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write
 model: haiku
-# Read-only diagnostic skill вЂ” no specialist agent delegation needed
+# Read-only diagnostic skill — no specialist agent delegation needed
 ---
 
 # Project Stage Detection
 
-This skill scans your project to determine its current development stage, completeness
-of artifacts, and gaps that need attention. It's especially useful when:
-- Starting with an existing project
-- Onboarding to a codebase
-- Checking what's missing before a milestone
-- Understanding "where are we?"
+Scans project to determine current development stage, artifact completeness,
+and gaps. Useful for: starting with existing project, onboarding, pre-milestone
+check, or "where are we?"
 
 ---
 
@@ -33,7 +30,7 @@ Analyze project structure and content:
 - Count narrative docs in `design/narrative/`
 - Count level designs in `design/levels/`
 
-**Source Code** (`src/`):
+**Source Code** (`Assets/Scripts/`):
 - Count source files (language-agnostic)
 - Identify major systems (directories with 5+ files)
 - Check for core/, gameplay/, ai/, networking/, ui/ directories
@@ -54,7 +51,7 @@ Analyze project structure and content:
 
 ### 2. Classify Project Stage
 
-Based on scanned artifacts, determine stage. Check `.ags/project/stage.txt` first вЂ”
+Based on scanned artifacts, determine stage. Check `.ags/project/stage.txt` first —
 if it exists, use its value (explicit override from `/gate-check`). Otherwise,
 auto-detect using these heuristics (check from most-advanced backward):
 
@@ -63,16 +60,16 @@ auto-detect using these heuristics (check from most-advanced backward):
 | **Concept** | No game concept doc, brainstorming phase |
 | **Systems Design** | Game concept exists, systems index missing or incomplete |
 | **Technical Setup** | Systems index exists, engine not configured |
-| **Pre-Production** | Engine configured, `src/` has <10 source files |
-| **Production** | `src/` has 10+ source files, active development |
-| **Polish** | Explicit only (set by `/gate-check` Production в†’ Polish gate) |
-| **Release** | Explicit only (set by `/gate-check` Polish в†’ Release gate) |
+| **Pre-Production** | Engine configured, `Assets/Scripts/` has <10 source files |
+| **Production** | `Assets/Scripts/` has 10+ source files, active development |
+| **Polish** | Explicit only (set by `/gate-check` Production → Polish gate) |
+| **Release** | Explicit only (set by `/gate-check` Polish → Release gate) |
 
 ### 3. Collaborative Gap Identification
 
 **DO NOT** just list missing files. Instead, **ask clarifying questions**:
 
-- "I see combat code (`src/gameplay/combat/`) but no `design/gdd/combat-system.md`. Should we reverse-document it?"
+- "I see combat code (`Assets/Scripts/Gameplay/combat/`) but no `design/gdd/combat-system.md`. Should we reverse-document it?"
 - "You have 15 ADRs but no architecture overview. Should I create one to help new contributors?"
 - "No sprint plans in `.ags/project/`. Are you tracking work elsewhere (Jira, Trello, etc.)?"
 - "I found a game concept but no systems index. Have you decomposed the concept into individual systems yet, or should we run `/map-systems`?"
@@ -87,7 +84,7 @@ Use template: `.ags/templates/project-stage-report.md`
 
 **Date**: [date]
 **Stage**: [Concept/Systems Design/Technical Setup/Pre-Production/Production/Polish/Release]
-**Stage Confidence**: [PASS вЂ” clearly detected / CONCERNS вЂ” ambiguous signals / FAIL вЂ” critical gaps block progress]
+**Stage Confidence**: [PASS — clearly detected / CONCERNS — ambiguous signals / FAIL — critical gaps block progress]
 
 ## Completeness Overview
 - Design: [X%] ([N] docs, [gaps])
@@ -166,22 +163,20 @@ Wait for user approval before creating the file.
 
 After generating the report, suggest relevant next steps:
 
-- **Concept exists but no systems index?** в†’ `/map-systems` to decompose into systems
-- **Missing design docs?** в†’ `/reverse-document design src/[system]`
-- **Missing architecture docs?** в†’ `/architecture-decision` or `/reverse-document architecture`
-- **No sprint plan?** в†’ `/sprint-plan`
-- **Approaching milestone?** в†’ `/milestone-review`
+- **Concept exists but no systems index?** → `/map-systems` to decompose into systems
+- **Missing design docs?** → `/reverse-document design Assets/Scripts/[system]`
+- **Missing architecture docs?** → `/architecture-decision` or `/reverse-document architecture`
+- **No sprint plan?** → `/sprint-plan`
+- **Approaching milestone?** → `/milestone-review`
 
 ---
 
 ## Collaborative Protocol
 
-This skill follows the collaborative design principle:
+1. **Question first** — ask about gaps, don't assume
+2. **Present options** — "Should I create X, or is it tracked elsewhere?"
+3. **User decides** — wait for direction
+4. **Show draft** — display report summary
+5. **Get approval** — "May I write to .ags/project/project-stage-report.md?"
 
-1. **Question First**: Ask about gaps, don't assume
-2. **Present Options**: "Should I create X, or is it tracked elsewhere?"
-3. **User Decides**: Wait for direction
-4. **Show Draft**: Display report summary
-5. **Get Approval**: "May I write to .ags/project/project-stage-report.md?"
-
-**Never** silently write files. **Always** show findings and ask before creating artifacts.
+**NEVER** silently write files. **ALWAYS** show findings and ask before creating artifacts.

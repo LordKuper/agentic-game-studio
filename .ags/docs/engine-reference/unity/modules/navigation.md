@@ -8,8 +8,8 @@
 ## Overview
 
 Unity 6 navigation systems:
-- **NavMesh**: Built-in pathfinding for AI agents
-- **NavMeshComponents**: Package for runtime NavMesh building
+- **NavMesh**: Built-in pathfinding for AI agents.
+- **NavMeshComponents**: Package for runtime NavMesh building.
 
 ---
 
@@ -18,20 +18,20 @@ Unity 6 navigation systems:
 ### Bake Navigation Mesh
 
 1. Mark walkable surfaces:
-   - Select GameObject (floor/terrain)
-   - Inspector > Navigation > Object tab
-   - Check "Navigation Static"
+   - Select GameObject (floor/terrain).
+   - Inspector > Navigation > Object tab.
+   - Check "Navigation Static".
 
 2. Bake NavMesh:
    - `Window > AI > Navigation`
-   - Bake tab
-   - Click "Bake"
+   - Bake tab.
+   - Click "Bake".
 
 3. Configure settings:
-   - **Agent Radius**: How wide the agent is (0.5m default)
-   - **Agent Height**: How tall the agent is (2m default)
-   - **Max Slope**: Maximum walkable slope (45° default)
-   - **Step Height**: Maximum climbable step (0.4m default)
+   - **Agent Radius**: Width (0.5m default).
+   - **Agent Height**: Height (2m default).
+   - **Max Slope**: Max walkable slope (45° default).
+   - **Step Height**: Max climbable step (0.4m default).
 
 ---
 
@@ -131,10 +131,10 @@ if (path.status == NavMeshPathStatus.PathComplete) {
 
 ### Define Areas
 `Window > AI > Navigation > Areas tab`
-- **Walkable**: Cost 1 (default)
-- **Not Walkable**: Unwalkable
-- **Jump**: Cost 2 (prefer other routes)
-- **Custom**: Define your own
+- **Walkable**: Cost 1 (default).
+- **Not Walkable**: Unwalkable.
+- **Jump**: Cost 2 (prefer other routes).
+- **Custom**: Define your own.
 
 ### Assign Area Costs
 
@@ -172,12 +172,12 @@ obstacle.carving = true; // Create dynamic hole in NavMesh
 
 ### Create Off-Mesh Link
 
-1. `GameObject > Create Empty` (at jump start)
-2. Add `Off Mesh Link` component
-3. Set Start/End transforms
+1. `GameObject > Create Empty` (at jump start).
+2. Add `Off Mesh Link` component.
+3. Set Start/End transforms.
 4. Configure:
-   - **Bi-Directional**: Can traverse both ways
-   - **Cost Override**: Path cost for this link
+   - **Bi-Directional**: Traverse both ways.
+   - **Cost Override**: Path cost for link.
 
 ### Detect Off-Mesh Link Traversal
 
@@ -297,7 +297,7 @@ void Update() {
 
 ### NavMesh Visualization
 - `Window > AI > Navigation > Bake tab`
-- Check "Show NavMesh" to visualize walkable areas
+- Check "Show NavMesh" to visualize walkable areas.
 
 ### Agent Path Gizmos
 
@@ -318,10 +318,10 @@ void OnDrawGizmos() {
 
 ## Performance Tips
 
-- **Limit Obstacle Avoidance Quality**: Use `LowQualityObstacleAvoidance` for distant agents
-- **Update Frequency**: Don't call `SetDestination()` every frame if target hasn't moved
-- **Area Masks**: Limit walkable areas to reduce pathfinding search space
-- **NavMesh Tiles**: Use tiled NavMesh for large worlds (NavMeshComponents package)
+- **Limit Obstacle Avoidance Quality**: Use `LowQualityObstacleAvoidance` for distant agents.
+- **Update Frequency**: Don't call `SetDestination()` every frame if target hasn't moved.
+- **Area Masks**: Limit walkable areas to reduce search space.
+- **NavMesh Tiles**: Use tiled NavMesh for large worlds (NavMeshComponents package).
 
 ---
 

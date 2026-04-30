@@ -2,8 +2,7 @@
 
 **Last verified:** 2026-02-13
 
-Quick lookup table for deprecated APIs and their replacements.
-Format: **Don't use X** → **Use Y instead**
+Lookup table: deprecated API → replacement. Format: **Don't use X** → **Use Y instead**.
 
 ---
 
@@ -25,11 +24,11 @@ Format: **Don't use X** → **Use Y instead**
 
 | Deprecated | Replacement | Notes |
 |------------|-------------|-------|
-| `Canvas` (UGUI) | `UIDocument` (UI Toolkit) | UI Toolkit is now production-ready |
+| `Canvas` (UGUI) | `UIDocument` (UI Toolkit) | UI Toolkit production-ready |
 | `Text` component | `TextMeshPro` or UI Toolkit `Label` | Better rendering, fewer draw calls |
 | `Image` component | UI Toolkit `VisualElement` with background | More flexible styling |
 
-**Migration:** UGUI still works, but UI Toolkit is recommended for new projects.
+**Migration:** UGUI still works; UI Toolkit recommended for new projects.
 
 ---
 
@@ -37,13 +36,13 @@ Format: **Don't use X** → **Use Y instead**
 
 | Deprecated | Replacement | Notes |
 |------------|-------------|-------|
-| `ComponentSystem` | `ISystem` (unmanaged) | Entities 1.0+ complete rewrite |
+| `ComponentSystem` | `ISystem` (unmanaged) | Entities 1.0+ rewrite |
 | `JobComponentSystem` | `ISystem` with `IJobEntity` | Burst-compatible |
 | `GameObjectEntity` | Pure ECS workflow | No GameObject conversion |
 | `EntityManager.CreateEntity()` (old signature) | `EntityManager.CreateEntity(EntityArchetype)` | Explicit archetype |
 | `ComponentDataFromEntity<T>` | `ComponentLookup<T>` | Entities 1.0+ rename |
 
-**Migration:** See Entities package migration guide. Major refactor required.
+**Migration:** See Entities migration guide. Major refactor required.
 
 ---
 
@@ -70,7 +69,7 @@ Format: **Don't use X** → **Use Y instead**
 
 | Deprecated | Replacement | Notes |
 |------------|-------------|-------|
-| `Resources.Load()` | Addressables | Better memory control, async loading |
+| `Resources.Load()` | Addressables | Better memory control, async |
 | Synchronous asset loading | `Addressables.LoadAssetAsync()` | Non-blocking |
 
 ---
@@ -79,7 +78,7 @@ Format: **Don't use X** → **Use Y instead**
 
 | Deprecated | Replacement | Notes |
 |------------|-------------|-------|
-| Legacy Animation component | Animator Controller | Mecanim system |
+| Legacy Animation component | Animator Controller | Mecanim |
 | `Animation.Play()` | `Animator.Play()` | State machine control |
 
 ---
@@ -88,7 +87,7 @@ Format: **Don't use X** → **Use Y instead**
 
 | Deprecated | Replacement | Notes |
 |------------|-------------|-------|
-| Legacy Particle System | Visual Effect Graph | GPU-accelerated, more performant |
+| Legacy Particle System | Visual Effect Graph | GPU-accelerated |
 
 ---
 

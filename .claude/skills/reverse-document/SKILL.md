@@ -1,19 +1,17 @@
 ﻿---
 name: reverse-document
 description: "Generate design or architecture documents from existing implementation. Works backwards from code to create missing planning docs."
-argument-hint: "<type> <path> (e.g., 'design src/gameplay/combat' or 'architecture src/core')"
+argument-hint: "<type> <path> (e.g., 'design Assets/Scripts/Gameplay/combat' or 'architecture Assets/Scripts/core')"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash
-# Read-only diagnostic skill вЂ” no specialist agent delegation needed
+# Read-only diagnostic skill — no specialist agent delegation needed
 ---
 
 # Reverse Documentation
 
-This skill analyzes existing implementation (code, systems) and generates
-appropriate design or architecture documentation. Use this when:
-- You built a feature without writing a design doc first
-- You inherited a codebase without documentation
-- You need to document "why" behind existing code
+Analyzes existing implementation (code, systems) and generates design or
+architecture documentation. Use when: built feature without design doc,
+inherited undocumented codebase, or need to document "why" behind existing code.
 
 ---
 
@@ -24,17 +22,17 @@ appropriate design or architecture documentation. Use this when:
 **Format**: `/reverse-document <type> <path>`
 
 **Type options**:
-- `design` в†’ Generate a game design document (GDD section)
-- `architecture` в†’ Generate an Architecture Decision Record (ADR)
+- `design` → Generate a game design document (GDD section)
+- `architecture` → Generate an Architecture Decision Record (ADR)
 
 **Path**: Directory or file to analyze
-- `src/gameplay/combat/` в†’ All combat-related code
-- `src/core/event-system.cpp` в†’ Specific file
+- `Assets/Scripts/Gameplay/combat/` → All combat-related code
+- `Assets/Scripts/Core/event-system.cpp` → Specific file
 
 **Examples**:
 ```bash
-/reverse-document design src/gameplay/magic-system
-/reverse-document architecture src/core/entity-component
+/reverse-document design Assets/Scripts/Gameplay/magic-system
+/reverse-document architecture Assets/Scripts/Core/entity-component
 ```
 
 ## Phase 2: Analyze Implementation
@@ -92,9 +90,9 @@ FORMULAS DISCOVERED:
 - [Secondary output] = [formula]
 
 UNCLEAR INTENT AREAS:
-1. [Resource] system вЂ” pacing or resource management?
-2. [Mechanic] вЂ” core pillar or supporting feature?
-3. [Value] scaling вЂ” intentional design or needs tuning?
+1. [Resource] system — pacing or resource management?
+2. [Mechanic] — core pillar or supporting feature?
+3. [Value] scaling — intentional design or needs tuning?
 
 Before I draft the design doc, could you clarify these points?
 ```
@@ -164,7 +162,7 @@ verified-by: [User name]
 After writing, suggest next steps:
 
 ```
-вњ… Written to design/gdd/combat-system.md
+✅ Written to design/gdd/combat-system.md
 
 FOLLOW-UP RECOMMENDED:
 1. Run /balance-check on combat formulas (exponential scaling concern)
@@ -183,31 +181,31 @@ Would you like me to tackle any of these now?
 
 | If analyzing... | Use template... | Because... |
 |----------------|-----------------|------------|
-| `src/gameplay/*` | design-doc-from-implementation.md | Gameplay mechanics в†’ GDD |
-| `src/core/*`, `src/ai/*` | architecture-doc-from-code.md | Core systems в†’ ADR |
-| `src/networking/*` | architecture-doc-from-code.md | Technical systems в†’ ADR |
-| `src/ui/*` | design-doc-from-implementation.md | UI/UX в†’ design spec |
+| `Assets/Scripts/Gameplay/*` | design-doc-from-implementation.md | Gameplay mechanics → GDD |
+| `Assets/Scripts/Core/*`, `Assets/Scripts/AI/*` | architecture-doc-from-code.md | Core systems → ADR |
+| `Assets/Scripts/Networking/*` | architecture-doc-from-code.md | Technical systems → ADR |
+| `Assets/Scripts/UI/*` | design-doc-from-implementation.md | UI/UX → design spec |
 
 ---
 
 ## Example Session: Reverse-Document a System
 
 ```
-User: /reverse-document design src/gameplay/[system]
+User: /reverse-document design Assets/Scripts/Gameplay/[system]
 
 Agent: I'll analyze your [system] implementation to create a design doc.
        [Reads code, discovers mechanics, formulas]
 
-Agent: I've analyzed src/gameplay/[system]/. Here's what I found:
+Agent: I've analyzed Assets/Scripts/Gameplay/[system]/. Here's what I found:
        [Shows mechanics, formulas, unclear areas]
 
        Before drafting, could you clarify:
        1. [Resource] system intent?
        2. Is [mechanic] a core pillar?
-       3. [Value] scaling вЂ” intentional or needs tuning?
+       3. [Value] scaling — intentional or needs tuning?
 
 User: 1. [Resource] is for pacing, prevent [unwanted behavior]
-      2. [Mechanic] is core вЂ” I want [design intent]
+      2. [Mechanic] is core — I want [design intent]
       3. Yeah, exponential is too much, should be linear
 
 Agent: Perfect, that clarifies the vision. Let me draft the design doc.
@@ -217,9 +215,9 @@ Agent: Perfect, that clarifies the vision. Let me draft the design doc.
 
 User: Yes, write it.
 
-Agent: вњ… Written to design/gdd/[system-name].md
-       вњ… Marked as [REVERSE-DOCUMENTED]
-       вњ… Flagged [value] scaling for rebalancing
+Agent: ✅ Written to design/gdd/[system-name].md
+       ✅ Marked as [REVERSE-DOCUMENTED]
+       ✅ Flagged [value] scaling for rebalancing
 
        Next steps:
        - Update [formula] to [corrected scaling]
@@ -231,15 +229,13 @@ Agent: вњ… Written to design/gdd/[system-name].md
 
 ## Collaborative Protocol
 
-This skill follows the collaborative design principle:
+1. **Analyze first** — read code, understand implementation
+2. **Question intent** — ask about "why", not just "what"
+3. **Present findings** — show discoveries, highlight unclear areas
+4. **User clarifies** — separate intent from accidents
+5. **Draft document** — based on reality + intent
+6. **Show draft** — display key sections, explain additions
+7. **Get approval** — "May I write to [filepath]?" Approve → **COMPLETE**. Decline → **BLOCKED**.
+8. **Flag follow-up** — suggest related work, don't auto-execute
 
-1. **Analyze First**: Read code, understand implementation
-2. **Question Intent**: Ask about "why", not just "what"
-3. **Present Findings**: Show discoveries, highlight unclear areas
-4. **User Clarifies**: Separate intent from accidents
-5. **Draft Document**: Create doc based on reality + intent
-6. **Show Draft**: Display key sections, explain additions
-7. **Get Approval**: "May I write to [filepath]?" On approval: Verdict: **COMPLETE** вЂ” document generated. On decline: Verdict: **BLOCKED** вЂ” user declined write.
-8. **Flag Follow-Up**: Suggest related work, don't auto-execute
-
-**Never assume intent. Always ask before documenting "why".**
+**NEVER assume intent. ALWAYS ask before documenting "why".**

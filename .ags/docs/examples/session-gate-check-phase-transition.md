@@ -1,17 +1,17 @@
-﻿# Example Session: /gate-check Phase Transition вЂ” Systems Design в†’ Technical Setup
+# Example Session: /gate-check Phase Transition — Systems Design → Technical Setup
 
-**Context:** Solo indie dev, end of week 5. The Systems Design phase feels complete вЂ” 6 MVP GDDs written, cross-review done, engine set up. User wants to formally advance to Technical Setup.
+**Context:** Solo indie dev, end of week 5. Systems Design feels complete — 6 MVP GDDs, cross-review done, engine set. Wants to advance to Technical Setup.
 
 **Starting State:**
-- `.ags/project/stage.txt` вЂ” currently `systems-design`
-- `design/gdd/systems-index.md` вЂ” 6 MVP systems listed, all marked `Status: GDD Complete`
-- `design/gdd/` вЂ” 6 GDD files present
-- `design/gdd/gdd-cross-review-2026-03-10.md` вЂ” cross-review report, verdict: CONCERNS (1 low-priority note)
-- Engine configured (Godot 4.6, `/setup-engine` complete)
+- `.ags/project/stage.txt` — currently `systems-design`
+- `design/gdd/systems-index.md` — 6 MVP systems, all `Status: GDD Complete`
+- `design/gdd/` — 6 GDD files
+- `design/gdd/gdd-cross-review-2026-03-10.md` — verdict: CONCERNS (1 low-priority)
+- Engine configured (Unity 6000.0.30f1, `/setup-engine` complete)
 
-**Session Duration:** ~20 minutes
+**Session Duration:** ~20 min
 **Turns:** 7
-**Outcome:** Gate passed, `stage.txt` updated to `technical-setup`, clear list of what comes next
+**Outcome:** Gate passed, `stage.txt` → `technical-setup`, clear next-steps list
 
 ---
 
@@ -20,48 +20,48 @@
 **User:**
 > /gate-check
 
-## Turn 2: Agent Detects Current Phase and Runs the Check
+## Turn 2: Agent Detects Phase, Runs Check
 
 **Agent (via /gate-check):**
-> Reading `.ags/project/stage.txt` вЂ” current phase: **systems-design**
+> Reading `.ags/project/stage.txt` — current phase: **systems-design**
 >
-> Running gate: **Systems Design в†’ Technical Setup**
+> Running gate: **Systems Design → Technical Setup**
 >
 > ---
 > **Required Artifacts Checklist:**
 >
 > | Artifact | Requirement | Status |
 > |----------|-------------|--------|
-> | `design/gdd/systems-index.md` | Exists, all MVP systems listed | вњ… |
-> | Per-system GDDs | All MVP systems have a GDD | вњ… (6/6) |
-> | `/design-review` per GDD | Each GDD reviewed | вњ… (6/6 review comments found) |
-> | Cross-GDD review report | `design/gdd/gdd-cross-review-*.md` exists | вњ… |
-> | Cross-review verdict | PASS or CONCERNS (not FAIL) | вњ… CONCERNS |
-> | Engine configured | `.ags/project/stage.txt` or CLAUDE.md engine entry | вњ… Godot 4.6 |
+> | `design/gdd/systems-index.md` | Exists, all MVP listed | ✅ |
+> | Per-system GDDs | All MVP have GDD | ✅ (6/6) |
+> | `/design-review` per GDD | Each reviewed | ✅ (6/6 found) |
+> | Cross-GDD review | `design/gdd/gdd-cross-review-*.md` exists | ✅ |
+> | Cross-review verdict | PASS or CONCERNS (not FAIL) | ✅ CONCERNS |
+> | Engine configured | `.ags/project/stage.txt` or CLAUDE.md entry | ✅ Unity 6000.0.30f1 |
 >
 > ---
 > **Content Scan:**
 >
-> Checking GDD completeness (8 required sections each)...
+> GDD completeness (8 sections each)...
 >
 > | GDD | Missing Sections |
 > |-----|-----------------|
-> | movement-system.md | None вњ… |
-> | stamina-system.md | None вњ… |
-> | combat-system.md | None вњ… |
-> | inventory-system.md | None вњ… |
-> | crafting-system.md | None вњ… |
-> | exploration-system.md | None вњ… |
+> | movement-system.md | None ✅ |
+> | stamina-system.md | None ✅ |
+> | combat-system.md | None ✅ |
+> | inventory-system.md | None ✅ |
+> | crafting-system.md | None ✅ |
+> | exploration-system.md | None ✅ |
 >
 > ---
 > **Cross-Review Concerns (from `gdd-cross-review-2026-03-10.md`):**
 >
-> 1. вљ пёЏ LOW вЂ” Crafting and inventory both define "item stack size" independently with different defaults (crafting: 99, inventory: 64). One system should be the authority; the other should reference it. Not blocking вЂ” can resolve in ADR.
+> 1. ⚠️ LOW — Crafting + inventory both define "item stack size" independently with different defaults (crafting: 99, inventory: 64). One should be authority; other should ref. Not blocking — resolve via ADR.
 >
 > ---
 > **Verdict: PASS**
 >
-> All required artifacts present. Cross-review concern is LOW severity and can be resolved during Technical Setup via an ADR. This is a normal finding at this stage.
+> All artifacts present. Cross-review concern LOW, resolvable via ADR in Technical Setup. Normal at this stage.
 >
 > **May I advance `.ags/project/stage.txt` to `technical-setup`?**
 
@@ -70,39 +70,39 @@
 **User:**
 > Yes, advance it.
 
-## Turn 4: Agent Updates Stage and Presents Next Steps
+## Turn 4: Agent Updates Stage, Presents Next Steps
 
 **Agent:**
-> Updated `.ags/project/stage.txt` в†’ `technical-setup`
+> Updated `.ags/project/stage.txt` → `technical-setup`
 >
 > ---
 > **You are now in: Technical Setup**
 >
-> This phase establishes the technical foundation before production coding starts. Your goal is a complete, approved architecture so that every story written in Pre-Production has clear, unambiguous technical guidance.
+> Establish technical foundation before production coding. Goal: complete approved architecture so every Pre-Production story has clear technical guidance.
 >
-> **Required steps this phase (in order):**
+> **Required steps (in order):**
 >
-> 1. **`/create-architecture`** вЂ” Author the master architecture document. Covers system decomposition, data flow, layer boundaries, and module responsibilities.
+> 1. **`/create-architecture`** — Master architecture doc. System decomposition, data flow, layer boundaries, module responsibilities.
 >
-> 2. **`/architecture-decision` (one per significant technical choice)** вЂ” At minimum:
+> 2. **`/architecture-decision` (one per significant choice)** — At minimum:
 >    - Rendering approach (2D camera, viewport, etc.)
 >    - Save/load strategy
 >    - Audio bus architecture
->    - The "item stack size authority" issue from cross-review (crafting vs inventory)
+>    - Item stack size authority (crafting vs inventory)
 >
-> 3. **`/architecture-review`** вЂ” Validates all ADRs for completeness, dependency ordering, and GDD traceability. Produces the TR-registry.
+> 3. **`/architecture-review`** — Validates all ADRs for completeness, dep ordering, GDD traceability. Produces TR-registry.
 >
-> 4. **`/create-control-manifest`** вЂ” Converts Accepted ADRs into a flat programmer rules sheet. This is what implementation agents will consult during coding.
+> 4. **`/create-control-manifest`** — Converts Accepted ADRs to flat programmer rules sheet. Impl agents consult during coding.
 >
-> 5. **`/gate-check`** вЂ” Technical Setup в†’ Pre-Production gate. Requires: architecture doc, all ADRs Accepted, control manifest, and dependency ordering resolved.
+> 5. **`/gate-check`** — Technical Setup → Pre-Production. Requires: architecture doc, all ADRs Accepted, control manifest, dep ordering resolved.
 >
 > **Optional but recommended:**
-> - `/tech-debt` scan if you have any spike code you plan to carry forward
-> - `/setup-engine` re-run if you haven't yet fetched Godot 4.6 API snapshots
+> - `/tech-debt` scan if carrying spike code forward
+> - `/setup-engine` re-run if Unity 6000.0.30f1 API snapshots not fetched
 >
-> **Tip:** Start with `/architecture-decision` for the item stack size conflict. It's a quick win that closes an open question before it creates ambiguity in two ADRs later.
+> **Tip:** Start with `/architecture-decision` for stack size conflict. Quick win, closes open question before ambiguity in 2 ADRs later.
 
-## Turn 5: User Asks About the Cross-Review Concern
+## Turn 5: User Asks About Cross-Review Concern
 
 **User:**
 > What do I actually write in the ADR for the stack size conflict?
@@ -110,25 +110,25 @@
 ## Turn 6: Agent Advises
 
 **Agent:**
-> The ADR decision is: **which system owns the canonical `max_stack_size` value?**
+> Decision: **which system owns canonical `max_stack_size`?**
 >
-> Two options to consider:
+> Options:
 >
 > **Option A: Inventory owns it**
-> - `ItemData` resource (owned by inventory) gets `max_stack_size: int = 64`
-> - Crafting system reads from `ItemData`, never sets its own value
-> - Pros: inventory is the source of truth for all item properties
+> - `ItemData` ScriptableObject (inventory) gets `public int MaxStackSize = 64;`
+> - Crafting reads from `ItemData`, never sets own
+> - Pros: inventory = source of truth for item properties
 > - Cons: crafting team needs to know to look at inventory data
 >
-> **Option B: Item data resource owns it (shared resource)**
-> - `ItemData.max_stack_size` is the authority for both systems
-> - Both crafting and inventory import from `ItemData`
-> - Pros: single source, no coupling between crafting and inventory modules
-> - Cons: one more thing in the shared data layer
+> **Option B: Item data ScriptableObject owns it (shared asset)**
+> - `ItemData.MaxStackSize` = authority for both
+> - Both crafting + inventory ref `ItemData`
+> - Pros: single source, no coupling between modules
+> - Cons: one more thing in shared data layer
 >
-> Most studios go with B (shared resource) once they have >2 systems touching item data. But either is valid for a solo project.
+> Most studios go B (shared resource) once >2 systems touch item data. Either valid for solo project.
 >
-> Run `/architecture-decision` and it will guide you through the ADR format, including the Dependencies section that links this ADR back to the two GDDs.
+> Run `/architecture-decision` — guides ADR format including Dependencies section linking to 2 GDDs.
 
 ## Turn 7: User Wraps Up
 
@@ -136,17 +136,17 @@
 > Got it. I'll start with /architecture-decision for this.
 
 **Agent:**
-> Good starting point. The ADR will document the decision, the reasoning, and the GDD requirements it addresses вЂ” so when you write code months from now, the rationale is preserved.
+> Good start. ADR documents decision, reasoning, GDD requirements addressed — months later, rationale preserved.
 >
-> Your phase gate is logged. Run `/help` at any time during Technical Setup to see your current progress against the required checklist.
+> Phase gate logged. Run `/help` during Technical Setup to see progress vs required checklist.
 
 ---
 
-## What This Example Demonstrates
+## What This Demonstrates
 
-- **Gate check is automated, not manual**: agent reads artifacts and checks them вЂ” user doesn't fill out a form
-- **CONCERNS в‰  FAIL**: the cross-review concern is LOW severity and passes the gate. A FAIL would require resolution before advancing.
-- **Stage.txt is the authority**: the status line, `/help`, and all skills read from `.ags/project/stage.txt` вЂ” updating it here changes what every subsequent skill sees
-- **Next steps are phase-specific**: the agent doesn't give a generic "good luck" вЂ” it gives the ordered checklist for Technical Setup specifically
-- **Gate check surfaces carry-forward work**: the stack size conflict was a cross-review note; the gate check ensures it becomes a concrete ADR rather than getting lost
-- **One advance per gate**: the user confirmed advancement explicitly. The gate doesn't auto-advance; human confirmation is required.
+- **Gate check is automated, not manual**: agent reads artifacts + checks them — user doesn't fill form
+- **CONCERNS ≠ FAIL**: LOW concern passes. FAIL would require resolution before advancing.
+- **Stage.txt is authority**: status line, `/help`, all skills read from `.ags/project/stage.txt` — updating changes what every subsequent skill sees
+- **Next steps phase-specific**: agent gives ordered checklist for Technical Setup, not generic
+- **Surfaces carry-forward work**: stack size conflict was cross-review note; gate ensures it becomes concrete ADR, not lost
+- **One advance per gate**: user confirmed explicitly. Gate doesn't auto-advance; human confirmation required.

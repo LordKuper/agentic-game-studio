@@ -10,60 +10,60 @@
 
 - [ ] Clean build succeeds on all target platforms
 - [ ] No compiler warnings (zero-warning policy)
-- [ ] Build version number set correctly: `[version]`
-- [ ] Build is reproducible from tagged commit: `[commit hash]`
+- [ ] Build version set correctly: `[version]`
+- [ ] Build reproducible from tagged commit: `[commit hash]`
 - [ ] Build size within budget: [actual] / [budget]
-- [ ] All assets included and loading correctly
-- [ ] No debug/development features enabled in release build
+- [ ] All assets included + loading correctly
+- [ ] No debug/dev features in release build
 
 ---
 
 ## Quality Gates
 
 ### Critical Bugs
-- [ ] Zero S1 (Critical) bugs open
-- [ ] Zero S2 (Major) bugs -- or documented exceptions below:
+- [ ] Zero S1 (Critical) open
+- [ ] Zero S2 (Major) -- or documented exceptions:
 
 | Bug ID | Description | Exception Rationale | Approved By |
 | ---- | ---- | ---- | ---- |
 | | | | |
 
 ### Test Coverage
-- [ ] All critical path features tested and signed off
-- [ ] Full regression suite passed: [pass rate]%
-- [ ] Soak test passed (4+ hours continuous play)
+- [ ] All critical path features tested + signed off
+- [ ] Full regression passed: [pass rate]%
+- [ ] Soak test passed (4+ hours continuous)
 - [ ] Edge case testing complete
 
 ### Performance
-- [ ] Target FPS met on minimum spec: [actual] / [target] FPS
-- [ ] Memory usage within budget: [actual] / [budget] MB
-- [ ] Load times within budget: [actual] / [target] seconds
-- [ ] No memory leaks over extended play (soak test)
+- [ ] Target FPS met on min spec: [actual] / [target]
+- [ ] Memory within budget: [actual] / [budget] MB
+- [ ] Load times within budget: [actual] / [target] s
+- [ ] No memory leaks over extended play (soak)
 - [ ] No frame drops below [threshold] in normal gameplay
 
 ---
 
 ## Content Complete
 
-- [ ] All placeholder assets replaced with final versions
+- [ ] All placeholders replaced with final
 - [ ] All player-facing text proofread
-- [ ] All text localization-ready (no hardcoded strings)
-- [ ] Localization complete for: [list locales]
-- [ ] Audio mix finalized and approved
-- [ ] Credits complete and accurate
-- [ ] Legal notices and third-party attributions complete
+- [ ] All text loc-ready (no hardcoded strings)
+- [ ] Loc complete for: [list locales]
+- [ ] Audio mix finalized + approved
+- [ ] Credits complete + accurate
+- [ ] Legal notices + third-party attributions complete
 
 ---
 
 ## Platform: PC
 
-- [ ] Minimum and recommended specs documented
-- [ ] Keyboard+mouse controls fully functional
-- [ ] Controller support tested (Xbox, PlayStation, generic)
-- [ ] Resolution scaling tested: 1080p, 1440p, 4K, ultrawide
-- [ ] Windowed, borderless, fullscreen modes working
-- [ ] Graphics settings save and load correctly
-- [ ] Store SDK integrated and tested: [Steam/Epic/GOG]
+- [ ] Min + recommended specs documented
+- [ ] Kb+mouse fully functional
+- [ ] Controller tested (Xbox, PS, generic)
+- [ ] Resolution scaling: 1080p, 1440p, 4K, ultrawide
+- [ ] Windowed, borderless, fullscreen working
+- [ ] Graphics settings save + load
+- [ ] Store SDK integrated + tested: [Steam/Epic/GOG]
 - [ ] Achievements functional
 - [ ] Cloud saves functional
 
@@ -74,34 +74,34 @@
 - [ ] Suspend/resume works
 - [ ] User switching handled
 - [ ] Network loss handled gracefully
-- [ ] Storage full scenario handled
+- [ ] Storage full handled
 - [ ] Parental controls respected
-- [ ] Certification submission prepared
+- [ ] Cert submission prepared
 
 ---
 
 ## Store and Distribution
 
-- [ ] Store page metadata complete and proofread
-- [ ] Screenshots current and meet platform requirements
+- [ ] Store metadata complete + proofread
+- [ ] Screenshots current + meet requirements
 - [ ] Trailer current
-- [ ] Key art and capsule images final
-- [ ] Age ratings obtained: [ ] ESRB [ ] PEGI [ ] Other
-- [ ] Legal: EULA, Privacy Policy, Terms of Service
-- [ ] Pricing configured for all regions
+- [ ] Key art + capsule images final
+- [ ] Age ratings: [ ] ESRB [ ] PEGI [ ] Other
+- [ ] Legal: EULA, Privacy Policy, ToS
+- [ ] Pricing configured all regions
 
 ---
 
 ## Launch Readiness
 
-- [ ] Analytics/telemetry verified and receiving data
-- [ ] Crash reporting configured: [service name]
+- [ ] Analytics/telemetry verified + receiving data
+- [ ] Crash reporting configured: [service]
 - [ ] Day-one patch prepared (if needed)
-- [ ] On-call team schedule set for first 72 hours
+- [ ] On-call schedule set first 72 hours
 - [ ] Community announcements drafted
 - [ ] Press/influencer keys prepared
 - [ ] Support team briefed on known issues
-- [ ] Rollback plan documented and tested
+- [ ] Rollback plan documented + tested
 
 ---
 
@@ -120,6 +120,6 @@
 
 **GO / NO-GO**: ____________
 
-**Rationale**: [Summary of readiness. If NO-GO, list specific blocking items and estimated time to resolve.]
+**Rationale**: [Readiness summary. NO-GO → list specific blocking items + ETA.]
 
-**Notes**: [Any additional context, known risks accepted, or conditions on the release.]
+**Notes**: [Additional context, accepted risks, release conditions.]

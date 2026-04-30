@@ -9,24 +9,22 @@
 
 ## Milestone Goal
 
-[2-3 sentences describing what this milestone achieves and why it matters.
-What can we demonstrate or evaluate at the end of this milestone?]
+[2-3 sentences: what this achieves + why matters. What can we demo or evaluate at end?]
 
 ## Success Criteria
 
-[Specific, measurable criteria. The milestone is complete ONLY when all of
-these are met.]
+[Specific, measurable. Complete ONLY when all met.]
 
-- [ ] [Criterion 1 -- specific and testable]
+- [ ] [Criterion 1 — specific + testable]
 - [ ] [Criterion 2]
 - [ ] [Criterion 3]
-- [ ] All S1 and S2 bugs resolved
+- [ ] All S1 + S2 bugs resolved
 - [ ] Performance within budget on target hardware
 - [ ] Build stable for [X] consecutive days
 
 ## Feature List
 
-### Must Ship (Milestone Fails Without These)
+### Must Ship (Milestone Fails Without)
 
 | Feature | Design Doc | Owner | Sprint Target | Status |
 |---------|-----------|-------|--------------|--------|
@@ -36,21 +34,21 @@ these are met.]
 | Feature | Design Doc | Owner | Sprint Target | Cut Impact | Status |
 |---------|-----------|-------|--------------|-----------|--------|
 
-### Stretch Goals (Only if Ahead of Schedule)
+### Stretch Goals (Only if Ahead)
 
 | Feature | Design Doc | Owner | Value Add |
 |---------|-----------|-------|----------|
 
 ## Quality Gates
 
-| Gate | Threshold | Measurement Method |
-|------|-----------|-------------------|
-| Crash rate | < [X] per hour | Automated crash reporting |
-| Frame rate | > [X] FPS on min spec | Performance profiling |
+| Gate | Threshold | Method |
+|------|-----------|--------|
+| Crash rate | < [X] per hour | Automated reporting |
+| Frame rate | > [X] FPS on min spec | Profiling |
 | Load time | < [X] seconds | Automated timing |
 | Critical bugs | 0 open S1 | Bug tracker |
 | Major bugs | < [X] open S2 | Bug tracker |
-| Test coverage | > [X]% | Test framework report |
+| Test coverage | > [X]% | Test framework |
 
 ## Risk Register
 
@@ -61,8 +59,8 @@ these are met.]
 
 ### Internal Dependencies
 
-| Feature | Depends On | Owner of Dependency | Status |
-|---------|-----------|-------------------|--------|
+| Feature | Depends On | Owner | Status |
+|---------|-----------|-------|--------|
 
 ### External Dependencies
 

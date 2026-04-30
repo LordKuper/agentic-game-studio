@@ -3,72 +3,72 @@
 ## Audio Vision
 
 ### Sonic Identity
-[Describe the overall audio personality of the game in 2-3 sentences. What does the game "sound like"? What emotions should the audio evoke?]
+[2-3 sentences. Overall audio personality. What does game "sound like"? Emotions audio evokes?]
 
 ### Audio Pillars
-1. **[Pillar 1]**: [How this pillar manifests in audio]
-2. **[Pillar 2]**: [How this pillar manifests in audio]
-3. **[Pillar 3]**: [How this pillar manifests in audio]
+1. **[Pillar 1]**: [How manifests in audio]
+2. **[Pillar 2]**: [How manifests in audio]
+3. **[Pillar 3]**: [How manifests in audio]
 
 ### Reference Games / Media
-| Reference | What to Take From It | What to Avoid |
+| Reference | Take From | Avoid |
 | ---- | ---- | ---- |
-| [Game/Film 1] | [Specific audio quality to emulate] | [What doesn't fit our vision] |
-| [Game/Film 2] | [Specific audio quality to emulate] | [What doesn't fit our vision] |
+| [Game/Film 1] | [Audio quality to emulate] | [Doesn't fit vision] |
+| [Game/Film 2] | [Audio quality] | [Doesn't fit] |
 
 ---
 
 ## Music Direction
 
 ### Style and Genre
-[Primary musical style, instrumentation palette, tempo ranges]
+[Primary style, instrumentation palette, tempo ranges]
 
 ### Instrumentation Palette
-- **Core instruments**: [List the primary instruments/synths that define the sound]
-- **Accent instruments**: [Used for emphasis, transitions, special moments]
-- **Avoid**: [Instruments or styles that do NOT fit the game]
+- **Core**: [Primary instruments/synths defining sound]
+- **Accent**: [Emphasis, transitions, special moments]
+- **Avoid**: [Instruments/styles NOT fitting]
 
 ### Adaptive Music System
 | Game State | Music Behavior | Transition |
 | ---- | ---- | ---- |
-| Exploration | [Tempo, energy, instrumentation] | [How it transitions to next state] |
-| Combat | [Tempo, energy, instrumentation] | [Trigger condition and crossfade time] |
-| Stealth/Tension | [Tempo, energy, instrumentation] | [Trigger and transition] |
-| Victory/Reward | [Stinger or transition behavior] | [Return to exploration] |
-| Menu/UI | [Style for menus] | [Fade on game start] |
+| Exploration | [Tempo, energy, instrumentation] | [How transitions to next] |
+| Combat | [Tempo, energy, instrumentation] | [Trigger + crossfade time] |
+| Stealth/Tension | [Tempo, energy, instrumentation] | [Trigger + transition] |
+| Victory/Reward | [Stinger or transition] | [Return to exploration] |
+| Menu/UI | [Menu style] | [Fade on game start] |
 
 ### Music Rules
-- [Rule about looping, e.g., "All exploration tracks must loop seamlessly after 2-4 minutes"]
-- [Rule about silence, e.g., "Allow 10-15 seconds of silence between exploration loops"]
-- [Rule about intensity, e.g., "Combat music must reach full intensity within 3 seconds of combat start"]
-- [Rule about transitions, e.g., "All music transitions use 1.5 second crossfades"]
+- [Looping — e.g., "Exploration tracks loop seamlessly after 2-4 min"]
+- [Silence — e.g., "10-15s silence between exploration loops"]
+- [Intensity — e.g., "Combat reaches full intensity within 3s of combat start"]
+- [Transitions — e.g., "All transitions use 1.5s crossfades"]
 
 ---
 
 ## Sound Effects
 
 ### SFX Palette
-| Category | Description | Style Notes |
+| Category | Description | Style |
 | ---- | ---- | ---- |
 | Player Actions | [Movement, attacks, abilities] | [Punchy, responsive, front-of-mix] |
-| Enemy Actions | [Attacks, abilities, death] | [Distinct from player, slightly recessed] |
-| UI | [Button clicks, menu transitions, notifications] | [Clean, subtle, never annoying on repeat] |
-| Environment | [Ambient loops, weather, objects] | [Immersive, layered, spatial] |
-| Feedback | [Damage taken, item pickup, level up] | [Clear, satisfying, non-fatiguing] |
+| Enemy Actions | [Attacks, abilities, death] | [Distinct from player, recessed] |
+| UI | [Clicks, transitions, notifications] | [Clean, subtle, non-annoying on repeat] |
+| Environment | [Ambient, weather, objects] | [Immersive, layered, spatial] |
+| Feedback | [Damage, pickup, level up] | [Clear, satisfying, non-fatiguing] |
 
 ### Audio Feedback Priority
-When multiple sounds compete, this priority determines what plays:
+Multiple sounds compete → priority:
 1. Player damage / critical warnings (always audible)
 2. Player actions (attacks, abilities)
-3. Enemy actions (nearby enemies first)
+3. Enemy actions (nearby first)
 4. UI feedback
 5. Environment / ambient
 
 ### SFX Rules
-- [Rule about repetition, e.g., "Every SFX with >3 plays/minute needs 3+ variations"]
-- [Rule about spatial audio, e.g., "All gameplay SFX must be 3D positioned, UI SFX are 2D"]
-- [Rule about ducking, e.g., "Player hit SFX ducks all other SFX by 3dB for 200ms"]
-- [Rule about response time, e.g., "Action SFX must trigger within 1 frame of the action"]
+- [Repetition — e.g., "Every SFX with >3 plays/min needs 3+ variations"]
+- [Spatial — e.g., "Gameplay SFX 3D positioned, UI 2D"]
+- [Ducking — e.g., "Player hit ducks others -3dB for 200ms"]
+- [Response time — e.g., "Action SFX trigger within 1 frame of action"]
 
 ---
 
@@ -78,22 +78,22 @@ When multiple sounds compete, this priority determines what plays:
 | Bus | Content | Target Level |
 | ---- | ---- | ---- |
 | Master | Everything | 0 dB |
-| Music | All music tracks | [target dBFS] |
-| SFX | All sound effects | [target dBFS] |
-| Dialogue | All voice/narration | [target dBFS] |
-| UI | All interface sounds | [target dBFS] |
+| Music | All music | [target dBFS] |
+| SFX | All SFX | [target dBFS] |
+| Dialogue | Voice/narration | [target dBFS] |
+| UI | Interface | [target dBFS] |
 | Ambient | Environment loops | [target dBFS] |
 
 ### Mixing Rules
-- Dialogue always takes priority — duck music and SFX during dialogue
-- Music should be felt, not dominate — if players can't hear SFX over music, music is too loud
-- Master output must never clip — use a limiter on the master bus
-- All volumes must be adjustable by the player (per bus)
-- Default mix should sound good on both speakers and headphones
+- Dialogue priority — duck music + SFX during dialogue
+- Music felt, not dominant — SFX audible over music
+- Master never clips — limiter on master
+- All volumes player-adjustable (per bus)
+- Default mix sounds good speakers + headphones
 
 ### Dynamic Range
-- [Specify loudness targets, e.g., "Target -14 LUFS integrated, -1 dBTP true peak"]
-- [Specify compression policy, e.g., "Light compression on SFX bus, no compression on music"]
+- [Loudness — e.g., "Target -14 LUFS integrated, -1 dBTP true peak"]
+- [Compression — e.g., "Light on SFX bus, none on music"]
 
 ---
 
@@ -109,12 +109,12 @@ When multiple sounds compete, this priority determines what plays:
 
 ### Naming Convention
 `[category]_[subcategory]_[name]_[variation].ext`
-- Example: `sfx_weapon_sword_swing_01.wav`
-- Example: `music_exploration_forest_loop.ogg`
-- Example: `amb_environment_cave_drip_loop.ogg`
+- `sfx_weapon_sword_swing_01.wav`
+- `music_exploration_forest_loop.ogg`
+- `amb_environment_cave_drip_loop.ogg`
 
 ### Memory Budget
-- Total audio memory: [target, e.g., 128 MB]
+- Total audio: [target, e.g., 128 MB]
 - SFX pool: [target]
 - Music streaming buffer: [target]
 - Voice streaming buffer: [target]
@@ -123,8 +123,8 @@ When multiple sounds compete, this priority determines what plays:
 
 ## Accessibility
 
-- All critical audio cues must have visual alternatives (subtitles, screen flash, icon)
-- Mono audio option for hearing-impaired players
-- Separate volume controls for all buses
+- All critical audio cues need visual alternatives (subtitles, screen flash, icon)
+- Mono audio option for hearing-impaired
+- Separate volume per bus
 - Option to disable sudden loud sounds
-- Subtitle support for all dialogue with speaker identification
+- Subtitle support for all dialogue with speaker ID

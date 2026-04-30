@@ -8,10 +8,9 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 
 # Day-One Patch
 
-Every shipped game has a day-one patch. Planning it before launch day prevents
-chaos. This skill scopes the patch to only what is safe and necessary, gates it
-through a lightweight QA pass, and ensures a rollback plan exists before anything
-ships. It is a mini-sprint вЂ” not a hotfix, not a full sprint.
+Every shipped game has day-one patch. Plan it before launch to prevent chaos.
+Scopes patch to only safe/necessary fixes, gates through lightweight QA, ensures
+rollback plan exists before anything ships. Mini-sprint — not hotfix, not full sprint.
 
 **When to run:**
 - After the gold master build is locked (cert approved or launch candidate tagged)
@@ -21,8 +20,8 @@ ships. It is a mini-sprint вЂ” not a hotfix, not a full sprint.
 
 **Day-one patch scope rules:**
 - Only P1/P2 bugs that are SAFE to fix quickly
-- No new features вЂ” this is fix-only
-- No refactoring вЂ” minimum viable change
+- No new features — this is fix-only
+- No refactoring — minimum viable change
 - Any fix that requires more than 4 hours of dev time belongs in patch 1.1, not day-one
 
 **Output:** `.ags/project/releases/day-one-patch-[version].md`
@@ -32,11 +31,11 @@ ships. It is a mini-sprint вЂ” not a hotfix, not a full sprint.
 ## Phase 1: Load Release Context
 
 Read:
-- `.ags/project/stage.txt` вЂ” confirm project is in Release stage
-- The most recent file in `.ags/project/gate-checks/` вЂ” read the release gate verdict
-- `.ags/project/qa/bugs/*.md` вЂ” load all bugs with Status: Open or Fixed вЂ” Pending Verification
-- `.ags/project/sprints/` most recent вЂ” understand what shipped
-- `.ags/project/security/security-audit-*.md` most recent вЂ” check for any open security items
+- `.ags/project/stage.txt` — confirm project is in Release stage
+- The most recent file in `.ags/project/gate-checks/` — read the release gate verdict
+- `.ags/project/qa/bugs/*.md` — load all bugs with Status: Open or Fixed — Pending Verification
+- `.ags/project/sprints/` most recent — understand what shipped
+- `.ags/project/security/security-audit-*.md` most recent — check for any open security items
 
 If `.ags/project/stage.txt` is not `Release` or `Polish`:
 > "Day-one patch prep is for Release-stage projects. Current stage: [stage]. This skill is not appropriate until you are approaching launch."
@@ -45,35 +44,35 @@ If `.ags/project/stage.txt` is not `Release` or `Polish`:
 
 ## Phase 2: Scope the Patch
 
-### Step 2a вЂ” Classify open bugs for patch inclusion
+### Step 2a — Classify open bugs for patch inclusion
 
 For each open bug, evaluate:
 
 | Criterion | Include in day-one? |
 |-----------|-------------------|
-| S1 or S2 severity | Yes вЂ” must include if safe to fix |
+| S1 or S2 severity | Yes — must include if safe to fix |
 | P1 priority | Yes |
 | Fix estimated < 4 hours | Yes |
-| Fix requires architecture change | No вЂ” defer to 1.1 |
-| Fix introduces new code paths | No вЂ” too risky |
-| Fix is data/config only (no code change) | Yes вЂ” very low risk |
-| Cert feedback requirement | Yes вЂ” required for platform approval |
+| Fix requires architecture change | No — defer to 1.1 |
+| Fix introduces new code paths | No — too risky |
+| Fix is data/config only (no code change) | Yes — very low risk |
+| Cert feedback requirement | Yes — required for platform approval |
 | S3/S4 severity | Only if trivial config fix; otherwise defer |
 
-### Step 2b вЂ” Present patch scope to user
+### Step 2b — Present patch scope to user
 
 Use `AskUserQuestion`:
 - Prompt: "Based on open bugs and cert feedback, here is the proposed day-one patch scope. Does this look right?"
 - Show: table of included bugs (ID, severity, description, estimated effort)
 - Show: table of deferred bugs (ID, severity, reason deferred)
-- Options: `[A] Approve this scope` / `[B] Adjust вЂ” I want to add or remove items` / `[C] No day-one patch needed`
+- Options: `[A] Approve this scope` / `[B] Adjust — I want to add or remove items` / `[C] No day-one patch needed`
 
 If [C]: output "No day-one patch required. Proceed to `/launch-checklist`." Stop.
 
-### Step 2c вЂ” Check total scope
+### Step 2c — Check total scope
 
 Sum estimated effort. If total exceeds 1 day of work:
-> "вљ пёЏ Patch scope is [N hours] вЂ” this exceeds a safe day-one window. Consider deferring lower-priority items to patch 1.1. A bloated day-one patch introduces more risk than it removes."
+> "⚠️ Patch scope is [N hours] — this exceeds a safe day-one window. Consider deferring lower-priority items to patch 1.1. A bloated day-one patch introduces more risk than it removes."
 
 Use `AskUserQuestion` to confirm proceeding or reduce scope.
 
@@ -114,7 +113,7 @@ For config/data-only fixes: make the change directly (no programmer agent needed
 
 ## Phase 5: Patch QA Gate
 
-This is a lightweight QA pass вЂ” not a full `/team-qa`. The patch is already QA-approved from the release gate; we are only re-verifying the changed areas.
+This is a lightweight QA pass — not a full `/team-qa`. The patch is already QA-approved from the release gate; we are only re-verifying the changed areas.
 
 Spawn `qa-lead` via Task with:
 - List of all changed files
@@ -124,8 +123,8 @@ Spawn `qa-lead` via Task with:
 Ask qa-lead to determine: **Is a targeted smoke check sufficient, or do any fixes touch systems that require a broader regression?**
 
 Run the required QA scope:
-- **Targeted smoke check** вЂ” run `/smoke-check [affected-systems]`
-- **Broader regression** вЂ” run targeted tests in `tests/unit/` and `tests/integration/` for affected systems
+- **Targeted smoke check** — run `/smoke-check [affected-systems]`
+- **Broader regression** — run targeted tests in `tests/unit/` and `tests/integration/` for affected systems
 
 QA verdict must be PASS or PASS WITH WARNINGS before proceeding. If FAIL: scope the failing fix out of the day-one patch and defer to 1.1.
 
@@ -203,16 +202,16 @@ After the patch record is written:
 1. Run `/patch-notes` to generate the player-facing version of the patch notes
 2. Run `/bug-report verify [BUG-ID]` for each fixed bug after the patch is live
 3. Run `/bug-report close [BUG-ID]` for each verified fix
-4. Schedule a post-launch review 48вЂ“72 hours after launch using `/retrospective launch`
+4. Schedule a post-launch review 48–72 hours after launch using `/retrospective launch`
 
 **If any S1 bugs remain open after the patch:**
-> "вљ пёЏ S1 bugs remain open and were not patched. These are accepted risks. Document them in the rollback plan trigger conditions вЂ” if they occur at scale, rollback may be preferable to a follow-up patch."
+> "⚠️ S1 bugs remain open and were not patched. These are accepted risks. Document them in the rollback plan trigger conditions — if they occur at scale, rollback may be preferable to a follow-up patch."
 
 ---
 
 ## Collaborative Protocol
 
-- **Scope discipline is everything** вЂ” resist scope creep; every addition increases risk
-- **Rollback plan first, always** вЂ” a patch without a rollback plan is irresponsible
-- **Deferred is not forgotten** вЂ” every deferred bug gets a 1.1 ticket automatically
-- **Player communication is part of the patch** вЂ” `/patch-notes` is a required output, not optional
+- **Scope discipline is everything** — resist scope creep; every addition increases risk
+- **Rollback plan first, always** — a patch without a rollback plan is irresponsible
+- **Deferred is not forgotten** — every deferred bug gets a 1.1 ticket automatically
+- **Player communication is part of the patch** — `/patch-notes` is a required output, not optional

@@ -1,75 +1,63 @@
-﻿---
+---
 name: adopt
-description: "Brownfield onboarding вЂ” audits existing project artifacts for template format compliance (not just existence), classifies gaps by impact, and produces a numbered migration plan. Run this when joining an in-progress project or upgrading from an older template version. Distinct from /project-stage-detect (which checks what exists) вЂ” this checks whether what exists will actually work with the template's skills."
+description: "Brownfield onboarding — audits existing project artifacts for template format compliance (not just existence), classifies gaps by impact, and produces a numbered migration plan. Run this when joining an in-progress project or upgrading from an older template version. Distinct from /project-stage-detect (which checks what exists) — this checks whether what exists will actually work with the template's skills."
 argument-hint: "[focus: full | gdds | adrs | stories | infra]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 agent: technical-director
 ---
 
-# Adopt вЂ” Brownfield Template Adoption
+# Adopt — Brownfield Template Adoption
 
-This skill audits an existing project's artifacts for **format compliance** with
-the template's skill pipeline, then produces a prioritised migration plan.
+Audit existing artifacts for **format compliance** with template skill pipeline. Produce prioritised migration plan.
 
-**This is not `/project-stage-detect`.**
-`/project-stage-detect` answers: *what exists?*
-`/adopt` answers: *will what exists actually work with the template's skills?*
+**Not `/project-stage-detect`.** That skill: *what exists?* This skill: *will it work with template skills?*
 
-A project can have GDDs, ADRs, and stories вЂ” and every format-sensitive skill
-will still fail silently or produce wrong results if those artifacts are in the
-wrong internal format.
+GDDs/ADRs/stories may exist but format-sensitive skills fail silently if internals wrong.
 
-**Output:** `docs/adoption-plan-[date].md` вЂ” a persistent, checkable migration plan.
+**Output:** `docs/adoption-plan-[date].md` — persistent checkable plan.
 
-**Argument modes:**
+**Argument modes:** `$ARGUMENTS[0]` (blank = `full`)
 
-**Audit mode:** `$ARGUMENTS[0]` (blank = `full`)
-
-- **No argument / `full`**: Complete audit вЂ” all artifact types
-- **`gdds`**: GDD format compliance only
-- **`adrs`**: ADR format compliance only
-- **`stories`**: Story format compliance only
-- **`infra`**: Infrastructure artifact gaps only (registry, manifest, sprint-status, stage.txt)
+- `full` — all artifact types
+- `gdds` — GDD format only
+- `adrs` — ADR format only
+- `stories` — story format only
+- `infra` — infrastructure gaps (registry, manifest, sprint-status, stage.txt)
 
 ---
 
 ## Phase 1: Detect Project State
 
-Emit one line before reading: `"Scanning project artifacts..."` вЂ” this confirms the
-skill is running during the silent read phase.
-
-Then read silently before presenting anything else.
+Emit one line: `"Scanning project artifacts..."`. Read silently.
 
 ### Existence check
-- `.ags/project/stage.txt` вЂ” if present, read it (authoritative phase)
-- `design/gdd/concept.md` вЂ” concept exists?
-- `design/gdd/systems-index.md` вЂ” systems index exists?
-- Count GDD files: `design/gdd/*.md` (excluding game-concept.md and systems-index.md)
-- Count ADR files: `design/architecture/adr-*.md`
-- Count story files: `.ags/project/epics/**/*.md` (excluding EPIC.md)
-- `.ags/rules/technical-preferences.md` вЂ” engine configured?
-- `.ags/docs/engine-reference/` вЂ” engine reference docs present?
-- Glob `docs/adoption-plan-*.md` вЂ” note the filename of the most recent prior plan if any exist
+- `.ags/project/stage.txt` — read if present (authoritative phase)
+- `design/gdd/game-concept.md`
+- `design/gdd/systems-index.md`
+- Count GDDs: `design/gdd/*.md` (excl. game-concept, systems-index)
+- Count ADRs: `design/architecture/adr-*.md`
+- Count stories: `.ags/project/epics/**/*.md` (excl. EPIC.md)
+- `.ags/rules/technical-preferences.md` — engine configured?
+- `.ags/docs/engine-reference/` — present?
+- Glob `docs/adoption-plan-*.md` — note most recent prior plan
 
 ### Infer phase (if no stage.txt)
-Use the same heuristic as `/project-stage-detect`:
-- 10+ source files in `src/` в†’ Production
-- Stories in `.ags/project/epics/` в†’ Pre-Production
-- ADRs exist в†’ Technical Setup
-- systems-index.md exists в†’ Systems Design
-- game-concept.md exists в†’ Concept
-- Nothing в†’ Fresh (not a brownfield project вЂ” suggest `/ags-start`)
+Same heuristic as `/project-stage-detect`:
+- 10+ source files in `Assets/Scripts/` → Production
+- Stories in `.ags/project/epics/` → Pre-Production
+- ADRs exist → Technical Setup
+- systems-index.md exists → Systems Design
+- game-concept.md exists → Concept
+- Nothing → Fresh (suggest `/ags-start`)
 
-If the project appears fresh (no artifacts at all), use `AskUserQuestion`:
-- "This looks like a fresh project вЂ” no existing artifacts found. `/adopt` is for
-  projects with work to migrate. What would you like to do?"
-  - "Run `/ags-start` вЂ” begin guided first-time onboarding"
-  - "My artifacts are in a non-standard location вЂ” help me find them"
+If fresh, `AskUserQuestion`:
+- "Fresh project — no artifacts. `/adopt` is for projects with work to migrate. What now?"
+  - "Run `/ags-start` — guided onboarding"
+  - "My artifacts are in non-standard location — help find them"
   - "Cancel"
 
-Then stop вЂ” do not proceed with the audit regardless of which option the user picks
-(each option leads to a different skill or manual investigation).
+Stop after any choice — each leads elsewhere.
 
 Report: "Detected phase: [phase]. Found: [N] GDDs, [M] ADRs, [P] stories."
 
@@ -77,14 +65,13 @@ Report: "Detected phase: [phase]. Found: [N] GDDs, [M] ADRs, [P] stories."
 
 ## Phase 2: Format Audit
 
-For each artifact type in scope (based on argument mode), check not just that
-the file exists but that it contains the internal structure the template requires.
+For each artifact in scope, check internal structure not just existence.
 
 ### 2a: GDD Format Audit
 
-For each GDD file found, check for the 8 required sections by scanning headings:
+Check 8 required sections per GDD by heading scan:
 
-| Required Section | Heading pattern to look for |
+| Required Section | Heading pattern |
 |---|---|
 | Overview | `## Overview` |
 | Player Fantasy | `## Player Fantasy` |
@@ -95,149 +82,113 @@ For each GDD file found, check for the 8 required sections by scanning headings:
 | Tuning Knobs | `## Tuning` |
 | Acceptance Criteria | `## Acceptance` |
 
-For each GDD, record:
-- Which sections are present
-- Which sections are missing
-- Whether it has any content in present sections or just placeholder text
-  (`[To be designed]` or equivalent)
+Per GDD record: sections present, missing, has content vs placeholder (`[To be designed]`).
 
-Also check: does each GDD have a `**Status**:` field in its header block?
-Valid values: `In Design`, `Designed`, `In Review`, `Approved`, `Needs Revision`.
+Also check `**Status**:` field. Valid: `In Design`, `Designed`, `In Review`, `Approved`, `Needs Revision`.
 
 ### 2b: ADR Format Audit
 
-For each ADR file found, check for these critical sections:
-
 | Section | Impact if missing |
 |---|---|
-| `## Status` | **BLOCKING** вЂ” `/story-readiness` ADR status check silently passes everything |
-| `## ADR Dependencies` | HIGH вЂ” dependency ordering in `/architecture-review` breaks |
-| `## Engine Compatibility` | HIGH вЂ” post-cutoff API risk is unknown |
-| `## GDD Requirements Addressed` | MEDIUM вЂ” traceability matrix loses coverage |
-| `## Performance Implications` | LOW вЂ” not pipeline-critical |
+| `## Status` | **BLOCKING** — `/story-readiness` ADR check silently passes everything |
+| `## ADR Dependencies` | HIGH — `/architecture-review` dependency ordering breaks |
+| `## Engine Compatibility` | HIGH — post-cutoff API risk unknown |
+| `## GDD Requirements Addressed` | MEDIUM — traceability matrix loses coverage |
+| `## Performance Implications` | LOW — not pipeline-critical |
 
-For each ADR, record: which sections present, which missing, current Status value
-if the Status section exists.
+Record per ADR: sections present, missing, current Status value.
 
 ### 2c: systems-index.md Format Audit
 
-If `design/gdd/systems-index.md` exists:
+If exists:
 
-1. **Parenthetical status values** вЂ” Grep for any Status cell containing
-   parentheses: `"Needs Revision ("`, `"In Progress ("`, etc.
-   These break exact-string matching in `/gate-check`, `/create-stories`,
-   and `/architecture-review`. **BLOCKING.**
-
-2. **Valid status values** вЂ” check that Status column values are only from:
-   `Not Started`, `In Progress`, `In Review`, `Designed`, `Approved`, `Needs Revision`
-   Flag any unrecognised values.
-
-3. **Column structure** вЂ” check that the table has at minimum: System name,
-   Layer, Priority, Status columns. Missing columns degrade skill functionality.
+1. **Parenthetical status values** — Grep Status cells for `"Needs Revision ("`, `"In Progress ("`, etc. Break exact-string matching in `/gate-check`, `/create-stories`, `/architecture-review`. **BLOCKING.**
+2. **Valid status values** — must be only: `Not Started`, `In Progress`, `In Review`, `Designed`, `Approved`, `Needs Revision`. Flag others.
+3. **Column structure** — minimum: System, Layer, Priority, Status. Missing degrades skills.
 
 ### 2d: Story Format Audit
 
-For each story file found:
-
-- **`Manifest Version:` field** вЂ” present in story header? (LOW вЂ” auto-passes if absent)
-- **TR-ID reference** вЂ” does story contain `TR-[a-z]+-[0-9]+` pattern? (MEDIUM вЂ” no staleness tracking)
-- **ADR reference** вЂ” does story reference at least one ADR? (check for `ADR-` pattern)
-- **Status field** вЂ” present and readable?
-- **Acceptance criteria** вЂ” does the story have a checkbox list (`- [ ]`)?
+Per story:
+- **`Manifest Version:` field** — present? (LOW — auto-passes if absent)
+- **TR-ID reference** — `TR-[a-z]+-[0-9]+` pattern? (MEDIUM — no staleness tracking)
+- **ADR reference** — `ADR-` pattern present?
+- **Status field** — present, readable?
+- **Acceptance criteria** — checkbox list (`- [ ]`)?
 
 ### 2e: Infrastructure Audit
 
 | Artifact | Path | Impact if missing |
 |---|---|---|
-| TR registry | `design/architecture/tr-registry.yaml` | HIGH вЂ” no stable requirement IDs |
-| Control manifest | `design/architecture/control-manifest.md` | HIGH вЂ” no layer rules for stories |
-| Manifest version stamp | In manifest header: `Manifest Version:` | MEDIUM вЂ” staleness checks blind |
-| Sprint status | `.ags/project/sprint-status.yaml` | MEDIUM вЂ” `/sprint-status` falls back to markdown |
-| Stage file | `.ags/project/stage.txt` | MEDIUM вЂ” phase auto-detect unreliable |
-| Engine reference | `.ags/docs/engine-reference/[engine]/VERSION.md` | HIGH вЂ” ADR engine checks blind |
-| Architecture traceability | `design/architecture/architecture-traceability.md` | MEDIUM вЂ” no persistent matrix |
+| TR registry | `design/architecture/tr-registry.yaml` | HIGH — no stable requirement IDs |
+| Control manifest | `design/architecture/control-manifest.md` | HIGH — no layer rules for stories |
+| Manifest version stamp | manifest header `Manifest Version:` | MEDIUM — staleness blind |
+| Sprint status | `.ags/project/sprint-status.yaml` | MEDIUM — `/sprint-status` falls back to markdown |
+| Stage file | `.ags/project/stage.txt` | MEDIUM — phase auto-detect unreliable |
+| Engine reference | `.ags/docs/engine-reference/[engine]/VERSION.md` | HIGH — ADR engine checks blind |
+| Architecture traceability | `design/architecture/architecture-traceability.md` | MEDIUM — no persistent matrix |
 
 ### 2f: Technical Preferences Audit
 
 Read `.ags/rules/technical-preferences.md`. Check each field for `[TO BE CONFIGURED]`:
-- Engine, Language, Rendering, Physics в†’ HIGH if unconfigured (ADR skills fail)
-- Naming conventions в†’ MEDIUM
-- Performance budgets в†’ MEDIUM
-- Forbidden Patterns, Allowed Libraries в†’ LOW (starts empty by design)
+- Engine, Language, Rendering, Physics → HIGH if unconfigured (ADR skills fail)
+- Naming conventions → MEDIUM
+- Performance budgets → MEDIUM
+- Forbidden Patterns, Allowed Libraries → LOW (empty by design)
 
 ---
 
 ## Phase 3: Classify and Prioritise Gaps
 
-Organise every gap found across all audits into four severity tiers:
+Four severity tiers:
 
-**BLOCKING** вЂ” Will cause template skills to silently produce wrong results *right now*.
-Examples: ADR missing Status field, systems-index parenthetical status values,
-engine not configured when ADRs exist.
+**BLOCKING** — skills silently produce wrong results now. Examples: ADR missing Status, systems-index parentheticals, engine unconfigured with ADRs present.
 
-**HIGH** вЂ” Will cause stories to be generated with missing safety checks, or
-infrastructure bootstrapping will fail.
-Examples: ADRs missing Engine Compatibility, GDDs missing Acceptance Criteria
-(stories can't be generated from them), tr-registry.yaml missing.
+**HIGH** — stories missing safety checks; infra bootstrap fails. Examples: ADRs missing Engine Compatibility, GDDs missing Acceptance Criteria, tr-registry.yaml missing.
 
-**MEDIUM** вЂ” Degrades quality and pipeline tracking but does not break functionality.
-Examples: GDDs missing Tuning Knobs or Formulas sections, stories missing TR-IDs,
-sprint-status.yaml missing.
+**MEDIUM** — quality/tracking degradation, not broken. Examples: GDDs missing Tuning/Formulas, stories missing TR-IDs, sprint-status.yaml missing.
 
-**LOW** вЂ” Retroactive improvements that are nice-to-have but not urgent.
-Examples: Stories missing Manifest Version stamps, GDDs missing Open Questions section.
+**LOW** — nice-to-have. Examples: stories missing Manifest Version, GDDs missing Open Questions.
 
-Count totals per tier. If zero BLOCKING and zero HIGH gaps: report that the project
-is template-compatible and only advisory improvements remain.
+Count totals per tier. Zero BLOCKING + zero HIGH → template-compatible, advisory only.
 
 ---
 
 ## Phase 4: Build the Migration Plan
 
-Compose a numbered, ordered action plan. Ordering rules:
-1. BLOCKING gaps first (must fix before any pipeline skill runs reliably)
-2. HIGH gaps next, infrastructure before GDD/ADR content (bootstrapping needs correct formats)
-3. MEDIUM gaps ordered: GDD gaps before ADR gaps before story gaps (stories depend on GDDs and ADRs)
-4. LOW gaps last
+Numbered ordered plan. Ordering:
+1. BLOCKING first (must fix before pipeline runs reliably)
+2. HIGH next; infrastructure before GDD/ADR content (bootstrapping needs correct formats)
+3. MEDIUM ordered: GDD → ADR → story (stories depend on GDDs+ADRs)
+4. LOW last
 
-For each gap, produce a plan entry with:
-- A clear problem statement (one sentence, no jargon)
-- The exact command to fix it, if a skill handles it
-- Manual steps if it requires direct editing
-- A time estimate (rough: 5 min / 30 min / 1 session)
-- A checkbox `- [ ]` for tracking
+Per gap entry:
+- Problem statement (one sentence, no jargon)
+- Exact fix command if skill handles it
+- Manual steps if direct edit
+- Time estimate (5 min / 30 min / 1 session)
+- Checkbox `- [ ]`
 
-**Special case вЂ” systems-index parenthetical status values:**
-This is always the first item if present. Show the exact values that need changing
-and the exact replacement text. Offer to fix this immediately before writing the plan.
+**Special case — systems-index parentheticals:** always first. Show exact values + replacement text. Offer immediate fix before writing plan.
 
-**Special case вЂ” ADRs missing Status field:**
-For each affected ADR, the fix is:
-`/architecture-decision retrofit design/architecture/adr-[NNNN]-[slug].md`
-List each ADR as a separate checkable item.
+**Special case — ADRs missing Status:** fix is `/architecture-decision retrofit design/architecture/adr-[NNNN]-[slug].md`. List each ADR as separate item.
 
-**Special case вЂ” GDDs missing sections:**
-For each affected GDD, list which sections are missing and the fix:
-`/design-system retrofit design/gdd/[filename].md`
+**Special case — GDDs missing sections:** list missing sections. Fix: `/design-system retrofit design/gdd/[filename].md`.
 
-**Infrastructure bootstrap ordering** вЂ” always present in this sequence:
-1. Fix ADR formats first (registry depends on reading ADR Status fields)
-2. Run `/architecture-review` в†’ bootstraps `tr-registry.yaml`
-3. Run `/create-control-manifest` в†’ creates manifest with version stamp
-4. Run `/sprint-plan update` в†’ creates `sprint-status.yaml`
-5. Run `/gate-check [phase]` в†’ writes `stage.txt` authoritatively
+**Infrastructure bootstrap order — always this sequence:**
+1. Fix ADR formats first (registry depends on ADR Status)
+2. Run `/architecture-review` → bootstraps `tr-registry.yaml`
+3. Run `/create-control-manifest` → manifest with version stamp
+4. Run `/sprint-plan update` → creates `sprint-status.yaml`
+5. Run `/gate-check [phase]` → writes `stage.txt`
 
-**Existing stories** вЂ” note explicitly:
-> "Existing stories continue to work with all template skills вЂ” all new format
-> checks auto-pass when the fields are absent. They won't benefit from TR-ID
-> staleness tracking or manifest version checks until they're regenerated. This
-> is intentional: do not regenerate stories that are already in progress."
+**Existing stories** — note explicitly:
+> "Existing stories continue to work with all template skills — new format checks auto-pass when fields absent. They won't get TR-ID staleness tracking or manifest version checks until regenerated. Intentional: do not regenerate stories in progress."
 
 ---
 
 ## Phase 5: Present Summary and Ask to Write
 
-Present a compact summary before writing:
+Compact summary before writing:
 
 ```
 ## Adoption Audit Summary
@@ -248,40 +199,34 @@ ADRs audited: [N] ([X] fully compliant, [Y] with gaps)
 Stories audited: [N]
 
 Gap counts:
-  BLOCKING: [N] вЂ” template skills will malfunction without these fixes
-  HIGH:     [N] вЂ” unsafe to run /create-stories or /story-readiness
-  MEDIUM:   [N] вЂ” quality degradation
-  LOW:      [N] вЂ” optional improvements
+  BLOCKING: [N] — template skills will malfunction without these fixes
+  HIGH:     [N] — unsafe to run /create-stories or /story-readiness
+  MEDIUM:   [N] — quality degradation
+  LOW:      [N] — optional improvements
 
-Estimated remediation: [X blocking items Г— ~Y min each = roughly Z hours]
+Estimated remediation: [X blocking items × ~Y min each = roughly Z hours]
 ```
 
-Before asking to write, show a **Gap Preview**:
-- List every BLOCKING gap as a one-line bullet describing the actual problem
-  (e.g. `systems-index.md: 3 rows have parenthetical status values`,
-  `adr-0002.md: missing ## Status section`). No counts вЂ” show the actual items.
-- Show HIGH / MEDIUM / LOW as counts only (e.g. `HIGH: 4, MEDIUM: 2, LOW: 1`).
+Show **Gap Preview** before asking:
+- BLOCKING: each gap one-line bullet with actual problem (e.g. `systems-index.md: 3 rows have parenthetical status values`, `adr-0002.md: missing ## Status section`). No counts — actual items.
+- HIGH/MEDIUM/LOW: counts only (e.g. `HIGH: 4, MEDIUM: 2, LOW: 1`).
 
-This gives the user enough context to judge scope before committing to writing the file.
+If prior plan detected:
+> "Previous plan at `docs/adoption-plan-[prior-date].md`. New plan reflects current state — does not diff."
 
-If a prior adoption plan was detected in Phase 1, add a note:
-> "A previous plan exists at `docs/adoption-plan-[prior-date].md`. The new plan will
-> reflect current project state вЂ” it does not diff against the prior run."
-
-Use `AskUserQuestion`:
+`AskUserQuestion`:
 - "Ready to write the migration plan?"
-  - "Yes вЂ” write `docs/adoption-plan-[date].md`"
-  - "Show me the full plan preview first (don't write yet)"
-  - "Cancel вЂ” I'll handle migration manually"
+  - "Yes — write `docs/adoption-plan-[date].md`"
+  - "Show full plan preview first (don't write yet)"
+  - "Cancel — handle migration manually"
 
-If the user picks "Show me the full plan preview", output the complete plan as a
-fenced markdown block. Then ask again with the same three options.
+If "Show full plan preview", output complete plan as fenced markdown. Re-ask same three options.
 
 ---
 
 ## Phase 6: Write the Adoption Plan
 
-If approved, write `docs/adoption-plan-[date].md` with this structure:
+If approved, write `docs/adoption-plan-[date].md`:
 
 ```markdown
 # Adoption Plan
@@ -291,8 +236,7 @@ If approved, write `docs/adoption-plan-[date].md` with this structure:
 > **Engine**: [name + version, or "Not configured"]
 > **Template version**: v1.0+
 
-Work through these steps in order. Check off each item as you complete it.
-Re-run `/adopt` anytime to check remaining gaps.
+Work through steps in order. Check off each item. Re-run `/adopt` to check remaining gaps.
 
 ---
 
@@ -311,9 +255,8 @@ Re-run `/adopt` anytime to check remaining gaps.
 ## Step 3: Bootstrap Infrastructure
 
 ### 3a. Register existing requirements (creates tr-registry.yaml)
-Run `/architecture-review` вЂ” even if ADRs already exist, this run bootstraps
-the TR registry from your existing GDDs and ADRs.
-**Time**: 1 session (review can be long for large codebases)
+Run `/architecture-review` — bootstraps TR registry from existing GDDs and ADRs.
+**Time**: 1 session
 - [ ] tr-registry.yaml created
 
 ### 3b. Create control manifest
@@ -323,7 +266,7 @@ Run `/create-control-manifest`
 
 ### 3c. Create sprint tracking file
 Run `/sprint-plan update`
-**Time**: 5 min (if sprint plan already exists as markdown)
+**Time**: 5 min
 - [ ] .ags/project/sprint-status.yaml created
 
 ### 3d. Set authoritative project stage
@@ -347,94 +290,75 @@ Run `/gate-check [current-phase]`
 
 ## What to Expect from Existing Stories
 
-Existing stories continue to work with all template skills. New format checks
-(TR-ID validation, manifest version staleness) auto-pass when the fields are
-absent вЂ” so nothing breaks. They won't benefit from staleness tracking until
-regenerated. Do not regenerate stories that are in progress or done.
+Existing stories work with all template skills. New format checks (TR-ID validation, manifest version staleness) auto-pass when fields absent — nothing breaks. No staleness tracking until regenerated. Do not regenerate stories in progress or done.
 
 ---
 
 ## Re-run
 
-Run `/adopt` again after completing Step 3 to verify all blocking and high gaps
-are resolved. The new run will reflect the current state of the project.
+Run `/adopt` after Step 3 to verify all blocking and high gaps resolved.
 ```
 
 ---
 
 ## Phase 6b: Set Review Mode
 
-After writing the adoption plan (or if the user cancels writing), check whether
-`.ags/project/review-mode.md` exists.
+After writing plan (or on cancel), check `.ags/project/review-mode.md`.
 
-**If it exists**: Read it and note the current mode вЂ” "Review mode is already set to `[current]`." вЂ” skip the prompt.
+**Exists**: read, note "Review mode is already set to `[current]`." — skip prompt.
 
-**If it does not exist**: Use `AskUserQuestion`:
+**Missing**: `AskUserQuestion`:
 
-- **Prompt**: "One more setup step: how much design review would you like as you work through the workflow?"
+- **Prompt**: "One more setup step: how much design review during the workflow?"
 - **Options**:
-  - `Full` вЂ” Director specialists review at each key workflow step. Best for teams, learning the workflow, or when you want thorough feedback on every decision.
-  - `Lean (recommended)` вЂ” Directors only at phase gate transitions (/gate-check). Skips per-skill reviews. Balanced for solo devs and small teams.
-  - `Solo` вЂ” No director reviews at all. Maximum speed. Best for game jams or if reviews feel like overhead.
+  - `Full` — Director specialists review at each key step. Best for teams, learning workflow, thorough feedback.
+  - `Lean (recommended)` — Directors only at phase gate transitions (/gate-check). Solo / small teams.
+  - `Solo` — No director reviews. Maximum speed. Jams.
 
-Write the choice to `.ags/project/review-mode.md` immediately after selection вЂ” no separate "May I write?" needed:
-- `Full` в†’ write `full`
-- `Lean (recommended)` в†’ write `lean`
-- `Solo` в†’ write `solo`
+Write choice immediately to `.ags/project/review-mode.md` — no separate approval:
+- `Full` → `full`
+- `Lean (recommended)` → `lean`
+- `Solo` → `solo`
 
-Create the `.ags/project/` directory if it does not exist.
+Create `.ags/project/` if missing.
 
 ---
 
 ## Phase 7: Offer First Action
 
-After writing the plan, don't stop there. Pick the single highest-priority gap
-and offer to handle it immediately using `AskUserQuestion`. Choose the first
-branch that applies:
+Pick single highest-priority gap. Offer immediate fix via `AskUserQuestion`. First branch that applies:
 
-**If there are parenthetical status values in systems-index.md:**
-Use `AskUserQuestion`:
-- "The most urgent fix is `systems-index.md` вЂ” [N] rows have parenthetical status
-  values (e.g. `Needs Revision (see notes)`) that break /gate-check,
-  /create-stories, and /architecture-review right now. I can fix these in-place."
-  - "Fix it now вЂ” edit systems-index.md"
+**Parenthetical status values in systems-index.md:**
+- "Most urgent: `systems-index.md` — [N] rows have parenthetical status values (e.g. `Needs Revision (see notes)`) breaking /gate-check, /create-stories, /architecture-review now. Fix in-place?"
+  - "Fix it now — edit systems-index.md"
   - "I'll fix it myself"
-  - "Done вЂ” leave me with the plan"
+  - "Done — leave me with the plan"
 
-**If ADRs are missing `## Status` (and no parenthetical issue):**
-Use `AskUserQuestion`:
-- "The most urgent fix is adding `## Status` to [N] ADR(s): [list filenames].
-  Without it, /story-readiness silently passes all ADR checks. Start with
-  [first affected filename]?"
-  - "Yes вЂ” retrofit [first affected filename] now"
+**ADRs missing `## Status` (no parenthetical issue):**
+- "Most urgent: add `## Status` to [N] ADR(s): [list]. Without it, /story-readiness silently passes all ADR checks. Start with [first filename]?"
+  - "Yes — retrofit [first filename] now"
   - "Retrofit all [N] ADRs one by one"
   - "I'll handle ADRs myself"
 
-**If GDDs are missing Acceptance Criteria (and no blocking issues above):**
-Use `AskUserQuestion`:
-- "The most urgent gap is missing Acceptance Criteria in [N] GDD(s):
-  [list filenames]. Without them, /create-stories can't generate stories.
-  Start with [highest-priority GDD filename]?"
-  - "Yes вЂ” add Acceptance Criteria to [GDD filename] now"
+**GDDs missing Acceptance Criteria (no blocking above):**
+- "Most urgent: missing Acceptance Criteria in [N] GDD(s): [list]. Without them /create-stories can't generate stories. Start with [highest-priority filename]?"
+  - "Yes — add Acceptance Criteria to [GDD filename] now"
   - "Do all [N] GDDs one by one"
   - "I'll handle GDDs myself"
 
-**If no BLOCKING or HIGH gaps exist:**
-Use `AskUserQuestion`:
-- "No blocking gaps вЂ” this project is template-compatible. What next?"
-  - "Walk me through the medium-priority improvements"
-  - "Run /project-stage-detect for a broader health check"
-  - "Done вЂ” I'll work through the plan at my own pace"
+**No BLOCKING or HIGH gaps:**
+- "No blocking gaps — template-compatible. What next?"
+  - "Walk me through medium-priority improvements"
+  - "Run /project-stage-detect for broader health check"
+  - "Done — work through plan at my own pace"
 
 ---
 
 ## Collaborative Protocol
 
-1. **Read silently** вЂ” complete the full audit before presenting anything
-2. **Show the summary first** вЂ” let the user see scope before asking to write
-3. **Ask before writing** вЂ” always confirm before creating the adoption plan file
-4. **Offer, don't force** вЂ” the plan is advisory; the user decides what to fix and when
-5. **One action at a time** вЂ” after handing off the plan, offer one specific next step,
-   not a list of six things to do simultaneously
-6. **Never regenerate existing artifacts** вЂ” only fill gaps in what exists;
-   do not rewrite GDDs, ADRs, or stories that already have content
+1. **Read silently** — full audit before presenting
+2. **Show summary first** — let user see scope before writing
+3. **Ask before writing** — confirm before creating plan file
+4. **Offer, don't force** — advisory; user decides what to fix and when
+5. **One action at a time** — one specific next step, not six
+6. **Never regenerate existing artifacts** — fill gaps only; do not rewrite GDDs/ADRs/stories

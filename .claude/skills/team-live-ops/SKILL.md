@@ -1,12 +1,12 @@
 ﻿---
 name: team-live-ops
-description: "Orchestrate the live-ops team for post-launch content planning: coordinates game-designer, systems-designer, producer, producer, narrative-director, and narrative-director to design and plan a season, event, or live content update."
+description: "Orchestrate the live-ops team for post-launch content planning: coordinates game-designer, systems-designer, producer, and narrative-director to design and plan a season, event, or live content update."
 argument-hint: "[season name or event description]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
 **Argument check:** If no season name or event description is provided, output:
-> "Usage: `/team-live-ops [season name or event description]` вЂ” Provide the name or description of the season or live event to plan."
+> "Usage: `/team-live-ops [season name or event description]` — Provide the name or description of the season or live event to plan."
 Then stop immediately without spawning any subagents or reading any files.
 
 When this skill is invoked with a valid argument, orchestrate the live-ops team through a structured planning pipeline.
@@ -17,22 +17,22 @@ full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
 ## Team Composition
-- **game-designer** вЂ” Season structure, event cadence, retention mechanics, battle pass
-- **systems-designer** вЂ” Live economy balance, store rotation, currency pricing, pity timers
-- **producer** вЂ” Success metrics, A/B test design, event tracking, dashboard specs
-- **producer** вЂ” Player-facing announcements, event descriptions, seasonal messaging
-- **narrative-director** вЂ” Seasonal narrative theme, story arc, world event framing
-- **narrative-director** вЂ” Event descriptions, reward item names, seasonal flavor text, announcement copy
+- **game-designer** — Season structure, event cadence, retention mechanics, battle pass
+- **systems-designer** — Live economy balance, store rotation, currency pricing, pity timers
+- **producer** — Success metrics, A/B test design, event tracking, dashboard specs
+- **producer** — Player-facing announcements, event descriptions, seasonal messaging
+- **narrative-director** — Seasonal narrative theme, story arc, world event framing
+- **narrative-director** — Event descriptions, reward item names, seasonal flavor text, announcement copy
 
 ## How to Delegate
 
 Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: game-designer` вЂ” Season/event structure and retention mechanics
-- `subagent_type: systems-designer` вЂ” Live economy balance and reward pricing
-- `subagent_type: producer` вЂ” Success metrics, A/B tests, event instrumentation
-- `subagent_type: producer` вЂ” Player-facing communication and messaging
-- `subagent_type: narrative-director` вЂ” Seasonal theme and narrative framing
-- `subagent_type: narrative-director` вЂ” All player-facing text: event descriptions, item names, copy
+- `subagent_type: game-designer` — Season/event structure and retention mechanics
+- `subagent_type: systems-designer` — Live economy balance and reward pricing
+- `subagent_type: producer` — Success metrics, A/B tests, event instrumentation
+- `subagent_type: producer` — Player-facing communication and messaging
+- `subagent_type: narrative-director` — Seasonal theme and narrative framing
+- `subagent_type: narrative-director` — All player-facing text: event descriptions, item names, copy
 
 Always provide full context in each agent's prompt (game concept path, existing season docs, ethics policy path, current economy state). Launch independent agents in parallel where the pipeline allows it (Phases 3 and 4 can run simultaneously).
 
@@ -74,7 +74,7 @@ Delegate to **producer**:
 ### Phase 5: Content Writing (parallel)
 Delegate in parallel:
 - **narrative-director** (if needed): Write any in-game narrative text (cutscene scripts, NPC dialogue, world event descriptions) for the season
-- **narrative-director**: Write all player-facing text вЂ” event names, reward item descriptions, challenge objective text, seasonal flavor text
+- **narrative-director**: Write all player-facing text — event names, reward item descriptions, challenge objective text, seasonal flavor text
 - Both should read the narrative framing doc from Phase 2
 
 ### Phase 6: Player Communication Plan
@@ -108,21 +108,21 @@ Ask the user to approve the season plan before delegating to production teams. I
 ## Output Documents
 
 All documents save to `design/live-ops/`:
-- `seasons/S[N]_[name].md` вЂ” Season design document (from Phase 1-3)
-- `seasons/S[N]_[name]_analytics.md` вЂ” Analytics plan (from Phase 4)
-- `seasons/S[N]_[name]_comms.md` вЂ” Communication calendar (from Phase 6)
+- `seasons/S[N]_[name].md` — Season design document (from Phase 1-3)
+- `seasons/S[N]_[name]_analytics.md` — Analytics plan (from Phase 4)
+- `seasons/S[N]_[name]_comms.md` — Communication calendar (from Phase 6)
 
 ## Error Recovery Protocol
 
 If any spawned agent (via Task) returns BLOCKED, errors, or cannot complete:
 
-1. **Surface immediately**: Report "[AgentName]: BLOCKED вЂ” [reason]" to the user before continuing to dependent phases
+1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" to the user before continuing to dependent phases
 2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
 3. **Offer options** via AskUserQuestion with choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** вЂ” output whatever was completed. Never discard work because one agent blocked.
+4. **Always produce a partial report** — output whatever was completed. Never discard work because one agent blocked.
 
 If a BLOCKED state is unresolvable, end with Verdict: **BLOCKED** instead of COMPLETE.
 
@@ -136,7 +136,7 @@ delegated to sub-agents spawned via Task. Each sub-agent enforces the
 
 A summary covering: season theme and scope, economy design highlights, success metrics, content list, communication plan, and any open decisions needing user input before production.
 
-Verdict: **COMPLETE** вЂ” season plan produced and handed off for production.
+Verdict: **COMPLETE** — season plan produced and handed off for production.
 
 ## Next Steps
 

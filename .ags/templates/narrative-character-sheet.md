@@ -10,33 +10,31 @@
 
 ## Concept
 
-[One paragraph describing who this character is, what they want, and why the
-player should care about them.]
+[One paragraph: who they are, what they want, why player should care.]
 
 ## Appearance
 
-[Physical description sufficient for the art team to create concept art.
-Reference the art bible for style constraints.]
+[Physical description for art team. Reference art bible for style.]
 
-- **Build**: [Body type, height relative to player]
-- **Distinguishing Features**: [What makes them visually recognizable at a distance]
-- **Color Palette**: [Key colors associated with this character]
-- **Costume/Armor**: [What they wear and why it makes sense for them]
+- **Build**: [Body type, height vs player]
+- **Distinguishing Features**: [Recognizable at distance]
+- **Color Palette**: [Key colors]
+- **Costume/Armor**: [What they wear + why fits]
 
 ## Personality
 
 ### Core Traits
 
-- [Trait 1 -- e.g., Loyal to a fault]
-- [Trait 2 -- e.g., Distrusts authority]
-- [Trait 3 -- e.g., Dark sense of humor]
+- [Trait 1 — e.g., Loyal to a fault]
+- [Trait 2 — e.g., Distrusts authority]
+- [Trait 3 — e.g., Dark sense of humor]
 
 ### Voice Profile
 
-- **Speech Pattern**: [Formal/casual, verbose/terse, accent/dialect notes]
+- **Speech Pattern**: [Formal/casual, verbose/terse, accent/dialect]
 - **Vocabulary Level**: [Simple/educated/archaic/technical]
-- **Verbal Tics**: [Any recurring phrases or speech habits]
-- **Tone Reference**: [Reference character from another work, if helpful]
+- **Verbal Tics**: [Recurring phrases or habits]
+- **Tone Reference**: [Reference character from another work]
 
 ### Emotional Range
 
@@ -47,19 +45,19 @@ Reference the art bible for style constraints.]
 
 ### Primary Motivation
 
-[What does this character want more than anything? This drives every scene.]
+[What does character want most? Drives every scene.]
 
 ### Character Arc
 
 | Phase | State | Turning Point |
 |-------|-------|---------------|
-| Introduction | [Who they are when the player meets them] | [What event starts their arc] |
-| Development | [How they change through the middle] | [Key moment of growth/change] |
-| Resolution | [Who they become by the end] | [Final transformative event] |
+| Introduction | [Who they are when player meets] | [What event starts arc] |
+| Development | [How they change in middle] | [Key growth moment] |
+| Resolution | [Who they become at end] | [Final transformative event] |
 
 ### Internal Conflict
 
-[What contradictory desires or beliefs create internal tension?]
+[Contradictory desires/beliefs creating tension?]
 
 ## Relationships
 
@@ -68,31 +66,30 @@ Reference the art bible for style constraints.]
 
 ## Gameplay Function
 
-### What This Character Provides to the Player
+### What This Character Provides
 
 - [Services: shop, training, quests, etc.]
-- [Information: lore, hints, quest objectives]
-- [Mechanical interactions: buffs, unlocks, gates]
+- [Information: lore, hints, objectives]
+- [Mechanical: buffs, unlocks, gates]
 
 ### Encounter Design Notes
 
-[If this character is fought as an enemy or boss, include combat design notes
-or reference the relevant combat design document.]
+[If fought as enemy/boss, combat design notes or reference combat doc.]
 
 ## Dialogue Notes
 
-### Topics This Character Can Discuss
+### Topics This Character Discusses
 
-- [Topic 1 -- what they know and their perspective]
+- [Topic 1 — what they know + perspective]
 - [Topic 2]
 
-### Topics This Character Avoids or Lies About
+### Topics Avoided or Lied About
 
-- [Topic -- and why]
+- [Topic + why]
 
 ### Dialogue State Dependencies
 
-[What game states affect this character's dialogue?]
+[What game states affect dialogue?]
 
 | Game State | Dialogue Change |
 |-----------|----------------|
@@ -105,7 +102,7 @@ or reference the relevant combat design document.]
 
 ## Cross-References
 
-- **Design Doc**: [Link to relevant gameplay design]
-- **Quest Doc**: [Link to quests involving this character]
-- **Art Reference**: [Link to concept art or art bible section]
-- **Audio Reference**: [Link to voice/theme direction]
+- **Design Doc**: [Link to gameplay design]
+- **Quest Doc**: [Link to quests involving]
+- **Art Reference**: [Concept art or art bible section]
+- **Audio Reference**: [Voice/theme direction]

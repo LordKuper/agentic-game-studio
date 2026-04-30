@@ -8,10 +8,10 @@
 ## Overview
 
 Unity 6 networking options:
-- **Netcode for GameObjects** (RECOMMENDED): Official Unity multiplayer framework
-- **Mirror**: Community-driven (UNet successor)
-- **Photon**: Third-party service (PUN2)
-- **Custom**: Low-level sockets
+- **Netcode for GameObjects** (RECOMMENDED): Official Unity multiplayer.
+- **Mirror**: Community (UNet successor).
+- **Photon**: Third-party (PUN2).
+- **Custom**: Low-level sockets.
 
 **UNet (Legacy)**: Deprecated, do not use.
 
@@ -21,8 +21,8 @@ Unity 6 networking options:
 
 ### Installation
 1. `Window > Package Manager`
-2. Search "Netcode for GameObjects"
-3. Install `com.unity.netcode.gameobjects`
+2. Search "Netcode for GameObjects".
+3. Install `com.unity.netcode.gameobjects`.
 
 ---
 
@@ -53,9 +53,9 @@ public class CustomNetworkManager : MonoBehaviour {
 
 ### Mark GameObject as Networked
 
-1. Add `NetworkObject` component to GameObject
-2. Must be in root of prefab (not nested)
-3. Register prefab in `NetworkManager > NetworkPrefabs List`
+1. Add `NetworkObject` component to GameObject.
+2. Must be in root of prefab (not nested).
+3. Register prefab in `NetworkManager > NetworkPrefabs List`.
 
 ### Spawn Network Objects
 
@@ -323,14 +323,14 @@ void OnClientDisconnected(ulong clientId) {
 ## Performance Tips
 
 ### Reduce Network Traffic
-- Use `NetworkVariable` for state that changes infrequently
-- Batch multiple changes before syncing
-- Use delta compression for large data
+- Use `NetworkVariable` for state that changes infrequently.
+- Batch multiple changes before syncing.
+- Use delta compression for large data.
 
 ### Prediction & Reconciliation
-- Run movement locally for responsiveness
-- Reconcile with server authoritative state
-- Use interpolation for smooth movement
+- Run movement locally for responsiveness.
+- Reconcile with server authoritative state.
+- Use interpolation for smooth movement.
 
 ---
 
@@ -338,11 +338,11 @@ void OnClientDisconnected(ulong clientId) {
 
 ### Network Profiler
 - `Window > Analysis > Network Profiler`
-- Monitor bandwidth, RPC calls, variable updates
+- Monitor bandwidth, RPC calls, variable updates.
 
 ### Network Simulator (Test Latency/Packet Loss)
 - `NetworkManager > Network Simulator`
-- Add artificial lag and packet loss for testing
+- Add artificial lag and packet loss for testing.
 
 ---
 

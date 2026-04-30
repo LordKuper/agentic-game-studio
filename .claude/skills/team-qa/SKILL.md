@@ -16,14 +16,14 @@ The user must approve before moving to the next phase.
 
 ## Team Composition
 
-- **qa-lead** вЂ” QA strategy, test plan generation, story classification, sign-off report
-- **qa-lead** вЂ” Test case writing, bug report writing, manual QA documentation
+- **qa-lead** — QA strategy, test plan generation, story classification, sign-off report
+- **qa-lead** — Test case writing, bug report writing, manual QA documentation
 
 ## How to Delegate
 
 Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: qa-lead` вЂ” Strategy, planning, classification, sign-off
-- `subagent_type: qa-lead` вЂ” Test case writing and bug report writing
+- `subagent_type: qa-lead` — Strategy, planning, classification, sign-off
+- `subagent_type: qa-lead` — Test case writing and bug report writing
 
 Always provide full context in each agent's prompt (story file paths, QA plan path, scope constraints). Launch independent qa-lead tasks in parallel where possible (e.g., multiple stories in Phase 5 can be scaffolded simultaneously).
 
@@ -59,7 +59,7 @@ Prompt the qa-lead to:
   | Story | Type | Automated Required | Manual Required | Blocker? |
   |-------|------|--------------------|-----------------|----------|
 
-  **Smoke Check**: [PASS / PASS WITH WARNINGS / FAIL] вЂ” [details if not PASS]
+  **Smoke Check**: [PASS / PASS WITH WARNINGS / FAIL] — [details if not PASS]
 
 If the smoke check result is **FAIL**, the qa-lead must list the failures prominently. QA cannot proceed past the strategy phase with a failed smoke check.
 
@@ -68,11 +68,11 @@ Present the qa-lead's full strategy to the user, then use `AskUserQuestion`:
 ```
 question: "QA Strategy Review"
 options:
-  - "Looks good вЂ” proceed to test plan"
+  - "Looks good — proceed to test plan"
   - "Adjust story types before proceeding"
   - "Skip blocked stories and proceed with the rest"
-  - "Smoke check failed вЂ” fix issues and re-run /team-qa"
-  - "Cancel вЂ” resolve blockers first"
+  - "Smoke check failed — fix issues and re-run /team-qa"
+  - "Cancel — resolve blockers first"
 ```
 
 If smoke check **FAIL**: do not proceed to Phase 3. Surface the failures and stop. The user must fix them and re-run `/team-qa`.
@@ -122,9 +122,9 @@ Use `AskUserQuestion` per story group (batched 3-4 at a time):
 ```
 question: "Test cases ready for [Story Group]. Review before manual QA begins?"
 options:
-  - "Approved вЂ” begin manual QA for these stories"
+  - "Approved — begin manual QA for these stories"
   - "Revise test cases for [story name]"
-  - "Skip manual QA for [story name] вЂ” not ready"
+  - "Skip manual QA for [story name] — not ready"
 ```
 
 ### Phase 6: Manual QA Execution
@@ -134,12 +134,12 @@ Walk through each story in the approved manual QA list.
 Batch stories into groups of 3-4 and use `AskUserQuestion` for each:
 
 ```
-question: "Manual QA вЂ” [Story Title]\n[brief description of what to test]"
+question: "Manual QA — [Story Title]\n[brief description of what to test]"
 options:
-  - "PASS вЂ” all acceptance criteria verified"
-  - "PASS WITH NOTES вЂ” minor issues found (describe after)"
-  - "FAIL вЂ” criteria not met (describe after)"
-  - "BLOCKED вЂ” cannot test yet (reason)"
+  - "PASS — all acceptance criteria verified"
+  - "PASS WITH NOTES — minor issues found (describe after)"
+  - "FAIL — criteria not met (describe after)"
+  - "BLOCKED — cannot test yet (reason)"
 ```
 
 After each FAIL result: use `AskUserQuestion` to collect the failure description, then spawn `qa-lead` via Task to write a formal bug report in `.ags/project/qa/bugs/`.
@@ -149,12 +149,12 @@ Bug report naming: `BUG-[NNN]-[short-slug].md` (increment NNN from existing bugs
 After collecting all results, summarize:
 - Stories PASS: [count]
 - Stories PASS WITH NOTES: [count]
-- Stories FAIL: [count] вЂ” bugs filed: [IDs]
+- Stories FAIL: [count] — bugs filed: [IDs]
 - Stories BLOCKED: [count]
 
 ### Phase 7: QA Sign-Off Report
 
-Spawn `qa-lead` via Task to produce the sign-off report using all results from Phases 4вЂ“6.
+Spawn `qa-lead` via Task to produce the sign-off report using all results from Phases 4–6.
 
 The sign-off report format:
 
@@ -166,8 +166,8 @@ The sign-off report format:
 ### Test Coverage Summary
 | Story | Type | Auto Test | Manual QA | Result |
 |-------|------|-----------|-----------|--------|
-| [title] | Logic | PASS | вЂ” | PASS |
-| [title] | Visual | вЂ” | PASS | PASS |
+| [title] | Logic | PASS | — | PASS |
+| [title] | Visual | — | PASS | PASS |
 
 ### Bugs Found
 | ID | Story | Severity | Status |
@@ -200,23 +200,23 @@ Write only after receiving approval.
 
 If any spawned agent (via Task) returns BLOCKED, errors, or cannot complete:
 
-1. **Surface immediately**: Report "[AgentName]: BLOCKED вЂ” [reason]" to the user before continuing to dependent phases
+1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" to the user before continuing to dependent phases
 2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
 3. **Offer options** via AskUserQuestion with choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** вЂ” output whatever was completed. Never discard work because one agent blocked.
+4. **Always produce a partial report** — output whatever was completed. Never discard work because one agent blocked.
 
 Common blockers:
-- Input file missing (story not found, GDD absent) в†’ redirect to the skill that creates it
-- ADR status is Proposed в†’ do not implement; run `/architecture-decision` first
-- Scope too large в†’ split into two stories via `/create-stories`
-- Conflicting instructions between ADR and story в†’ surface the conflict, do not guess
+- Input file missing (story not found, GDD absent) → redirect to the skill that creates it
+- ADR status is Proposed → do not implement; run `/architecture-decision` first
+- Scope too large → split into two stories via `/create-stories`
+- Conflicting instructions between ADR and story → surface the conflict, do not guess
 
 ## Output
 
 A summary covering: stories in scope, smoke check result, manual QA results, bugs filed (with IDs and severities), and the final APPROVED / APPROVED WITH CONDITIONS / NOT APPROVED verdict.
 
-Verdict: **COMPLETE** вЂ” QA cycle finished.
-Verdict: **BLOCKED** вЂ” smoke check failed or critical blocker prevented cycle completion; partial report produced.
+Verdict: **COMPLETE** — QA cycle finished.
+Verdict: **BLOCKED** — smoke check failed or critical blocker prevented cycle completion; partial report produced.

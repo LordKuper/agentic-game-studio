@@ -1,350 +1,214 @@
-﻿# Player Journey Map: [Game Title]
+# Player Journey Map: [Game Title]
 
 > **Status**: Draft | In Review | Approved
 > **Author**: [game-designer / creative-director]
 > **Last Updated**: [Date]
-> **Links To**: `design/gdd/concept.md`, `design/gdd/game-pillars.md`
+> **Links To**: `design/gdd/game-concept.md`, `design/gdd/game-pillars.md`
 
 ---
 
 ## Journey Overview
 
-[One paragraph capturing the full emotional arc from first launch to long-term
-play. This is the player's story, not the game's feature list. Describe the
-journey in emotional terms: where do they start (curious, skeptical, cautious),
-how does the relationship with the game deepen, what is the peak emotional
-experience, and what sustains them afterward?
+[One paragraph: full emotional arc, first launch to long-term play. Player's story, not feature list. Where do they start? How does relationship deepen? Peak experience? What sustains?
 
-Example: "The player arrives skeptical and slightly overwhelmed, is quickly
-disarmed by an early moment of unexpected delight, spends the middle hours
-discovering that the systems run deeper than they first appeared, and eventually
-reaches a state of confident mastery where they generate their own challenges and
-share their discoveries with others."
+Example: "Player arrives skeptical, disarmed by early delight, spends middle hours discovering systems run deeper than they appeared, reaches confident mastery generating own challenges and sharing discoveries."
 
-If this arc cannot be described in one paragraph, the emotional design is not
-yet clear enough вЂ” resolve that ambiguity before filling in the phases below.]
+If can't fit in one paragraph → emotional design unclear. Resolve before phases.]
 
 ---
 
 ## Target Player Archetype
 
-[3-4 lines describing the player's MINDSET and gaming literacy, not their
-demographics. Demographics answer "who are they" вЂ” this answers "how do they
-approach games."
+[3-4 lines. MINDSET + gaming literacy, NOT demographics. Demographics = "who". This = "how they approach games".
 
-Describe: What expectations do they carry from other games? How patient are
-they with systems that don't explain themselves? Do they read tooltips or ignore
-them? Do they lean into challenge or route around it? Are they here for a story,
-a power trip, a creative outlet, or a test of skill?
+Describe: expectations from other games? Patience with unexplained systems? Read tooltips? Lean into challenge or route around? Story, power trip, creative outlet, skill test?
 
-Example: "A player who has finished at least one other game in this genre and
-arrived with a specific hypothesis about what to expect. They are willing to
-invest 30+ minutes before judging the game, they read item descriptions, and they
-find emergent mastery more satisfying than scripted victories. They feel respected
-when the game trusts them to figure things out."]
+Example: "Player who finished one game in genre with specific hypothesis. Willing to invest 30+ min before judging. Reads item descriptions. Finds emergent mastery more satisfying than scripted victories. Feels respected when game trusts them to figure things out."]
 
 ---
 
 ## Journey Phases
 
-> **Guidance**: The six phases below are the standard template. Not all phases
-> apply to all games. A short narrative game may not have Habitual Play or
-> Long-Term Engagement. A puzzle game may compress Orientation into First Contact.
-> Delete or merge phases that genuinely do not apply вЂ” do not fill them with
-> placeholder values to make the template look complete.
+> Six phases = standard. Not all apply to all games. Short narrative game may skip Habitual Play / Long-Term. Puzzle game may compress Orientation. Delete or merge phases that don't apply.
 
 ---
 
 ### Phase 1: First Contact (0-5 minutes)
 
-**Emotional state on arrival**: [What is the player feeling before they touch
-the game? They may be skeptical (purchased on impulse), curious (followed
-recommendations), or expectant (been waiting for it). This state is your
-starting condition вЂ” your design must meet them there.]
+**Emotional state on arrival**: [What they feel before touching game. Skeptical (impulse buy)? Curious (recommendation)? Expectant (waiting)? Starting condition.]
 
-**Primary question the player is asking**: [e.g., "Is this worth my time?",
-"Will this be too hard?", "Do I understand what I'm supposed to do?"]
+**Primary question**: [e.g., "Worth my time?" "Too hard?" "Do I understand what to do?"]
 
-**Key experience the game must deliver**:
-[What MUST happen in these five minutes for the player to stay? Not a tutorial
-beat вЂ” an emotional beat. The first contact experience should answer the player's
-primary question with a confident "yes." It may be a moment of beauty, a
-satisfying mechanical click, a surprising twist on a familiar genre pattern, or
-an early win that feels earned.]
+**Key experience**: [What MUST happen these 5 min for player to stay. Emotional beat, not tutorial. Answer primary question with confident yes. Beauty, satisfying click, surprising twist, earned early win.]
 
-**Emotional state on exit**: [What does success look like? e.g., "Curious
-about the next layer", "Surprised that this feels different from similar games",
-"Already thinking about a decision they made and whether it was right."]
+**Emotional state on exit**: [Success looks like. e.g., "Curious about next layer." "Surprised this feels different from similar games." "Already thinking about a decision."]
 
-**Risk if this phase fails**: [What does the player do? e.g., "Refund within
-the 2-hour Steam window", "Put it down and never return", "Post a negative
-first impression", "Recommend it to no one."]
+**Risk if fails**: [e.g., "Refund within 2-hour Steam window." "Put down, never return." "Negative first impression."]
 
 ---
 
 ### Phase 2: Orientation (5-30 minutes)
 
-**Emotional state on arrival**: [Player is intrigued but not yet committed.
-They are forming their first mental model of what this game is.]
+**Emotional state on arrival**: [Intrigued, not committed. Forming first mental model.]
 
-**Primary question the player is asking**: [e.g., "How does this actually work?",
-"What am I building toward?", "Am I going to be good at this?"]
+**Primary question**: [e.g., "How does this work?" "What am I building toward?" "Am I going to be good?"]
 
-**Key experience the game must deliver**:
-[This is the window where the player builds their foundational mental model.
-Describe the one or two "aha" moments that crystallize the game's identity.
-The player should feel competence growing вЂ” their predictions about the game
-should start coming true. They should also catch their first glimpse of depth:
-a system or interaction that hints "this goes further than I thought."]
+**Key experience**: [Window where foundational mental model builds. One-two "aha" moments crystallizing identity. Competence growing — predictions coming true. First glimpse of depth: "this goes further than I thought."]
 
-**Emotional state on exit**: [e.g., "Has a working model of the core loop",
-"Has made at least one meaningful decision they care about the outcome of",
-"Feels the skill ceiling is higher than it first appeared."]
+**Emotional state on exit**: [e.g., "Working model of core loop." "Made one meaningful decision." "Skill ceiling higher than appeared."]
 
-**Risk if this phase fails**: [e.g., "Player concludes the game is shallow",
-"Player feels lost and stops trying", "Player never forms a goal."]
+**Risk if fails**: [e.g., "Concludes shallow." "Feels lost, stops trying." "Never forms goal."]
 
 ---
 
 ### Phase 3: First Mastery (30 minutes - 2 hours)
 
-**Emotional state on arrival**: [Player understands the basics and is testing
-the edges. They are actively trying to get better rather than just trying to
-understand.]
+**Emotional state on arrival**: [Understands basics. Testing edges. Trying to get better, not just understand.]
 
-**Primary question the player is asking**: [e.g., "What's the right strategy?",
-"What's possible if I get good at this?", "What am I missing?"]
+**Primary question**: [e.g., "Right strategy?" "What's possible if I get good?" "What am I missing?"]
 
-**Key experience the game must deliver**:
-[This is the phase where the player earns their first genuine skill victory вЂ”
-a moment where something that was hard becomes easy through their own growth,
-not through the game getting easier. It should feel like crossing a threshold.
-They should also discover their first piece of emergent depth: a system
-interaction, a build synergy, or a hidden mechanic that rewards curiosity.
-According to Csikszentmihalyi's flow model, challenge must scale here вЂ” introduce
-the first real test of the skills they've been building.]
+**Key experience**: [First genuine skill victory — hard becomes easy through their growth, not game easing. Crossing threshold. Discover first emergent depth: system interaction, build synergy, hidden mechanic. Csikszentmihalyi flow: challenge scales here — first real test of built skills.]
 
-**Emotional state on exit**: [e.g., "Proud of a specific decision or victory",
-"Has an opinion about what the 'right' way to play is (even if wrong)",
-"Has questions they want to answer in their next session."]
+**Emotional state on exit**: [e.g., "Proud of specific decision/victory." "Has opinion about 'right' way (even if wrong)." "Questions for next session."]
 
-**Risk if this phase fails**: [e.g., "Player never reaches flow state and stops
-before the game gets interesting", "Player forms wrong mental model and blames
-the game when it breaks."]
+**Risk if fails**: [e.g., "Never reaches flow, stops before interesting." "Wrong mental model, blames game when breaks."]
 
 ---
 
 ### Phase 4: Depth Discovery (2-10 hours)
 
-**Emotional state on arrival**: [Player has a working strategy and is starting
-to see its limits. They are ready to discover that there is more.]
+**Emotional state on arrival**: [Working strategy, seeing limits. Ready for more.]
 
-**Primary question the player is asking**: [e.g., "Is there a better way?",
-"What am I missing that other players know?", "How deep does this actually go?"]
+**Primary question**: [e.g., "Better way?" "What do other players know?" "How deep does this go?"]
 
-**Key experience the game must deliver**:
-[This is where the game's true depth must reveal itself. Players who reach this
-phase are your core audience вЂ” they have cleared the onboarding and proven their
-commitment. They should discover systems, combinations, or strategies that
-recontextualize everything they have done so far. The world should feel larger
-than the tutorial implied. This is also the phase where Bartle's Explorers find
-their reward: content and knowledge that only the curious find.
+**Key experience**: [True depth reveals. Reaching this phase = core audience. Discover systems/combinations/strategies recontextualizing prior play. World feels larger than tutorial implied. Bartle Explorers find reward.
 
-Design note: Depth Discovery is where many indie games fail silently. Players
-exhaust the visible content without ever finding the hidden depth. Audit every
-layer of depth in this window and confirm it is discoverable without a guide.]
+Design note: where indie games fail silently. Players exhaust visible content without finding hidden depth. Audit every depth layer — confirm discoverable without guide.]
 
-**Emotional state on exit**: [e.g., "Has rebuilt their strategy from scratch
-at least once", "Can imagine multiple viable approaches to the same problem",
-"Has discovered at least one thing that surprised them."]
+**Emotional state on exit**: [e.g., "Rebuilt strategy from scratch once." "Multiple viable approaches imagined." "Discovered something surprising."]
 
-**Risk if this phase fails**: [e.g., "Player concludes they have 'finished'
-the game and feels mild disappointment", "Player recommends the game but says
-'it's a bit short.'"]
+**Risk if fails**: [e.g., "Concludes 'finished', mild disappointment." "Recommends but says 'a bit short.'"]
 
 ---
 
 ### Phase 5: Habitual Play (10-50 hours)
 
-> *Note: Not applicable to short-form games (visual novels, short narrative
-> games, puzzle games with fixed content). Delete this phase if the game's
-> intended experience concludes before this timeframe.*
+> *Skip for short-form (visual novels, short narrative, fixed-content puzzle).*
 
-**Emotional state on arrival**: [Player considers themselves competent. The
-game has become part of their routine. They have a playstyle identity.]
+**Emotional state on arrival**: [Considers self competent. Game in routine. Has playstyle identity.]
 
-**Primary question the player is asking**: [e.g., "What's my next goal?",
-"Can I beat my previous record?", "What haven't I tried yet?"]
+**Primary question**: [e.g., "Next goal?" "Beat previous record?" "Haven't tried yet?"]
 
-**Key experience the game must deliver**:
-[Habitual play requires the game to offer goals beyond the tutorial narrative.
-The player generates their own challenges, pursues optional content, or begins
-competing (against the game, other players, or their own records). This phase
-sustains through Bartle's Achiever motivations: collection completion, mastery
-benchmarks, visible milestones. It also requires natural session endings that
-leave forward tension вЂ” the player should always stop with something unfinished
-that they want to return to.]
+**Key experience**: [Goals beyond tutorial narrative. Player generates own challenges, optional content, competing (game/players/own records). Bartle Achiever motivations: collection, mastery, milestones. Natural session endings with forward tension — always stop with unfinished want-to-return.]
 
-**Emotional state on exit**: [e.g., "Has a specific goal they are working toward
-across multiple sessions", "Considers themselves part of a community of people
-who play this game."]
+**Emotional state on exit**: [e.g., "Specific cross-session goal." "Part of community."]
 
-**Risk if this phase fails**: [e.g., "Player churns after completing main content
-and never returns", "Game fails word-of-mouth because players don't develop
-strong opinions about it."]
+**Risk if fails**: [e.g., "Churns after main content." "Word-of-mouth fails — no strong opinions."]
 
 ---
 
 ### Phase 6: Long-Term Engagement (50+ hours)
 
-> *Note: Only applies to games designed for extended play вЂ” live service games,
-> deeply systemic games, competitive games, and games with community-driven
-> content. Delete this phase if it does not fit the game's design intent.*
+> *Only for extended-play designs — live service, deeply systemic, competitive, community-driven. Delete if doesn't fit.*
 
-**Emotional state on arrival**: [Player is a veteran. The game is part of their
-identity to some degree. They are invested in the community and the ecosystem.]
+**Emotional state on arrival**: [Veteran. Game part of identity. Invested in community + ecosystem.]
 
-**Primary question the player is asking**: [e.g., "What's new?", "Can I reach
-the top?", "Can I find something no one has found before?"]
+**Primary question**: [e.g., "What's new?" "Reach the top?" "Find what no one has found?"]
 
-**Key experience the game must deliver**:
-[Long-term engagement is sustained by different mechanisms than initial fun:
-social status, creative expression, competitive standing, or the role of expert
-and guide. Design for this phase by asking what role a veteran player wants to
-play in the ecosystem вЂ” not just what content they want to consume. Systems
-that enable knowledge transfer (guides, community sharing, mentorship) dramatically
-extend this phase.]
+**Key experience**: [Different mechanisms than initial fun: social status, creative expression, competitive standing, expert/guide role. What role does veteran want in ecosystem — not just consume content. Knowledge transfer systems (guides, community, mentorship) extend phase dramatically.]
 
-**Emotional state on exit**: [e.g., "Part of a community", "Considered an
-expert by newer players", "Invested in the game's ongoing development and direction."]
+**Emotional state on exit**: [e.g., "Part of community." "Considered expert by newcomers." "Invested in game's direction."]
 
-**Risk if this phase fails**: [e.g., "Veteran players leave and take their
-social influence with them, accelerating churn in the broader player base."]
+**Risk if fails**: [e.g., "Veterans leave with social influence, accelerates churn."]
 
 ---
 
 ## Critical Moments
 
-> **Guidance**: These are specific, individual events вЂ” not phases вЂ” that
-> must land with precision. A critical moment is a single interaction, scene,
-> or beat that carries outsized emotional weight. Missing it (through bad UX,
-> poor timing, or weak feedback) can derail the entire journey. Identify 8-15
-> such moments across the game.
+> Specific events, not phases. Single beat with outsized weight. Missing it (bad UX, timing, weak feedback) derails journey. Identify 8-15.
 
 | Moment | Phase | Emotional Target | If It Fails |
 |--------|-------|-----------------|-------------|
-| [The first death] | [First Contact] | [Surprise followed by understanding вЂ” "I see what I did wrong"] | [Player feels the death was unfair and loses trust in the game's fairness] |
-| [The first big win] | [Orientation] | [Earned pride вЂ” "I figured that out myself"] | [Player feels the win was handed to them and undervalues it] |
-| [The first system discovery] | [First Mastery] | [Delight вЂ” "I didn't know you could do that"] | [Player misses it entirely and never discovers the depth] |
-| [The moment the world opens up] | [Depth Discovery] | [Awe followed by hunger вЂ” "How much more is there?"] | [Player feels underwhelmed and concludes they have seen everything] |
-| [The first endgame goal] | [Habitual Play] | [Renewed purpose вЂ” "Now I have something to work toward"] | [Player completes the main content and feels finished] |
-| [Add moment] | [Phase] | [Emotional target] | [Failure consequence] |
+| [First death] | [First Contact] | [Surprise + understanding — "I see what I did wrong"] | [Feels unfair, loses trust in fairness] |
+| [First big win] | [Orientation] | [Earned pride — "I figured that out myself"] | [Feels handed, undervalues] |
+| [First system discovery] | [First Mastery] | [Delight — "Didn't know you could do that"] | [Misses, never finds depth] |
+| [World opens up] | [Depth Discovery] | [Awe + hunger — "How much more is there?"] | [Underwhelmed, concludes seen everything] |
+| [First endgame goal] | [Habitual Play] | [Renewed purpose — "Something to work toward"] | [Completes main content, feels finished] |
+| [Add moment] | [Phase] | [Target] | [Failure] |
 
 ---
 
 ## Retention Hooks
 
-> **Guidance**: Retention hooks are the specific mechanisms that pull the player
-> back to the next session. They operate at different time scales. A game with
-> only one hook type has a fragile retention loop. Strong games layer multiple
-> hook types, so players with different motivations all have a reason to return.
+> Mechanisms pulling player back next session. Different time scales. One hook = fragile loop. Strong games layer types.
 >
-> Map each hook to the systems that deliver it вЂ” if a hook has no system behind
-> it, it is an aspiration, not a design.
+> Map each hook to delivery systems — no system = aspiration, not design.
 
-| Hook Type | Hook Description | Systems That Deliver It |
-|-----------|-----------------|------------------------|
-| **Session Start** | [What draws the player in when they launch? e.g., "Unresolved choices from last session", "World state changed while they were away", "Daily reward waiting"] | [System names, e.g., "Persistent world state, save system, daily login reward"] |
-| **Session End** | [What feeling do they have as they close the game? e.g., "A goal just out of reach", "A question unanswered", "An upgrade ready to use next time"] | [e.g., "Progress bar at 90%, next-session unlock notification"] |
-| **Daily Return** | [What reason exists to play today vs. skipping a day? e.g., "Daily challenge", "Time-gated resource replenishment", "Limited-time event"] | [e.g., "Daily quest system, resource regen timers, event calendar"] |
-| **Long-Term** | [What provides purpose across weeks? e.g., "Season pass milestones", "Competitive ranking reset", "Community challenge goals"] | [e.g., "Ranked system, seasonal content, community events"] |
+| Hook Type | Description | Delivery Systems |
+|-----------|-------------|------------------|
+| **Session Start** | [What draws player at launch? "Unresolved choices", "World changed while away", "Daily reward"] | [System names — "Persistent world state, save, daily login"] |
+| **Session End** | [Feeling at close? "Goal just out of reach", "Question unanswered", "Upgrade ready next time"] | [e.g., "Progress 90%, next-session unlock notification"] |
+| **Daily Return** | [Reason today vs skipping? "Daily challenge", "Time-gated resource", "Limited-time event"] | [e.g., "Daily quest, regen timers, event calendar"] |
+| **Long-Term** | [Purpose across weeks? "Season pass", "Ranking reset", "Community challenge"] | [e.g., "Ranked, seasonal, community events"] |
 
 ---
 
 ## Player Progression Feel
 
-[Describe HOW the player should experience their progression вЂ” not the mechanical
-system (that belongs in GDDs), but the FEELING of growing.
+[How player should EXPERIENCE progression — not mechanical system (GDDs), but FEELING of growing.
 
-Choose the primary progression feeling and describe what it should feel like in
-concrete emotional terms. Examples of distinct progression feelings:
+Choose primary feeling, describe concretely:
 
-- **Power growth**: "The player should feel increasingly dangerous. Early game
-  combat should feel tense and measured; late game combat should feel effortless
-  against common enemies, reserving challenge for elite encounters."
-- **World expansion**: "The player's sense of the world should grow outward.
-  Each new area should make the map feel larger, not just longer."
-- **Story revelation**: "The player should feel like they are slowly assembling
-  a picture. Early revelations should recontextualize what they have already seen."
-- **Skill improvement**: "The player should feel themselves getting sharper.
-  Encounters they struggled with early should feel controlled by mid-game,
-  not because they got more powerful, but because their decisions improved."
-- **Community status**: "The player should feel a growing sense of belonging and
-  recognition within the player community as their knowledge deepens."
+- **Power growth**: "Increasingly dangerous. Early combat tense; late combat effortless against common enemies, challenge reserved for elites."
+- **World expansion**: "Sense of world grows outward. Each area makes map feel larger, not just longer."
+- **Story revelation**: "Slowly assembling picture. Early revelations recontextualize prior."
+- **Skill improvement**: "Themselves getting sharper. Early-struggle encounters feel controlled mid-game — not more powerful, better decisions."
+- **Community status**: "Growing belonging + recognition as knowledge deepens."
 
-Answer: what is the primary progression feeling in this game, and what does it
-concretely look and feel like at the beginning, middle, and end of the journey?]
+Answer: primary progression feeling? Concrete look + feel at beginning, middle, end?]
 
 ---
 
 ## Anti-Patterns to Avoid
 
-> **Guidance**: Anti-patterns are recurring design mistakes that reliably
-> break the player journey. List the ones most relevant to this specific game
-> and how the design actively guards against them. Be specific вЂ” "avoid bad UX"
-> is not an anti-pattern, it is a platitude.
+> Recurring design mistakes that break journey. List ones relevant to THIS game + active guards. "Avoid bad UX" = platitude, not anti-pattern.
 
-- **[Player feels punished for experimenting]**: [e.g., "The crafting system
-  should never consume irreplaceable resources. All experiment costs must be
-  recoverable within one session."]
-- **[Player loses progress with no explanation]**: [e.g., "All save points are
-  visible before risky encounters. Progress loss must always be preceded by a
-  warning the player could have noticed."]
-- **[Difficulty spike creates a wall, not a gate]**: [e.g., "When a player
-  fails an encounter three times, the game surfaces a contextual hint. A wall
-  stops progress; a gate requires the right key вЂ” make sure players know what
-  key they need."]
-- **[Player reaches the content ceiling before the emotional arc completes]**:
-  [e.g., "The game should never run out of content while the player still has
-  unanswered questions about the world or their build."]
-- **[Mandatory systems are introduced too late to feel meaningful]**: [e.g.,
-  "Any system the player must engage with in the late game must be introduced
-  in an optional or low-stakes context earlier."]
-- **[Add anti-pattern specific to this game's design risks]**: [Description]
+- **[Player feels punished for experimenting]**: [e.g., "Crafting never consumes irreplaceable resources. Experiment costs recoverable in one session."]
+- **[Player loses progress with no explanation]**: [e.g., "Save points visible before risky encounters. Loss preceded by warning player could notice."]
+- **[Difficulty spike = wall not gate]**: [e.g., "Three failures → contextual hint. Wall stops; gate needs the right key — make sure player knows what key."]
+- **[Content ceiling before emotional arc completes]**: [e.g., "Never run out of content while player still has unanswered questions about world or build."]
+- **[Mandatory systems introduced too late]**: [e.g., "Late-game required system must be introduced in optional/low-stakes context earlier."]
+- **[Add anti-pattern specific to this game's risks]**: [Description]
 
 ---
 
 ## Validation Questions
 
-> **Guidance**: These are questions a playtester session facilitator asks
-> during or after a session to verify the journey is working as intended.
-> They are not yes/no questions вЂ” they probe the player's emotional experience
-> and surface gaps between design intent and player reality.
+> Playtest facilitator asks during/after session. Probe emotional experience. Surface gaps between intent and reality.
 
 **First Contact (0-5 min)**
-- [ ] "Without looking at any menus or tooltips, what do you think this game is about?"
-- [ ] "What's the first thing you want to do next?"
+- [ ] "Without menus or tooltips, what is this game about?"
+- [ ] "First thing you want to do next?"
 
 **Orientation (5-30 min)**
-- [ ] "What does winning or succeeding look like to you right now?"
-- [ ] "Is there anything you feel like you should understand but don't?"
+- [ ] "What does winning/succeeding look like to you?"
+- [ ] "Anything you feel you should understand but don't?"
 
 **First Mastery (30 min - 2 hrs)**
-- [ ] "What's the best decision you've made so far? Why did you make it?"
-- [ ] "What would you do differently if you started over?"
+- [ ] "Best decision so far? Why?"
+- [ ] "What would you do differently if starting over?"
 
 **Depth Discovery (2-10 hrs)**
-- [ ] "Has the game surprised you? When? How did it feel?"
-- [ ] "What questions do you have about systems you haven't fully explored?"
+- [ ] "Has the game surprised you? When? How?"
+- [ ] "Questions about systems you haven't fully explored?"
 
 **Habitual Play (10-50 hrs)**
-- [ ] "What's your current goal? How long have you been working toward it?"
-- [ ] "Have you told anyone about this game? What did you say?"
+- [ ] "Current goal? How long working toward it?"
+- [ ] "Told anyone about this game? What did you say?"
 
-**General (any phase)**
-- [ ] "If you had to stop playing right now, what would you be most eager to
-  come back for?"
-- [ ] "Is there anything you feel the game is not letting you do that you want to do?"
+**General**
+- [ ] "If you stopped now, what would you most want to come back for?"
+- [ ] "Anything the game won't let you do that you want to?"
 
 ---
 
@@ -352,6 +216,6 @@ concretely look and feel like at the beginning, middle, and end of the journey?]
 
 | Question | Owner | Deadline | Resolution |
 |----------|-------|----------|-----------|
-| [Does the Phase 1 hook work for players without prior genre experience?] | [game-designer] | [Date] | [Unresolved] |
-| [Is Phase 4 depth discoverable without external guides?] | [game-designer, ux-designer] | [Date] | [Unresolved] |
+| [Phase 1 hook works for players without genre experience?] | [game-designer] | [Date] | [Unresolved] |
+| [Phase 4 depth discoverable without external guides?] | [game-designer, ux-designer] | [Date] | [Unresolved] |
 | [Add question] | [Owner] | [Date] | [Resolution] |

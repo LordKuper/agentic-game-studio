@@ -1,8 +1,6 @@
 # Setup Requirements
 
-This template requires a few tools to be installed for full functionality.
-All hooks fail gracefully if tools are missing — nothing will break, but
-you'll lose validation features.
+Template needs tools for full functionality. Hooks fail gracefully if missing — nothing breaks, lose validation features.
 
 ## Required
 
@@ -21,7 +19,7 @@ you'll lose validation features.
 
 ### Installing jq
 
-**Windows** (any of these):
+**Windows**:
 ```
 winget install jqlang.jq
 choco install jq
@@ -43,38 +41,34 @@ sudo pacman -S jq       # Arch
 ## Platform Notes
 
 ### Windows
-- Git for Windows includes **Git Bash**, which provides the `bash` command
-  used by all hooks in `settings.json`
-- Ensure Git Bash is on your PATH (default if installed via the Git installer)
-- Hooks use `bash .claude/hooks/[name].sh` — this works on Windows because
-  Claude Code invokes commands through a shell that can find `bash.exe`
+- Git for Windows includes **Git Bash** — provides `bash` used by all hooks in `settings.json`.
+- Ensure Git Bash on PATH (default if installed via Git installer).
+- Hooks use `bash .claude/hooks/[name].sh` — works on Windows; Claude Code invokes via shell that finds `bash.exe`.
 
 ### macOS / Linux
-- Bash is available natively
-- Install `jq` via your package manager for full hook support
+- Bash native.
+- Install `jq` via package manager for full hook support.
 
-## Verifying Your Setup
-
-Run these commands to check prerequisites:
+## Verifying Setup
 
 ```bash
-git --version          # Should show git version
-bash --version         # Should show bash version
-jq --version           # Should show jq version (optional)
-python3 --version      # Should show python version (optional)
+git --version          # git version
+bash --version         # bash version
+jq --version           # jq version (optional)
+python3 --version      # python version (optional)
 ```
 
-## What Happens Without Optional Tools
+## Without Optional Tools
 
-| Missing Tool | Effect |
+| Missing | Effect |
 | ---- | ---- |
-| **jq** | Commit validation, push protection, asset validation, and agent audit hooks silently skip their checks. Commits and pushes still work. |
-| **Python 3** | JSON data file validation in commit and asset hooks is skipped. Invalid JSON can be committed without warning. |
-| **Both** | All hooks still execute without error (exit 0) but provide no validation. You're flying without safety nets. |
+| **jq** | Commit validation, push protection, asset validation, agent audit hooks silently skip checks. Commits/pushes still work. |
+| **Python 3** | JSON data file validation skipped. Invalid JSON can commit without warning. |
+| **Both** | All hooks exit 0 with no validation. No safety nets. |
 
 ## Recommended IDE
 
-Claude Code works with any editor, but the template is optimized for:
-- **VS Code** with the Claude Code extension
+Works with any editor. Optimized for:
+- **VS Code** with Claude Code extension
 - **Cursor** (Claude Code compatible)
-- Terminal-based Claude Code CLI
+- Terminal Claude Code CLI

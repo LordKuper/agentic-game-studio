@@ -1,17 +1,17 @@
-﻿# Collaborative Session Examples
+# Collaborative Session Examples
 
-This directory contains realistic, end-to-end session transcripts showing how the Game Studio Agent Architecture works in practice. Each example demonstrates the **collaborative workflow** where agents ask questions, present options, and wait for user approval rather than autonomously generating content.
+End-to-end session transcripts. Show collaborative workflow: agents ask, present options, wait for approval. No autonomous content gen.
 
 ---
 
 ## Visual Reference
 
-**New to the system? Start here:**
-[Skill Flow Diagrams](skill-flow-diagrams.md) вЂ” visual maps of all 7 phases and how skills chain together.
+New users start here:
+[Skill Flow Diagrams](skill-flow-diagrams.md) — visual maps of 7 phases + skill chains.
 
 ---
 
-## рџ“љ **Available Examples**
+## Available Examples
 
 ### CORE WORKFLOW
 
@@ -19,129 +19,127 @@ This directory contains realistic, end-to-end session transcripts showing how th
 **Type:** Visual Reference
 **Complexity:** All levels
 
-Full pipeline overview (zero to ship), plus detailed chain diagrams for:
-design-system, story lifecycle, UX pipeline, and brownfield onboarding.
-**Start here if you want to understand how the pieces fit together.**
+Full pipeline (zero to ship). Detailed chains: design-system, story lifecycle, UX, brownfield. **Start here for big picture.**
 
 ---
 
 ### [Session: Authoring a GDD with /design-system](session-design-system-skill.md)
 **Type:** Design (skill-driven)
 **Skill:** `/design-system`
-**Duration:** ~60 minutes (14 turns)
+**Duration:** ~60 min (14 turns)
 **Complexity:** Medium
 
 **Scenario:**
-Dev runs `/design-system movement` after `/map-systems` produced the systems index. The skill loads context from the game concept and dependency GDDs, runs a technical feasibility pre-check, then guides through all 8 GDD sections one at a time вЂ” drafting, approving, and writing each section to disk before moving to the next.
+Dev runs `/design-system movement` after `/map-systems`. Skill loads context from concept + dep GDDs, runs feasibility pre-check, walks 8 GDD sections one at a time. Draft → approve → write each before next.
 
 **Key Moments:**
-- Technical feasibility pre-check flags Jolt physics default change (Godot 4.6)
-- Incremental writing: each section on disk immediately after approval
-- Session crash during section 5 в†’ agent resumes from first empty section
-- Dependency signals (stamina, inventory) surfaced during the Dependencies section
-- Ends with explicit handoff: "run `/design-review` before the next system"
+- Feasibility pre-check flags engine version risks (Unity 6000.0.30f1)
+- Incremental writing: each section on disk after approval
+- Session crash mid-section 5 → agent resumes from first empty section
+- Dep signals (stamina, inventory) surfaced in Dependencies section
+- Explicit handoff: "run `/design-review` before next system"
 
 **Learn:**
-- How `/design-system` is different from asking an agent to "write a GDD"
-- How the section-by-section cycle prevents 30k-token context bloat
-- How incremental file writing survives session crashes
-- How the skill surfaces downstream dependency contracts
+- How `/design-system` differs from "write a GDD"
+- Section-by-section cycle prevents 30k-token context bloat
+- Incremental writing survives crashes
+- Skill surfaces downstream dep contracts
 
 ---
 
 ### [Session: Full Story Lifecycle](session-story-lifecycle.md)
 **Type:** Full Workflow
-**Skills:** `/story-readiness` в†’ implementation в†’ `/story-done`
-**Duration:** ~50 minutes (13 turns)
+**Skills:** `/story-readiness` → implementation → `/story-done`
+**Duration:** ~50 min (13 turns)
 **Complexity:** Medium
 
 **Scenario:**
-Dev picks up a story from the sprint backlog. `/story-readiness` catches a roll-direction ambiguity before any code is written. After implementation, `/story-done` verifies 9 acceptance criteria, identifies 2 deferred criteria (inventory not integrated yet), and closes the story with notes.
+Dev picks story from sprint backlog. `/story-readiness` catches roll-direction ambiguity pre-code. After implementation, `/story-done` verifies 9 ACs, identifies 2 deferred (inventory not integrated), closes story with notes.
 
 **Key Moments:**
-- `/story-readiness` catches spec ambiguity in Turn 2 вЂ” resolved before implementation starts
-- ADR status check: story would be BLOCKED if ADR was still Proposed
-- Manifest version check: confirms story's guidance hasn't drifted from current architecture
-- Deferred criteria tracked (not lost) when integration not yet possible
-- `sprint-status.yaml` updated at story close, next ready story surfaced automatically
+- `/story-readiness` catches ambiguity Turn 2 — resolved before impl
+- ADR status check: story BLOCKED if ADR Proposed
+- Manifest version check: story guidance not drifted
+- Deferred criteria tracked (not lost) when integration impossible
+- `sprint-status.yaml` updated at close, next ready story surfaced
 
 **Learn:**
-- Why `/story-readiness` prevents late-implementation ambiguity
-- How deferred criteria work (COMPLETE WITH NOTES vs. BLOCKED)
-- How TR-ID references prevent false deviation flags
-- The full loop from backlog в†’ implemented в†’ closed
+- Why `/story-readiness` prevents late ambiguity
+- Deferred criteria (COMPLETE WITH NOTES vs BLOCKED)
+- TR-ID refs prevent false deviation flags
+- Full loop: backlog → implemented → closed
 
 ---
 
 ### [Session: Gate Check and Phase Transition](session-gate-check-phase-transition.md)
 **Type:** Phase Gate
 **Skill:** `/gate-check`
-**Duration:** ~20 minutes (7 turns)
+**Duration:** ~20 min (7 turns)
 **Complexity:** Low
 
 **Scenario:**
-Dev completes the Systems Design phase and runs `/gate-check` to advance. The gate finds all 6 MVP GDDs complete, cross-review passed with one low-severity concern. Gate passes, `stage.txt` updated, and the agent provides a specific ordered checklist for Technical Setup.
+Dev finishes Systems Design, runs `/gate-check`. Gate finds 6 MVP GDDs complete, cross-review passed with 1 low concern. Gate passes, `stage.txt` updated, agent gives ordered checklist for Technical Setup.
 
 **Key Moments:**
-- Gate validates artifact presence AND internal completeness (8 sections per GDD)
-- CONCERNS в‰  FAIL: low-severity cross-review note passes the gate
-- stage.txt update changes what `/help`, `/sprint-status`, and all skills see going forward
-- Agent surfaces the cross-review concern as a concrete ADR to write next
-- Next phase checklist is specific and ordered, not generic
+- Gate validates artifacts AND internal completeness (8 sections per GDD)
+- CONCERNS ≠ FAIL: low cross-review note passes
+- stage.txt update changes what `/help`, `/sprint-status`, all skills see
+- Cross-review concern surfaces as concrete next ADR
+- Next-phase checklist specific + ordered, not generic
 
 **Learn:**
-- What a gate check actually validates (not just "do files exist?")
-- How PASS/CONCERNS/FAIL verdicts work
-- Why stage.txt is the authority for phase tracking
-- What changes after a phase transition
+- What gate check actually validates (not just file existence)
+- PASS/CONCERNS/FAIL verdicts
+- Why stage.txt = phase authority
+- What changes after phase transition
 
 ---
 
-### [Session: UX Pipeline вЂ” /ux-design в†’ /ux-review в†’ /team-ui](session-ux-pipeline.md)
-**Type:** UX Design Pipeline
+### [Session: UX Pipeline — /ux-design → /ux-review → /team-ui](session-ux-pipeline.md)
+**Type:** UX Pipeline
 **Skills:** `/ux-design`, `/ux-review`, `/team-ui`
-**Duration:** ~90 minutes (16 turns)
+**Duration:** ~90 min (16 turns)
 **Complexity:** Medium-High
 
 **Scenario:**
-Dev designs the HUD and inventory screen. `/ux-design` reads the player journey and GDDs to ground decisions in player emotional state. `/ux-review` catches a blocking accessibility gap (no keyboard alternative to drag-drop) and an advisory colorblind issue. After fixes, `/team-ui` accepts the handoff.
+Dev designs HUD + inventory screen. `/ux-design` reads player journey + GDDs to ground decisions in player emotional state. `/ux-review` catches blocking accessibility gap (no keyboard alt to drag-drop) + advisory colorblind issue. After fix, `/team-ui` accepts handoff.
 
 **Key Moments:**
-- HUD philosophy choice (diegetic vs. persistent vs. tactical) grounded in survival genre conventions
-- `/ux-review` distinguishes BLOCKING (stops handoff) vs. ADVISORY (can fix in visual pass)
-- Accessibility caught before implementation, not during QA
-- Keyboard alternative added in one turn; review re-runs and passes
-- `/team-ui` checks for a passing `/ux-review` before starting visual design
+- HUD philosophy choice (diegetic / persistent / tactical) grounded in genre
+- `/ux-review` distinguishes BLOCKING (stops handoff) vs ADVISORY (visual pass)
+- Accessibility caught before impl, not in QA
+- Keyboard alt added in 1 turn; review re-runs, passes
+- `/team-ui` checks for passing `/ux-review` before visual design
 
 **Learn:**
-- How `/ux-design` uses player journey context to ground UI decisions
-- What `/ux-review` actually checks (not just "does a spec exist?")
-- The difference between HUD doc (`design/ux/hud.md`) and per-screen specs
-- How accessibility issues are handled at design time vs. implementation time
+- How `/ux-design` uses player journey context
+- What `/ux-review` checks (not just "spec exists?")
+- HUD doc (`design/ux/hud.md`) vs per-screen specs
+- Accessibility: design time vs impl time
 
 ---
 
 ### [Session: Brownfield Onboarding with /adopt](session-adopt-brownfield.md)
 **Type:** Brownfield Adoption
 **Skill:** `/adopt`
-**Duration:** ~30 minutes (8 turns)
+**Duration:** ~30 min (8 turns)
 **Complexity:** Low-Medium
 
 **Scenario:**
-Dev has 3 months of existing code and rough design notes but nothing in the right format. `/adopt` audits format compliance (not just file existence), classifies 4 gaps by severity, builds an ordered 7-step migration plan, and immediately fixes the BLOCKING gap (missing systems index) by inferring it from the codebase.
+Dev has 3 months of code + rough design notes, nothing in right format. `/adopt` audits format compliance (not just existence), classifies 4 gaps by severity, builds ordered 7-step migration plan, fixes BLOCKING gap (missing systems index) by inferring from codebase.
 
 **Key Moments:**
-- FORMAT audit distinguishes "file exists" from "file has required internal structure"
-- BLOCKING gap identified: missing systems index prevents 4+ skills from running
-- Migration plan is ordered: blocking gaps first, then high, then medium
-- Systems index bootstrapped from code structure вЂ” brownfield code contains the answer
-- Retrofit mode vs. new authoring: `/design-system retrofit` fills gaps without overwriting
+- FORMAT audit: "file exists" ≠ "file has required structure"
+- BLOCKING gap: missing systems index blocks 4+ skills
+- Migration plan ordered: blocking → high → medium
+- Systems index bootstrapped from code structure
+- Retrofit mode vs new authoring: `/design-system retrofit` fills gaps without overwrite
 
 **Learn:**
-- The difference between `/adopt` and `/project-stage-detect`
-- How format compliance is checked (section detection, not just file presence)
-- How brownfield projects can onboard without losing existing work
-- When to use retrofit mode vs. full authoring
+- `/adopt` vs `/project-stage-detect`
+- Format compliance check (section detection, not just presence)
+- Brownfield onboarding without losing existing work
+- When retrofit vs full authoring
 
 ---
 
@@ -150,208 +148,204 @@ Dev has 3 months of existing code and rough design notes but nothing in the righ
 ### [Session: Designing the Crafting System](session-design-crafting-system.md)
 **Type:** Design
 **Agent:** game-designer
-**Duration:** ~45 minutes (12 turns)
+**Duration:** ~45 min (12 turns)
 **Complexity:** Medium
 
 **Scenario:**
-Solo dev needs to design a crafting system that serves Pillar 2 ("Emergent Discovery Through Experimentation"). The agent guides them through question/answer, presents 3 design options with game theory analysis, incorporates user modifications, and iteratively drafts the GDD with approval at each step.
+Solo dev designs crafting for Pillar 2 ("Emergent Discovery Through Experimentation"). Agent: Q&A → 3 options with game theory analysis → user mods → iterative GDD draft with approval each step.
 
-**Key Collaborative Moments:**
-- Agent asks 5 clarifying questions upfront
-- Presents 3 distinct options with pros/cons + MDA alignment
-- User modifies recommended option, agent incorporates immediately
-- Edge case flagged proactively ("what if non-recipe combo?")
-- Each GDD section shown for approval before moving to next
-- Explicit "May I write to [file]?" before creating file
+**Key Moments:**
+- Agent asks 5 clarifying Qs upfront
+- 3 distinct options with pros/cons + MDA alignment
+- User modifies recommended option, agent incorporates
+- Edge case flagged proactively ("non-recipe combo?")
+- Each section approved before next
+- Explicit "May I write to [file]?"
 
 **Learn:**
-- How design agents ask about goals, constraints, references
-- How to present options using game design theory (MDA, SDT, Bartle)
-- How to iterate on drafts section-by-section
-- When to delegate to specialists (systems-designer, systems-designer)
+- How design agents ask about goals/constraints/refs
+- Present options via theory (MDA, SDT, Bartle)
+- Iterate section-by-section
+- When to delegate to specialists
 
 ---
 
 ### [Session: Implementing Combat Damage Calculation](session-implement-combat-damage.md)
 **Type:** Implementation
 **Agent:** gameplay-programmer
-**Duration:** ~30 minutes (10 turns)
+**Duration:** ~30 min (10 turns)
 **Complexity:** Low-Medium
 
 **Scenario:**
-User has a complete design doc and wants the damage calculation implemented. Agent reads the spec, identifies 7 ambiguities/gaps, asks clarifying questions, proposes architecture for approval, implements with rule enforcement, and proactively writes tests.
+User has design doc, wants damage calc implemented. Agent reads spec, finds 7 ambiguities, asks Qs, proposes architecture for approval, implements with rule enforcement, writes tests proactively.
 
-**Key Collaborative Moments:**
-- Agent reads design doc first, identifies 7 spec ambiguities
-- Architecture proposed with code samples BEFORE implementation
-- User requests type safety, agent refines and re-proposes
-- Rules catch issues (hardcoded values), agent fixes transparently
-- Tests written proactively following verification-driven development
-- Agent offers options for next steps rather than assuming
+**Key Moments:**
+- Agent reads design doc, finds 7 ambiguities
+- Architecture + code samples BEFORE impl
+- User requests type safety, agent refines
+- Rules catch hardcoded values, agent fixes transparently
+- Tests written proactively (verification-driven)
+- Agent offers next steps, doesn't assume
 
 **Learn:**
-- How implementation agents clarify specs before coding
-- How to propose architecture with code samples for approval
-- How rules enforce standards automatically
-- How to handle spec gaps (ask, don't assume)
-- Verification-driven development (tests prove it works)
+- Impl agents clarify specs before code
+- Propose architecture with code samples
+- Rules enforce standards auto
+- Handle spec gaps (ask, don't assume)
+- Verification-driven dev
 
 ---
 
 ### [Session: Scope Crisis - Strategic Decision Making](session-scope-crisis-decision.md)
 **Type:** Strategic Decision
 **Agent:** creative-director
-**Duration:** ~25 minutes (8 turns)
+**Duration:** ~25 min (8 turns)
 **Complexity:** High
 
 **Scenario:**
-Solo dev faces crisis: Alpha milestone in 2 weeks, crafting system needs 3 weeks, investor demo is make-or-break. Creative director gathers context, frames the decision, presents 3 strategic options with honest trade-off analysis, makes recommendation but defers to user, then documents decision with ADR and demo script.
+Solo dev: Alpha in 2 weeks, crafting needs 3 weeks, investor demo make-or-break. Creative director gathers context, frames decision, presents 3 options with honest trade-offs, recommends but defers, documents with ADR + demo script.
 
-**Key Collaborative Moments:**
-- Agent reads context docs before proposing solutions
-- Asks 5 questions to understand decision constraints
-- Frames decision properly (what's at stake, evaluation criteria)
-- Presents 3 options with risk analysis and historical precedent
-- Makes strong recommendation but explicitly: "this is your call"
-- Documents decision + provides demo script to support user
+**Key Moments:**
+- Agent reads context docs first
+- 5 Qs to understand constraints
+- Frames decision (stakes, evaluation criteria)
+- 3 options with risk + historical precedent
+- Strong rec but explicit: "your call"
+- Documents decision + demo script
 
 **Learn:**
 - How leadership agents frame strategic decisions
-- How to present options with trade-off analysis
-- How to use game dev precedent and theory in recommendations
-- How to document decisions (ADRs)
-- How to cascade decisions to affected departments
+- Present options with trade-offs
+- Use precedent + theory in recs
+- Document decisions (ADRs)
+- Cascade decisions to depts
 
 ---
 
 ### [Reverse Documentation Workflow](reverse-document-workflow-example.md)
 **Type:** Brownfield Documentation
 **Agent:** game-designer
-**Duration:** ~20 minutes
+**Duration:** ~20 min
 **Complexity:** Low
 
 **Scenario:**
-Developer built a skill tree system but never wrote a design doc. Agent reads the code, infers the design intent, asks clarifying questions about ambiguous decisions, and produces a retroactive GDD.
+Dev built skill tree, no design doc. Agent reads code, infers intent, asks about ambiguous decisions, produces retroactive GDD.
 
 ---
 
-## рџЋЇ **What These Examples Demonstrate**
+## What These Examples Demonstrate
 
-All examples follow the **collaborative workflow pattern:**
+All follow collaborative pattern:
 
 ```
-Question в†’ Options в†’ Decision в†’ Draft в†’ Approval
+Question → Options → Decision → Draft → Approval
 ```
 
-> **Note:** These examples show the collaborative pattern as conversational text.
-> In practice, agents now use the `AskUserQuestion` tool at decision points to
-> present structured option pickers (with labels, descriptions, and multi-select).
-> The pattern is **Explain в†’ Capture**: agents explain their analysis in
-> conversation first, then present a structured UI picker for the user's decision.
+> **Note:** Examples show collaborative pattern as conversational text. In practice, agents now use `AskUserQuestion` tool at decision points for structured pickers (labels, descriptions, multi-select). Pattern is **Explain → Capture**: agents explain in conversation, then present structured UI picker.
 
-### вњ… **Collaborative Behaviors Shown:**
+### Collaborative Behaviors:
 
 1. **Agents Ask Before Assuming**
-   - Design agents ask about goals, constraints, references
-   - Implementation agents clarify spec ambiguities
-   - Leadership agents gather full context before recommending
+   - Design agents: goals, constraints, refs
+   - Impl agents: clarify spec ambiguities
+   - Leadership: gather context before recommending
 
 2. **Agents Present Options, Not Dictates**
    - 2-4 options with pros/cons
-   - Reasoning based on theory, precedent, project pillars
-   - Recommendation made, but user decides
+   - Reasoning from theory, precedent, pillars
+   - Recommendation + user decides
 
 3. **Agents Show Work Before Finalizing**
-   - Design drafts shown section-by-section
-   - Architecture proposals shown before implementation
-   - Strategic analysis presented before decisions
+   - Drafts section-by-section
+   - Architecture before impl
+   - Strategic analysis before decisions
 
 4. **Agents Get Approval Before Writing Files**
-   - Explicit "May I write to [file]?" before using Write/Edit tools
-   - Multi-file changes list all affected files first
-   - User says "Yes" before any file is created
+   - Explicit "May I write to [file]?"
+   - Multi-file: list all first
+   - User says "Yes" before any file
 
 5. **Agents Iterate on Feedback**
-   - User modifications incorporated immediately
-   - No defensiveness when user changes recommendations
-   - Celebrate when user improves agent's suggestion
+   - User mods incorporated immediately
+   - No defensiveness on changes
+   - Celebrate when user improves suggestion
 
 ---
 
-## рџ“– **How to Use These Examples**
+## How to Use
 
-### For New Users:
-Read these examples BEFORE your first session. They show realistic expectations for how agents work:
-- Agents are consultants, not autonomous executors
-- You make all creative/strategic decisions
-- Agents provide expert guidance and options
+### New Users:
+Read examples BEFORE first session. Realistic expectations:
+- Agents = consultants, not autonomous executors
+- You make creative/strategic decisions
+- Agents provide expert guidance + options
 
-### For Understanding Specific Workflows:
-- **New to the system?** в†’ Read skill-flow-diagrams.md first
-- **Running /design-system for the first time?** в†’ Read session-design-system-skill.md
-- **Picking up a story?** в†’ Read session-story-lifecycle.md
-- **Finishing a phase?** в†’ Read session-gate-check-phase-transition.md
-- **Starting UI work?** в†’ Read session-ux-pipeline.md
-- **Have an existing project?** в†’ Read session-adopt-brownfield.md
-- **Designing a system (agent-driven)?** в†’ Read session-design-crafting-system.md
-- **Implementing code?** в†’ Read session-implement-combat-damage.md
-- **Making strategic decisions?** в†’ Read session-scope-crisis-decision.md
+### For Specific Workflows:
+- **New?** → skill-flow-diagrams.md first
+- **First /design-system?** → session-design-system-skill.md
+- **Picking up story?** → session-story-lifecycle.md
+- **Finishing phase?** → session-gate-check-phase-transition.md
+- **Starting UI?** → session-ux-pipeline.md
+- **Existing project?** → session-adopt-brownfield.md
+- **Designing system (agent-driven)?** → session-design-crafting-system.md
+- **Implementing code?** → session-implement-combat-damage.md
+- **Strategic decisions?** → session-scope-crisis-decision.md
 
 ### For Training:
-If you're teaching someone to use this system, walk through one example turn-by-turn to show:
-- What good questions look like
-- How to evaluate presented options
-- When to approve vs. request changes
-- How to maintain creative control while leveraging AI expertise
+Walk through one example turn-by-turn. Show:
+- Good questions
+- Evaluating options
+- Approve vs request changes
+- Maintain creative control while leveraging AI
 
 ---
 
-## рџ”Ќ **Common Patterns Across All Examples**
+## Common Patterns Across Examples
 
 ### Turn 1-2: **Understand Before Acting**
-- Agent reads context (design docs, specs, constraints)
-- Agent asks clarifying questions
-- No assumptions or guesses
+- Agent reads context (docs, specs, constraints)
+- Agent asks clarifying Qs
+- No assumptions
 
 ### Turn 3-5: **Present Options with Reasoning**
 - 2-4 distinct approaches
-- Pros/cons for each
-- Theory/precedent supporting the analysis
-- Recommendation made, decision deferred to user
+- Pros/cons each
+- Theory/precedent
+- Rec made, decision deferred
 
 ### Turn 6-8: **Iterate on Drafts**
 - Show work incrementally
-- Incorporate feedback immediately
-- Flag edge cases or ambiguities proactively
+- Incorporate feedback
+- Flag edge cases proactively
 
 ### Turn 9-10: **Approval and Completion**
 - "May I write to [file]?"
 - User: "Yes"
-- Agent writes files
-- Agent offers next steps (tests, review, integration)
+- Agent writes
+- Agent offers next steps
 
 ---
 
-## рџљЂ **Try It Yourself**
+## Try It Yourself
 
-After reading these examples, try this exercise:
+Exercise:
 
-1. Pick one of your game systems (combat, inventory, progression, etc.)
-2. Ask the relevant agent to design or implement it
-3. Notice if the agent:
-   - вњ… Asks clarifying questions upfront
-   - вњ… Presents options with reasoning
-   - вњ… Shows drafts before finalizing
-   - вњ… Requests approval before writing files
+1. Pick a system (combat, inventory, progression, etc.)
+2. Ask relevant agent to design or implement
+3. Notice if agent:
+   - Asks clarifying Qs upfront
+   - Presents options with reasoning
+   - Shows drafts before finalizing
+   - Requests approval before writing files
 
-If the agent skips any of these, remind it:
+If agent skips any:
 > "Please follow the collaborative protocol from docs/COLLABORATIVE-DESIGN-PRINCIPLE.md"
 
 ---
 
-## рџ“ќ **Additional Resources**
+## Additional Resources
 
-- **Full Principle Documentation:** [docs/COLLABORATIVE-DESIGN-PRINCIPLE.md](../COLLABORATIVE-DESIGN-PRINCIPLE.md)
+- **Full Principle Doc:** [docs/COLLABORATIVE-DESIGN-PRINCIPLE.md](../COLLABORATIVE-DESIGN-PRINCIPLE.md)
 - **Workflow Guide:** [docs/WORKFLOW-GUIDE.md](../WORKFLOW-GUIDE.md)
 - **Agent Roster:** [.claude/agents/](../../.claude/agents/)
 - **CLAUDE.md (Collaboration Protocol):** [CLAUDE.md](../../CLAUDE.md#collaboration-protocol)

@@ -1,4 +1,4 @@
-﻿---
+---
 name: soak-test
 description: "Generate a soak test protocol for extended play sessions. Defines what to observe, measure, and log during long play sessions to surface slow leaks, fatigue effects, and edge cases that only appear after sustained play. Primarily used in Polish and Release phases."
 argument-hint: "[duration: 30m | 1h | 2h | 4h] [focus: memory | stability | balance | all]"
@@ -8,60 +8,50 @@ allowed-tools: Read, Glob, Grep, Write
 
 # Soak Test
 
-A soak test (also called an endurance test) is an extended play session run
-with specific observation goals. Unlike a smoke check (broad critical path,
-~10 min) or a single-feature playtest (~30 min), a soak test runs for **30
-minutes to several hours** to surface:
+Soak/endurance test = extended play session with observation goals. Unlike smoke check (~10 min) or single-feature playtest (~30 min), runs **30 min – several hours** to surface:
 
-- **Memory leaks** вЂ” gradual heap growth that only appears after scene transitions
-- **Performance drift** вЂ” frame time degradation that worsens over time
-- **State accumulation bugs** вЂ” issues that only appear after N repetitions
-  of a mechanic (inventory full, score overflow, AI state corruption)
-- **Fun fatigue** вЂ” mechanics that feel good in a first session but grow
-  repetitive over extended play
-- **Content exhaustion** вЂ” the point where players run out of novel content
+- **Memory leaks** — gradual heap growth across scene transitions
+- **Performance drift** — frame time degradation over time
+- **State accumulation bugs** — issues after N repetitions (inventory full, score overflow, AI corruption)
+- **Fun fatigue** — mechanics good in first session, repetitive in extended play
+- **Content exhaustion** — point where players run out of novel content
 
-**This skill generates the observation protocol and analysis harness вЂ” the
-human does the actual playing.**
+**Skill generates protocol — human plays.**
 
 **Output:** `.ags/project/qa/soak-test-[date]-[duration].md`
 
 **When to run:**
-- Polish phase вЂ” before `/gate-check release`
-- After fixing a memory or stability issue (regression soak)
+- Polish phase — before `/gate-check release`
+- After fixing memory/stability issue (regression soak)
 - When extended play has not been formally tracked
 
 ---
 
 ## 1. Parse Arguments
 
-**Duration** (default: `1h`):
-- `30m` вЂ” short soak; suitable for testing a single mechanic or scene
-- `1h` вЂ” standard soak; covers most common leak categories
-- `2h` вЂ” extended soak; recommended for first full Polish soak
-- `4h` вЂ” deep soak; required for games with long session design (RPGs, sims)
+**Duration** (default `1h`):
+- `30m` — short; single mechanic/scene
+- `1h` — standard; most common leak categories
+- `2h` — extended; first full Polish soak
+- `4h` — deep; long-session games (RPGs, sims)
 
-**Focus** (default: `all`):
-- `memory` вЂ” focus on heap size, object count, leak patterns
-- `stability` вЂ” focus on crash/freeze/hang detection
-- `balance` вЂ” focus on fun fatigue, content exhaustion, difficulty perception
-- `all` вЂ” all of the above
+**Focus** (default `all`):
+- `memory` — heap, object count, leak patterns
+- `stability` — crash/freeze/hang
+- `balance` — fun fatigue, content exhaustion, difficulty perception
+- `all` — all above
 
 ---
 
 ## 2. Load Context
 
 Read:
-- `.ags/rules/technical-preferences.md` вЂ” engine (for engine-specific memory
-  monitoring guidance), performance budgets (memory ceiling, target FPS)
-- `design/gdd/concept.md` вЂ” intended session length (for comparison against
-  soak duration), core loop description
-- Most recent file in `.ags/project/playtests/` вЂ” prior playtest findings
-  (to avoid re-documenting known issues)
-- Most recent file in `.ags/project/qa/qa-plan-*.md` вЂ” current sprint test coverage
-  (to understand what has been formally tested vs. what the soak covers)
+- `.ags/rules/technical-preferences.md` — engine, perf budgets (memory ceiling, target FPS)
+- `design/gdd/game-concept.md` — intended session length, core loop
+- Most recent in `.ags/project/playtests/` — prior findings (avoid re-documenting)
+- Most recent `.ags/project/qa/qa-plan-*.md` — sprint test coverage
 
-Note any performance budget targets from technical-preferences.md:
+Note perf budget targets from technical-preferences.md:
 - Memory ceiling: [N MB, or "not set"]
 - Target FPS: [N, or "not set"]
 - Frame budget: [N ms, or "not set"]
@@ -70,46 +60,44 @@ Note any performance budget targets from technical-preferences.md:
 
 ## 3. Define Observation Checkpoints
 
-Based on duration, generate timed checkpoints:
+Timed checkpoints by duration:
 
-**30m soak**: T+0, T+10, T+20, T+30
-**1h soak**: T+0, T+15, T+30, T+45, T+60
-**2h soak**: T+0, T+20, T+40, T+60, T+80, T+100, T+120
-**4h soak**: T+0, T+30, T+60, T+90, T+120, T+180, T+240
+**30m**: T+0, T+10, T+20, T+30
+**1h**: T+0, T+15, T+30, T+45, T+60
+**2h**: T+0, T+20, T+40, T+60, T+80, T+100, T+120
+**4h**: T+0, T+30, T+60, T+90, T+120, T+180, T+240
 
-At each checkpoint, the observer records the observation items defined in
-Phase 4.
+At each checkpoint, observer records items from Phase 4.
 
 ---
 
 ## 4. Generate the Soak Test Protocol
 
-### Memory / Stability observation items (if focus = memory or all)
+### Memory / Stability observation items (focus = memory or all)
 
-Unity monitoring guidance:
+Unity monitoring:
+- Memory Profiler (Window → Analysis → Memory Profiler)
+- Record per checkpoint: Total Reserved Memory (MB), GC Allocated (MB), Object Count
+- Alert: GC Allocated growing monotonically across 3+ checkpoints
+- Cross-check Unity Profiler `Memory` module + `Profiler.GetMonoUsedSizeLong()`
 
-- Open Memory Profiler (Window в†’ Analysis в†’ Memory Profiler)
-- Record: Total Reserved Memory (MB), GC Allocated (MB), Object Count at each checkpoint
-- Alert threshold: GC Allocated growing monotonically across 3+ checkpoints
-- Cross-check with the Unity Profiler `Memory` module and `Profiler.GetMonoUsedSizeLong()` for runtime telemetry
+### Stability observation items (focus = stability or all)
 
-### Stability observation items (if focus = stability or all)
+At each checkpoint:
+- [ ] No crash, hang, freeze since last checkpoint
+- [ ] Frame rate within target ([target FPS] fps)
+- [ ] Audio playing correctly (no desync/silence)
+- [ ] HUD elements rendering correctly
+- [ ] Input responding (no input loss/lag spike)
 
-At each checkpoint, note:
-- [ ] No crash, hang, or freeze occurred since last checkpoint
-- [ ] Frame rate still within target budget ([target FPS] fps)
-- [ ] Audio still playing correctly (no desync or silence)
-- [ ] All HUD elements still rendering correctly
-- [ ] Input responding as expected (no input loss or lag spike)
+### Balance / fatigue observation items (focus = balance or all)
 
-### Balance / fatigue observation items (if focus = balance or all)
-
-Collect subjective observations at each checkpoint:
+Subjective at each checkpoint:
 - [ ] Core mechanic still feels rewarding (Y/N)
-- [ ] Perceived difficulty level: [too easy / appropriate / too hard]
-- [ ] Any "I've seen this before" moments since last checkpoint? (novel content exhaustion)
-- [ ] Any moment of frustration since last checkpoint? Note cause.
-- [ ] Any moment of peak engagement since last checkpoint? Note cause.
+- [ ] Perceived difficulty: [too easy / appropriate / too hard]
+- [ ] "Seen this before" moments since last checkpoint? (content exhaustion)
+- [ ] Frustration moment since last checkpoint? Note cause.
+- [ ] Peak engagement moment since last checkpoint? Note cause.
 
 ---
 
@@ -138,7 +126,7 @@ Before starting the soak:
 
 ---
 
-## Baseline (T+0) вЂ” Record Before Playing
+## Baseline (T+0) — Record Before Playing
 
 | Metric | Baseline Value |
 |--------|---------------|
@@ -155,7 +143,7 @@ Before starting the soak:
 
 **Memory / Stability** *(if applicable)*:
 
-| Metric | Value | О” from Baseline | Alert? |
+| Metric | Value | Δ from Baseline | Alert? |
 |--------|-------|-----------------|--------|
 | Memory / Heap | | | |
 | Object Count | | | |
@@ -173,7 +161,7 @@ Before starting the soak:
 - Core mechanic still rewarding: Y / N
 - Difficulty perception: too easy / appropriate / too hard
 - Notable moments: [note any peak engagement or frustration]
-- Content exhaustion signs: Y / N вЂ” [describe]
+- Content exhaustion signs: Y / N — [describe]
 
 **Free observations**:
 *(Note anything unexpected observed since the last checkpoint)*
@@ -188,7 +176,7 @@ Before starting the soak:
 
 ### Memory Trend
 
-| Checkpoint | Memory | О”/hr extrapolated |
+| Checkpoint | Memory | Δ/hr extrapolated |
 |------------|--------|-------------------|
 | T+0 | | |
 | [T+N] | | |
@@ -227,40 +215,36 @@ Difficulty arc: [appropriate / too easy throughout / difficulty spike at T+N]
 
 ## Sign-Off
 
-- **Tester**: [name] вЂ” [date]
-- **QA Lead review**: [name] вЂ” [date]
+- **Tester**: [name] — [date]
+- **QA Lead review**: [name] — [date]
 ```
 
 ---
 
 ## 6. Write Output
 
-Present the protocol summary in conversation, then ask:
+Present protocol summary, then ask:
 
-"May I write this soak test protocol to
-`.ags/project/qa/soak-test-[date]-[duration].md`?"
+"May I write this soak test protocol to `.ags/project/qa/soak-test-[date]-[duration].md`?"
 
 Write only after approval.
 
 After writing:
 
 "Protocol written. To run the soak:
-1. Open the file and follow the Pre-Session Setup checklist
+1. Open file, follow Pre-Session Setup checklist
 2. Record each checkpoint as you play
-3. Complete the Post-Session Analysis section when done
+3. Complete Post-Session Analysis when done
 4. File bugs from 'Issues Found' to `.ags/project/qa/bugs/`
-5. Run `/bug-triage sprint` after the session to integrate any S1/S2 issues
+5. Run `/bug-triage sprint` after to integrate any S1/S2 issues
 
-If the verdict is FAIL, run `/smoke-check` again after fixing the issues."
+If verdict FAIL, run `/smoke-check` again after fixes."
 
 ---
 
 ## Collaborative Protocol
 
-- **This skill generates a protocol вЂ” humans run it** вЂ” never attempt to
-  run a soak test automatically. The observations require a human observer.
-- **Duration should match the game's session design** вЂ” a 5-minute game
-  doesn't need a 4h soak; a city-builder might. Use judgment and ask if unclear.
-- **First soak should be `all` focus** вЂ” narrow focus (memory-only) is for
-  regression soaks after a specific fix, not the first pass
-- **Ask before writing** вЂ” always confirm before creating the protocol file
+- **Skill generates protocol — humans run** — never run soak test automatically. Observations need human observer.
+- **Duration matches session design** — 5-min game ≠ 4h soak; city-builder might. Ask if unclear.
+- **First soak should be `all` focus** — narrow focus (memory-only) for regression soaks after specific fix, not first pass.
+- **Ask before writing** — always confirm before creating protocol file.

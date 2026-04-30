@@ -8,8 +8,8 @@
 ## Overview
 
 Unity 6 input systems:
-- **Input System Package** (RECOMMENDED): Cross-platform, rebindable, modern
-- **Legacy Input Manager**: Deprecated, avoid for new projects
+- **Input System Package** (RECOMMENDED): Cross-platform, rebindable, modern.
+- **Legacy Input Manager**: Deprecated, avoid for new projects.
 
 ---
 
@@ -34,9 +34,9 @@ if (Keyboard.current.spaceKey.wasPressedThisFrame) { }
 
 ### Installation
 1. `Window > Package Manager`
-2. Search "Input System"
-3. Install package
-4. Restart Unity when prompted
+2. Search "Input System".
+3. Install package.
+4. Restart Unity when prompted.
 
 ### Enable New Input System
 `Edit > Project Settings > Player > Active Input Handling`:
@@ -50,7 +50,7 @@ if (Keyboard.current.spaceKey.wasPressedThisFrame) { }
 ### Create Input Actions Asset
 
 1. `Assets > Create > Input Actions`
-2. Name it (e.g., "PlayerControls")
+2. Name it (e.g., "PlayerControls").
 3. Open asset, define actions:
 
 ```
@@ -63,8 +63,8 @@ Action Maps:
       - Look (Value, Vector2)
 ```
 
-4. **Generate C# Class**: Check "Generate C# Class" in Inspector
-5. Click "Apply"
+4. **Generate C# Class**: Check "Generate C# Class" in Inspector.
+5. Click "Apply".
 
 ### Use Generated Input Class
 
@@ -279,16 +279,16 @@ controls.LoadBindingOverridesFromJson(rebinds);
 ## Action Types
 
 ### Button (Press/Release)
-- Single press/release
-- Example: Jump, Fire
+- Single press/release.
+- Example: Jump, Fire.
 
 ### Value (Continuous)
-- Continuous value (float, Vector2)
-- Example: Move, Look, Aim
+- Continuous value (float, Vector2).
+- Example: Move, Look, Aim.
 
 ### Pass-Through (Immediate)
-- No processing, immediate value
-- Example: Mouse position
+- No processing, immediate value.
+- Example: Mouse position.
 
 ---
 
@@ -347,7 +347,7 @@ public class Player : MonoBehaviour {
 
 ### Input Debugger
 - `Window > Analysis > Input Debugger`
-- See active devices, input values, action states
+- See active devices, input values, action states.
 
 ---
 

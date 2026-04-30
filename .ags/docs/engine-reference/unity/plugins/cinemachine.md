@@ -8,18 +8,16 @@
 
 ## Overview
 
-**Cinemachine** is Unity's virtual camera system that enables professional, dynamic camera
-behavior without manual scripting. It's the industry standard for Unity camera work.
+**Cinemachine** = Unity virtual camera system. Industry standard for Unity camera work. No manual scripting needed for pro camera behavior.
 
 **Use Cinemachine for:**
-- 3rd person follow cameras
-- Cutscenes and cinematics
-- Camera blending and transitions
-- Dynamic camera framing
-- Screen shake and camera effects
+- 3rd person follow cameras.
+- Cutscenes and cinematics.
+- Camera blending and transitions.
+- Dynamic camera framing.
+- Screen shake and effects.
 
-**⚠️ Knowledge Gap:** Cinemachine 3.0 (Unity 6) is a major rewrite from 2.x.
-Many API names and components changed.
+**⚠️ Knowledge Gap:** Cinemachine 3.0 (Unity 6) major rewrite from 2.x. Many API names + components changed.
 
 ---
 
@@ -28,26 +26,26 @@ Many API names and components changed.
 ### Install via Package Manager
 
 1. `Window > Package Manager`
-2. Unity Registry > Search "Cinemachine"
-3. Install `Cinemachine` (version 3.0+)
+2. Unity Registry > Search "Cinemachine".
+3. Install `Cinemachine` (version 3.0+).
 
 ---
 
 ## Core Concepts
 
 ### 1. **Virtual Cameras**
-- Define camera behavior (position, rotation, lens)
-- Multiple virtual cameras can exist; only one is "live" at a time
+- Define camera behavior (position, rotation, lens).
+- Multiple virtual cameras possible; only one "live" at a time.
 
 ### 2. **Cinemachine Brain**
-- Component on main Camera
-- Blends between virtual cameras
-- Applies virtual camera settings to Unity Camera
+- Component on main Camera.
+- Blends between virtual cameras.
+- Applies virtual camera settings to Unity Camera.
 
 ### 3. **Priorit**ies**
-- Virtual cameras have priority values
-- Highest priority camera is active
-- Blends smoothly when priority changes
+- Virtual cameras have priority values.
+- Highest priority = active.
+- Blends smoothly when priority changes.
 
 ---
 
@@ -64,7 +62,7 @@ Many API names and components changed.
 
 `GameObject > Cinemachine > Cinemachine Camera`
 
-This creates a **CinemachineCamera** GameObject with default settings.
+Creates **CinemachineCamera** GameObject with default settings.
 
 ---
 
@@ -319,16 +317,16 @@ vcam.Follow = target; // Cleaner API
 **Major Changes:**
 - `CinemachineVirtualCamera` → `CinemachineCamera`
 - `m_Follow`, `m_LookAt` → `Follow`, `LookAt` (no "m_" prefix)
-- Components renamed for clarity
-- Better performance
+- Components renamed for clarity.
+- Better perf.
 
 ---
 
 ## Performance Tips
 
-- Limit active virtual cameras (only activate when needed)
-- Use lower-priority cameras instead of destroying/creating
-- Disable virtual cameras when far from player
+- Limit active virtual cameras (only activate when needed).
+- Use lower-priority cameras instead of destroying/creating.
+- Disable virtual cameras when far from player.
 
 ---
 

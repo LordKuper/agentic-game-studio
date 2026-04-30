@@ -32,7 +32,7 @@ Then stop unless the user opts back into Unity setup.
 
 Before pinning a version, verify Unity matches the project's needs.
 
-Read `design/gdd/concept.md` if it exists — extract genre, scope, platform
+Read `design/gdd/game-concept.md` if it exists — extract genre, scope, platform
 targets, art style, team size. If no concept exists, inform the user:
 
 > "No game concept found. Consider running `/brainstorm` first to discover

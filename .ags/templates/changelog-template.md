@@ -6,23 +6,23 @@
 
 ## New Features
 
-- **[Feature Name]**: [Player-friendly description of what they can now do. Focus on the experience, not the implementation. 1-2 sentences.]
+- **[Feature]**: [Player-friendly description of what they can now do. Focus on experience, not implementation. 1-2 sentences.]
 
-- **[Feature Name]**: [Description]
+- **[Feature]**: [Description]
 
 ---
 
 ## Improvements
 
-- **[Area Improved]**: [How this makes the game better for the player. Be specific.]
+- **[Area]**: [How this makes game better for player. Specific.]
 
-- **[Area Improved]**: [Description]
+- **[Area]**: [Description]
 
 ---
 
 ## Balance Changes
 
-- **[What Changed]**: [Old value] -> [New value]. [Brief design reasoning in player terms. Example: "Healing potions now restore 50 HP (up from 30) -- late-game encounters needed more recovery options."]
+- **[What Changed]**: [Old] -> [New]. [Brief design reasoning in player terms. Example: "Healing potions restore 50 HP (up from 30) — late-game encounters needed more recovery."]
 
 - **[What Changed]**: [Description]
 
@@ -30,33 +30,33 @@
 
 ## Bug Fixes
 
-- Fixed an issue where [describe the player-visible symptom, not the code fix]
-- Fixed [another player-visible symptom]
+- Fixed [player-visible symptom, not code fix]
+- Fixed [another symptom]
 - Fixed [symptom]
 
 ---
 
 ## Known Issues
 
-- [Issue description in player terms]. [Workaround if one exists.] We're working on a fix.
+- [Issue in player terms]. [Workaround if exists.] Working on fix.
 
 ---
 
-## Technical Notes (Internal Only -- Remove Before Publishing)
+## Technical Notes (Internal Only — Remove Before Publishing)
 
 ### Commits Covered
 - Range: `[first-hash]..[last-hash]`
-- Total commits: [N]
+- Total: [N]
 
 ### Internal Changes
-- [Refactoring, infrastructure, or tooling changes not visible to players]
+- [Refactoring, infrastructure, tooling not visible to players]
 
 ### Deferred Items
-- [Features or fixes originally planned for this release but moved to next]
-  - Reason: [why deferred]
+- [Originally planned but moved to next]
+  - Reason: [why]
   - New target: [version or sprint]
 
 ---
 
-Thank you for playing! Your feedback helps us improve the game.
+Thank you for playing. Your feedback helps us improve.
 Report issues at [support link].

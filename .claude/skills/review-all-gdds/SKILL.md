@@ -9,17 +9,15 @@ model: opus
 
 # Review All GDDs
 
-This skill reads every system GDD simultaneously and performs two complementary
-reviews that cannot be done per-GDD in isolation:
+Reads every system GDD simultaneously, performs two complementary reviews
+impossible to do per-GDD in isolation:
 
-1. **Cross-GDD Consistency** вЂ” contradictions, stale references, and ownership
-   conflicts between documents
-2. **Game Design Holism** вЂ” issues that only emerge when you see all systems
-   together: dominant strategies, broken economies, cognitive overload, pillar
-   drift, competing progression loops
+1. **Cross-GDD Consistency** — contradictions, stale references, ownership conflicts
+2. **Game Design Holism** — issues only visible across all systems: dominant
+   strategies, broken economies, cognitive overload, pillar drift, competing loops
 
-**This is distinct from `/design-review`**, which reviews one GDD for internal
-completeness. This skill reviews the *relationships* between all GDDs.
+**Distinct from `/design-review`** (one GDD, internal completeness). This reviews
+*relationships* between all GDDs.
 
 **When to run:**
 - After all MVP-tier GDDs are individually approved
@@ -40,7 +38,7 @@ completeness. This skill reviews the *relationships* between all GDDs.
 
 ## Phase 1: Load Everything
 
-### Phase 1a вЂ” L0: Summary Scan (fast, low tokens)
+### Phase 1a — L0: Summary Scan (fast, low tokens)
 
 Before reading any full document, use Grep to extract `## Summary` sections
 from all GDD files:
@@ -52,8 +50,8 @@ Grep pattern="## Summary" glob="design/gdd/*.md" output_mode="content" -A 5
 Display a manifest to the user:
 ```
 Found [N] GDDs. Summaries:
-  вЂў combat.md вЂ” [summary text]
-  вЂў inventory.md вЂ” [summary text]
+  • combat.md — [summary text]
+  • inventory.md — [summary text]
   ...
 ```
 
@@ -62,7 +60,7 @@ modified since the last review report file was written. Show the user which
 GDDs are in scope based on summaries before doing any full reads. Only
 proceed to L1 for those GDDs plus any GDDs listed in their "Key deps".
 
-### Phase 1b вЂ” Registry Pre-Load (fast baseline)
+### Phase 1b — Registry Pre-Load (fast baseline)
 
 Before full-reading any GDD, check for the entity registry:
 
@@ -73,22 +71,22 @@ Read path="design/registry/entities.yaml"
 If the registry exists and has entries, use it as a **pre-built conflict
 baseline**: known entities, items, formulas, and constants with their
 authoritative values and source GDDs. In Phase 2, grep GDDs for registered
-names first вЂ” this is faster than reading all GDDs in full before knowing
+names first — this is faster than reading all GDDs in full before knowing
 what to look for.
 
 If the registry is empty or absent: proceed without it. Note in the report:
-"Entity registry is empty вЂ” consistency checks rely on full GDD reads only.
+"Entity registry is empty — consistency checks rely on full GDD reads only.
 Run `/consistency-check` after this review to populate the registry."
 
-### Phase 1c вЂ” L1/L2: Full Document Load
+### Phase 1c — L1/L2: Full Document Load
 
 Full-read the in-scope documents:
 
-1. `design/gdd/concept.md` вЂ” game vision, core loop, MVP definition
-2. `design/gdd/game-pillars.md` if it exists вЂ” design pillars and anti-pillars
-3. `design/gdd/systems-index.md` вЂ” authoritative system list, layers, dependencies, status
-4. **Every in-scope system GDD in `design/gdd/`** вЂ” read completely (skip
-   game-concept.md and systems-index.md вЂ” those are read above)
+1. `design/gdd/game-concept.md` — game vision, core loop, MVP definition
+2. `design/gdd/game-pillars.md` if it exists — design pillars and anti-pillars
+3. `design/gdd/systems-index.md` — authoritative system list, layers, dependencies, status
+4. **Every in-scope system GDD in `design/gdd/`** — read completely (skip
+   game-concept.md and systems-index.md — those are read above)
 
 Report: "Loaded [N] system GDDs covering [M] systems. Pillars: [list]. Anti-pillars: [list]."
 
@@ -100,7 +98,7 @@ If fewer than 2 system GDDs exist, stop:
 
 ### Parallel Execution
 
-Phase 2 (Consistency) and Phase 3 (Design Theory) are independent вЂ” they read
+Phase 2 (Consistency) and Phase 3 (Design Theory) are independent — they read
 the same GDD inputs but produce separate reports. Spawn both as parallel Task
 agents simultaneously rather than waiting for Phase 2 to complete before
 starting Phase 3. Collect both results before writing the combined report.
@@ -120,10 +118,10 @@ reciprocal:
 - Flag any one-directional dependency as a consistency issue
 
 ```
-вљ пёЏ  Dependency Asymmetry
-[system-a].md lists: Depends On в†’ [system-b].md
+⚠️  Dependency Asymmetry
+[system-a].md lists: Depends On → [system-b].md
 [system-b].md does NOT list [system-a].md as a dependent
-в†’ One of these documents has a stale dependency section
+→ One of these documents has a stale dependency section
 ```
 
 ### 2b: Rule Contradictions
@@ -142,10 +140,10 @@ Categories to scan:
   they don't?
 
 ```
-рџ”ґ Rule Contradiction
+🔴 Rule Contradiction
 [system-a].md: "Minimum [output] after reduction is [floor_value]"
 [system-b].md: "[mechanic] bypasses [system-a]'s rules and can reduce [output] to 0"
-в†’ These rules directly contradict. Which GDD is authoritative?
+→ These rules directly contradict. Which GDD is authoritative?
 ```
 
 ### 2c: Stale References
@@ -162,12 +160,12 @@ with the same name and behaviour:
   designed differently, flag GDD-A as containing a stale reference
 
 ```
-вљ пёЏ  Stale Reference
+⚠️  Stale Reference
 inventory.md (written first): "Item weight uses the encumbrance formula
   from movement.md"
-movement.md (written later): Defines no encumbrance formula вЂ” uses a flat
+movement.md (written later): Defines no encumbrance formula — uses a flat
   carry limit instead
-в†’ inventory.md references a formula that doesn't exist
+→ inventory.md references a formula that doesn't exist
 ```
 
 ### 2d: Data and Tuning Knob Ownership Conflicts
@@ -176,10 +174,10 @@ Two GDDs should not both claim to own the same data or tuning knob. Scan all
 Tuning Knobs sections across all GDDs and flag duplicates:
 
 ```
-вљ пёЏ  Ownership Conflict
-[system-a].md Tuning Knobs: "[multiplier_name] вЂ” controls [output] scaling"
-[system-b].md Tuning Knobs: "[multiplier_name] вЂ” scales [output] with [factor]"
-в†’ Two GDDs define multipliers on the same output. Which owns the final value?
+⚠️  Ownership Conflict
+[system-a].md Tuning Knobs: "[multiplier_name] — controls [output] scaling"
+[system-b].md Tuning Knobs: "[multiplier_name] — scales [output] with [factor]"
+→ Two GDDs define multipliers on the same output. Which owns the final value?
   This will produce either a double-application bug or a design conflict.
 ```
 
@@ -189,19 +187,19 @@ For GDDs whose formulas are connected (output of one feeds input of another),
 check that the output range of the upstream formula is within the expected
 input range of the downstream formula:
 
-- If [system-a].md outputs values between [min]вЂ“[max], and [system-b].md is
-  designed to receive values between [min2]вЂ“[max2], is the mismatch intentional?
+- If [system-a].md outputs values between [min]–[max], and [system-b].md is
+  designed to receive values between [min2]–[max2], is the mismatch intentional?
 - If an economy GDD expects resource acquisition in range X, and the
   progression GDD generates it at range Y, the economy will be trivial or
-  inaccessible вЂ” is that intended?
+  inaccessible — is that intended?
 
 Flag incompatibilities as CONCERNS (design judgment needed, not necessarily wrong):
 
 ```
-вљ пёЏ  Formula Range Mismatch
+⚠️  Formula Range Mismatch
 [system-a].md: Max [output] = [value_a] (at max [condition])
 [system-b].md: Base [input] = [value_b], max [input] = [value_c]
-в†’ Late-[stage] [scenario] can resolve in a single [event].
+→ Late-[stage] [scenario] can resolve in a single [event].
   Is this intentional? If not, either [system-a]'s ceiling or [system-b]'s ceiling needs adjustment.
 ```
 
@@ -234,11 +232,11 @@ Scan all GDDs for systems that:
 - Have comparable depth and time investment to other systems doing the same
 
 ```
-вљ пёЏ  Competing Progression Loops
+⚠️  Competing Progression Loops
 combat.md: Awards XP, unlocks abilities, is described as "the core loop"
 crafting.md: Awards XP, unlocks recipes, is described as "the primary activity"
 exploration.md: Awards XP, unlocks map areas, described as "the main driver"
-в†’ Three systems all claim to be the primary progression loop and all award
+→ Three systems all claim to be the primary progression loop and all award
   the same primary currency. Players will optimise one and ignore the others.
   Consider: one primary loop with the others as support systems.
 ```
@@ -255,22 +253,22 @@ More than 3-4 simultaneously active systems creates cognitive overload for most
 players. Present the count and flag if it exceeds 4 concurrent active systems:
 
 ```
-вљ пёЏ  Cognitive Load Risk
+⚠️  Cognitive Load Risk
 Simultaneously active systems during [core loop moment]:
-  1. [system-a].md вЂ” [decision type] (active)
-  2. [system-b].md вЂ” [resource management] (active)
-  3. [system-c].md вЂ” [tracking] (active)
-  4. [system-d].md вЂ” [item/action use] (active)
-  5. [system-e].md вЂ” [cooldown/timer management] (active)
-  6. [system-f].md вЂ” [coordination decisions] (active)
-в†’ 6 simultaneously active systems during the core loop.
+  1. [system-a].md — [decision type] (active)
+  2. [system-b].md — [resource management] (active)
+  3. [system-c].md — [tracking] (active)
+  4. [system-d].md — [item/action use] (active)
+  5. [system-e].md — [cooldown/timer management] (active)
+  6. [system-f].md — [coordination decisions] (active)
+→ 6 simultaneously active systems during the core loop.
   Research suggests 3-4 is the comfortable limit for most players.
   Consider: which of these can be made passive or simplified?
 ```
 
 ### 3c: Dominant Strategy Detection
 
-A dominant strategy makes other strategies irrelevant вЂ” players discover it,
+A dominant strategy makes other strategies irrelevant — players discover it,
 use it exclusively, and find the rest of the game boring. Look for:
 
 - **Resource monopolies**: One strategy generates a resource significantly
@@ -282,11 +280,11 @@ use it exclusively, and find the rest of the game boring. Look for:
   the others aren't real choices
 
 ```
-вљ пёЏ  Potential Dominant Strategy
+⚠️  Potential Dominant Strategy
 combat.md: Ranged attacks deal 80% of melee damage with no risk
 combat.md: Melee attacks deal 100% damage but require close range
-в†’ Unless melee has a significant compensating advantage (AOE, stagger,
-  resource regeneration), ranged is dominant вЂ” higher safety, only 20% less
+→ Unless melee has a significant compensating advantage (AOE, stagger,
+  resource regeneration), ranged is dominant — higher safety, only 20% less
   damage. Consider what melee offers that ranged cannot.
 ```
 
@@ -304,15 +302,15 @@ Flag dangerous economic conditions:
 | **Sink, no source** | Resource drains to zero | System becomes unavailable |
 | **Source >> Sink** | Surplus accumulates | Resource becomes meaningless |
 | **Sink >> Source** | Constant scarcity | Frustration and gatekeeping |
-| **Positive feedback loop** | More resource в†’ easier to earn more | Runaway leader, snowball |
+| **Positive feedback loop** | More resource → easier to earn more | Runaway leader, snowball |
 | **No catch-up** | Falling behind accelerates deficit | Unrecoverable states |
 
 ```
-рџ”ґ Economic Imbalance: Unbounded Positive Feedback
+🔴 Economic Imbalance: Unbounded Positive Feedback
 gold economy:
   Sources: monster drops (scales with player power), merchant selling (unlimited)
   Sinks: equipment purchase (one-time), ability upgrades (finite count)
-в†’ After equipment and abilities are purchased, gold has no sink.
+→ After equipment and abilities are purchased, gold has no sink.
   Infinite surplus. Gold becomes meaningless mid-game.
   Add ongoing gold sinks (upkeep, consumables, cosmetics, gambling).
 ```
@@ -331,10 +329,10 @@ For each system that scales over time, extract:
 Compare all scaling curves. Flag mismatches:
 
 ```
-вљ пёЏ  Difficulty Curve Mismatch
-combat.md: Enemy health scales exponentially with area (Г—2 per area)
+⚠️  Difficulty Curve Mismatch
+combat.md: Enemy health scales exponentially with area (×2 per area)
 progression.md: Player damage scales linearly with level (+10% per level)
-в†’ By area 5, enemies have 32Г— base health; player deals ~1.5Г— base damage.
+→ By area 5, enemies have 32× base health; player deals ~1.5× base damage.
   The gap widens indefinitely. Late areas will become inaccessibly difficult
   unless the curves are reconciled.
 ```
@@ -342,42 +340,42 @@ progression.md: Player damage scales linearly with level (+10% per level)
 ### 3f: Pillar Alignment
 
 Every system should clearly serve at least one design pillar. A system that
-serves no pillar is "scope creep by design" вЂ” it's in the game but not in
+serves no pillar is "scope creep by design" — it's in the game but not in
 service of what the game is trying to be.
 
 For each GDD system, check its Player Fantasy section against the design pillars.
 Flag any system whose stated fantasy doesn't map to any pillar:
 
 ```
-вљ пёЏ  Pillar Drift
-fishing-system.md: Player Fantasy вЂ” "peaceful, meditative activity"
+⚠️  Pillar Drift
+fishing-system.md: Player Fantasy — "peaceful, meditative activity"
 Pillars: "Brutal Combat", "Tense Survival", "Emergent Stories"
-в†’ The fishing system serves none of the three pillars. Either add a pillar
+→ The fishing system serves none of the three pillars. Either add a pillar
   that covers it, redesign it to serve an existing pillar, or cut it.
 ```
 
-Also check anti-pillars вЂ” flag any system that does what an anti-pillar
+Also check anti-pillars — flag any system that does what an anti-pillar
 explicitly says the game will NOT do:
 
 ```
-рџ”ґ Anti-Pillar Violation
-Anti-Pillar: "We will NOT have linear story progression вЂ” player defines their path"
+🔴 Anti-Pillar Violation
+Anti-Pillar: "We will NOT have linear story progression — player defines their path"
 main-quest.md: Defines a 12-chapter linear story with mandatory sequence
-в†’ This system directly violates the defined anti-pillar.
+→ This system directly violates the defined anti-pillar.
 ```
 
 ### 3g: Player Fantasy Coherence
 
-The player fantasies across all systems should be compatible вЂ” they should
+The player fantasies across all systems should be compatible — they should
 reinforce a consistent identity for what the player IS in this game. Conflicting
 player fantasies create identity confusion.
 
 ```
-вљ пёЏ  Player Fantasy Conflict
-combat.md: "You are a ruthless, precise warrior вЂ” every kill is earned"
-dialogue.md: "You are a charismatic diplomat вЂ” violence is always avoidable"
-exploration.md: "You are a reckless adventurer вЂ” diving in without a plan"
-в†’ Three systems present incompatible identities. Players will feel the game
+⚠️  Player Fantasy Conflict
+combat.md: "You are a ruthless, precise warrior — every kill is earned"
+dialogue.md: "You are a charismatic diplomat — violence is always avoidable"
+exploration.md: "You are a reckless adventurer — diving in without a plan"
+→ Three systems present incompatible identities. Players will feel the game
   doesn't know what it wants them to be. Consider: do these fantasies serve
   the same core identity from different angles, or do they genuinely conflict?
 ```
@@ -387,12 +385,12 @@ exploration.md: "You are a reckless adventurer вЂ” diving in without a plan"
 ## Phase 4: Cross-System Scenario Walkthrough
 
 Walk through the game from the player's perspective to find problems that only
-appear at the interaction boundary between multiple systems вЂ” things static
+appear at the interaction boundary between multiple systems — things static
 analysis of individual GDDs cannot surface.
 
 ### 4a: Identify Key Multi-System Moments
 
-Scan all GDDs and identify the 3вЂ“5 most important player-facing moments where
+Scan all GDDs and identify the 3–5 most important player-facing moments where
 multiple systems activate simultaneously. Look specifically for:
 
 - **Combat + Economy overlap**: killing enemies that drop resources, spending
@@ -411,12 +409,12 @@ List each identified scenario with a one-line description before proceeding.
 
 For each scenario, step through the sequence explicitly:
 
-1. **Trigger** вЂ” what player action or game event starts this?
-2. **Activation order** вЂ” which systems activate, in what sequence?
-3. **Data flow** вЂ” what does each system output, and is that output a valid
+1. **Trigger** — what player action or game event starts this?
+2. **Activation order** — which systems activate, in what sequence?
+3. **Data flow** — what does each system output, and is that output a valid
    input for the next system in the chain?
-4. **Player experience** вЂ” what does the player see, hear, or feel at each step?
-5. **Failure modes** вЂ” are there any of the following?
+4. **Player experience** — what does the player see, hear, or feel at each step?
+5. **Failure modes** — are there any of the following?
    - **Race conditions**: two systems trying to modify the same state simultaneously
    - **Feedback loops**: System A amplifies System B which re-amplifies System A
      with no cap or dampener
@@ -437,13 +435,13 @@ Example walkthrough:
 Scenario: Player kills elite enemy at level-up threshold during active quest
 
 Trigger: Player lands killing blow on elite enemy
-в†’ combat.md: awards kill XP (100 pts)
-в†’ progression.md: XP total crosses level threshold в†’ triggers level-up
+→ combat.md: awards kill XP (100 pts)
+→ progression.md: XP total crosses level threshold → triggers level-up
   Output: new level, stat increases, ability unlock popup
-в†’ quest.md: kill-count criterion met в†’ triggers quest completion event
+→ quest.md: kill-count criterion met → triggers quest completion event
   Output: quest reward XP (500 pts), completion fanfare
-в†’ progression.md (again): quest XP added в†’ triggers SECOND level-up in same frame
-  вљ пёЏ  Data flow issue: quest.md awards XP without checking if a level-up
+→ progression.md (again): quest XP added → triggers SECOND level-up in same frame
+  ⚠️  Data flow issue: quest.md awards XP without checking if a level-up
   is already in progress. progression.md has no guard against concurrent
   level-up events. Undefined behavior: does the player level up once or twice?
   Does the ability popup fire twice? Does the second level use the updated or
@@ -455,10 +453,10 @@ Trigger: Player lands killing blow on elite enemy
 For each problem found during the walkthrough, categorize severity:
 
 - **BLOCKER**: undefined behavior, broken state transition, or contradictory
-  player messaging вЂ” the experience is broken or incoherent in this scenario
-- **WARNING**: compounding spikes, feedback loops without caps, reward conflicts вЂ”
+  player messaging — the experience is broken or incoherent in this scenario
+- **WARNING**: compounding spikes, feedback loops without caps, reward conflicts —
   the experience works but produces unintended outcomes
-- **INFO**: minor ordering ambiguity or messaging overlap вЂ” worth noting but
+- **INFO**: minor ordering ambiguity or messaging overlap — worth noting but
   unlikely to cause player-visible problems
 
 Add all findings to the output report under **"Cross-System Scenario Issues"**.
@@ -480,11 +478,11 @@ Systems Covered: [list]
 ### Consistency Issues
 
 #### Blocking (must resolve before architecture begins)
-рџ”ґ [Issue title]
+🔴 [Issue title]
 [What GDDs are involved, what the contradiction is, what needs to change]
 
 #### Warnings (should resolve, but won't block)
-вљ пёЏ  [Issue title]
+⚠️  [Issue title]
 [What GDDs are involved, what the concern is]
 
 ---
@@ -492,11 +490,11 @@ Systems Covered: [list]
 ### Game Design Issues
 
 #### Blocking
-рџ”ґ [Issue title]
+🔴 [Issue title]
 [What the problem is, which GDDs are involved, design recommendation]
 
 #### Warnings
-вљ пёЏ  [Issue title]
+⚠️  [Issue title]
 [What the concern is, which GDDs are affected, recommendation]
 
 ---
@@ -507,15 +505,15 @@ Scenarios walked: [N]
 [List scenario names]
 
 #### Blockers
-рџ”ґ [Scenario name] вЂ” [Systems involved]
+🔴 [Scenario name] — [Systems involved]
 [Step where failure occurs, nature of the failure mode, what must be resolved]
 
 #### Warnings
-вљ пёЏ  [Scenario name] вЂ” [Systems involved]
+⚠️  [Scenario name] — [Systems involved]
 [What the unintended outcome is, recommendation]
 
 #### Info
-в„№пёЏ  [Scenario name] вЂ” [Systems involved]
+ℹ️  [Scenario name] — [Systems involved]
 [Minor ordering ambiguity or note]
 
 ---
@@ -536,7 +534,7 @@ PASS: No blocking issues. Warnings present but don't prevent architecture.
 CONCERNS: Warnings present that should be resolved but are not blocking.
 FAIL: One or more blocking issues must be resolved before architecture begins.
 
-### If FAIL вЂ” required actions before re-running:
+### If FAIL — required actions before re-running:
 [Specific list of what must change in which GDD]
 ```
 
@@ -546,13 +544,13 @@ FAIL: One or more blocking issues must be resolved before architecture begins.
 
 Use `AskUserQuestion` for write permission:
 - Prompt: "May I write this review to `design/gdd/gdd-cross-review-[date].md`?"
-- Options: `[A] Yes вЂ” write the report` / `[B] No вЂ” skip`
+- Options: `[A] Yes — write the report` / `[B] No — skip`
 
 If any GDDs are flagged for revision, use a second `AskUserQuestion`:
 - Prompt: "Should I update the systems index to mark these GDDs as needing revision? ([list of flagged GDDs])"
-- Options: `[A] Yes вЂ” update systems index` / `[B] No вЂ” leave as-is`
+- Options: `[A] Yes — update systems index` / `[B] No — leave as-is`
 - If yes: update each flagged GDD's Status field in systems-index.md to "Needs Revision".
-  (Do NOT append parentheticals to the status value вЂ” other skills match "Needs Revision"
+  (Do NOT append parentheticals to the status value — other skills match "Needs Revision"
   as an exact string and parentheticals break that match.)
 
 ### Session State Update
@@ -560,15 +558,15 @@ If any GDDs are flagged for revision, use a second `AskUserQuestion`:
 After writing the report (and updating systems index if approved), silently
 append to `.ags/project/state.md`:
 
-    ## Session Extract вЂ” /review-all-gdds [date]
+    ## Session Extract — /review-all-gdds [date]
     - Verdict: [PASS / CONCERNS / FAIL]
     - GDDs reviewed: [N]
     - Flagged for revision: [comma-separated list, or "None"]
-    - Blocking issues: [N вЂ” brief one-line descriptions, or "None"]
+    - Blocking issues: [N — brief one-line descriptions, or "None"]
     - Recommended next: [the Phase 7 handoff action, condensed to one line]
     - Report: design/gdd/gdd-cross-review-[date].md
 
-If `active.md` does not exist, create it with this block as the initial content.
+If `state.md` does not exist, create it with this block as the initial content.
 Confirm in conversation: "Session state updated."
 
 ---
@@ -578,22 +576,22 @@ Confirm in conversation: "Session state updated."
 After all file writes are complete, use `AskUserQuestion` for a closing widget.
 
 Before building options, check project state:
-- Are there any Warning-level items that are simple edits (flagged with "30-second edit", "brief addition", or similar)? в†’ offer inline quick-fix option
-- Are any GDDs in the "Flagged for Revision" table? в†’ offer /design-review option for each
-- Read systems-index.md for the next system with Status: Not Started в†’ offer /design-system option
-- Is the verdict PASS or CONCERNS? в†’ offer /gate-check or /create-architecture
+- Are there any Warning-level items that are simple edits (flagged with "30-second edit", "brief addition", or similar)? → offer inline quick-fix option
+- Are any GDDs in the "Flagged for Revision" table? → offer /design-review option for each
+- Read systems-index.md for the next system with Status: Not Started → offer /design-system option
+- Is the verdict PASS or CONCERNS? → offer /gate-check or /create-architecture
 
-Build the option list dynamically вЂ” only include options that apply:
+Build the option list dynamically — only include options that apply:
 
 **Option pool:**
-- `[_] Apply quick fix: [W-XX description] in [gdd-name].md вЂ” [effort estimate]` (one option per simple-edit warning; only for Warning-level, not Blocking)
-- `[_] Run /design-review [flagged-gdd-path] вЂ” address flagged warnings` (one per flagged GDD, if any)
-- `[_] Run /design-system [next-system] вЂ” next in design order` (always include, name the actual system)
-- `[_] Run /create-architecture вЂ” begin architecture (verdict is PASS/CONCERNS)` (include if verdict is not FAIL)
-- `[_] Run /gate-check вЂ” validate Systems Design phase gate` (include if verdict is PASS)
+- `[_] Apply quick fix: [W-XX description] in [gdd-name].md — [effort estimate]` (one option per simple-edit warning; only for Warning-level, not Blocking)
+- `[_] Run /design-review [flagged-gdd-path] — address flagged warnings` (one per flagged GDD, if any)
+- `[_] Run /design-system [next-system] — next in design order` (always include, name the actual system)
+- `[_] Run /create-architecture — begin architecture (verdict is PASS/CONCERNS)` (include if verdict is not FAIL)
+- `[_] Run /gate-check — validate Systems Design phase gate` (include if verdict is PASS)
 - `[_] Stop here`
 
-Assign letters A, B, CвЂ¦ only to included options. Mark the most pipeline-advancing option as `(recommended)`.
+Assign letters A, B, C… only to included options. Mark the most pipeline-advancing option as `(recommended)`.
 
 Never end the skill with plain text. Always close with this widget.
 
@@ -603,26 +601,21 @@ Never end the skill with plain text. Always close with this widget.
 
 If any spawned agent returns BLOCKED, errors, or fails to complete:
 
-1. **Surface immediately**: Report "[AgentName]: BLOCKED вЂ” [reason]" before continuing
+1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" before continuing
 2. **Assess dependencies**: If the blocked agent's output is required by a later phase, do not proceed past that phase without user input
 3. **Offer options** via AskUserQuestion with three choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope (fewer GDDs, single-system focus)
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** вЂ” output whatever was completed so work is not lost
+4. **Always produce a partial report** — output whatever was completed so work is not lost
 
 ---
 
 ## Collaborative Protocol
 
-1. **Read silently** вЂ” load all GDDs before presenting anything
-2. **Show everything** вЂ” present the full consistency and design theory analysis
-   before asking for any action
-3. **Distinguish blocking from advisory** вЂ” not every issue needs to block
-   architecture; be clear about which do
-4. **Don't make design decisions** вЂ” flag contradictions and options, but never
-   unilaterally decide which GDD is "right"
-5. **Ask before writing** вЂ” confirm before writing the report or updating the
-   systems index
-6. **Be specific** вЂ” every issue must cite the exact GDD, section, and text
-   involved; no vague warnings
+1. **Read silently** — load all GDDs before presenting anything
+2. **Show everything** — present full consistency + design theory analysis before asking any action
+3. **Distinguish blocking from advisory** — not every issue blocks architecture; be clear which do
+4. **Don't make design decisions** — flag contradictions and options; never decide which GDD is "right"
+5. **Ask before writing** — confirm before writing report or updating systems index
+6. **Be specific** — every issue must cite exact GDD, section, and text; no vague warnings

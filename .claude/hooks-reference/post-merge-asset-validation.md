@@ -2,14 +2,11 @@
 
 ## Trigger
 
-Runs after any merge to the `develop` or `main` branch that includes changes
-to `assets/`.
+Runs after merge to `develop` or `main` touching `assets/`.
 
 ## Purpose
 
-Validates that all assets in the merged branch conform to naming conventions,
-size budgets, and format requirements. Prevents non-compliant assets from
-accumulating on integration branches.
+Check merged assets follow naming, size budgets, format rules. Stop bad assets piling up on integration branches.
 
 ## Implementation
 
@@ -78,7 +75,7 @@ exit $EXIT_CODE
 
 ## Agent Integration
 
-When this hook reports issues:
-1. For naming violations: fix manually or invoke `art-director` for guidance
-2. For size violations: invoke `technical-artist` for optimization advice
-3. For a full audit: run `/asset-audit` skill
+On issues:
+1. Naming violations: fix manually or call `art-director`.
+2. Size violations: call `technical-artist` for optimization.
+3. Full audit: run `/asset-audit` skill.

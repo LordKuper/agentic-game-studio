@@ -1,8 +1,7 @@
 # Reverse Documentation Workflow Example
 
 ## Scenario
-Developer built a working skill tree system but never wrote a design doc.
-Code exists in `src/gameplay/skills/`, but `design/gdd/` has no skill-system.md.
+Dev built skill tree system, never wrote design doc. Code in `Assets/Scripts/Gameplay/skills/`, no skill-system.md in `design/gdd/`.
 
 ---
 
@@ -10,7 +9,7 @@ Code exists in `src/gameplay/skills/`, but `design/gdd/` has no skill-system.md.
 
 **User:**
 ```
-I have a working skill tree system in src/gameplay/skills/ with about 1200 lines
+I have a working skill tree system in Assets/Scripts/Gameplay/skills/ with about 1200 lines
 of code. I never wrote a design doc. Can we create one from the implementation?
 ```
 
@@ -110,12 +109,12 @@ Next steps:
 
 ## Key Observations
 
-1. **Agent asked clarifying questions** - didn't just describe code
-2. **Separated intent from implementation** - user corrected "accidental" imbalance
-3. **Design doc captures "why"** - not just "what the code does"
-4. **Identified missing pieces** - edge cases not in code
-5. **Flagged follow-up work** - balance tuning, ADRs, tutorial
+1. **Agent asked clarifying Qs** — didn't just describe code
+2. **Separated intent from impl** — user corrected "accidental" imbalance
+3. **Doc captures "why"** — not just "what code does"
+4. **Identified missing pieces** — edge cases not in code
+5. **Flagged follow-up** — balance tuning, ADRs, tutorial
 
 ## Outcome
 
-The design doc now exists and **matches reality** while also capturing the **intended vision**. Future changes will reference this doc, and new team members understand the *why* behind decisions.
+Doc exists, **matches reality**, captures **intended vision**. Future changes ref this doc. New team members understand *why*.

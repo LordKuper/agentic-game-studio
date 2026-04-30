@@ -4,103 +4,78 @@
 > **Author**: [ux-designer]
 > **Last Updated**: [Date]
 > **Version**: [1.0]
-> **Engine**: [Godot 4.6 / Unity 6 / Unreal Engine 5]
-> **UI Framework**: [Godot Control nodes / Unity UI Toolkit / Unreal UMG]
+> **Engine**: Unity [version]
+> **UI Framework**: Unity UI Toolkit (preferred) or uGUI
 > **Related Documents**:
-> - `docs/art-bible.md` — visual standards (colors, typography, iconography)
-> - `docs/accessibility-requirements.md` — accessibility commitments per feature
-> - `docs/ux/ux-spec-[screen].md` — individual screen specs that reference patterns
+> - `docs/art-bible.md` — visual standards
+> - `design/accessibility-requirements.md` — accessibility commitments
+> - `docs/ux/ux-spec-[screen].md` — screen specs that reference patterns
 
-> **Why this document exists**: Every UI screen spec should be able to say
-> "uses Button (Primary) pattern" rather than re-specifying hover states,
-> press animations, focus behavior, keyboard handling, and screen reader
-> announcements from scratch. This library is the single source of truth for
-> reusable interaction behaviors. When a screen spec references a pattern name,
-> the programmer looks it up here. When the behavior changes, it changes here
-> and applies everywhere.
+> Single source of truth for reusable interactions. Screen specs reference pattern names. Living doc — add new pattern before first use.
 >
-> This is a living document. Patterns are added as new screens are designed —
-> do not design a new interaction without checking here first. If a new pattern
-> is needed, add it here (or propose it to the ux-designer) before writing the
-> first screen spec that uses it.
->
-> **Status definitions**:
-> - **Draft**: Interaction specified but not yet implemented or validated
-> - **Stable**: Implemented, tested, and validated in at least one shipped screen
-> - **Deprecated**: Being phased out — existing uses will be migrated, do not use in new screens
+> **Status**:
+> - **Draft**: Specified, not validated.
+> - **Stable**: Implemented, tested, shipped.
+> - **Deprecated**: Phasing out. Do not use in new screens.
 
 ---
 
 ## How to Use This Library
 
-**If you are designing a screen**: Browse the Pattern Catalog Index below before
-inventing new interactions. When a standard pattern fits, reference it by name
-in the screen spec (e.g., "The confirm button uses Button (Primary) pattern").
-When no existing pattern fits, propose a new one — document it here alongside
-or before the screen spec that introduces it.
+**Designing screen**: Browse Catalog Index. Reference pattern by name. New pattern needed → add here first.
 
-**If you are implementing a screen**: When a screen spec says "use [PatternName]
-pattern," find it in this document for the complete specification. The
-implementation notes section contains engine-specific guidance. The accessibility
-section contains the requirements that are non-negotiable.
+**Implementing screen**: Look up pattern. Implementation Notes = engine guidance. Accessibility = non-negotiable.
 
-**If you are reviewing a screen spec**: Verify that all interactive elements
-reference a pattern from this library or include their own full interaction
-specification. "Standard button" or "the usual way" is not a valid reference.
+**Reviewing spec**: All interactive elements MUST reference a pattern OR have full inline spec. "Standard button" not valid.
 
-**If you are updating a pattern**: Changing a Stable pattern affects every screen
-that uses it. Before changing, audit all usages (search screen specs for the
-pattern name), determine the impact, get approval from the ux-designer, and
-update this document before or simultaneously with any implementation change.
+**Updating Stable pattern**: Audit usages. Get ux-designer approval. Update doc before/with implementation.
 
 ---
 
 ## Pattern Catalog Index
 
-> Add a row here every time a new pattern is added to this document.
-> The "Used In" column is the usages audit trail — update it when new screens
-> adopt the pattern.
+> Add row when adding pattern. Update "Used In" when adopted.
 
 | Pattern Name | Category | Description | Used In (Screens) | Status |
 |-------------|----------|-------------|------------------|--------|
-| Button (Primary) | Input | Main call-to-action. High visual weight. One per screen. | [Main Menu, Pause Menu, Settings] | Draft |
-| Button (Secondary) | Input | Alternative action or cancel. Lower visual weight than Primary. | [All modal dialogs, settings screens] | Draft |
-| Button (Destructive) | Input | Irreversible action. Requires confirmation before execution. | [Delete Save, Reset Settings] | Draft |
-| Toggle | Input | Binary on/off state selection. | [Accessibility settings, audio settings] | Draft |
-| Slider | Input | Continuous value selection. | [Volume controls, brightness, text size] | Draft |
-| Dropdown / Select | Input | Selection from a discrete list of options. | [Resolution, language, key binding] | Draft |
-| List Item | Layout / Input | Selectable row in a vertical scrollable list. | [Achievements, quest log, settings list] | Draft |
-| Grid Item | Layout / Input | Selectable cell in a two-dimensional grid. | [Inventory, ability select, item shop] | Draft |
-| Modal Dialog | Feedback / Layout | Blocking overlay requiring explicit player decision. | [Confirmation dialogs, error prompts] | Draft |
-| Confirmation Dialog | Feedback / Layout | Specific modal for destructive action confirmation. | [Delete Save, Leave Match, Reset] | Draft |
-| Toast / Notification | Feedback | Non-blocking temporary message in a screen corner. | [Achievement unlock, autosave notification] | Draft |
-| Tooltip | Feedback | Contextual information on hover or focus. | [Inventory items, ability descriptions, settings] | Draft |
-| Progress Bar | Feedback / Layout | Linear progress indicator. | [Loading screen, XP bar, quest progress] | Draft |
-| Input Field | Input | Text entry control. | [Player name, search, key binding entry] | Draft |
-| Tab Bar | Navigation | Tabbed section navigation within a single screen. | [Character sheet, settings, crafting] | Draft |
-| Scroll Container | Layout | Scrollable content region with visible scroll indicator. | [Inventory, lore entries, credits] | Draft |
-| Inventory Slot | Game-Specific | Item container in inventory grid (empty, filled, equipped, locked). | [Inventory screen, equipment screen] | Draft |
-| Ability / Skill Icon | Game-Specific | Ability button with cooldown, charges, and locked states. | [HUD ability bar, skill tree] | Draft |
-| Health / Resource Bar | Game-Specific | Value bar with threshold states and damage flash. | [HUD] | Draft |
-| Minimap | Game-Specific | Overview map with player marker and points of interest. | [HUD] | Draft |
-| Quest / Objective Tracker | Game-Specific | Active objective display with proximity and completion states. | [HUD] | Draft |
-| Dialogue Box | Game-Specific | NPC conversation UI with speaker identification. | [All dialogue sequences] | Draft |
-| Context Action Prompt | Game-Specific | Contextual "Press X to [action]" prompt near interactable objects. | [World interaction] | Draft |
-| Damage Number | Game-Specific | Floating combat feedback number. | [Combat HUD] | Draft |
-| Status Effect Icon | Game-Specific | Buff/debuff indicator with duration. | [HUD status bar, enemy health display] | Draft |
-| Notification Banner | Game-Specific | Achievement, level up, item acquired notifications. | [Global overlay] | Draft |
-| Screen Push | Navigation | Forward navigation with directional animation. | [All menu navigation] | Draft |
-| Screen Pop (Back) | Navigation | Back navigation with reversed animation. | [All menu navigation] | Draft |
-| Screen Replace | Navigation | Replace current screen without stacking history. | [Main Menu to Loading Screen] | Draft |
-| Modal Open / Close | Navigation | Overlay that dims background screen. | [All modal dialogs] | Draft |
-| Tab Switch | Navigation | Same-screen content switch between tabs. | [All tabbed screens] | Draft |
-| Focus Management | Navigation | Rules for where focus goes when screens open, close, or change. | [All screens] | Draft |
-| Escape / Cancel | Navigation | Universal back behavior across platforms and input methods. | [All screens] | Draft |
-| Loading State | Feedback | How screens and components indicate loading in progress. | [All loading states] | Draft |
-| Empty State | Feedback | How empty lists and grids are presented. | [Empty inventory, no quests, no saves] | Draft |
-| Error State | Feedback | How errors are communicated. | [Save failed, network error, invalid input] | Draft |
-| Success Confirmation | Feedback | How completed actions are confirmed. | [Settings saved, item crafted, quest turned in] | Draft |
-| Optimistic UI | Feedback | Showing assumed success before system confirmation. | [If online features are present] | Draft |
+| Button (Primary) | Input | Main CTA. High weight. One per screen. | [Main Menu, Pause, Settings] | Draft |
+| Button (Secondary) | Input | Alt/cancel action. Lower weight. | [Modal dialogs, settings] | Draft |
+| Button (Destructive) | Input | Irreversible. Requires confirmation. | [Delete Save, Reset] | Draft |
+| Toggle | Input | Binary on/off. | [Accessibility, audio] | Draft |
+| Slider | Input | Continuous value. | [Volume, brightness, text size] | Draft |
+| Dropdown / Select | Input | Discrete list selection. | [Resolution, language, key bind] | Draft |
+| List Item | Layout / Input | Selectable row in vertical list. | [Achievements, quest log, settings] | Draft |
+| Grid Item | Layout / Input | Selectable cell in 2D grid. | [Inventory, ability select, shop] | Draft |
+| Modal Dialog | Feedback / Layout | Blocking overlay needing decision. | [Confirmations, errors] | Draft |
+| Confirmation Dialog | Feedback / Layout | Modal for destructive confirm. | [Delete Save, Leave Match] | Draft |
+| Toast / Notification | Feedback | Non-blocking corner message. | [Achievement, autosave] | Draft |
+| Tooltip | Feedback | Contextual hover/focus info. | [Items, abilities, settings] | Draft |
+| Progress Bar | Feedback / Layout | Linear progress indicator. | [Loading, XP bar, quest progress] | Draft |
+| Input Field | Input | Text entry. | [Player name, search, key bind] | Draft |
+| Tab Bar | Navigation | Tabbed sections within screen. | [Character sheet, settings, crafting] | Draft |
+| Scroll Container | Layout | Scrollable region. | [Inventory, lore, credits] | Draft |
+| Inventory Slot | Game-Specific | Item container (empty/filled/equipped/locked). | [Inventory, equipment] | Draft |
+| Ability / Skill Icon | Game-Specific | Ability button with cooldown/charges/locked. | [HUD ability bar, skill tree] | Draft |
+| Health / Resource Bar | Game-Specific | Value bar with thresholds and damage flash. | [HUD] | Draft |
+| Minimap | Game-Specific | Overview map with markers. | [HUD] | Draft |
+| Quest / Objective Tracker | Game-Specific | Active objective display. | [HUD] | Draft |
+| Dialogue Box | Game-Specific | NPC conversation UI. | [Dialogue sequences] | Draft |
+| Context Action Prompt | Game-Specific | "Press X to [action]" near interactables. | [World interaction] | Draft |
+| Damage Number | Game-Specific | Floating combat number. | [Combat HUD] | Draft |
+| Status Effect Icon | Game-Specific | Buff/debuff with duration. | [HUD status, enemy display] | Draft |
+| Notification Banner | Game-Specific | Achievement/level up/item acquired. | [Global overlay] | Draft |
+| Screen Push | Navigation | Forward nav with directional anim. | [Menu navigation] | Draft |
+| Screen Pop (Back) | Navigation | Back nav with reversed anim. | [Menu navigation] | Draft |
+| Screen Replace | Navigation | Replace without stacking history. | [Main Menu to Loading] | Draft |
+| Modal Open / Close | Navigation | Overlay dimming background. | [Modal dialogs] | Draft |
+| Tab Switch | Navigation | Same-screen content swap. | [Tabbed screens] | Draft |
+| Focus Management | Navigation | Focus rules for screens. | [All screens] | Draft |
+| Escape / Cancel | Navigation | Universal back behavior. | [All screens] | Draft |
+| Loading State | Feedback | Loading indicators. | [All loading] | Draft |
+| Empty State | Feedback | Empty list/grid presentation. | [Empty inventory, no quests] | Draft |
+| Error State | Feedback | Error communication. | [Save fail, network, invalid input] | Draft |
+| Success Confirmation | Feedback | Completed action confirm. | [Settings saved, item crafted] | Draft |
+| Optimistic UI | Feedback | Show success before confirmation. | [Online features] | Draft |
 
 ---
 
@@ -112,37 +87,28 @@ update this document before or simultaneously with any implementation change.
 
 **Category**: Input
 **Status**: Draft
-**When to Use**: The single most important action on a screen. "Start Game,"
-"Confirm," "Accept," "Buy." There should be at most one Primary button visible
-at a time. It is the answer to "what does the player most likely want to do here?"
-**When NOT to Use**: Alternative or secondary actions; destructive actions that
-require confirmation before the consequence is irreversible; any action that is
-not the primary intent of the screen.
+**When to Use**: Single most important action. "Start Game," "Confirm," "Buy." Max one visible at a time.
+**When NOT to Use**: Alt/secondary actions. Destructive actions. Non-primary intent.
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Default | Full-opacity fill, primary color from art-bible. Label centered. | — | — | — | — |
-| Hovered (mouse) | Brightness +15%, subtle scale 1.03x, cursor changes to pointer | Mouse over element | Transition from Default | 80ms ease-out | [UI hover sound — see Sound Standards] |
-| Focused (keyboard/gamepad) | Focus ring visible (2px, offset 3px, high contrast color). Same brightness as Hovered. | Tab / D-pad navigation | Transition from Default | 80ms ease-out | [UI focus sound — same as hover] |
-| Pressed | Scale 0.97x, brightness -10% | Click / Enter / A (Xbox) / Cross (PS) | Action fires on press-up, not press-down. Scale on press-down. | 60ms ease-in for press; 80ms ease-out on release | [UI confirm sound] |
-| Disabled | 40% opacity, no pointer cursor, no hover state | — | No response | — | — |
-| Loading (post-press) | Replace label with spinner. Button remains at pressed scale, disabled state. | — | Prevents double-submission | Duration of async operation | — |
+| Default | Full-opacity fill, primary color. Label centered. | — | — | — | — |
+| Hovered (mouse) | Brightness +15%, scale 1.03x, pointer cursor | Mouse over | From Default | 80ms ease-out | [UI hover] |
+| Focused (kb/gamepad) | Focus ring (2px, offset 3px, high contrast). Same brightness as Hovered. | Tab / D-pad | From Default | 80ms ease-out | [UI focus] |
+| Pressed | Scale 0.97x, brightness -10% | Click / Enter / A / Cross | Action fires on press-up. Scale on press-down. | 60ms in / 80ms out | [UI confirm] |
+| Disabled | 40% opacity, no pointer | — | None | — | — |
+| Loading | Spinner replaces label. Button stays pressed/disabled. | — | Prevent double-submit | Async duration | — |
 
 **Accessibility**:
-- Keyboard: Tab to focus, Enter or Space to activate. Must be reachable from any other interactive element on screen via Tab sequence.
-- Gamepad: D-pad or left stick to navigate focus to button. A (Xbox) / Cross (PS) to activate. Focus must be placed on Primary button by default when screen opens.
-- Screen reader: Button must expose accessible name matching visible label. Role: "button." State: "dimmed" when disabled. Activation announcement: "[Label] button — [result of action, if known]."
-- Colorblind: Do not rely on color alone to distinguish Primary from Secondary. Primary uses higher visual weight (fill vs. outline, or larger size) in addition to color differentiation.
-- Minimum touch target: 44x44pt (iOS HIG) / 48x48dp (Android). Apply even on PC if touch support is possible.
+- Keyboard: Tab to focus, Enter/Space to activate. Reachable via Tab from any element.
+- Gamepad: D-pad/stick to focus. A (Xbox) / Cross (PS) activates. Default focus on screen open.
+- Screen reader: Role "button". Name = label. State "dimmed" when disabled. Announce: "[Label] button — [result]."
+- Colorblind: Higher visual weight (fill vs outline, size) plus color. Never color alone.
+- Touch target: min 44x44pt iOS / 48x48dp Android.
 
-**Implementation Notes**:
-[Godot: Extend `Button` control. Override `_draw()` for custom states rather than
-modifying themes mid-state. Use `focus_mode = FOCUS_ALL` to ensure keyboard
-focusability. Set `mouse_default_cursor_shape = CURSOR_POINTING_HAND`. For the
-scale animation, use a Tween on the `scale` property of the button's parent
-Control — scaling the Button itself can clip children.]
+**Implementation Notes**: Unity: UI Toolkit (preferred) or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -150,30 +116,22 @@ Control — scaling the Button itself can clip children.]
 
 **Category**: Input
 **Status**: Draft
-**When to Use**: Alternative or cancel action. "Back," "Cancel," "Skip," "Maybe
-Later." Lower visual weight than Primary — it should recede visually, not compete.
-**When NOT to Use**: Destructive actions (use Button (Destructive)). The most
-important action on the screen (use Button (Primary)).
+**When to Use**: Alt/cancel. "Back," "Cancel," "Skip." Recedes visually.
+**When NOT to Use**: Destructive actions (use Destructive). Most important action (use Primary).
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Default | Outlined style (border only, transparent fill), secondary color. Slightly smaller or lower weight than Primary. | — | — | — | — |
-| Hovered | Background fill appears at 15% opacity. Border brightens. Scale 1.02x. | Mouse over | Transition from Default | 80ms ease-out | [UI hover sound — softer variant than Primary] |
-| Focused | Focus ring, same specification as Primary. | Tab / D-pad | Transition from Default | 80ms ease-out | [UI focus sound] |
-| Pressed | Scale 0.97x, fill opacity increases to 30% | Click / Enter / B (Xbox) / Circle (PS) on focused state | Action fires on press-up | 60ms ease-in | [UI cancel/back sound] |
-| Disabled | 40% opacity | — | No response | — | — |
+| Default | Outlined, transparent fill, secondary color. Smaller/lower weight than Primary. | — | — | — | — |
+| Hovered | Fill 15% opacity. Border brightens. Scale 1.02x. | Mouse over | From Default | 80ms ease-out | [UI hover, soft] |
+| Focused | Focus ring (same as Primary). | Tab / D-pad | From Default | 80ms ease-out | [UI focus] |
+| Pressed | Scale 0.97x, fill 30% | Click / Enter / B / Circle | Action on press-up | 60ms ease-in | [UI cancel/back] |
+| Disabled | 40% opacity | — | None | — | — |
 
-**Accessibility**: Same requirements as Button (Primary). Accessible name must
-match visible label. In a dialog with Primary and Secondary buttons, the Secondary
-button typically maps to the platform "cancel" input (B / Circle / Escape) as well
-as direct focus activation.
+**Accessibility**: Same as Primary. In dialogs, Secondary maps to platform cancel (B / Circle / Esc).
 
-**Implementation Notes**: [Same as Button (Primary). Where a Primary and Secondary
-appear together, ensure Secondary is always positioned consistently — right/bottom
-of Primary on horizontal layouts, or below Primary on vertical layouts. Consistency
-across screens is more important than per-screen aesthetic preference.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -181,32 +139,24 @@ across screens is more important than per-screen aesthetic preference.]
 
 **Category**: Input
 **Status**: Draft
-**When to Use**: Any action that is irreversible and causes loss of player data or
-significant progress: "Delete Save File," "Reset All Settings," "Leave Match,"
-"Discard Changes." The visual treatment signals danger before the player presses.
-**When NOT to Use**: Actions that can be undone, or actions that are merely
-consequential but reversible.
+**When to Use**: Irreversible action. "Delete Save," "Reset Settings," "Leave Match," "Discard."
+**When NOT to Use**: Reversible actions.
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Default | Outlined or filled with destructive color (typically a desaturated red — confirm colorblind compatibility in accessibility-requirements). Label may include a warning icon. | — | — | — | — |
-| Hovered / Focused | Same behavior as Button (Primary) hover/focus but with destructive color | — | — | 80ms | [UI hover sound] |
-| Pressed (first press) | Does NOT execute the action. Instead, opens Confirmation Dialog pattern (see below). The button itself shows a brief pulse animation. | Click / Enter | Trigger Confirmation Dialog | 100ms pulse | [UI warning sound — distinct from standard confirm] |
-| — | Confirmation Dialog handles the actual execution | — | — | — | — |
-| Disabled | 40% opacity | — | No response | — | — |
+| Default | Destructive color (desaturated red — verify colorblind). Optional warning icon. | — | — | — | — |
+| Hovered / Focused | Like Primary but destructive color | — | — | 80ms | [UI hover] |
+| Pressed (first press) | Does NOT execute. Opens Confirmation Dialog. Brief pulse. | Click / Enter | Trigger Confirmation Dialog | 100ms pulse | [UI warning, distinct] |
+| — | Confirmation Dialog handles execution | — | — | — | — |
+| Disabled | 40% opacity | — | None | — | — |
 
-> **Critical rule**: A Button (Destructive) NEVER executes its action directly.
-> It always triggers a Confirmation Dialog. There are no exceptions. A player
-> who presses it by accident must always have one more opportunity to back out.
-> Games that skip confirmation on destructive actions generate the most visible
-> negative community sentiment of any UX failure type. See: every "accidentally
-> deleted save file" complaint on any game forum.
+> **Critical rule**: Destructive button NEVER executes directly. ALWAYS triggers Confirmation Dialog. No exceptions.
 
-**Accessibility**: Screen reader must announce the destructive nature: "[Label] button — this action cannot be undone." In addition to accessible name, use the `description` property if available to add the warning text.
+**Accessibility**: Screen reader: "[Label] button — this action cannot be undone." Use `description` for warning.
 
-**Implementation Notes**: [Destructive button triggers a separate Confirmation Dialog scene. Pass the action callback to the dialog — the button itself does not hold the execution logic. This separation prevents accidental execution if the confirmation dialog has a bug.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -214,35 +164,26 @@ consequential but reversible.
 
 **Category**: Input
 **Status**: Draft
-**When to Use**: Binary on/off settings where both states are equally valid and
-the current state must be visible at a glance. "Subtitles: On/Off," "Aim Assist:
-On/Off," "Notifications: On/Off."
-**When NOT to Use**: Selections from more than two options (use Dropdown). Actions
-that happen once rather than representing a persistent state (use Button). Cases
-where the consequence of toggling is complex enough to need explanation (show
-a description field alongside).
+**When to Use**: Binary on/off, current state visible at glance. "Subtitles On/Off."
+**When NOT to Use**: 3+ options (Dropdown). One-shot actions (Button). Complex consequences (add description).
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Off / Default | Track: muted fill. Thumb: leftmost position. Label: "Off" or state label. | — | — | — | — |
-| Hovered | Track brightens 10%. Cursor: pointer. | Mouse over | Transition | 60ms | [UI hover sound] |
-| Focused | Focus ring around entire toggle element (track + thumb). | Tab / D-pad | — | 60ms | [UI focus sound] |
-| Pressed / Activated | Thumb slides to right side. Track fill changes to active color. Label changes to "On" or active state label. State persists. | Click / Enter / A / Cross | Toggle state change. Fire onChange event. Persist value. | 150ms ease-in-out for slide | [Toggle ON sound] |
-| Pressed / Deactivated | Thumb slides to left. Track reverts to muted fill. | Same inputs | Toggle state change | 150ms ease-in-out | [Toggle OFF sound — subtly different from ON] |
-| Disabled | 40% opacity. No interaction. Current state still visible. | — | No response | — | — |
+| Off / Default | Track muted. Thumb left. Label "Off". | — | — | — | — |
+| Hovered | Track +10% brightness. Pointer cursor. | Mouse over | Transition | 60ms | [UI hover] |
+| Focused | Focus ring around track + thumb. | Tab / D-pad | — | 60ms | [UI focus] |
+| Activated (On) | Thumb slides right. Track active color. Label "On". | Click / Enter / A / Cross | State change. Fire onChange. Persist. | 150ms ease-in-out | [Toggle ON] |
+| Activated (Off) | Thumb slides left. Track muted. | Same | State change | 150ms ease-in-out | [Toggle OFF] |
+| Disabled | 40% opacity. State visible. | — | None | — | — |
 
 **Accessibility**:
-- Keyboard/Gamepad: Space or Enter to toggle. Avoid requiring directional inputs (left/right) to toggle — some users cannot predict that behavior.
-- Screen reader: Role: "switch." State: "on" or "off" — the accessible name should NOT include the state (the screen reader announces state separately). Correct: accessible name "Subtitles," state "on." Incorrect: accessible name "Subtitles On."
-- The toggle label (not just the visual thumb position) must change to show current state for players who cannot reliably distinguish left from right positions.
+- Space/Enter to toggle. Avoid directional inputs.
+- Screen reader: Role "switch". State "on"/"off" — name does NOT include state. Correct: name "Subtitles", state "on".
+- Label changes with state (not just thumb position) for left/right perception issues.
 
-**Implementation Notes**: [Godot: Use a custom Control or a CheckButton. The
-built-in CheckButton provides accessibility role but uses a checkbox-style visual;
-a custom slide-toggle animation may be needed for the target art style. Ensure
-the slide animation is skipped when motion reduction mode is active — in that
-case, snap to final state instantly.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -250,36 +191,28 @@ case, snap to final state instantly.]
 
 **Category**: Input
 **Status**: Draft
-**When to Use**: Selecting a value from a continuous range where approximate values
-are acceptable and the range and relative position matter. Volume (0–100%), brightness,
-text size. The visual representation of position is itself useful information.
-**When NOT to Use**: Precise value entry (use Input Field). Selection from a short
-discrete list (use Dropdown). Binary state (use Toggle).
+**When to Use**: Continuous range, approximate values OK. Volume, brightness, text size.
+**When NOT to Use**: Precise values (Input Field). Discrete short list (Dropdown). Binary (Toggle).
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Default | Track (full width). Fill (left of thumb, shows current value). Thumb (draggable handle). Current value label (right of track or above thumb). | — | — | — | — |
-| Hovered | Thumb enlarges slightly (1.2x). Track brightens. | Mouse over | — | 60ms | — |
-| Focused | Focus ring on thumb. Track brightens. | Tab / D-pad | — | 60ms | [UI focus sound] |
-| Dragging (mouse) | Thumb follows cursor. Fill updates in real time. Value label updates in real time. | Click + drag on thumb | Continuous value update. Fire onChange continuously. | Real time | [Slider adjust sound — subtle, loops while dragging] |
-| Keyboard / D-pad adjust | Thumb moves one step (5% of range per press, or 1 discrete unit). | Left/Right arrows or Left/Right D-pad while focused | Step value change. Fire onChange per step. | Instant | [Slider step sound — one click per step] |
-| Keyboard fast adjust | Larger step (25% of range). | Page Up / Page Down while focused | Large step value change | Instant | [Same step sound] |
-| Released | Value locks. onChange fires final value. | Mouse release | — | — | — |
-| Disabled | 40% opacity. No interaction. Value visible. | — | No response | — | — |
+| Default | Track. Fill (left of thumb). Thumb. Value label. | — | — | — | — |
+| Hovered | Thumb 1.2x. Track brightens. | Mouse over | — | 60ms | — |
+| Focused | Focus ring on thumb. Track brightens. | Tab / D-pad | — | 60ms | [UI focus] |
+| Dragging | Thumb follows cursor. Real-time fill + label. | Click + drag | Continuous onChange | Real time | [Slider adjust loop] |
+| Step adjust | Thumb moves one step (5% or 1 unit). | Left/Right arrows or D-pad | Step change. onChange per step. | Instant | [Slider step] |
+| Fast adjust | Larger step (25%). | Page Up/Down | Large step | Instant | [Same] |
+| Released | Value locks. Final onChange. | Mouse release | — | — | — |
+| Disabled | 40% opacity. Value visible. | — | None | — | — |
 
 **Accessibility**:
-- Keyboard: Left/Right arrows to adjust by small step. Page Up/Page Down for large step. Home/End to jump to min/max.
-- Screen reader: Role: "slider." Accessible name: the label (e.g., "Music Volume"). Current value announced on every change: "Music Volume, 80 percent." Min/max values announced on first focus.
-- All sliders must show a numeric value alongside the visual position. Relying only on track fill position excludes players who cannot perceive relative position.
+- Left/Right = small step. PageUp/Down = large. Home/End = min/max.
+- Screen reader: Role "slider". Name = label. Value announced on change: "Music Volume, 80 percent." Min/max on first focus.
+- Always show numeric value alongside fill.
 
-**Implementation Notes**: [Godot `HSlider`: set `step` to appropriate increment.
-Override keyboard input to add Page Up/Down support via `_input()`. Bind the
-`value_changed` signal to update the displayed numeric label. When motion reduction
-mode is enabled, ensure value label updates are the sole feedback — do not suppress
-them. Rumble feedback on gamepad slider adjustment is a nice enhancement for
-accessibility.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -287,36 +220,28 @@ accessibility.]
 
 **Category**: Input
 **Status**: Draft
-**When to Use**: Selection from a discrete list of 3-15 options where only the
-selected value needs to be visible at rest. Display resolution, language, window
-mode, input preset. The closed state shows only the current selection.
-**When NOT to Use**: Binary choices (use Toggle). More than ~15 options (use a
-full List pattern or a scrollable Select). When comparing options matters as much
-as selecting one (show options visibly, e.g., as a horizontal selector or list).
+**When to Use**: 3-15 discrete options, only selected value visible at rest. Resolution, language.
+**When NOT to Use**: Binary (Toggle). 15+ options (List/scrollable). Visible comparison needed.
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Closed / Default | Label (left). Current value (right). Chevron-down icon (far right). | — | — | — | — |
-| Hovered | Row background fills at 10% opacity | Mouse over | — | 60ms | — |
-| Focused (closed) | Focus ring on entire row. | Tab / D-pad | — | 60ms | [UI focus sound] |
-| Opening | Dropdown list appears below (or above if near screen bottom). List items visible. Previously selected item highlighted. Focus moves to selected item inside list. | Click / Enter / A / Cross | Open list | 100ms ease-out (expand) | [UI expand sound] |
-| List item hovered/focused | List item highlights | Mouse / D-pad | — | 60ms | [UI hover sound] |
-| List item selected | List closes. Closed state shows new value. onChange event fires. | Click / Enter / A / Cross on item | Select value, close list | 80ms ease-in (collapse) | [UI confirm sound] |
-| Dismissed without selecting | List closes. Value unchanged. | Escape / B / Circle / click outside | Dismiss | 80ms | [UI cancel sound] |
-| Disabled | 40% opacity. No interaction. | — | — | — | — |
+| Closed / Default | Label (left). Value (right). Chevron-down. | — | — | — | — |
+| Hovered | Row fill 10% | Mouse over | — | 60ms | — |
+| Focused (closed) | Focus ring on row. | Tab / D-pad | — | 60ms | [UI focus] |
+| Opening | List appears below (or above near bottom). Selected item highlighted/focused. | Click / Enter / A / Cross | Open list | 100ms expand | [UI expand] |
+| List item hovered/focused | Highlights | Mouse / D-pad | — | 60ms | [UI hover] |
+| Item selected | Closes. New value shown. onChange fires. | Click / Enter / A / Cross | Select, close | 80ms collapse | [UI confirm] |
+| Dismissed | Closes. Value unchanged. | Esc / B / Circle / outside click | Dismiss | 80ms | [UI cancel] |
+| Disabled | 40% opacity | — | — | — | — |
 
 **Accessibility**:
-- Keyboard: Up/Down arrows navigate list items while open. Enter selects. Escape dismisses. First letter of an option jumps focus to first matching item.
-- Screen reader: Role: "combobox." Accessible name: the field label. Expanded/collapsed state announced. Current value announced when focused. Each list item announces its value and position: "English, 1 of 12."
-- The dropdown list must never obscure the current item or the control that opened it — this is a common failure on small screens.
+- Up/Down arrows in list. Enter selects. Esc dismisses. First-letter jump.
+- Screen reader: Role "combobox". Expanded/collapsed announced. Items: "English, 1 of 12."
+- List MUST NOT obscure current item or opening control.
 
-**Implementation Notes**: [Godot: Custom implementation using a `Button` (the
-closed state) and a `PopupMenu` or a `VBoxContainer` revealed by animation. Native
-`OptionButton` provides accessibility but limited visual customization. Ensure
-the popup positions itself above the control if it would be clipped by the screen
-bottom. Close the popup on `_input` detecting click outside its rect.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -324,33 +249,26 @@ bottom. Close the popup on `_input` detecting click outside its rect.]
 
 **Category**: Layout / Input
 **Status**: Draft
-**When to Use**: A single selectable row in a vertically scrollable list. Achievements,
-quest log entries, settings categories, save file slots. The list is the container;
-this is the row within it.
-**When NOT to Use**: Grid layouts where items exist in two dimensions (use Grid Item).
-Non-selectable content rows (remove hover/focus states and the pressed state).
+**When to Use**: Selectable row in vertical list. Achievements, quests, save slots.
+**When NOT to Use**: 2D grid (Grid Item). Non-selectable rows (drop hover/focus/pressed).
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Default | Full-width row. Icon (optional, left). Primary label. Secondary label / metadata (right or below primary). Chevron (right, if navigates deeper). | — | — | — | — |
-| Hovered | Row background at 12% opacity highlight. | Mouse over | — | 60ms | — |
-| Focused | Focus ring on row OR row background at 20% opacity (consistent with platform convention). | D-pad / Tab | — | 60ms | [UI focus sound] |
-| Selected (persistent) | Row background at 25% opacity. May show a selection indicator (left border, checkmark). Distinct from focused state — a row can be selected but not focused. | — | Rendered state | — | — |
-| Pressed / Activated | Brief brightness flash, then navigates or performs action | Click / Enter / A / Cross | Navigation or action | 80ms flash | [UI confirm sound] |
-| Disabled | 40% opacity. No interaction. | — | — | — | — |
+| Default | Full-width row. Optional icon left. Primary label. Optional metadata. Optional chevron right. | — | — | — | — |
+| Hovered | Row bg 12% highlight | Mouse over | — | 60ms | — |
+| Focused | Focus ring OR row bg 20%. | D-pad / Tab | — | 60ms | [UI focus] |
+| Selected (persistent) | Row bg 25%. Optional left-border or checkmark. Distinct from focused. | — | Rendered | — | — |
+| Pressed | Brightness flash, then nav/action | Click / Enter / A / Cross | Nav or action | 80ms flash | [UI confirm] |
+| Disabled | 40% opacity | — | — | — | — |
 
 **Accessibility**:
-- Keyboard/Gamepad: Up/Down arrows or D-pad to move between list items. The list must handle focus cycling — reaching the bottom should stop (not wrap) unless wrapping is explicitly designed.
-- Screen reader: Role: "listitem." Parent list role: "list." Accessible name: primary label content. Metadata (secondary label) is optionally included in the description. Position announced: "Quest Log, 3 of 12."
-- Minimum row height: 44pt / 48dp for touch. For controller-primary platforms, 56px rows are more comfortable.
+- Up/Down or D-pad navigates. Reaching bottom stops (no wrap unless designed).
+- Screen reader: Role "listitem", parent "list". Name = primary label. Position: "Quest Log, 3 of 12."
+- Min row height: 44pt / 48dp touch. 56px for controller-primary.
 
-**Implementation Notes**: [Godot: Use a `VBoxContainer` inside a `ScrollContainer`.
-Each row is a custom `Control` or `PanelContainer` with a `_gui_input` override.
-For keyboard navigation inside the scroll container, implement custom focus
-traversal — Godot's default Tab navigation does not scroll the container to keep
-focused items in view. Use `ensure_control_visible()` on the scroll container.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -358,36 +276,30 @@ focused items in view. Use `ensure_control_visible()` on the scroll container.]
 
 **Category**: Layout / Input
 **Status**: Draft
-**When to Use**: A selectable cell in a two-dimensional grid. Inventory slots,
-ability select, crafting ingredient selection, character portrait selection. The
-grid is the container; this is the cell.
-**When NOT to Use**: Single-column content (use List Item). Non-selectable display
-cells (remove interactive states).
+**When to Use**: 2D grid cell. Inventory, ability select, crafting, portraits.
+**When NOT to Use**: Single column (List Item). Non-selectable display cells.
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Empty | Empty slot visual (subtle border or dashed outline). Different from disabled. | — | — | — | — |
-| Populated | Item icon fills cell. Stack count (bottom right, if applicable). Quality indicator (border color or icon overlay). | — | — | — | — |
-| Hovered | Brightness +15%. Tooltip appears after 400ms delay. | Mouse over | — | 60ms | — |
-| Focused | Focus ring (2px, offset 2px). Same brightness as hovered. Tooltip appears after 400ms delay or immediately on gamepad. | D-pad navigation | — | 60ms | [UI focus sound] |
-| Selected (persistent) | Distinct border (thicker, contrasting color). May show selection checkmark. | Click / Enter / A / Cross | Select item. Can coexist with focused state on a different cell. | Instant | [UI select sound] |
-| Pressed | Brief scale 0.95x, then executes action | Double-click / Enter / A / Cross | Action (equip, use, inspect — defined by context) | 80ms | [UI confirm sound] |
-| Locked | Padlock overlay icon on populated content. No hover/focus states. | — | No interaction | — | — |
-| Drag source | Cell dims (50% opacity), drag preview appears at cursor. | Click + drag (mouse only) | Begin drag operation | Instant | [UI grab sound] |
-| Drop target (valid) | Cell brightens, accepting color indicator | Item dragged over | — | 60ms | — |
-| Drop target (invalid) | Red tint or shake animation | Item dragged over invalid slot | — | 60ms | [UI error sound] |
+| Empty | Subtle border or dashed outline. Distinct from disabled. | — | — | — | — |
+| Populated | Item icon. Stack count bottom-right. Quality border/overlay. | — | — | — | — |
+| Hovered | Brightness +15%. Tooltip after 400ms. | Mouse over | — | 60ms | — |
+| Focused | Focus ring (2px, offset 2px). Tooltip after 400ms (300ms gamepad). | D-pad | — | 60ms | [UI focus] |
+| Selected (persistent) | Distinct border (thicker, contrasting). Optional checkmark. | Click / Enter / A / Cross | Select. Coexists with focus. | Instant | [UI select] |
+| Pressed | Scale 0.95x, then action | Double-click / Enter / A / Cross | Action (equip/use/inspect) | 80ms | [UI confirm] |
+| Locked | Padlock overlay. No interaction. | — | None | — | — |
+| Drag source | 50% opacity, drag preview at cursor. | Click + drag (mouse) | Begin drag | Instant | [UI grab] |
+| Drop target (valid) | Brightens, accept color | Item over cell | — | 60ms | — |
+| Drop target (invalid) | Red tint or shake | Invalid drop | — | 60ms | [UI error] |
 
 **Accessibility**:
-- Keyboard/Gamepad: D-pad or arrow keys navigate cells. The grid must communicate its dimensions to screen readers. Row/column position announced.
-- Screen reader: Role: "gridcell." Parent role: "grid." Accessible name: item name (or "empty slot" for empty cells). State: "selected" when selected, "dimmed" when locked. Position: "row 2, column 3."
-- Tooltips must be reachable by keyboard — they must appear when the cell is focused, not only when hovered.
+- D-pad/arrows navigate. Grid dimensions communicated. Row/col announced.
+- Screen reader: Role "gridcell", parent "grid". Name = item or "empty slot". State "selected"/"dimmed". Position: "row 2, column 3."
+- Tooltips MUST appear on focus, not only hover.
 
-**Implementation Notes**: [Godot: `GridContainer` with fixed column count. Each
-cell is a custom `Control`. Implement custom D-pad navigation by overriding
-`_gui_input` and calculating the cell to the left/right/above/below based on
-index and column count. `GridContainer` does not provide this natively.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -395,41 +307,27 @@ index and column count. `GridContainer` does not provide this natively.]
 
 **Category**: Feedback / Layout
 **Status**: Draft
-**When to Use**: A decision or acknowledgment that must be resolved before the
-player can continue. The dialog is blocking — background content is dimmed and
-non-interactive. "Are you sure?", "Your progress will be saved.", error states.
-**When NOT to Use**: Non-blocking notifications (use Toast / Notification). Information
-that can wait until the player is ready (add it to a persistent help system instead).
-Dialogs that should allow the player to continue playing behind them.
+**When to Use**: Decision/ack must resolve before continuing. Background dimmed, non-interactive.
+**When NOT to Use**: Non-blocking (Toast). Deferrable info (help system). Background should remain interactive.
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Opening | Background overlay animates from 0 to 60% opacity. Dialog panel scales from 0.9 to 1.0. Dialog enters from center (not from an edge). | Triggered by code | Focus moves to first interactive element in dialog (or the Primary button) | 200ms ease-out | [UI modal open sound] |
-| Active | Background non-interactive. Dialog has all input focus. Player cannot interact with background. | Keyboard / gamepad navigates within dialog only | — | — | — |
-| Dismissing (confirmed) | Dialog panel scales to 1.1 then fades. Overlay fades to 0%. | Primary button pressed | Execute action, return focus to trigger element | 180ms | [UI confirm sound] |
-| Dismissing (cancelled) | Dialog panel scales to 0.9 then fades. Overlay fades to 0%. | Secondary button / Escape / B / Circle | No action, return focus to trigger element | 150ms | [UI cancel sound] |
-| Cannot dismiss | If the dialog represents a blocking error, do not provide a cancel path. Provide only resolution options. | — | — | — | — |
+| Opening | Overlay 0→60% opacity. Dialog scale 0.9→1.0. Center entry. | Code | Focus to first interactive (or Primary) | 200ms ease-out | [UI modal open] |
+| Active | Background non-interactive. Input within dialog only. | Kb/gamepad in dialog | — | — | — |
+| Dismissing (confirmed) | Scale to 1.1, fade. Overlay fades. | Primary pressed | Execute, return focus to trigger | 180ms | [UI confirm] |
+| Dismissing (cancelled) | Scale to 0.9, fade. Overlay fades. | Secondary / Esc / B / Circle | No action, return focus | 150ms | [UI cancel] |
+| Cannot dismiss | Blocking error: provide only resolution, no cancel. | — | — | — | — |
 
-> **Focus trap rule**: While a modal dialog is open, Tab and D-pad navigation
-> must cycle within the dialog's interactive elements only. It must not be possible
-> to navigate focus outside the dialog to the background content. This is both
-> an accessibility requirement (WCAG 2.1 SC 2.1.2) and a UX integrity requirement.
-> When the dialog closes, focus must return to the element that triggered it,
-> not to the top of the page.
+> **Focus trap rule**: Tab/D-pad cycle within dialog only. WCAG 2.1 SC 2.1.2. On close, focus returns to trigger.
 
 **Accessibility**:
-- Screen reader: Dialog container role: "dialog." Accessible name: dialog title (required — every dialog must have a title, even if visually hidden). On open, screen reader announces dialog title and first focusable element. Focus trap active.
-- Keyboard: Escape key always maps to the cancel/dismiss action (same as Secondary button or close button). Enter always maps to the primary/confirm action.
-- Motion reduction: Scale animation replaced with instant appear/disappear. Overlay fade retained at 100ms (faster).
+- Role "dialog". Name = title (required, even if hidden visually). Announce title + first focusable on open. Focus trap.
+- Esc = cancel. Enter = primary.
+- Motion reduction: instant appear/disappear. Overlay fade 100ms.
 
-**Implementation Notes**: [Godot: Implement as a `CanvasLayer` with a high layer
-value (100+) to ensure it renders above all game content. The background overlay
-is a full-screen `ColorRect` at 60% black opacity. Use `grab_focus()` on the
-dialog's primary button after the open animation completes. Override `_input()` to
-implement the focus trap — intercept Tab navigation and reroute to the dialog's
-focusable elements.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -437,33 +335,21 @@ focusable elements.]
 
 **Category**: Feedback / Layout
 **Status**: Draft
-**When to Use**: The specific case of confirming a destructive action. Always
-triggered by Button (Destructive). Always has exactly two options: confirm (labeled
-with the specific action, not "OK") and cancel.
-**When NOT to Use**: Non-destructive confirmations. Errors or notifications that
-do not require a decision. Any dialog with more than two actions.
+**When to Use**: Confirm destructive action. Triggered by Button (Destructive). Always 2 options: confirm (specific action) + cancel.
+**When NOT to Use**: Non-destructive. Notifications without decision. 3+ actions.
 
-> **Label rule**: The confirm button must be labeled with the specific action,
-> not a generic "OK" or "Yes." "Delete Save File" not "OK." "Leave Match" not
-> "Yes." This reduces mistakes for players who have difficulty reading the dialog
-> content quickly. The pattern comes from Apple HIG and is validated by decades
-> of usability research.
+> **Label rule**: Confirm button labeled with specific action, NOT "OK" or "Yes". "Delete Save File" not "OK". Apple HIG.
 
 **Structure**:
-- Title: Brief, action-describing. "Delete save file?" not "Are you sure?"
-- Body: One sentence stating the consequence. "This cannot be undone."
-- Confirm button: Button (Primary) — labeled with the specific action. "Delete Save File."
-- Cancel button: Button (Secondary) — "Cancel."
-- Default focus: Cancel (safer default — reduces accidental destructive actions).
+- Title: action-describing. "Delete save file?" not "Are you sure?"
+- Body: one sentence consequence. "This cannot be undone."
+- Confirm: Button (Primary), specific action label.
+- Cancel: Button (Secondary), "Cancel."
+- Default focus: Cancel.
 
-**Accessibility**: Inherits all Modal Dialog accessibility. Additionally: screen
-reader announces "Alert dialog, [title]" to signal destructive context. Default
-focus on Cancel is a requirement, not a preference.
+**Accessibility**: Inherits Modal Dialog. Announce "Alert dialog, [title]". Default focus on Cancel = requirement.
 
-**Implementation Notes**: [Confirmation Dialog is a specific instance of Modal
-Dialog — implement it as a subclass or as a parameterized scene. The default
-focus on Cancel is critical: set `grab_focus()` on the Cancel button, not the
-Confirm button, after open animation completes.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -471,35 +357,26 @@ Confirm button, after open animation completes.]
 
 **Category**: Feedback
 **Status**: Draft
-**When to Use**: Brief, non-blocking information that does not require a player
-decision. "Game saved." "Achievement unlocked." "Your inventory is full." The player
-can continue playing; the notification disappears on its own.
-**When NOT to Use**: Information that requires a decision (use Modal Dialog).
-Errors that require the player to take action. Critical information that the player
-must not miss.
+**When to Use**: Brief non-blocking info. "Game saved." "Achievement unlocked." Auto-disappears.
+**When NOT to Use**: Decisions (Modal). Errors needing action. Critical info player must not miss.
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Entering | Slides in from screen edge (typically bottom-right, away from primary action areas). Fades from 0 to 100% opacity. | Triggered by code | — | 200ms ease-out | [Sound matching notification type — see Sound Standards] |
-| Displayed | Full opacity. Optional: icon (left), title, body text (optional), dismiss button (X, optional). | Pointer hover pauses auto-dismiss timer | Pause auto-dismiss | — | — |
-| Auto-dismiss | Fades from 100 to 0% opacity, slides out | Timer expires (5 seconds default for one-line; 8 seconds for two-line) | Remove from queue | 200ms ease-in | — |
-| Manual dismiss | Fades and slides out immediately | Click/tap X button or swipe on touch | Remove | 150ms | [UI cancel sound, quiet] |
-| Queue overflow | New notification pushes oldest out early | New notification triggered while previous is displayed | FIFO queue, max 3 simultaneous | — | — |
+| Entering | Slide from edge (typically bottom-right). Fade 0→100%. | Code | — | 200ms ease-out | [Sound by type] |
+| Displayed | Full opacity. Optional icon, title, body, dismiss X. | Hover pauses timer | Pause auto-dismiss | — | — |
+| Auto-dismiss | Fade + slide out | Timer (5s 1-line, 8s 2-line) | Remove | 200ms ease-in | — |
+| Manual dismiss | Fade + slide immediately | Click X / swipe | Remove | 150ms | [UI cancel, quiet] |
+| Queue overflow | New pushes oldest out | New while displayed | FIFO, max 3 simultaneous | — | — |
 
 **Accessibility**:
-- Screen reader: Toasts must be read aloud without requiring focus. In HTML, this uses `role="status"` or `role="alert"`. In game UI, this requires the engine's accessibility notification system. Verify engine support in engine-reference docs.
-- Motion reduction: Slide animation replaced with fade only.
-- Toasts must never be the sole communication channel for information the player needs to act on. If the information requires action, use a persistent UI element in addition to the toast.
-- Auto-dismiss timer: 5 seconds is the minimum. Players with cognitive processing differences may need more time. Consider a setting to extend to 10 or 15 seconds.
+- Read aloud without focus. HTML: `role="status"` or `role="alert"`. Verify engine support.
+- Motion reduction: fade only, no slide.
+- Never sole channel for actionable info. Pair with persistent UI.
+- Auto-dismiss min 5s. Consider 10-15s setting for cognitive accessibility.
 
-**Implementation Notes**: [Godot: Manage a queue of `PanelContainer` scenes in a
-`VBoxContainer` anchored to a screen corner. Each toast is instantiated, added to
-the container, then auto-removed after a timer. The container should be on a high
-`CanvasLayer` (50+) but below modal dialogs (100+). Animate using a `Tween` on
-`modulate.a` and `position.x`. When motion reduction is active, skip the position
-animation.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -507,36 +384,26 @@ animation.]
 
 **Category**: Feedback
 **Status**: Draft
-**When to Use**: Contextual information that supplements a visible label. Item
-descriptions in inventory. Stat explanations on a character sheet. Setting
-descriptions in accessibility options. The player must be able to access this
-information or proceed without it.
-**When NOT to Use**: Information the player MUST read to complete an action — put
-that in the label or body text, not a tooltip. Tooltips are not discoverable
-on mobile touch without a hover state. On touch-only platforms, use an info button
-that opens a description modal instead.
+**When to Use**: Supplemental info. Item descriptions, stat explanations. Non-blocking.
+**When NOT TO Use**: Required reading (use label/body). Touch-only platforms (use info button + modal).
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
 | Hidden | — | — | — | — | — |
-| Hover trigger | — | Mouse enters element | Begin 400ms delay timer | — | — |
-| Gamepad/keyboard trigger | — | Element receives focus | Begin 300ms delay timer (shorter because navigation is intentional) | — | — |
-| Appearing | Tooltip panel fades in and scales from 0.95 to 1.0. Positioned near element (prefer above, adjust if near screen edge). | Timer expires | Show tooltip | 120ms ease-out | — |
-| Displayed | Tooltip visible. Title (optional). Body text. Max width: 300px. Multiple lines allowed. | — | — | — | — |
-| Hiding | Tooltip fades out | Mouse leaves element / focus moves away | Hide tooltip | 80ms ease-in | — |
+| Hover trigger | — | Mouse enters | 400ms delay timer | — | — |
+| Gamepad/kb trigger | — | Element focused | 300ms delay timer | — | — |
+| Appearing | Fade in, scale 0.95→1.0. Above element (adjust near edge). | Timer expires | Show | 120ms ease-out | — |
+| Displayed | Optional title. Body. Max 300px. Multi-line OK. | — | — | — | — |
+| Hiding | Fade out | Mouse leaves / focus moves | Hide | 80ms ease-in | — |
 
 **Accessibility**:
-- Screen reader: Tooltip content must be accessible without hover. The accessible name of the parent element should include the most critical tooltip information. The full tooltip text is optionally in the `description` property. Screen reader reads tooltip content when element is focused.
-- The delay (300-400ms) prevents accidental tooltip display and is required — instant tooltips are disruptive in gamepad navigation.
-- Tooltip text must meet the same contrast requirements as body text (4.5:1 minimum).
+- Reachable without hover. Critical info in parent's accessible name. Full text in `description`. Read on focus.
+- Delay (300-400ms) required — instant tooltips disrupt gamepad nav.
+- Contrast 4.5:1 min.
 
-**Implementation Notes**: [Godot: Attach a custom `TooltipControl` scene as a
-child of the trigger element. Show/hide with a `Timer` node. Position the tooltip
-using a `CanvasLayer` to ensure it appears above all other UI. For screen edges,
-detect if the tooltip rect extends beyond `get_viewport_rect()` and flip the
-position to the opposite side.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -544,34 +411,26 @@ position to the opposite side.]
 
 **Category**: Feedback / Layout
 **Status**: Draft
-**When to Use**: Linear progress toward a defined endpoint. Loading screens (time
-to completion), XP fill toward next level, quest objectives with countable progress
-("3 of 10 enemies defeated"), download progress.
-**When NOT to Use**: Circular or radial progress (use a separate Radial Progress
-pattern if needed). Values that fluctuate up and down rapidly (use Health/Resource
-Bar pattern). Values with no defined endpoint.
+**When to Use**: Linear progress to defined endpoint. Loading, XP, "3 of 10 enemies."
+**When NOT to Use**: Circular/radial. Fluctuating values (Health/Resource Bar). No defined endpoint.
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Default | Track (full width, background color). Fill (left to right, value color). Value label (percentage or N/M, outside or inside fill). | — | — | — | — |
-| Value increasing | Fill width animates to new value | Value changes | Smooth fill animation | 300ms ease-out | [Context-dependent — XP gain has a sound; loading has none] |
-| Value at maximum | Fill reaches full width. Optional: completion animation (pulse, glow). | Value reaches 100% | Completion event fires | 200ms | [Completion sound if appropriate] |
-| Value at zero | Fill hidden (zero width). Track still visible. | — | — | — | — |
-| Indeterminate (unknown duration) | Animated loop (fill segment moves left-to-right, repeat). Used for loading of unknown duration. | — | — | Infinite loop | — |
+| Default | Track. Fill left-to-right. Value label (% or N/M). | — | — | — | — |
+| Increasing | Fill animates to new value | Value changes | Smooth fill | 300ms ease-out | [Context-dependent] |
+| At max | Full fill. Optional pulse/glow. | Reaches 100% | Completion event | 200ms | [Completion if appropriate] |
+| At zero | Fill hidden. Track visible. | — | — | — | — |
+| Indeterminate | Animated loop segment. Used for unknown duration. | — | — | Loop | — |
 
 **Accessibility**:
-- Screen reader: Role: "progressbar." Accessible name: what is progressing (e.g., "Experience Points," "Loading"). Value: current numeric value AND percentage AND maximum. "Experience Points, 450 of 1000, 45 percent." Update on significant changes (not every pixel).
-- Do not rely only on fill color to communicate value. Include a numeric label.
-- Indeterminate progress bars: announce "Loading, in progress" — do not announce changes since the value is unknown.
-- Motion reduction: Indeterminate animation is replaced with a static "loading" indicator. Smooth fill animation is replaced with instant jump to new value.
+- Role "progressbar". Name = what's progressing. Value: numeric + percentage + max. "Experience Points, 450 of 1000, 45 percent."
+- Numeric label always; not color-only.
+- Indeterminate: announce "Loading, in progress" only.
+- Motion reduction: indeterminate → static "loading". Smooth fill → instant jump.
 
-**Implementation Notes**: [Godot: `ProgressBar` built-in with custom theming.
-For indeterminate mode, `ProgressBar` does not have a native indeterminate state
-in Godot 4.x — implement using a looping `Tween` on a fill element's position.
-Ensure the Tween is paused when motion reduction mode is active and a static
-indicator is shown instead.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -579,39 +438,30 @@ indicator is shown instead.]
 
 **Category**: Input
 **Status**: Draft
-**When to Use**: Text entry. Player name on a new save, search within a list,
-remapping a key binding (special case — shows the key press, not typed text),
-entering a numeric value precisely.
-**When NOT to Use**: Selecting from known options (use Dropdown or List). On
-console-primary platforms, minimize text entry — it requires a virtual keyboard,
-which is high friction.
+**When to Use**: Text entry. Player name, search, key remapping, numeric value.
+**When NOT to Use**: Known options (Dropdown/List). Console — minimize text entry (virtual keyboard friction).
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Default | Field border, placeholder text (label-style, muted color), empty input area. | — | — | — | — |
-| Hovered | Border brightens slightly | Mouse over | — | 60ms | — |
-| Focused | Border brightens fully. Cursor (blinking, 530ms on/530ms off). Placeholder text hidden. | Tab / click | Open virtual keyboard on console/mobile | Instant | [UI focus sound] |
-| Typing | Characters appear. Cursor advances. | Keyboard input | Update field value | Immediate | [Subtle keystroke sound, optional] |
-| Value present | Field shows typed value. Placeholder hidden. Clear button appears (X, right of field) if value is non-empty. | — | — | — | — |
-| Character limit reached | No further input accepted. Optional: brief shake animation and limit indicator changes color. | Input at limit | Reject further characters | 200ms shake | [UI error sound, subtle] |
-| Clear | Field empties. Cursor returns. Clear button disappears. | Click X / gamepad clear input | Clear value | Instant | [UI cancel sound, subtle] |
-| Validation error | Border turns error color (red — ensure colorblind safe). Error message appears below field. | On submit or on blur | Show error | Instant | [UI error sound] |
-| Validated / correct | Border turns success color (green — ensure colorblind safe). Success icon optional. | On validation pass | — | Instant | — |
-| Disabled | 40% opacity, no interaction. Value still visible. | — | — | — | — |
+| Default | Border. Placeholder muted. Empty input. | — | — | — | — |
+| Hovered | Border brightens | Mouse over | — | 60ms | — |
+| Focused | Border bright. Cursor blinks 530ms. Placeholder hidden. | Tab / click | Open virtual kb on console/mobile | Instant | [UI focus] |
+| Typing | Chars appear. Cursor advances. | Keyboard | Update value | Immediate | [Keystroke, optional] |
+| Value present | Field shows value. Clear X right of field. | — | — | — | — |
+| At limit | No more chars. Optional shake + indicator color. | Input at limit | Reject | 200ms shake | [UI error, subtle] |
+| Clear | Empties. Cursor returns. X disappears. | Click X / clear input | Clear | Instant | [UI cancel, subtle] |
+| Validation error | Border error color (verify colorblind). Error msg below. | On submit/blur | Show error | Instant | [UI error] |
+| Validated | Border success color. Optional success icon. | On pass | — | Instant | — |
+| Disabled | 40% opacity. Value visible. | — | — | — | — |
 
 **Accessibility**:
-- Keyboard: All standard text editing shortcuts (Home, End, Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+Z).
-- Screen reader: Role: "textbox." Accessible name: field label (not placeholder text). Current value announced. Character limit announced when reached. Validation errors announced immediately on occurrence.
-- Placeholder text must not be used as the only label — a visible label above or beside the field is required. Placeholder text disappears when the player types, causing confusion for players with cognitive or memory impairments.
+- All standard text shortcuts (Home, End, Ctrl+A/C/V/Z).
+- Role "textbox". Name = label (NOT placeholder). Value announced. Limit announced when reached. Errors announced immediately.
+- Visible label required — placeholder cannot be sole label.
 
-**Implementation Notes**: [Godot `LineEdit`: set `placeholder_text` for the hint
-but always include a visible `Label` node as the field's accessible name. Bind
-`text_changed` signal for real-time validation. Bind `text_submitted` for form
-submission on Enter. On console, `LineEdit.call("_popup_keyboard")` or use the OS
-virtual keyboard API — verify against engine-reference/godot/ for Godot 4.6
-console keyboard API specifics.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -619,37 +469,26 @@ console keyboard API specifics.]
 
 **Category**: Navigation
 **Status**: Draft
-**When to Use**: Dividing a single screen's content into discrete sections where
-only one section is visible at a time. Character sheet tabs (Stats / Equipment /
-Skills), settings tabs (Gameplay / Graphics / Audio / Accessibility). Maximum
-5-6 tabs before the pattern breaks down and a sidebar navigation should be
-considered instead.
-**When NOT to Use**: More than 6 tabs. Content that benefits from simultaneous
-visibility (use a layout pattern instead). Navigation between different screens
-(use Screen Push).
+**When to Use**: Single screen split into discrete sections, one visible at time. Max 5-6 tabs.
+**When NOT to Use**: 6+ tabs. Simultaneous visibility needed. Different screens (Screen Push).
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Default (inactive tab) | Tab label. No active indicator. | — | — | — | — |
-| Active tab | Tab label. Active indicator (underline, fill, or contrasting background). Content area shows this tab's content. | — | — | — | — |
-| Hovered (inactive) | Tab background fills slightly | Mouse over | — | 60ms | — |
-| Focused (keyboard/gamepad) | Focus ring on tab label. | Tab key (within tab bar) or D-pad left/right on tab row | — | 60ms | [UI focus sound] |
-| Activated | Active indicator transitions to this tab. Content area transitions (fade or slide). | Click / Enter / A / Cross | Switch active tab. Content update. | 150ms ease | [UI tab switch sound] |
-| Gamepad shoulder button | — | L1/R1 (PS) or LB/RB (Xbox) | Switch to previous/next tab (standard platform convention) | 150ms | [UI tab switch sound] |
+| Default (inactive) | Tab label. No indicator. | — | — | — | — |
+| Active | Label + active indicator (underline/fill/bg). Content shows. | — | — | — | — |
+| Hovered (inactive) | Bg fills slightly | Mouse over | — | 60ms | — |
+| Focused | Focus ring on label. | Tab key (within bar) or D-pad L/R | — | 60ms | [UI focus] |
+| Activated | Indicator transitions. Content fades/slides. | Click / Enter / A / Cross | Switch tab | 150ms ease | [UI tab switch] |
+| Shoulder button | — | L1/R1 / LB/RB | Prev/next tab | 150ms | [UI tab switch] |
 
 **Accessibility**:
-- Keyboard: Arrow keys navigate between tabs within the tab bar (left/right). Tab key moves focus into the content area below. This follows the ARIA tab panel pattern.
-- Screen reader: Role: "tab" for individual tabs. Role: "tablist" for the container. Role: "tabpanel" for the content area. Active tab state: "selected." Accessible name: tab label. Tabpanel is labeled by its corresponding tab.
-- The active tab must be visually distinguishable by more than color alone (underline, fill pattern, or weight change in addition to color).
+- Arrows nav within bar (L/R). Tab key enters content. ARIA tab panel pattern.
+- Roles: "tab", "tablist", "tabpanel". Active state "selected". Tabpanel labeled by tab.
+- Active tab distinguished beyond color (underline/fill/weight).
 
-**Implementation Notes**: [Godot: `TabContainer` built-in. For custom visual
-styling, implement manually with a `HBoxContainer` of tab buttons and a
-`MarginContainer` for content. The shoulder button shortcut (LB/RB) must be
-implemented in the screen's `_input()` override — it is not built into Godot's
-tab system. Check platform conventions: Xbox uses LB/RB; PlayStation uses L1/R1;
-both are the same physical button, so a single binding works.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -657,36 +496,28 @@ both are the same physical button, so a single binding works.]
 
 **Category**: Layout
 **Status**: Draft
-**When to Use**: Content that exceeds the visible area of its container. Inventory
-lists, lore entry text, credits, long settings lists. The scroll indicator shows
-the player that more content exists.
-**When NOT to Use**: Content that can be paginated instead (pagination may be
-clearer for dense list navigation). Infinite scroll (always provide a loading
-state and an end state).
+**When to Use**: Content exceeds container. Inventory, lore, credits, settings.
+**When NOT to Use**: Pagination clearer. Infinite scroll without loading/end states.
 
 **Interaction Specification**:
 
 | State | Visual | Input | Response | Duration | Audio |
 |-------|--------|-------|----------|----------|-------|
-| Content fits | No scrollbar visible (or always-visible scrollbar at full height, depending on art direction). | — | — | — | — |
-| Scrollable | Scrollbar appears (right edge). Scrollbar thumb size represents viewport vs. content ratio. | — | — | — | — |
-| Scrolling (mouse) | Content moves. Scrollbar thumb moves proportionally. | Mouse wheel | Scroll by 3 lines per wheel tick (configurable in OS) | Smooth | — |
-| Scrollbar drag | Content moves. Thumb follows pointer. | Click + drag scrollbar thumb | Scroll proportionally | Real time | — |
-| Keyboard scroll | Content moves one item height per keypress. | Up/Down arrows when container is focused and no child is focused | Scroll by one unit | Immediate | — |
-| Gamepad scroll | Content moves to keep focused item in view. | D-pad navigation to items beyond visible area | Auto-scroll to keep focused item visible | Smooth 150ms | — |
-| Scroll top / bottom | Content stops. Scrollbar thumb at end. | Content boundary reached | Stop scrolling | — | — |
-| Focus follows scroll | When a child element receives focus, scroll container ensures it is fully visible. | Any child receives focus | Scroll to reveal focused element | 200ms ease | — |
+| Content fits | No scrollbar (or always-visible at full). | — | — | — | — |
+| Scrollable | Scrollbar appears (right). Thumb size = viewport/content ratio. | — | — | — | — |
+| Scrolling (mouse) | Content moves. Thumb proportional. | Wheel | 3 lines per tick (OS configurable) | Smooth | — |
+| Scrollbar drag | Content moves. Thumb follows. | Click + drag thumb | Proportional | Real time | — |
+| Keyboard scroll | One item per press. | Up/Down when container focused, no child focused | One unit | Immediate | — |
+| Gamepad scroll | Auto-scroll to keep focus visible. | D-pad to off-screen items | Auto-scroll | 150ms | — |
+| Boundary | Stops. Thumb at end. | Boundary reached | Stop | — | — |
+| Focus follows scroll | Auto-scroll focused child into view. | Child focused | Reveal | 200ms ease | — |
 
 **Accessibility**:
-- Keyboard/Gamepad: The scroll container itself should not require explicit scrollbar interaction — navigating list items inside it should auto-scroll to keep focused items in view.
-- Screen reader: The scroll container announces "scrollable" and the scroll position ("showing items 5 through 15 of 30"). This requires engine accessibility support — verify in engine-reference/godot/.
-- Fade edges (content fading at scroll boundaries to indicate more content exists) are a helpful visual affordance but must not be the only indicator that content exists beyond the visible area. Include a scrollbar.
+- Auto-scroll on focus — no explicit scrollbar interaction needed.
+- Screen reader: announce "scrollable" + position ("showing 5-15 of 30"). Verify engine support.
+- Fade edges = visual aid only. Always include scrollbar.
 
-**Implementation Notes**: [Godot `ScrollContainer`: call `ensure_control_visible()`
-on the focused child whenever `gui_focus_changed` fires inside the container.
-Bind this via a recursive `connect` on the container's `gui_focus_changed` signal.
-For smooth scroll animation, use a `Tween` on `scroll_vertical` rather than
-setting it directly.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -698,26 +529,24 @@ setting it directly.]
 
 **Category**: Game-Specific
 **Status**: Draft
-**When to Use**: Every item container in the inventory grid. Empty slots, populated
-slots, equipped slots, locked slots. The slot is the frame; the item icon is the
-content.
+**When to Use**: Every item container in inventory grid.
 
 **States**:
 
 | State | Visual | Notes |
 |-------|--------|-------|
-| Empty | Subtle slot border, no content. Not the same as disabled. Empty slots are interactable (receive items). | Avoid fully invisible empty slots — players lose track of grid dimensions |
-| Populated | Item icon fills 80% of slot area. Stack count bottom-right (if applicable). Quality border (colorblind-safe — icon + color). Equipped badge (top-right, if equipped). | |
-| Focused | Focus ring. Tooltip appears after 300ms. | |
-| Selected | Thicker or contrasting border. Used when multi-select is supported. | |
-| Drag source | Slot dims, drag ghost follows pointer. | See Grid Item for full drag spec |
-| Locked | Padlock icon overlay. No interaction. May show item at 50% opacity behind lock. | Used for locked loadout slots, DLC content, etc. |
-| Highlighted | Animated border glow (pulsing). Used for quest-relevant items or newly acquired items. | Respect motion reduction — replace pulse with a static badge |
-| Cooldown overlay | Radial fill overlay from 12 o'clock, clockwise, depleting as cooldown expires. | Only applicable if slots represent active items with cooldowns |
+| Empty | Subtle border, no content. Interactable (receives items). | Avoid invisible empty slots — players lose grid dimensions |
+| Populated | Item icon 80% slot. Stack count bottom-right. Quality border (icon + color). Equipped badge top-right. | |
+| Focused | Focus ring. Tooltip after 300ms. | |
+| Selected | Thicker/contrasting border. Multi-select. | |
+| Drag source | Slot dims, ghost follows pointer. | See Grid Item |
+| Locked | Padlock overlay. No interaction. Item at 50% opacity. | DLC, locked loadout |
+| Highlighted | Animated glow pulse. Quest/new items. | Motion reduction → static badge |
+| Cooldown overlay | Radial fill from 12 o'clock CW. | Active items with cooldowns |
 
-**Accessibility**: Stack counts and quality tiers must have text or icon alternatives to color coding. Tooltip is the primary accessibility mechanism — ensure it is reachable by keyboard and screen reader. Locked slots must announce "locked" to screen readers.
+**Accessibility**: Stack/quality need text or icon backups. Tooltip = keyboard + screen reader reachable. Locked announces "locked".
 
-**Implementation Notes**: [Godot: Custom `Control` node. Quality border implemented as a `StyleBoxFlat` swapped based on rarity — avoid using `modulate` color for quality, as it affects the icon color. Drag and drop implemented via `get_drag_data()` and `can_drop_data()` / `drop_data()` override methods.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -725,28 +554,23 @@ content.
 
 **Category**: Game-Specific
 **Status**: Draft
-**When to Use**: Ability buttons in the HUD ability bar, skill tree nodes, and
-any context where an ability must show availability state.
+**When to Use**: HUD ability bar, skill tree nodes.
 
 **States**:
 
 | State | Visual | Notes |
 |-------|--------|-------|
-| Available | Full opacity icon. Keybinding label below. | |
-| On cooldown | Radial overlay depleting clockwise from 12 o'clock. Remaining time shown as a number in the center when > 2 seconds remain. | |
-| Charges remaining | Charge pip indicators below icon (e.g., 3 filled circles = 3 charges). Number alternative for screen readers. | |
-| Out of resource | Icon desaturates to ~20%. Border dims. Keybinding label dims. Distinct from cooldown — resource-gated, not time-gated. | |
-| Locked / not unlocked | Icon silhouette only (no full art visible). Padlock badge. May show unlock condition in tooltip. | |
-| Active / channeling | Pulsing border. Radial fill shows channel duration remaining. | |
-| Just activated | Brief scale 0.9x then spring to 1.0x (overshoot to 1.05x). | Example: Guild Wars 2 and Path of Exile both use press-depress animations on ability use to confirm activation. Respect motion reduction. |
+| Available | Full opacity. Keybind label below. | |
+| On cooldown | Radial overlay CW from 12. Number in center when >2s. | |
+| Charges remaining | Charge pip indicators below. Number for screen readers. | |
+| Out of resource | Desaturate to ~20%. Border dims. Distinct from cooldown. | |
+| Locked | Silhouette only. Padlock badge. Unlock condition in tooltip. | |
+| Active / channeling | Pulsing border. Radial fill = channel duration. | |
+| Just activated | Scale 0.9x → 1.0x (overshoot 1.05x). | Respect motion reduction. |
 
-**Accessibility**: All cooldown/charge information must have a numeric value (screen reader cannot parse radial overlays). The cooldown timer number satisfies this. Ability names and descriptions must be exposed to screen readers via tooltip.
+**Accessibility**: Cooldown/charge need numeric value (screen reader can't parse radial). Names + descriptions in tooltip.
 
-**Implementation Notes**: [Godot: Custom `TextureButton` subclass with overlay
-`Control` nodes for cooldown radial and charge pips. The cooldown radial uses a
-custom shader on a `ColorRect` rotating a mask — or implement with a
-`ProgressBar` styled as circular if engine supports it. Verify against
-engine-reference/godot/ for Godot 4.6 shader support for this pattern.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -754,26 +578,22 @@ engine-reference/godot/ for Godot 4.6 shader support for this pattern.]
 
 **Category**: Game-Specific
 **Status**: Draft
-**When to Use**: Any continuously varying value in the HUD that represents a
-critical player resource. Health, mana, stamina, shield, fuel.
+**When to Use**: Continuously varying critical resource. Health, mana, stamina, shield.
 
 **States and behaviors**:
 
 | Event | Visual | Audio | Duration |
 |-------|--------|-------|---------|
-| Value decrease (damage) | Fill shrinks. Brief "damage flash" on the fill (white or red flash). Ghost bar lingers at previous value and drains to new value over 0.5s ("damage indicator"). | [Damage taken sound — varies by amount] | Instant decrease, 500ms ghost bar drain |
-| Value increase (heal) | Fill grows. Brief heal color flash (green — ensure colorblind safe with icon/glow backup). | [Heal sound] | 300ms ease-in |
-| Below 25% threshold | Fill changes color to warning state. Border pulses (or static badge in motion reduction mode). Optional: heartbeat audio cue (paired with visual if audio is sole signal). | [Low health sound — loops until above threshold] | Continuous |
-| At zero | Bar empty. Optional: bar shakes briefly. Death/depletion event fires. | [Death/depletion sound] | 200ms shake |
-| Maximum | Fill at 100%, brief glow. | — | 200ms |
-| Overflow (shield) | A separate bar segment appears beyond the natural fill area, in shield color. | [Shield gain sound] | 200ms |
+| Damage | Fill shrinks. Damage flash. Ghost bar drains over 0.5s. | [Damage by amount] | Instant + 500ms ghost |
+| Heal | Fill grows. Heal color flash (green + icon/glow backup). | [Heal] | 300ms ease-in |
+| Below 25% | Warning fill color. Border pulses (static badge in motion reduction). Optional heartbeat audio. | [Low health loop] | Continuous |
+| At zero | Empty bar. Optional shake. Death event. | [Death] | 200ms shake |
+| Maximum | 100%, brief glow. | — | 200ms |
+| Overflow (shield) | Separate bar segment beyond fill, shield color. | [Shield gain] | 200ms |
 
-**Accessibility**: The current value must be accessible as a number (tooltip or persistent display, or both). Color-coded threshold states must have non-color backups (icon, flashing, or audio visual warning). Warning state at 25% must have a visual signal independent of the color change.
+**Accessibility**: Numeric value accessible (tooltip or persistent). Threshold states need non-color backup. 25% warning needs visual signal independent of color.
 
-**Implementation Notes**: [Godot: Two overlapping `ProgressBar` nodes for ghost
-bar effect — back bar holds previous value (drains via Tween), front bar holds
-current value (updates instantly). Threshold states trigger `StyleBoxFlat` swaps
-on the front bar. Ghost bar Tween duration is tunable as a designer parameter.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -781,31 +601,25 @@ on the front bar. Ghost bar Tween duration is tunable as a designer parameter.]
 
 **Category**: Game-Specific
 **Status**: Draft
-**When to Use**: NPC conversation, voiced narrative dialogue, tutorial text
-delivered through a character. All dialogue that has a speaker.
+**When to Use**: Any speaker-attributed dialogue.
 
-**Structure**: Speaker portrait or name tag (top of box or left side). Dialogue text body. Continue/advance prompt (bottom right). Optional: skip-all button, voice acting indicator, subtitle indicator.
+**Structure**: Speaker portrait/name. Body text. Continue prompt. Optional: skip-all, voice indicator, subtitle indicator.
 
 **States and behaviors**:
 
 | State | Visual | Input | Response | Duration |
 |-------|--------|-------|----------|---------|
-| Line entering | Text reveals character-by-character (typewriter effect). Or: text fades in at full speed if accessibility option set. | — | — | Speed: configurable in accessibility settings |
-| Revealing | Text animating in. Continue prompt hidden or pulsing at slow opacity. | [Any advance input] | Skip to end of current line instantly (show full line, stop typewriter) | Immediate |
-| Line complete | Full line shown. Continue prompt visible and animated. | — | — | — |
-| Advancing to next line | Continue prompt hides. Text fades out or wipes. New line begins. | [Any advance input] — Enter / A / Cross / Space / mouse click | Advance | 100ms transition |
-| Choices appearing | Choice buttons appear below dialogue text. Continue prompt hidden. Navigation focus moves to first choice. | D-pad / keyboard to select, Enter / A / Cross to confirm | Select choice | 150ms enter animation |
-| Closing | Box fades out | Final line advanced | Return control to player | 200ms |
-| Skipping all (if supported) | Brief confirmation prompt: "Skip dialogue?" | Dedicated skip button | Skip to post-dialogue state | — |
+| Line entering | Typewriter reveal. Or fade-in (accessibility setting). | — | — | Speed configurable |
+| Revealing | Animating. Continue hidden/dim. | Any advance input | Skip to end of line | Immediate |
+| Line complete | Full line. Continue visible/animated. | — | — | — |
+| Advancing | Continue hides. Text fades/wipes. New line. | Enter / A / Cross / Space / click | Advance | 100ms |
+| Choices appearing | Choice buttons below. Continue hidden. Focus to first choice. | D-pad / kb to select, Enter / A / Cross to confirm | Select | 150ms enter |
+| Closing | Box fades | Final line advanced | Return control | 200ms |
+| Skipping all | Confirmation: "Skip dialogue?" | Dedicated skip | Skip | — |
 
-**Accessibility**: Subtitles are always enabled by default for all voiced dialogue. Typewriter animation speed is a user setting (see accessibility-requirements.md). The dialogue box must not auto-advance — players must control pacing. Speaker name is always shown. All choice buttons must be navigable by keyboard and gamepad. Choices must be accessible to screen readers with position announced.
+**Accessibility**: Subtitles ON by default for all voiced. Typewriter speed = user setting. NEVER auto-advance — player paces. Speaker name always shown. All choices kb/gamepad navigable. Position announced to screen reader.
 
-**Implementation Notes**: [Godot: `RichTextLabel` with `bbcode_enabled` for
-formatting. Typewriter effect via `visible_characters` property animated by a
-`Timer`. Bind the advance input to a function that either skips typewriter
-(sets `visible_characters = -1`) or advances the dialogue state. Speaker name
-displayed in a separate `Label` above or beside the box. Dialogue data loaded from
-JSON or a dedicated dialogue format (e.g., Dialogic, Yarn Spinner for Godot).]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -813,23 +627,21 @@ JSON or a dedicated dialogue format (e.g., Dialogic, Yarn Spinner for Godot).]
 
 **Category**: Game-Specific
 **Status**: Draft
-**When to Use**: A prompt that appears near an interactable game object indicating
-what the player can do. "Press [A] to open chest." "Hold [E] to pick up." Appears
-when the player enters the interaction zone, disappears when they leave.
+**When to Use**: Prompt near interactable. "Press [A] to open chest."
 
 **States**:
 
 | State | Visual | Notes |
 |-------|--------|-------|
-| Appearing | Fades in and rises 8px from object anchor point. | Respect motion reduction — fade only, no rise |
-| Idle | Platform-correct button icon + action label. Icon matches current input method (updates if player switches). | Always show platform-correct icon — do not hardcode "Press A" for all platforms |
-| Holding (for hold inputs) | Radial fill on the button icon shows hold progress. Label changes to active verb ("Opening..."). | |
-| Cannot interact (blocked) | Icon dims. Label shows reason if known ("Too heavy", "Need key"). | Optional — only show blocked state if the reason is meaningful to the player |
-| Disappearing | Fades out. | Triggered when player exits interaction zone |
+| Appearing | Fade in + rise 8px. | Motion reduction: fade only. |
+| Idle | Platform-correct icon + label. Updates if input method changes. | Never hardcode "Press A". |
+| Holding | Radial fill on icon = hold progress. Label active verb ("Opening..."). | |
+| Cannot interact | Icon dims. Reason if known ("Too heavy", "Need key"). | Optional. |
+| Disappearing | Fade out. | Player exits zone. |
 
-**Accessibility**: The button icon must be accompanied by a text label — do not rely on icon alone (some players use custom button labels or adaptive controllers with non-standard icons). The prompt must be positioned to not overlap character health or critical HUD information.
+**Accessibility**: Icon + text label always (custom button labels, adaptive controllers). Position avoids HUD overlap.
 
-**Implementation Notes**: [Godot: Attach as a `Node3D` child (or `Node2D` child in 2D) of the interactable object. Use a `BillboardMesh` or a `SubViewport` with a UI scene for 3D games — this keeps the prompt facing the camera without code. Update the button icon texture based on `Input.get_joy_name()` or keyboard detection via `InputEventKey` vs `InputEventJoypadButton`. Hold progress implemented as an `AnimationPlayer` or `Tween` on a radial mask shader.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -837,28 +649,23 @@ when the player enters the interaction zone, disappears when they leave.
 
 **Category**: Game-Specific
 **Status**: Draft
-**When to Use**: Floating feedback numbers above combat participants. Normal
-damage, critical damage, healing, miss.
+**When to Use**: Floating combat feedback above participants.
 
 **Variants**:
 
 | Variant | Visual | Notes |
 |---------|--------|-------|
-| Normal damage | White number, normal weight, medium size. | |
-| Critical hit | Larger size (1.5x), bold weight, orange or yellow — verify colorblind safe. Brief scale impact (1.3x → 1.0x on appear). | Example: Path of Exile and Diablo IV both use scale-pop for crits to make them immediately recognizable by size alone, independent of color. |
-| Healing | Green (verify colorblind safe — use + prefix and upward trajectory as non-color backups). | |
-| Miss / Evade | "MISS" text, grey, italic. Floats at smaller size. | |
-| Status damage (DoT) | Smaller size, distinct color matching the status effect. | |
+| Normal | White, normal weight, medium size. | |
+| Critical | 1.5x size, bold, orange/yellow (verify colorblind). Scale impact 1.3x → 1.0x. | Recognizable by size alone. |
+| Healing | Green (+ prefix and upward trajectory backups). | |
+| Miss/Evade | "MISS", grey italic, smaller. | |
+| Status (DoT) | Smaller, status-effect color. | |
 
-**Behavior**: Numbers float upward from the hit location over 1.0 second. Numbers fade from 100% to 0% during the last 0.4 seconds. Multiple numbers from rapid hits stagger horizontally to avoid overlap. Maximum simultaneous damage numbers on screen: [define per game — typically 8-12 per character].
+**Behavior**: Float upward 1.0s. Fade last 0.4s. Stagger horizontally to avoid overlap. Max simultaneous: [define per game — 8-12 per character].
 
-**Accessibility**: Damage numbers are purely supplementary feedback — they must never be the only way to understand combat state. Health bars are the authoritative source. Provide an option to disable damage numbers entirely (some players find them visually overwhelming). When disabled, the game must remain fully playable.
+**Accessibility**: Supplementary only — health bars authoritative. Provide disable option. Game must remain fully playable when disabled.
 
-**Implementation Notes**: [Godot: Pool of `Label3D` (3D games) or `Label` (2D games)
-instances recycled via an object pool. Each instance is given a random small
-horizontal offset on spawn (±20px) to reduce overlap. Float animation via
-`Tween` on `position.y` and `modulate.a`. Critical hit scale-pop via Tween
-with `EASE_OUT` on scale followed by linear settle.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -871,23 +678,17 @@ with `EASE_OUT` on scale followed by linear settle.]
 **Category**: Navigation
 **Status**: Draft
 
-These three patterns define how screens enter and exit the navigation stack.
+| Pattern | Trigger | Animation | Stack | Focus |
+|---------|---------|-----------|-------|-------|
+| Push | Open submenu/detail | New slides from right. Previous dims, slides left. | Previous remains | Focus to first interactive on new |
+| Pop (Back) | Back / Esc / B / Circle | Current slides right out. Previous slides from left, brightens. | Current removed | Focus to triggering element |
+| Replace | Peer screen, loading | Fade out, fade in. No directional bias. | Current removed, new added | Focus to first interactive on new |
 
-| Pattern | Trigger | Animation | Stack Behavior | Focus Behavior |
-|---------|---------|-----------|---------------|----------------|
-| Push | Navigate deeper (open submenu, open detail view) | New screen slides in from right. Previous screen slides left and dims. | Previous screen remains on stack | Focus moves to first interactive element on new screen |
-| Pop (Back) | Back button / Escape / B / Circle | Current screen slides right and exits. Previous screen slides in from left and brightens. | Current screen removed from stack | Focus returns to the element that triggered the Push |
-| Replace | Navigate to a peer screen (not child, not parent). Loading screen. | Fade out current, fade in new. No directional bias. | Current screen removed. New screen added. | Focus moves to first interactive element on new screen |
+**Durations**: Push/Pop 250ms ease-in-out. Replace 200ms fade out + 200ms fade in.
 
-**Animation durations**: Push/Pop: 250ms ease-in-out. Replace: 200ms fade out + 200ms fade in.
+**Motion reduction**: Slides → fades. Duration -50%.
 
-**Motion reduction**: All slide animations become fades. Duration reduces to 100ms.
-
-**Implementation Notes**: [Godot: Implement as a `ScreenManager` singleton managing
-a stack of `Control` scenes. `push(screen_scene)` instantiates and animates in.
-`pop()` animates out and frees. `replace(screen_scene)` calls pop then push without
-the intermediate stack state. Use `CanvasLayer` per screen to isolate input handling.
-Store the "return focus" element reference before pushing so it can be restored on pop.]
+**Implementation Notes**: Unity: UI Toolkit or uGUI. See `.ags/docs/engine-reference/unity/modules/ui.md`.
 
 ---
 
@@ -896,23 +697,20 @@ Store the "return focus" element reference before pushing so it can be restored 
 **Category**: Navigation
 **Status**: Draft
 
-> Focus management is the most common keyboard and gamepad accessibility failure
-> in game UIs. These rules must be implemented consistently. A player should
-> never be in a state where they cannot see which element is focused, or where
-> Tab/D-pad produces no visible result.
+> Most common kb/gamepad accessibility failure. Implement consistently.
 
 | Rule | Description |
 |------|-------------|
-| Screen open | Focus is placed on the most logical interactive element — typically the Primary button, the first list item, or the last-focused element if the screen was previously visited. Never on a non-interactive element. |
-| Screen close / pop | Focus returns to the element that triggered the navigation (the button that opened the screen, the list item that was selected). If that element no longer exists, focus goes to the nearest preceding interactive element. |
-| Modal open | Focus is trapped inside the modal. See Modal Dialog pattern. |
-| Modal close | Focus returns to the element that triggered the modal. |
-| Element disabled | If the focused element becomes disabled, focus moves to the next available interactive element in the tab order. |
-| Element destroyed | If the focused element is removed from the scene, focus moves to the nearest preceding element in the tab order. |
-| Screen without interactive elements | Focus management is a no-op. Ensure back/cancel input still works. |
-| Tab key (keyboard) | Moves focus forward through interactive elements in document order (left to right, top to bottom). Shift+Tab moves backward. |
-| D-pad (gamepad) | Moves focus in the spatial direction pressed. Spatial navigation is preferred over strict tab order for gamepad. Never wrap focus between unrelated regions (e.g., Tab bar and content area should be separate navigation regions). |
-| Focus is always visible | Focus ring or equivalent focus indicator must ALWAYS be visible when an element is focused via keyboard or gamepad. Never suppress focus indicators. |
+| Screen open | Focus on most logical interactive — Primary, first list item, or last-focused. Never non-interactive. |
+| Screen close/pop | Focus to triggering element. If gone, nearest preceding interactive. |
+| Modal open | Trapped inside modal. |
+| Modal close | Returns to triggering element. |
+| Element disabled | Focus to next available in tab order. |
+| Element destroyed | Focus to nearest preceding in tab order. |
+| Screen without interactive | No-op. Back/cancel still works. |
+| Tab key | Forward through interactive in document order. Shift+Tab back. |
+| D-pad | Spatial direction. Spatial preferred over tab order. Never wrap between unrelated regions. |
+| Focus always visible | Focus ring ALWAYS visible on kb/gamepad focus. Never suppress. |
 
 ---
 
@@ -921,18 +719,17 @@ Store the "return focus" element reference before pushing so it can be restored 
 **Category**: Navigation
 **Status**: Draft
 
-> The "go back" action is the most-used navigation input in all menu systems.
-> It must be consistent across every screen with no exceptions.
+> Most-used menu input. Consistent across all screens.
 
 | Platform | Input | Behavior |
 |----------|-------|---------|
-| PC (keyboard) | Escape | Close top-most modal / go back one screen in stack / if at root screen (main menu), open "quit?" confirmation |
-| PC (gamepad) | B (Xbox layout) / Circle (PS layout) | Same as Escape |
-| Xbox | B button | Same as Escape |
-| PlayStation | Circle button | Same as Escape |
-| Nintendo Switch | B button | Same as Escape (NOTE: Nintendo uses B for confirm in some first-party titles — verify platform convention for this release and document the decision) |
+| PC kb | Escape | Close top modal / back one screen / at root open "quit?" confirm |
+| PC gamepad | B (Xbox) / Circle (PS) | Same as Escape |
+| Xbox | B | Same |
+| PlayStation | Circle | Same |
+| Switch | B | Same (NOTE: Nintendo first-party uses B for confirm sometimes — verify and document) |
 
-**Rules**: This input must never be overridden to do something other than "go back / cancel." If a screen has no back action (e.g., the game is paused and the player must make a choice), Escape does nothing or shows a "you must choose" message — it does not navigate away. Every screen must define its Escape behavior explicitly in its UX spec.
+**Rules**: NEVER override to non-back action. No back action available → does nothing or "must choose" message. Every screen defines Escape behavior in spec.
 
 ---
 
@@ -947,12 +744,12 @@ Store the "return focus" element reference before pushing so it can be restored 
 
 | Scope | Pattern | Notes |
 |-------|---------|-------|
-| Full screen (initial load) | Full-screen loading screen with game art, progress bar (determinate if possible), tip text (optional). | Never use an empty black screen. Give the player something to read or look at. |
-| Full screen (level transition) | Fade to black, loading screen, fade from black to new scene. | The fade removes the pop of the previous scene disappearing. |
-| Component / inline | Spinner or skeleton placeholder replaces the loading component. Component does not shift layout when content loads. | Skeleton placeholder (grey boxes approximating content shape) is preferable to spinner for layout-heavy content — it prevents layout shift on load. |
-| Background / async | No visual indication unless operation exceeds 2 seconds. After 2 seconds, show a small spinner or toast. | Do not show loading indicators for operations that complete in under 2 seconds — the flash of an indicator is more disruptive than waiting. |
+| Full screen (initial) | Loading screen + art + progress bar (determinate if possible) + tip text. | Never empty black. |
+| Full screen (transition) | Fade to black, loading, fade in. | Removes scene pop. |
+| Component / inline | Spinner or skeleton. No layout shift on load. | Skeleton preferred. |
+| Background / async | No indicator unless >2s. Then small spinner/toast. | <2s indicator more disruptive than waiting. |
 
-**Accessibility**: Loading states must announce to screen readers: "[Context] loading, please wait." Completion must announce "[Context] loaded." For full-screen loading, ensure the loading screen itself is navigable to screen readers — the tips text and any UI elements must be exposed.
+**Accessibility**: Announce "[Context] loading, please wait." Then "[Context] loaded." Tips and UI on loading screen exposed to screen readers.
 
 ---
 
@@ -961,20 +758,16 @@ Store the "return focus" element reference before pushing so it can be restored 
 **Category**: Feedback
 **Status**: Draft
 
-> Empty states are consistently the least-designed parts of game UIs. They are
-> the difference between a player feeling "this is where I'll store my items"
-> and "why is nothing here? did something break?" Every empty list and grid must
-> have a designed empty state. The empty state is not an error — it is a starting
-> point.
+> Empty != error. Designed starting point.
 
-| Location | Empty State Content | Notes |
-|----------|--------------------|----|
-| Inventory (no items) | Icon (subtle, large, centered). Message: "Your inventory is empty." Sub-message: "Items you find on your journey will appear here." | Do not say "No items found" — "found" implies a failed search. |
-| Quest Log (no active quests) | Icon. Message: "No active quests." Sub-message: "Talk to characters marked with [quest marker icon] to start a quest." | Give the player a clear action. |
-| Achievements (none earned) | Icon. Message: "No achievements yet." List of hint achievements: "Try [Action] to earn your first achievement." | Gamified motivation, not just emptiness. |
-| Search results (no matches) | Icon. Message: "No results for '[search term]'." Sub-message: "Try a different search or [browse all]." | Mirror the search term back at them. Give an alternative action. |
+| Location | Content | Notes |
+|----------|---------|----|
+| Inventory | Icon. "Your inventory is empty." Sub: "Items you find on your journey will appear here." | "Found" implies failed search — avoid. |
+| Quest Log | Icon. "No active quests." Sub: "Talk to characters marked with [icon] to start a quest." | Give clear action. |
+| Achievements | Icon. "No achievements yet." Hints: "Try [Action] to earn your first." | Gamified motivation. |
+| Search | Icon. "No results for '[term]'." Sub: "Try a different search or [browse all]." | Mirror term + alternative action. |
 
-**Rule**: Every empty state must include an icon, a message, and either a sub-message or an action button. A blank container with no explanation is never acceptable.
+**Rule**: Every empty state MUST include icon + message + (sub-message OR action button). Blank container never acceptable.
 
 ---
 
@@ -983,81 +776,74 @@ Store the "return focus" element reference before pushing so it can be restored 
 **Category**: Feedback
 **Status**: Draft
 
-| Error Type | Pattern | Tone |
-|-----------|---------|------|
-| Input validation (form field) | Inline error message below the field. Error icon left of message. Red border on field (colorblind-safe with icon). | Neutral and specific — "Username must be 3-20 characters." Not "Invalid input." |
-| Operation failed (save error, network error) | Toast notification for non-critical failures. Modal Dialog for critical failures (save file cannot be written). | Calm and actionable — "Save failed. Check storage space." Not "FATAL ERROR." |
-| System error (crash, data corruption) | Full-screen error screen with error code, recovery options ("Restart Game," "Load last save"), and support contact. | Reassuring — acknowledge the problem, give the player agency. Never blame the player. |
-| Soft error (action cannot be performed) | Toast or inline message. | Explanatory — "Not enough gold" not "Action unavailable." |
+| Type | Pattern | Tone |
+|-----|---------|------|
+| Input validation | Inline error below field. Icon left. Red border (icon backup). | Specific: "Username must be 3-20 characters." Not "Invalid input." |
+| Operation failed | Toast for non-critical. Modal for critical (save fail). | Calm, actionable: "Save failed. Check storage space." |
+| System error | Full-screen with code, recovery options, support contact. | Reassuring. Never blame player. |
+| Soft error | Toast or inline. | Explanatory: "Not enough gold." Not "Action unavailable." |
 
-**Principle**: Error messages are never the player's fault. They are the game telling the player what happened and what to do next. Remove the word "invalid" from all error messages — replace with specific explanations.
+**Principle**: Errors never player's fault. Tell what happened + what next. Remove "invalid" — replace with specifics.
 
 ---
 
 ## Animation Standards
 
-> These timing values apply to ALL patterns in this library. When a pattern says
-> "150ms ease-out," the easing function is defined here. Consistency in timing
-> makes the UI feel like a single designed system rather than a collection of
-> individual decisions.
+> Apply to ALL patterns. Consistency = system feel.
 
-| Animation Type | Duration (ms) | Easing Function | Notes |
-|---------------|--------------|----------------|-------|
-| Button hover / focus enter | 80 | ease-out | Fast — snappy, not sluggish |
-| Button hover / focus exit | 60 | ease-in | Slightly faster exit than entry |
-| Button press scale down | 60 | ease-in | Immediate feedback |
-| Button press scale up (release) | 80 | ease-out | Slightly bouncy feel |
-| Screen push (enter) | 250 | ease-in-out | Screen slides in from right |
-| Screen pop (exit) | 250 | ease-in-out | Screen slides out to right |
-| Modal open | 200 | ease-out | Expands from center |
-| Modal close | 150 | ease-in | Collapses faster than it opens |
-| Toast enter | 200 | ease-out | Slides in from screen edge |
+| Animation | Duration (ms) | Easing | Notes |
+|-----------|--------------|--------|-------|
+| Button hover/focus enter | 80 | ease-out | Snappy |
+| Button hover/focus exit | 60 | ease-in | Faster exit |
+| Button press scale down | 60 | ease-in | Immediate |
+| Button press scale up | 80 | ease-out | Bouncy |
+| Screen push enter | 250 | ease-in-out | Slide from right |
+| Screen pop exit | 250 | ease-in-out | Slide to right |
+| Modal open | 200 | ease-out | Expand from center |
+| Modal close | 150 | ease-in | Collapse faster |
+| Toast enter | 200 | ease-out | Slide from edge |
 | Toast exit | 200 | ease-in | |
-| Tab switch | 150 | ease-in-out | Content cross-fades or slides |
+| Tab switch | 150 | ease-in-out | Cross-fade or slide |
 | Tooltip appear | 120 | ease-out | After 300-400ms delay |
 | Tooltip disappear | 80 | ease-in | |
-| Progress bar fill | 300 | ease-out | Value changes animate smoothly |
-| Value flash (damage, gain) | 100ms on + 100ms off | linear | Brief, attention-catching |
-| Dialogue text reveal (per character) | 30ms per character | linear | Configurable in accessibility settings |
-| HUD damage flash | 80 | linear | White or red overlay, immediate |
+| Progress bar fill | 300 | ease-out | Smooth value changes |
+| Value flash | 100 on + 100 off | linear | Brief |
+| Dialogue text reveal | 30 per char | linear | Configurable |
+| HUD damage flash | 80 | linear | White/red overlay |
 
-**Motion reduction overrides**: When motion reduction mode is enabled (see accessibility-requirements.md), all slide and scale animations are replaced with fades. Fade durations are reduced by 50%. Looping animations (indeterminate spinners, pulsing indicators) are replaced with static equivalents.
+**Motion reduction**: Slides/scales → fades. Duration -50%. Looping → static equivalents.
 
 ---
 
 ## Sound Standards
 
-> Every interactive event should have audio feedback. Sound is a primary feedback
-> channel, not a decoration. The sounds defined here are event categories — the
-> specific audio assets are defined in `docs/sound-bible.md`. This table maps
-> interaction events to sound categories so the sound designer and UI programmer
-> use the same vocabulary.
+> Sound = primary feedback channel. Categories defined here, assets in `docs/sound-bible.md`.
 
-| Interaction Event | Sound Category | Notes |
-|------------------|---------------|-------|
-| Button hover / focus | UI Hover | Subtle, short (< 80ms), non-fatiguing on rapid navigation. Hades uses a very quiet, high-frequency click that disappears into background on rapid nav. |
-| Button (Primary) confirm | UI Confirm — Primary | Slightly more prominent than secondary confirm. The "yes, let's go" sound. |
-| Button (Secondary) cancel / back | UI Cancel | Subtly downward in pitch. The "going back" sound. Mass Effect uses a clean, distinct swoosh for back navigation. |
-| Button (Destructive) — opening confirmation | UI Warning | Distinct from standard confirm. Brief attention-catching sound. |
-| Confirmation dialog — confirm destructive | UI Confirm — Destructive | Final, slightly weighted. The action is being taken. |
-| Toggle ON | UI Toggle On | Brief, snappy, slightly bright. Celeste's accessibility toggles have a satisfying click-on sound. |
-| Toggle OFF | UI Toggle Off | Same click family, slightly flatter. |
-| Slider adjust | UI Slider | Subtle continuous sound while dragging. A single click per D-pad step. Never fatiguing. |
-| Dropdown open | UI Expand | Brief, directional (opening feel). |
-| Dropdown close / select | UI Select | Confirmation feel. |
-| Tab switch | UI Tab | Horizontal movement feel. Distinct from vertical navigation. |
-| Modal open | UI Modal Open | More prominent than standard navigation — draws attention. |
-| Modal close (cancel) | UI Modal Close | Returns to previous context. |
-| Toast — informational | UI Notification | Background-level, non-intrusive. |
-| Toast — achievement | UI Achievement | Celebratory but not overlong. The player should feel rewarded, not interrupted. |
-| Toast — warning | UI Warning — Toast | Distinct from error. Alert, not alarming. |
-| Error state | UI Error | Friendly but clear. Not a harsh buzzer. Dark Souls uses a subtle dull thud for failed actions — communicates "no" without being harsh. |
-| Success confirmation | UI Success | Clean and satisfying. |
-| Ability activate | Gameplay — Ability Activate | In-world feel, distinct from pure UI. Part of game feel, not menu feel. |
-| Damage received | Gameplay — Damage | See sound-bible.md for full specification. |
+| Event | Sound Category | Notes |
+|-------|---------------|-------|
+| Button hover/focus | UI Hover | <80ms, non-fatiguing on rapid nav. |
+| Button (Primary) confirm | UI Confirm — Primary | "Yes, let's go" sound. |
+| Button (Secondary) cancel/back | UI Cancel | Subtly downward pitch. |
+| Button (Destructive) opens confirm | UI Warning | Distinct from confirm. |
+| Confirmation — confirm destructive | UI Confirm — Destructive | Final, weighted. |
+| Toggle ON | UI Toggle On | Brief, snappy, bright. |
+| Toggle OFF | UI Toggle Off | Same family, flatter. |
+| Slider adjust | UI Slider | Subtle continuous drag. Single click per D-pad step. |
+| Dropdown open | UI Expand | Directional. |
+| Dropdown close/select | UI Select | Confirmation feel. |
+| Tab switch | UI Tab | Horizontal feel. |
+| Modal open | UI Modal Open | Prominent. |
+| Modal close (cancel) | UI Modal Close | Return-to-context. |
+| Toast informational | UI Notification | Background-level. |
+| Toast achievement | UI Achievement | Celebratory, brief. |
+| Toast warning | UI Warning — Toast | Alert, not alarming. |
+| Error state | UI Error | Friendly clear. Not buzzer. |
+| Success | UI Success | Clean, satisfying. |
+| Ability activate | Gameplay — Ability Activate | In-world feel. |
+| Damage received | Gameplay — Damage | See sound-bible.md. |
 | Item pickup | Gameplay — Item Acquire | Brief, rewarding. |
-| Level up / rank up | Gameplay — Progression | Celebratory, appropriately prominent. |
-| Dialogue advance | UI Dialogue | Subtle, matches typewriter rhythm if typewriter is active. |
+| Level up | Gameplay — Progression | Celebratory. |
+| Dialogue advance | UI Dialogue | Subtle, matches typewriter. |
 
 ---
 
@@ -1065,8 +851,8 @@ Store the "return focus" element reference before pushing so it can be restored 
 
 | Question | Owner | Deadline | Resolution |
 |----------|-------|----------|-----------|
-| [Does the engine's accessibility node system support screen reader announcements for toast notifications without requiring focus? Verify against engine-reference/godot/ for Godot 4.6.] | [ux-designer] | [Before first menu implementation] | [Unresolved] |
-| [What is the platform-correct confirm/cancel button mapping for Nintendo Switch release? Nintendo first-party convention differs from Xbox/PlayStation.] | [producer] | [Before platform certification submission] | [Unresolved] |
-| [Should damage numbers be pooled as Label3D nodes or rendered in a SubViewport? Verify performance budget in coordination with technical-director.] | [lead-programmer, ux-designer] | [Before combat HUD implementation] | [Unresolved] |
-| [What is the maximum number of simultaneous toast notifications before the queue becomes visually overwhelming? Needs playtesting.] | [ux-designer] | [First playtesting session] | [Unresolved] |
+| [Engine accessibility — screen reader for toasts without focus? Verify `.ags/docs/engine-reference/unity/`.] | [ux-designer] | [Before first menu impl] | [Unresolved] |
+| [Switch confirm/cancel mapping? Nintendo first-party differs.] | [producer] | [Before cert submission] | [Unresolved] |
+| [Damage numbers pooled or dedicated render target? Verify perf budget with technical-director.] | [lead-programmer, ux-designer] | [Before combat HUD impl] | [Unresolved] |
+| [Max simultaneous toasts before overwhelming? Playtest.] | [ux-designer] | [First playtest] | [Unresolved] |
 | [Add question] | [Owner] | [Deadline] | [Resolution] |

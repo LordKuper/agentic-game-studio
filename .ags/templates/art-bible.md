@@ -7,10 +7,10 @@
 - **Status**: [Draft / Under Review / Approved]
 
 ## Visual Identity Summary
-[2-3 sentences describing the overall visual identity]
+[2-3 sentences: overall visual identity]
 
 ## Reference Board
-[List reference games, films, art, and what specific visual quality each represents]
+[Reference games, films, art. What specific quality each represents.]
 
 | Reference | Medium | What We're Taking |
 | --------- | ------ | ----------------- |
@@ -21,7 +21,7 @@
 ### Primary Palette
 | Name | Hex | Usage |
 | ---- | --- | ----- |
-| [Color Name] | #XXXXXX | [Where and when to use] |
+| [Color Name] | #XXXXXX | [Where + when] |
 
 ### Emotional Color Mapping
 | Game State | Dominant Colors | Mood |
@@ -40,19 +40,19 @@
 [Character proportions, environment scale, UI scale relationships]
 
 ### Level of Detail
-[How detailed are characters, environments, UI elements?]
+[How detailed are characters, environments, UI?]
 
 ### Visual Hierarchy
-[How do we guide the player's eye? What's always most prominent?]
+[How guide player's eye? What's always most prominent?]
 
 ## Character Art Standards
-[Silhouette requirements, color coding, animation style, proportions]
+[Silhouette, color coding, animation style, proportions]
 
 ## Environment Art Standards
 [Tilesets, modularity, lighting, atmospheric effects, scale]
 
 ## UI Art Standards
-[Button styles, typography, icon style, menu layout principles, HUD density]
+[Button styles, typography, icon style, menu layout, HUD density]
 
 ## VFX Standards
 [Particle style, screen effects, impact feedback, color coding]
@@ -74,7 +74,7 @@
 [Frame rates, blend times, animation graph structure]
 
 ## Accessibility
-- Colorblind-safe UI elements required
-- Minimum text size: [X]px at 1080p
-- High contrast mode specifications
+- Colorblind-safe UI required
+- Min text size: [X]px at 1080p
+- High contrast mode specs
 - Icon + color (never color alone) for game state

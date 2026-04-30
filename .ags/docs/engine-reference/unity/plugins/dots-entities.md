@@ -8,22 +8,20 @@
 
 ## Overview
 
-**DOTS (Data-Oriented Technology Stack)** is Unity's high-performance ECS (Entity Component System)
-framework. It's designed for games with massive scale (1000s-10,000s of entities).
+**DOTS (Data-Oriented Technology Stack)** = Unity high-perf ECS framework. Designed for massive scale (1000s-10,000s entities).
 
 **Use DOTS for:**
-- RTS games (1000s of units)
-- Simulations (crowds, traffic, physics)
-- Procedural content generation
-- Performance-critical systems
+- RTS (1000s of units).
+- Simulations (crowds, traffic, physics).
+- Procedural content generation.
+- Perf-critical systems.
 
 **DON'T use DOTS for:**
-- Small games (overhead not worth it)
-- Gameplay requiring frequent structural changes
-- Heavy use of UnityEngine APIs (MonoBehaviour is easier)
+- Small games (overhead not worth it).
+- Gameplay needing frequent structural changes.
+- Heavy use of UnityEngine APIs (MonoBehaviour easier).
 
-**⚠️ Knowledge Gap:** Entities 1.0+ (Unity 6) is a complete rewrite from 0.x.
-Many tutorials for Entities 0.x are now outdated.
+**⚠️ Knowledge Gap:** Entities 1.0+ (Unity 6) full rewrite from 0.x. Entities 0.x tutorials outdated.
 
 ---
 
@@ -32,7 +30,7 @@ Many tutorials for Entities 0.x are now outdated.
 ### Install via Package Manager
 
 1. `Window > Package Manager`
-2. Unity Registry > Search "Entities"
+2. Unity Registry > Search "Entities".
 3. Install:
    - `Entities` (ECS core)
    - `Burst` (LLVM compiler)
@@ -44,20 +42,20 @@ Many tutorials for Entities 0.x are now outdated.
 ## Core Concepts
 
 ### 1. **Entity**
-- Lightweight ID (int)
-- No behavior, just an identifier
+- Lightweight ID (int).
+- No behavior, just identifier.
 
 ### 2. **Component**
-- Data only (no methods)
-- Struct implementing `IComponentData`
+- Data only (no methods).
+- Struct implementing `IComponentData`.
 
 ### 3. **System**
-- Logic that operates on components
-- Struct implementing `ISystem`
+- Logic operating on components.
+- Struct implementing `ISystem`.
 
 ### 4. **Archetype**
-- Unique combination of component types
-- Entities with same components share archetype
+- Unique combination of component types.
+- Entities with same components share archetype.
 
 ---
 
@@ -151,9 +149,9 @@ public class PlayerBaker : Baker<PlayerAuthoring> {
 ```
 
 **How it works:**
-1. Add `PlayerAuthoring` to GameObject in editor
-2. Baker automatically converts to Entity at runtime
-3. Entity has Position + Velocity components
+1. Add `PlayerAuthoring` to GameObject in editor.
+2. Baker auto-converts to Entity at runtime.
+3. Entity has Position + Velocity components.
 
 ---
 
@@ -244,9 +242,9 @@ public partial struct MySystem : ISystem {
 ```
 
 **Burst Restrictions:**
-- No managed references (classes, strings, etc.)
-- Only blittable types (structs, primitives, Unity.Mathematics types)
-- No exceptions
+- No managed references (classes, strings, etc.).
+- Only blittable types (structs, primitives, Unity.Mathematics types).
+- No exceptions.
 
 ---
 
@@ -402,15 +400,15 @@ public partial struct EnemyMovementSystem : ISystem {
 
 `Window > Entities > Hierarchy`
 
-- Shows all entities and their components
-- Filter by archetype, component type
+- Shows all entities + components.
+- Filter by archetype, component type.
 
 ### Entities Profiler
 
 `Window > Analysis > Profiler > Entities`
 
-- System execution times
-- Memory usage per archetype
+- System execution times.
+- Memory usage per archetype.
 
 ---
 

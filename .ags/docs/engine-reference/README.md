@@ -1,21 +1,12 @@
 # Engine Reference Documentation
 
-This directory contains curated, version-pinned documentation snapshots for the
-game engine(s) used in this project. These files exist because **LLM knowledge
-has a cutoff date** and game engines update frequently.
+Version-pinned engine docs. LLM cutoff stale; engines update fast. Without these, agents suggest dead code.
 
-## Why This Exists
-
-Claude's training data has a knowledge cutoff (currently January 2026). Unity
-ships updates that introduce breaking API changes, new features, and deprecated
-patterns. Without these reference files, agents will suggest outdated code.
-
-This studio currently supports Unity only. Reference docs live under
-`.ags/docs/engine-reference/unity/`.
+Studio supports Unity only. Docs under `.ags/docs/engine-reference/unity/`.
 
 ## Structure
 
-Each engine gets its own directory:
+Each engine own dir:
 
 ```
 <engine>/
@@ -29,37 +20,37 @@ Each engine gets its own directory:
     └── ...
 ```
 
-## How Agents Use These Files
+## How Agents Use
 
-Engine-specialist agents are instructed to:
+Engine-specialist agents:
 
-1. Read `VERSION.md` to confirm the current engine version
-2. Check `deprecated-apis.md` before suggesting any engine API
-3. Consult `breaking-changes.md` for version-specific concerns
-4. Read relevant `modules/*.md` for subsystem-specific work
+1. Read `VERSION.md` — confirm version.
+2. Check `deprecated-apis.md` before suggesting API.
+3. Check `breaking-changes.md` for version concerns.
+4. Read relevant `modules/*.md` for subsystem work.
 
 ## Maintenance
 
 ### When to Update
 
-- After upgrading the engine version
-- When the LLM model is updated (new knowledge cutoff)
-- After running `/refresh-docs` (if available)
-- When you discover an API the model gets wrong
+- After engine upgrade.
+- When LLM updated (new cutoff).
+- After `/refresh-docs` (if available).
+- When model gets API wrong.
 
 ### How to Update
 
-1. Update `VERSION.md` with the new engine version and date
-2. Add new entries to `breaking-changes.md` for the version transition
-3. Move newly deprecated APIs into `deprecated-apis.md`
-4. Update `current-best-practices.md` with new patterns
-5. Update relevant `modules/*.md` with API changes
-6. Set "Last verified" dates on all modified files
+1. Update `VERSION.md` with new version + date.
+2. Add entries to `breaking-changes.md` for transition.
+3. Move newly deprecated APIs into `deprecated-apis.md`.
+4. Update `current-best-practices.md` with new patterns.
+5. Update `modules/*.md` with API changes.
+6. Set "Last verified" dates on modified files.
 
 ### Quality Rules
 
-- Every file must have a "Last verified: YYYY-MM-DD" date
-- Keep module files under 150 lines (context budget)
-- Include code examples showing correct/incorrect patterns
-- Link to official documentation URLs for verification
-- Only document things that differ from the model's training data
+- Every file: "Last verified: YYYY-MM-DD" date.
+- Module files under 150 lines (context budget).
+- Include correct/incorrect code examples.
+- Link official docs URLs.
+- Document only deltas from training data.

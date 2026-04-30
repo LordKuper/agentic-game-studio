@@ -1,7 +1,6 @@
 # settings.local.json Template
 
-Create `.claude/settings.local.json` for personal overrides that should NOT
-be committed to version control. Add it to `.gitignore`.
+Create `.claude/settings.local.json` for personal overrides. Do NOT commit. Add to `.gitignore`.
 
 ## Example settings.local.json
 
@@ -25,19 +24,15 @@ be committed to version control. Add it to `.gitignore`.
 
 ## Permission Modes
 
-Claude Code supports different permission modes. Recommended for game dev:
-
 ### During Development (Default)
-Use **normal mode** — Claude asks before running most commands. This is safest
-for production code.
+**Normal mode** — Claude asks before most commands. Safest for production code.
 
 ### During Code Review
-Use **read-only** permissions — Claude can read and search but not modify files.
+**Read-only** permissions — read and search, no modify.
 
 ## Customizing Hooks Locally
 
-You can add personal hooks in `settings.local.json` that extend (not override)
-the project hooks. For example, adding a notification when builds complete:
+Add personal hooks in `settings.local.json` that extend (not override) project hooks. Example: notify on build complete.
 
 ```json
 {

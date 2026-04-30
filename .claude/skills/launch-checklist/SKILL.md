@@ -214,11 +214,11 @@ Generated: [Date]
 [List items that have documented workarounds or accepted risk]
 
 ### Sign-Offs Required
-- [ ] Creative Director вЂ” Content and experience quality
-- [ ] Technical Director вЂ” Technical health and stability
-- [ ] QA Lead вЂ” Quality and test coverage
-- [ ] Producer вЂ” Schedule and overall readiness
-- [ ] Release Manager вЂ” Build and deployment readiness
+- [ ] Creative Director — Content and experience quality
+- [ ] Technical Director — Technical health and stability
+- [ ] QA Lead — Quality and test coverage
+- [ ] Producer — Schedule and overall readiness
+- [ ] Release Manager — Build and deployment readiness
 ```
 
 ---

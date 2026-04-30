@@ -1,49 +1,49 @@
-﻿# Example Session: Scope Crisis - Strategic Decision Making
+# Example Session: Scope Crisis - Strategic Decision Making
 
-**Context:** Solo indie dev, week 8 of project (month 2), approaching Alpha milestone.
+**Context:** Solo indie dev, week 8 (month 2), approaching Alpha.
 
 **Crisis:**
-- Alpha milestone is in 2 weeks
-- Crafting system (Pillar 2) not yet implemented
-- Lead programmer says full crafting will take 3 weeks
-- Investor demo at Alpha - must show all pillars
+- Alpha milestone in 2 weeks
+- Crafting system (Pillar 2) not implemented
+- Lead programmer says full crafting takes 3 weeks
+- Investor demo at Alpha — must show all pillars
 
-**Session Duration:** ~25 minutes
+**Session Duration:** ~25 min
 **Turns:** 8
 **Outcome:** Strategic scope decision with documented ADR
 
 ---
 
-## Turn 1: User Escalates Problem to Creative Director
+## Turn 1: User Escalates to Creative Director
 
 **User:**
 > We have a problem. Alpha is in 2 weeks. The crafting system (Pillar 2 "Emergent Discovery") isn't implemented yet. Lead programmer says it'll take 3 weeks to implement fully. But the investor demo is at Alpha and they need to see both pillars (Combat + Crafting). What should I do?
 
-## Turn 2: Creative Director Gathers Full Context
+## Turn 2: Creative Director Gathers Context
 
 **Agent (creative-director):**
-> This is a classic pillar vs. schedule conflict - exactly what I'm here to help resolve. Let me gather the full context before recommending options.
+> Classic pillar vs schedule conflict — what I'm here for. Gather context first.
 >
-> First, let me review the relevant documents:
-> - `.ags/project/milestones/alpha.md` (milestone definition)
-> - `design/pillars.md` (what's non-negotiable)
+> Reviewing docs:
+> - `.ags/project/milestones/alpha.md` (milestone def)
+> - `design/pillars.md` (non-negotiables)
 > - `design/gdd/crafting-system.md` (what was designed)
 > - `.ags/project/sprints/sprint-current.md` (current work)
 >
 > [Reads documents]
 >
-> **Context Understood:**
-> - Pillar 2: "Emergent Discovery Through Experimentation" (crafting is primary expression)
-> - Alpha success criteria: "All pillars demonstrated in playable form"
-> - Investor demo purpose: Validate vision and secure next funding round
-> - Current crafting design: Tag-based deduction system with 12 tags, ~50 recipes, progressive hint unlocking
+> **Context:**
+> - Pillar 2: "Emergent Discovery Through Experimentation" (crafting = primary expression)
+> - Alpha success: "All pillars demonstrated playable"
+> - Investor demo: Validate vision, secure next funding round
+> - Current crafting: Tag-based deduction, 12 tags, ~50 recipes, progressive hint unlocking
 >
-> **Clarifying Questions:**
-> 1. Is the Alpha date **hard** (investor won't reschedule) or **soft** (we could ask for 1 more week)?
-> 2. What's the **minimum crafting** that still demonstrates Pillar 2? (One recipe? Ten recipes? Full tag system?)
-> 3. What **breaks** if crafting is cut entirely from Alpha? (Does the game still make sense?)
-> 4. How **critical** is this investor relationship? (Nice-to-have funding vs. make-or-break for project survival?)
-> 5. What's the **team status**? (Burned out from crunch? Fresh and could push if needed?)
+> **Clarifying Qs:**
+> 1. Alpha date **hard** (investor won't reschedule) or **soft** (1 more week possible)?
+> 2. **Minimum crafting** that demos Pillar 2? (1 recipe? 10? Full tag system?)
+> 3. What **breaks** if crafting cut entirely? (Game still make sense?)
+> 4. How **critical** is investor relationship? (Nice-to-have vs make-or-break?)
+> 5. **Team status**? (Burned out? Fresh, can push?)
 
 ## Turn 3: User Provides Decision Context
 
@@ -54,145 +54,145 @@
 > 4. Make-or-break. This investor is our only lead. No funding = project dies.
 > 5. Just me solo, I'm not burned out yet.
 
-## Turn 4: Creative Director Frames the Decision
+## Turn 4: Creative Director Frames Decision
 
 **Agent:**
-> Thank you. Now I understand what's truly at stake. Let me frame this decision properly:
+> Now I understand what's at stake.
 >
-> **The Core Question:**
-> Do we deliver full crafting and slip Alpha, deliver simplified crafting and make Alpha, or cut crafting and risk the investor not seeing our full vision?
+> **Core Question:**
+> Full crafting + slip Alpha, simplified crafting + make Alpha, or cut crafting + risk investor missing full vision?
 >
-> **What's Really at Stake:**
-> - **Vision Integrity**: Can investor see Pillar 2 at all?
-> - **Schedule Trust**: Do we keep our commitment to Alpha date?
+> **What's at Stake:**
+> - **Vision Integrity**: Investor see Pillar 2 at all?
+> - **Schedule Trust**: Keep Alpha commitment?
 > - **Project Survival**: No funding = no game
-> - **Quality Standards**: Is "rough but working" acceptable for this demo?
+> - **Quality Standards**: Is "rough but working" acceptable?
 >
-> **Decision Criteria (in priority order for this scenario):**
-> 1. **Investor Confidence** (highest - project survival depends on this)
-> 2. **Pillar Representation** (high - they need to see the full vision)
-> 3. **Schedule Integrity** (medium - matters, but less than funding)
-> 4. **Polish Quality** (lowest - vertical slice can be rough)
+> **Decision Criteria (priority order):**
+> 1. **Investor Confidence** (highest — survival depends on it)
+> 2. **Pillar Representation** (high — need to see full vision)
+> 3. **Schedule Integrity** (medium — matters less than funding)
+> 4. **Polish Quality** (lowest — vertical slice can be rough)
 >
-> Now let me present three strategic options...
+> Three options...
 
-## Turn 5: Creative Director Presents Options with Analysis
+## Turn 5: Creative Director Presents Options
 
 **Agent:**
-> **Option A: Implement Full Crafting System (3 weeks, slip Alpha by 1 week)**
+> **Option A: Full Crafting (3 weeks, slip Alpha by 1 week)**
 >
 > **Execution:**
-> - Implement complete tag-based system with all 50 recipes
+> - Full tag system, all 50 recipes
 > - Full UI polish, all features from GDD
-> - Miss Alpha date, reschedule investor demo (+1 week)
+> - Miss Alpha, reschedule investor demo (+1 week)
 >
 > **Pros:**
-> - вњ… Pillar 2 fully represented with production quality
-> - вњ… No design compromises
-> - вњ… First impression is polished
+> - ✅ Pillar 2 production-quality
+> - ✅ No design compromises
+> - ✅ Polished first impression
 >
 > **Cons:**
-> - вќЊ Breaks investor commitment (they're flying in for the original date)
-> - вќЊ Signals schedule management issues ("if they slipped Alpha, will they slip release?")
-> - вќЊ May damage investor trust more than rough demo would
+> - ❌ Breaks investor commitment
+> - ❌ Signals schedule issues ("if Alpha slipped, will release?")
+> - ❌ May damage trust more than rough demo
 >
 > **Risk: CRITICAL**
-> - Investor may not reschedule (busy schedule, other opportunities)
-> - Even if they do, the slip damages credibility
-> - Unlikely to succeed given hard date constraint
+> - Investor may not reschedule (busy schedule)
+> - Even if yes, slip damages credibility
+> - Unlikely to succeed given hard date
 >
-> **Verdict: NOT RECOMMENDED** - The date is hard and non-negotiable
+> **Verdict: NOT RECOMMENDED** — Date is hard, non-negotiable
 >
 > ---
 >
 > **Option B: Simplify Crafting to Core Pillar (1.5 weeks, make Alpha)**
 >
 > **Execution:**
-> - Implement core tag discovery mechanic ONLY
-> - 10 recipes instead of 50 (enough to demonstrate the system)
+> - Core tag discovery mechanic ONLY
+> - 10 recipes (demonstrates system)
 > - Basic UI (functional, not polished)
 > - No progressive hint unlock (all tags visible at Skill 0 for demo clarity)
-> - No failed-attempt feedback system (just success/fail)
+> - No failed-attempt feedback (success/fail only)
 >
 > **Scope: "Vertical Slice of Pillar 2"**
-> - Players CAN discover recipes by combining tagged ingredients
-> - Players CAN learn tag patterns and deduce new recipes
-> - The SOUL of Pillar 2 is present, just unpolished
+> - Players CAN discover recipes via tagged ingredients
+> - Players CAN learn tag patterns, deduce new recipes
+> - SOUL of Pillar 2 present, just unpolished
 >
 > **Pros:**
-> - вњ… Makes Alpha deadline (schedule integrity maintained)
-> - вњ… Pillar 2 demonstrated (investor sees full vision)
-> - вњ… Core mechanic is playable and provable
-> - вњ… Can use "Alpha в†’ Beta improvement" as narrative ("here's rough, here's polished")
+> - ✅ Makes Alpha (schedule integrity)
+> - ✅ Pillar 2 demoed (full vision)
+> - ✅ Core mechanic playable + provable
+> - ✅ "Alpha → Beta" narrative ("rough → polished")
 >
 > **Cons:**
-> - вљ пёЏ First impression is "rough" (but vertical slices are expected to be rough)
-> - вљ пёЏ Investor might think "this feels small" (mitigation: present roadmap showing post-Alpha expansion)
+> - ⚠️ Rough first impression (vertical slices expected rough)
+> - ⚠️ "Feels small" risk (mitigation: roadmap showing post-Alpha expansion)
 >
 > **Risk: MEDIUM**
-> - Investor might not "get" the pillar from 10 recipes (mitigation: good demo script explaining the vision)
-> - Might feel incomplete (mitigation: frame as "vertical slice proving the concept")
+> - Investor might not "get" pillar from 10 recipes (mitigation: good demo script)
+> - Might feel incomplete (mitigation: "vertical slice proving concept")
 >
-> **Verdict: RECOMMENDED** - Balances all constraints
+> **Verdict: RECOMMENDED** — Balances all constraints
 >
 > ---
 >
-> **Option C: Cut Crafting from Alpha, Focus on Combat Polish (0 weeks, make Alpha)**
+> **Option C: Cut Crafting from Alpha, Polish Combat (0 weeks, make Alpha)**
 >
 > **Execution:**
-> - Deliver Alpha with only Pillar 1 (Combat) fully polished
-> - Use extra 2 weeks to super-polish combat, add content, make it shine
-> - Present crafting as "design doc + concept art" (not playable)
+> - Alpha with Pillar 1 (Combat) only, fully polished
+> - Extra 2 weeks → super-polish combat, content, shine
+> - Crafting as "design doc + concept art" (not playable)
 >
 > **Pros:**
-> - вњ… Makes deadline with zero stress
-> - вњ… What's there is AAA-polished
-> - вњ… No risk of "half-baked" perception
+> - ✅ Deadline made, zero stress
+> - ✅ What's there is AAA-polished
+> - ✅ No "half-baked" risk
 >
 > **Cons:**
-> - вќЊ Pillar 2 not demonstrated (50% of vision missing)
-> - вќЊ Investor sees "another combat game" - not differentiated
-> - вќЊ Harder to secure funding for "potential" vs. "proven concept"
-> - вќЊ If combat alone doesn't wow them, we have no fallback
+> - ❌ Pillar 2 not demoed (50% vision missing)
+> - ❌ "Another combat game" — undifferentiated
+> - ❌ Harder to fund "potential" vs "proven"
+> - ❌ If combat alone doesn't wow, no fallback
 >
 > **Risk: HIGH**
-> - Investor won't see what makes this game special
-> - They might think "Combat is fine, but where's the hook?"
-> - Competing games have combat - we need to show our differentiator
+> - Investor won't see what makes game special
+> - "Combat fine, but where's the hook?"
+> - Competitors have combat — need differentiator shown
 >
-> **Verdict: NOT RECOMMENDED** - Too risky for make-or-break demo
+> **Verdict: NOT RECOMMENDED** — Too risky for make-or-break
 >
 > ---
 >
 > ## My Recommendation: Option B (Simplified Crafting Core)
 >
 > **Reasoning:**
-> 1. **Investor Confidence**: Making the date we committed to shows reliability
-> 2. **Pillar Visibility**: Rough but working > polished but missing. Investors back VISION, not polish.
-> 3. **Demo Narrative**: "Here's Alpha vs. Beta progression" is compelling - shows trajectory
-> 4. **Risk Mitigation**: If crafting doesn't land, combat is still solid. If we cut crafting (Option C) and combat doesn't wow them alone, we have nothing.
-> 5. **Historical Precedent**: Hades, Dead Cells, Slay the Spire all showed rough Early Access verticals and investors loved the SYSTEMS over polish
+> 1. **Investor Confidence**: Making committed date = reliability
+> 2. **Pillar Visibility**: Rough+working > polished+missing. Investors back VISION, not polish.
+> 3. **Demo Narrative**: "Alpha vs Beta progression" is compelling — shows trajectory
+> 4. **Risk Mitigation**: If crafting doesn't land, combat solid. If we cut crafting (C) and combat doesn't wow alone, nothing.
+> 5. **Historical Precedent**: Hades, Dead Cells, Slay the Spire all showed rough Early Access verticals; investors loved SYSTEMS over polish
 >
-> **What Option B Sacrifices:**
+> **Option B Sacrifices:**
 > - Polish (acceptable for vertical slice)
-> - Feature completeness (50 recipes в†’ 10)
-> - Progressive unlocks (deferred to post-Alpha)
+> - Feature completeness (50 → 10 recipes)
+> - Progressive unlocks (deferred post-Alpha)
 >
-> **What Option B Protects:**
+> **Option B Protects:**
 > - Schedule trust
 > - Pillar representation
 > - Vision clarity
-> - Project survival (funding secured)
+> - Project survival (funding)
 >
-> **Implementation Plan if you choose Option B:**
-> 1. I'll create an ADR documenting this scope decision
-> 2. I'll update `design/gdd/crafting-system.md` with "Alpha Scope" markers
-> 3. I'll brief gameplay-programmer on simplified implementation
-> 4. I'll create a demo script for you: how to PRESENT the 10-recipe system to show the 50-recipe vision
+> **If B chosen:**
+> 1. Create ADR documenting scope decision
+> 2. Update `design/gdd/crafting-system.md` with "Alpha Scope" markers
+> 3. Brief gameplay-programmer on simplified impl
+> 4. Create demo script: how to PRESENT 10-recipe system to show 50-recipe vision
 >
-> **But this is your call.** You know this investor better than I do. If you believe they'll value polish over pillar representation, Option C might be right. If you think they'll forgive a 1-week slip, Option A is safest creatively.
+> **But this is your call.** You know investor better. If you believe they value polish > pillar rep, C might be right. If they'll forgive 1-week slip, A safest creatively.
 >
-> What's your decision?
+> Decision?
 
 ## Turn 6: User Makes Decision
 
@@ -202,13 +202,13 @@
 ## Turn 7: Creative Director Documents Decision
 
 **Agent:**
-> Excellent decision. I'll document this thoroughly so future-you understands why we made this choice.
+> Excellent. Documenting thoroughly so future-you understands why.
 >
 > **Creating:**
 > 1. ADR-007: Alpha Crafting Scope Reduction
 > 2. Updated design/gdd/crafting-system.md with Alpha/Beta scope markers
 > 3. Updated .ags/project/milestones/alpha.md success criteria
-> 4. Demo script guidance for investor presentation
+> 4. Demo script for investor presentation
 >
 > [Creates documents]
 >
@@ -228,7 +228,7 @@
 > Positive:
 > - Makes Alpha deadline, preserves investor trust
 > - Both pillars demonstrated (rough but playable)
-> - Can show Alphaв†’Beta improvement narrative
+> - Can show Alpha→Beta improvement narrative
 >
 > Negative:
 > - First impression is "rough"
@@ -284,7 +284,7 @@
 > discovery, not a recipe database."
 > ```
 >
-> May I proceed to write these documents?
+> Proceed to write?
 
 ## Turn 8: User Approves and Agent Completes
 
@@ -292,13 +292,13 @@
 > Yes, create all those documents and also notify the gameplay-programmer about the scope change.
 
 **Agent:**
-> вњ… Complete! Created/Updated:
+> ✅ Complete! Created/Updated:
 > - `design/architecture/adr-007-alpha-crafting-scope.md`
-> - `design/gdd/crafting-system.md` (added Alpha/Beta scope markers)
+> - `design/gdd/crafting-system.md` (Alpha/Beta scope markers added)
 > - `.ags/project/milestones/alpha.md` (updated success criteria)
-> - `.ags/project/demo-script-investor-alpha.md` (new file with presentation guide)
+> - `.ags/project/demo-script-investor-alpha.md` (new presentation guide)
 >
-> **Notifications Sent:**
+> **Notifications:**
 >
 > To `gameplay-programmer`:
 > > "Crafting scope simplified for Alpha: Core tag mechanic + 10 recipes only.
@@ -310,51 +310,51 @@
 > > ADR-007 documents rationale. Sprint plan needs updating to reflect new scope."
 >
 > **Next Steps:**
-> 1. Gameplay-programmer can start implementing simplified crafting
-> 2. You can practice demo script before investor meeting
-> 3. Producer will update sprint plan with new task breakdown
+> 1. Gameplay-programmer can start simplified crafting impl
+> 2. You can practice demo script
+> 3. Producer updates sprint plan with new tasks
 >
 > **Validation:**
-> We'll know this decision was correct when:
-> - Alpha ships on time with both pillars playable
-> - Investor demo successfully communicates the vision
-> - Funding secured for continued development
+> Right decision when:
+> - Alpha ships on time, both pillars playable
+> - Investor demo communicates vision
+> - Funding secured for continued dev
 >
-> Good luck with the demo! This was the right call - vision over polish for this audience.
+> Good luck with demo. Right call — vision over polish for this audience.
 
 ---
 
 ## Session Summary
 
-**What Worked Well:**
-- Creative director read context docs before proposing solutions
-- Asked 5 clarifying questions to understand constraints
-- Framed decision properly (what's at stake, evaluation criteria)
-- Presented 3 distinct options with honest pros/cons
-- Made clear recommendation with reasoning, but deferred to user
-- Documented decision thoroughly with ADR and updated all affected docs
-- Provided demo script to help user present the decision positively
+**What Worked:**
+- Read context docs before proposing solutions
+- 5 clarifying Qs to understand constraints
+- Framed decision (stakes, eval criteria)
+- 3 distinct options with honest pros/cons
+- Clear recommendation + reasoning, deferred to user
+- Documented thoroughly: ADR, all affected docs
+- Demo script to support presentation
 
 **Key Collaborative Moments:**
-- Turn 2: Agent gathered full context before jumping to solutions
-- Turn 3: User provided decision criteria priority (funding > schedule > polish)
-- Turn 5: Agent presented 3 options, made recommendation, but explicitly "this is your call"
-- Turn 6: User made strategic decision
-- Turn 7: Agent provided demo script to support user's presentation
-- Turn 8: Agent cascaded decision to affected parties
+- Turn 2: Gathered context before solutions
+- Turn 3: User gave criteria priority (funding > schedule > polish)
+- Turn 5: 3 options, recommendation, "your call"
+- Turn 6: User strategic decision
+- Turn 7: Demo script supporting presentation
+- Turn 8: Cascaded decision to depts
 
 **Strategic Decision Quality:**
-- User made the final call
-- Agent provided expert analysis using game dev theory and precedent
-- Trade-offs were explicit and honest
-- Decision was documented for future reference
-- Success criteria defined for validation
+- User made final call
+- Agent gave expert analysis via theory + precedent
+- Trade-offs explicit + honest
+- Decision documented for future
+- Success criteria defined
 
 **Files Created/Updated:**
-- ADR-007 (decision record)
-- Updated crafting GDD with scope markers
-- Updated Alpha milestone definition
-- Demo script for investor presentation
+- ADR-007 (decision)
+- Updated crafting GDD (scope markers)
+- Updated Alpha milestone
+- Demo script
 
 **Context Usage:** ~30%
-**User Satisfaction:** High - confident decision made with full information
+**User Satisfaction:** High — confident decision, full info

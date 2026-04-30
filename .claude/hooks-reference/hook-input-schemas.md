@@ -1,10 +1,10 @@
 # Hook Input/Output Schemas
 
-This documents the JSON payloads each Claude Code hook receives on stdin for every event type.
+JSON payloads each Claude Code hook gets on stdin per event.
 
 ## PreToolUse
 
-Fired before a tool is executed. Can **allow** (exit 0) or **block** (exit 2).
+Fires before tool runs. **Allow** (exit 0) or **block** (exit 2).
 
 ### PreToolUse: Bash
 
@@ -25,8 +25,8 @@ Fired before a tool is executed. Can **allow** (exit 0) or **block** (exit 2).
 {
   "tool_name": "Write",
   "tool_input": {
-    "file_path": "src/gameplay/health.gd",
-    "content": "extends Node\n..."
+    "file_path": "Assets/Scripts/Gameplay/Health.cs",
+    "content": "using UnityEngine;\npublic class Health : MonoBehaviour { ... }"
   }
 }
 ```
@@ -37,9 +37,9 @@ Fired before a tool is executed. Can **allow** (exit 0) or **block** (exit 2).
 {
   "tool_name": "Edit",
   "tool_input": {
-    "file_path": "src/gameplay/health.gd",
-    "old_string": "var health = 100",
-    "new_string": "var health: int = 100"
+    "file_path": "Assets/Scripts/Gameplay/Health.cs",
+    "old_string": "private int health = 100;",
+    "new_string": "[SerializeField] private int health = 100;"
   }
 }
 ```
@@ -50,14 +50,14 @@ Fired before a tool is executed. Can **allow** (exit 0) or **block** (exit 2).
 {
   "tool_name": "Read",
   "tool_input": {
-    "file_path": "src/gameplay/health.gd"
+    "file_path": "Assets/Scripts/Gameplay/Health.cs"
   }
 }
 ```
 
 ## PostToolUse
 
-Fired after a tool completes. **Cannot block** (exit code ignored for blocking). Stderr messages are shown as warnings.
+Fires after tool done. **Cannot block** (exit code ignored). Stderr shown as warnings.
 
 ### PostToolUse: Write
 
@@ -88,7 +88,7 @@ Fired after a tool completes. **Cannot block** (exit code ignored for blocking).
 
 ## SubagentStart
 
-Fired when a subagent is spawned via the Task tool.
+Fires when subagent spawned via Task tool.
 
 ```json
 {
@@ -100,15 +100,15 @@ Fired when a subagent is spawned via the Task tool.
 
 ## SessionStart
 
-Fired when a Claude Code session begins. **No stdin input** — the hook just runs and its stdout is shown to Claude as context.
+Fires when session begins. **No stdin** — stdout shown to Claude as context.
 
 ## PreCompact
 
-Fired before context window compression. **No stdin input** — the hook runs to save state before compression occurs.
+Fires before context compression. **No stdin** — saves state pre-compress.
 
 ## Stop
 
-Fired when the Claude Code session ends. **No stdin input** — the hook runs for cleanup and logging.
+Fires when session ends. **No stdin** — cleanup and logging.
 
 ## Exit Code Reference
 
@@ -116,11 +116,11 @@ Fired when the Claude Code session ends. **No stdin input** — the hook runs fo
 |-----------|---------|-------------------|
 | 0 | Allow / Success | All events |
 | 2 | Block (stderr shown to Claude) | PreToolUse only |
-| Other | Treated as error, tool proceeds | All events |
+| Other | Error, tool proceeds | All events |
 
 ## Notes
 
-- Hooks receive JSON on **stdin** (pipe). Use `INPUT=$(cat)` to capture.
-- Parse with `jq` if available, fall back to `grep` for cross-platform compatibility.
-- On Windows, `grep -P` (Perl regex) is often unavailable. Use `grep -E` (POSIX extended) instead.
-- Path separators may be `\` on Windows. Normalize with `sed 's|\\|/|g'` when comparing paths.
+- Hooks get JSON on **stdin** (pipe). Use `INPUT=$(cat)` to capture.
+- Parse with `jq` if available, fall back to `grep` for cross-platform.
+- Windows: `grep -P` often missing. Use `grep -E` instead.
+- Windows path sep `\`. Normalize via `sed 's|\\|/|g'` when comparing paths.

@@ -10,10 +10,7 @@
 
 ## Knowledge Gap Warning
 
-The LLM's training data likely covers Unity up to ~2022 LTS (2022.3). The entire
-Unity 6 release series (formerly Unity 2023 Tech Stream) introduced significant
-changes that the model does NOT know about. Always cross-reference this directory
-before suggesting Unity API calls.
+LLM training likely covers Unity up to ~2022 LTS (2022.3). Whole Unity 6 series (formerly Unity 2023 Tech Stream) brought big changes model does NOT know. Always cross-reference this dir before suggesting Unity API.
 
 ## Post-Cutoff Version Timeline
 
@@ -27,25 +24,25 @@ before suggesting Unity API calls.
 ## Major Changes from 2022 LTS to Unity 6.3 LTS
 
 ### Breaking Changes
-- **Entities/DOTS**: Major API overhaul in Entities 1.0+, complete redesign of ECS patterns
-- **Input System**: Legacy Input Manager deprecated, new Input System is default
-- **Rendering**: URP/HDRP significant upgrades, SRP Batcher improvements
-- **Addressables**: Asset management workflow changes
-- **Scripting**: C# 9 support, new API patterns
+- **Entities/DOTS**: Major API overhaul in Entities 1.0+, full ECS redesign.
+- **Input System**: Legacy Input Manager deprecated; new Input System default.
+- **Rendering**: URP/HDRP big upgrades, SRP Batcher improvements.
+- **Addressables**: Asset workflow changes.
+- **Scripting**: C# 9 support, new API patterns.
 
 ### New Features (Post-Cutoff)
-- **DOTS**: Production-ready Entity Component System (Entities 1.3+)
-- **Graphics**: Enhanced URP/HDRP pipelines, GPU Resident Drawer
-- **Multiplayer**: Netcode for GameObjects improvements
-- **UI Toolkit**: Production-ready for runtime UI (replaces UGUI for new projects)
-- **Async Asset Loading**: Improved Addressables performance
-- **Web**: WebGPU support
+- **DOTS**: Production-ready ECS (Entities 1.3+).
+- **Graphics**: Enhanced URP/HDRP, GPU Resident Drawer.
+- **Multiplayer**: Netcode for GameObjects improvements.
+- **UI Toolkit**: Production-ready runtime UI (replaces UGUI for new projects).
+- **Async Asset Loading**: Improved Addressables perf.
+- **Web**: WebGPU support.
 
 ### Deprecated Systems
-- **Legacy Input Manager**: Use new Input System package
-- **Legacy Particle System**: Use Visual Effect Graph
-- **UGUI**: Still supported, but UI Toolkit recommended for new projects
-- **Old ECS (GameObjectEntity)**: Replaced by modern DOTS/Entities
+- **Legacy Input Manager**: Use new Input System package.
+- **Legacy Particle System**: Use Visual Effect Graph.
+- **UGUI**: Still supported; UI Toolkit recommended for new projects.
+- **Old ECS (GameObjectEntity)**: Replaced by modern DOTS/Entities.
 
 ## Verified Sources
 

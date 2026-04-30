@@ -3,11 +3,11 @@
 ## Document Status
 - **Date**: [Date]
 - **Facilitator**: producer
-- **Participants**: [List of agents/people involved]
-- **Period Covered**: [Start date] to [End date]
+- **Participants**: [agents/people involved]
+- **Period**: [Start] to [End]
 
 ## Summary
-[2-3 sentence summary of what this milestone/project accomplished]
+[2-3 sentences: what milestone/project accomplished]
 
 ## Goals vs Results
 
@@ -19,27 +19,27 @@
 
 | Date | Event | Impact |
 | ---- | ----- | ------ |
-| [Date] | [What happened] | [How it affected the project] |
+| [Date] | [What happened] | [How affected project] |
 
 ## What Went Well
 
-### [Category 1: e.g., Technical Execution]
+### [Category 1 — e.g., Technical Execution]
 **What**: [Description]
-**Why it worked**: [Root cause of success]
+**Why it worked**: [Root cause]
 **How to repeat**: [What to keep doing]
 
-### [Category 2: e.g., Team Coordination]
+### [Category 2 — e.g., Team Coordination]
 **What**: [Description]
 **Why it worked**: [Root cause]
 **How to repeat**: [Action]
 
 ## What Went Poorly
 
-### [Category 1: e.g., Scope Management]
+### [Category 1 — e.g., Scope Management]
 **What**: [Description]
-**Root cause**: [Why this happened]
+**Root cause**: [Why happened]
 **Impact**: [Time/quality/morale cost]
-**Prevention**: [How to avoid next time]
+**Prevention**: [How to avoid next]
 
 ### [Category 2]
 [Same structure]
@@ -56,7 +56,7 @@
 
 ## Lessons Learned
 
-1. **[Lesson]**: [Explanation and how it changes future work]
+1. **[Lesson]**: [Explanation + how changes future work]
 2. **[Lesson]**: [Explanation]
 
 ## Action Items
@@ -66,4 +66,4 @@
 | 1 | [Action] | [Who] | [When] | [Open/Done] |
 
 ## Acknowledgments
-[Call out exceptional contributions]
+[Exceptional contributions]

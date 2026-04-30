@@ -8,9 +8,9 @@
 ## Overview
 
 Unity 6.3 audio systems:
-- **AudioSource**: Play sounds on GameObjects
-- **Audio Mixer**: Mix, effect processing, dynamic mixing
-- **Spatial Audio**: 3D positioned sound
+- **AudioSource**: Play sounds on GameObjects.
+- **Audio Mixer**: Mix, effects, dynamic mixing.
+- **Spatial Audio**: 3D positioned sound.
 
 ---
 
@@ -70,9 +70,9 @@ source.rolloffMode = AudioRolloffMode.Logarithmic; // Natural falloff
 ```
 
 ### Volume Rolloff Curves
-- **Logarithmic**: Natural, realistic (RECOMMENDED)
-- **Linear**: Steady decrease
-- **Custom**: Define your own curve
+- **Logarithmic**: Natural, realistic (RECOMMENDED).
+- **Linear**: Steady decrease.
+- **Custom**: Define your own curve.
 
 ---
 
@@ -117,9 +117,9 @@ audioMixer.SetFloat("MusicVolume", volumeDB);
 
 ### Expose Mixer Parameters
 In Audio Mixer window:
-1. Right-click parameter (e.g., Volume)
-2. "Expose 'Volume' to script"
-3. Rename in "Exposed Parameters" tab (e.g., "MusicVolume")
+1. Right-click parameter (e.g., Volume).
+2. "Expose 'Volume' to script".
+3. Rename in "Exposed Parameters" tab (e.g., "MusicVolume").
 
 ---
 
@@ -128,8 +128,8 @@ In Audio Mixer window:
 ### Add Effects to Mixer Groups
 
 In Audio Mixer:
-- Click group (e.g., SFX)
-- Click "Add Effect"
+- Click group (e.g., SFX).
+- Click "Add Effect".
 - Choose: Reverb, Echo, Low Pass, High Pass, Distortion, etc.
 
 ### Duck Music During Dialogue (Sidechain)
@@ -256,8 +256,8 @@ if (audioSource.isPlaying) {
 ## Audio Listener
 
 ### Single Listener Rule
-- Only ONE `AudioListener` should be active at a time
-- Usually attached to Main Camera
+- Only ONE `AudioListener` active at a time.
+- Usually attached to Main Camera.
 
 ```csharp
 // Disable extra listeners
@@ -271,11 +271,11 @@ listener.enabled = false;
 
 ### Audio Window
 - `Window > Audio > Audio Mixer`
-- Visualize levels, test snapshots
+- Visualize levels, test snapshots.
 
 ### Audio Settings
 - `Edit > Project Settings > Audio`
-- Global volume, DSP buffer size, speaker mode
+- Global volume, DSP buffer size, speaker mode.
 
 ---
 

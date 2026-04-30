@@ -8,10 +8,10 @@
 ## Overview
 
 Unity 6.3 animation systems:
-- **Animator Controller (Mecanim)**: State machine-based (RECOMMENDED)
-- **Timeline**: Cinematic sequences, cutscenes
-- **Animation Rigging**: Procedural runtime animation
-- **Legacy Animation**: Deprecated, avoid
+- **Animator Controller (Mecanim)**: State machine (RECOMMENDED).
+- **Timeline**: Cinematic sequences, cutscenes.
+- **Animation Rigging**: Procedural runtime animation.
+- **Legacy Animation**: Deprecated, avoid.
 
 ---
 
@@ -25,9 +25,9 @@ Unity 6.3 animation systems:
 ```
 
 ### Timeline Improvements
-- Better performance
-- More track types
-- Improved signal system
+- Better perf.
+- More track types.
+- Improved signal system.
 
 ---
 
@@ -60,9 +60,9 @@ animator.SetInteger("WeaponType", 2);
 ```
 
 ### Animation Layers
-- **Base Layer**: Default animations (locomotion)
-- **Override Layers**: Replace base layer (e.g., weapon swap)
-- **Additive Layers**: Add on top of base (e.g., breathing, aim offset)
+- **Base Layer**: Default animations (locomotion).
+- **Override Layers**: Replace base (e.g., weapon swap).
+- **Additive Layers**: Add on top of base (e.g., breathing, aim offset).
 
 ```csharp
 // Set layer weight (0-1)
@@ -173,11 +173,11 @@ director.Play();
 ```
 
 ### Timeline Tracks
-- **Activation Track**: Enable/disable GameObjects
-- **Animation Track**: Play animations on Animator
-- **Audio Track**: Synchronized audio playback
-- **Cinemachine Track**: Camera movement
-- **Signal Track**: Trigger events at specific times
+- **Activation Track**: Enable/disable GameObjects.
+- **Animation Track**: Play animations on Animator.
+- **Audio Track**: Synchronized audio.
+- **Cinemachine Track**: Camera movement.
+- **Signal Track**: Trigger events at specific times.
 
 ### Signal System (Events)
 
@@ -235,13 +235,13 @@ public class WeaponTrail : MonoBehaviour {
 
 ### Culling
 - `Animator > Culling Mode`:
-  - **Always Animate**: Always update (expensive)
-  - **Cull Update Transforms**: Stop updating bones when off-screen (RECOMMENDED)
-  - **Cull Completely**: Stop all animation when off-screen
+  - **Always Animate**: Always update (expensive).
+  - **Cull Update Transforms**: Stop bone updates off-screen (RECOMMENDED).
+  - **Cull Completely**: Stop all animation off-screen.
 
 ### LOD (Level of Detail)
-- Simpler animations for distant characters
-- Reduce skeleton bone count for LOD meshes
+- Simpler animations for distant characters.
+- Reduce skeleton bone count for LOD meshes.
 
 ---
 
@@ -275,11 +275,11 @@ string currentClip = clipInfo[0].clip.name;
 
 ### Animator Window
 - `Window > Animation > Animator`
-- Visualize state machine, see active state
+- Visualize state machine, see active state.
 
 ### Animation Window
 - `Window > Animation > Animation`
-- Edit animation clips, add events
+- Edit clips, add events.
 
 ---
 

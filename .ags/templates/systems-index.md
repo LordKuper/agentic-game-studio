@@ -1,17 +1,15 @@
-﻿# Systems Index: [Game Title]
+# Systems Index: [Game Title]
 
 > **Status**: [Draft / Under Review / Approved]
 > **Created**: [Date]
 > **Last Updated**: [Date]
-> **Source Concept**: design/gdd/concept.md
+> **Source Concept**: design/gdd/game-concept.md
 
 ---
 
 ## Overview
 
-[One paragraph explaining the game's mechanical scope. What kind of systems does
-this game need? Reference the core loop and game pillars. This should help any
-team member understand the "big picture" of what needs to be designed and built.]
+[One paragraph: game's mechanical scope. What systems needed? Reference core loop + pillars. Help any team member understand "big picture" of design + build.]
 
 ---
 
@@ -19,12 +17,10 @@ team member understand the "big picture" of what needs to be designed and built.
 
 | # | System Name | Category | Priority | Status | Design Doc | Depends On |
 |---|-------------|----------|----------|--------|------------|------------|
-| 1 | [e.g., Player Controller] | Core | MVP | [Not Started / In Design / In Review / Approved / Implemented] | [design/gdd/player-controller.md or "вЂ”"] | [e.g., Input System, Physics] |
-| 2 | [e.g., Camera System] | Core | MVP | Not Started | вЂ” | Player Controller |
+| 1 | [Player Controller] | Core | MVP | [Not Started / In Design / In Review / Approved / Implemented] | [design/gdd/player-controller.md or "—"] | [Input, Physics] |
+| 2 | [Camera System] | Core | MVP | Not Started | — | Player Controller |
 
-[Add a row for every identified system. Use the categories and priority tiers
-defined below. Mark systems that were inferred (not explicitly in the concept doc)
-with "(inferred)" in the system name.]
+[Row per identified system. Use categories + priorities below. Inferred systems (not explicitly in concept) → mark "(inferred)".]
 
 ---
 
@@ -32,18 +28,17 @@ with "(inferred)" in the system name.]
 
 | Category | Description | Typical Systems |
 |----------|-------------|-----------------|
-| **Core** | Foundation systems everything depends on | Player controller, input, physics, camera, scene management, state machine |
-| **Gameplay** | The systems that make the game fun | Combat, AI, stealth, movement abilities, interaction |
-| **Progression** | How the player grows over time | XP/leveling, skill trees, unlocks, achievements, reputation |
-| **Economy** | Resource creation and consumption | Currency, loot, crafting, shops, item database, drop tables |
-| **Persistence** | Save state and continuity | Save/load, settings, cloud sync, profile management |
-| **UI** | Player-facing information displays | HUD, menus, inventory screen, dialogue UI, map, notifications |
-| **Audio** | Sound and music systems | Music manager, SFX bus, ambient audio, adaptive music, voice |
-| **Narrative** | Story and dialogue delivery | Dialogue system, quest tracking, cutscenes, journal, lore entries |
-| **Meta** | Systems outside the core game loop | Analytics, tutorials/onboarding, accessibility options, photo mode |
+| **Core** | Foundation everything depends on | Player controller, input, physics, camera, scene management, state machine |
+| **Gameplay** | Systems making game fun | Combat, AI, stealth, movement abilities, interaction |
+| **Progression** | Player growth over time | XP/leveling, skill trees, unlocks, achievements, reputation |
+| **Economy** | Resource creation + consumption | Currency, loot, crafting, shops, item DB, drop tables |
+| **Persistence** | Save state + continuity | Save/load, settings, cloud sync, profile |
+| **UI** | Player-facing displays | HUD, menus, inventory, dialogue UI, map, notifications |
+| **Audio** | Sound + music | Music manager, SFX bus, ambient, adaptive music, voice |
+| **Narrative** | Story + dialogue delivery | Dialogue, quest tracking, cutscenes, journal, lore |
+| **Meta** | Outside core loop | Analytics, tutorials, accessibility, photo mode |
 
-[Not every game needs every category. Remove categories that don't apply.
-Add custom categories if needed.]
+[Not every game needs every category. Remove inapplicable. Add custom if needed.]
 
 ---
 
@@ -51,77 +46,68 @@ Add custom categories if needed.]
 
 | Tier | Definition | Target Milestone | Design Urgency |
 |------|------------|------------------|----------------|
-| **MVP** | Required for the core loop to function. Without these, you can't test "is this fun?" | First playable build | Design FIRST |
-| **Vertical Slice** | Required for one complete, polished area. Demonstrates the full experience. | Vertical slice / demo | Design SECOND |
-| **Alpha** | All features present in rough form. Complete mechanical scope, placeholder content OK. | Alpha milestone | Design THIRD |
-| **Full Vision** | Polish, edge cases, nice-to-haves, and content-complete features. | Beta / Release | Design as needed |
+| **MVP** | Core loop functions. Test "is this fun?" | First playable | Design FIRST |
+| **Vertical Slice** | One complete polished area. Full experience demo. | Vertical slice / demo | Design SECOND |
+| **Alpha** | All features rough. Complete mechanical scope, placeholder content OK. | Alpha milestone | Design THIRD |
+| **Full Vision** | Polish, edge cases, nice-to-haves, content-complete. | Beta / Release | As needed |
 
 ---
 
 ## Dependency Map
 
-[Systems sorted by dependency order вЂ” design and build from top to bottom.
-Systems at the top are foundations; systems at the bottom are wrappers.]
+[Sorted by dependency order — design + build top to bottom.]
 
 ### Foundation Layer (no dependencies)
 
-1. [System] вЂ” [one-line rationale for why this is foundational]
+1. [System] — [why foundational]
 
 ### Core Layer (depends on foundation)
 
-1. [System] вЂ” depends on: [list]
+1. [System] — depends on: [list]
 
 ### Feature Layer (depends on core)
 
-1. [System] вЂ” depends on: [list]
+1. [System] — depends on: [list]
 
 ### Presentation Layer (depends on features)
 
-1. [System] вЂ” depends on: [list]
+1. [System] — depends on: [list]
 
 ### Polish Layer (depends on everything)
 
-1. [System] вЂ” depends on: [list]
+1. [System] — depends on: [list]
 
 ---
 
 ## Recommended Design Order
 
-[Combining dependency sort and priority tiers. Design these systems in this
-order. Each system's GDD should be completed and reviewed before starting the
-next, though independent systems at the same layer can be designed in parallel.]
+[Combining dependency + priority. Each GDD complete + reviewed before next. Independent systems same layer = parallel.]
 
-| Order | System | Priority | Layer | Agent(s) | Est. Effort |
-|-------|--------|----------|-------|----------|-------------|
-| 1 | [First system to design] | MVP | Foundation | game-designer | [S/M/L] |
-| 2 | [Second system] | MVP | Foundation | game-designer | [S/M/L] |
+| Order | System | Priority | Layer | Agent(s) | Effort |
+|-------|--------|----------|-------|----------|--------|
+| 1 | [First system] | MVP | Foundation | game-designer | [S/M/L] |
+| 2 | [Second] | MVP | Foundation | game-designer | [S/M/L] |
 
-[Effort estimates: S = 1 session, M = 2-3 sessions, L = 4+ sessions.
-A "session" is one focused design conversation producing a complete GDD.]
+[Effort: S = 1 session, M = 2-3, L = 4+. Session = one focused conversation producing complete GDD.]
 
 ---
 
 ## Circular Dependencies
 
-[List any circular dependency chains found during analysis. These require
-special architectural attention вЂ” either break the cycle with an interface,
-or design the systems simultaneously.]
+[Cycles found during analysis. Need architectural attention — break with interface or design simultaneously.]
 
 - [None found] OR
-- [System A <-> System B: Description of the circular relationship and
-  proposed resolution]
+- [System A <-> System B: description + proposed resolution]
 
 ---
 
 ## High-Risk Systems
 
-[Systems that are technically unproven, design-uncertain, or scope-dangerous.
-These should be validated early regardless of priority tier вЂ” through a
-time-boxed spike, research task, or playable test build.]
+[Technically unproven, design-uncertain, scope-dangerous. Validate early regardless of priority — spike, research, playable test.]
 
-| System | Risk Type | Risk Description | Mitigation |
-|--------|-----------|-----------------|------------|
-| [System] | [Technical / Design / Scope] | [What could go wrong] | [Spike, research, or scope fallback] |
+| System | Risk Type | Description | Mitigation |
+|--------|-----------|-------------|------------|
+| [System] | [Technical / Design / Scope] | [What could go wrong] | [Spike, research, scope fallback] |
 
 ---
 
@@ -140,7 +126,7 @@ time-boxed spike, research task, or playable test build.]
 
 ## Next Steps
 
-- [ ] Review and approve this systems enumeration
-- [ ] Design MVP-tier systems first (use `/design-system [system-name]`)
-- [ ] Run `/design-review` on each completed GDD
-- [ ] Run `/gate-check pre-production` when MVP systems are designed
+- [ ] Review + approve enumeration
+- [ ] Design MVP-tier first (`/design-system [name]`)
+- [ ] Run `/design-review` per completed GDD
+- [ ] Run `/gate-check pre-production` when MVP designed

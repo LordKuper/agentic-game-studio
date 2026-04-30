@@ -2,8 +2,7 @@
 
 **Last verified:** 2026-02-13
 
-This document tracks breaking API changes and behavioral differences between Unity 2022 LTS
-(likely in model training) and Unity 6.3 LTS (current version). Organized by risk level.
+API breaks + behavior diffs from Unity 2022 LTS to Unity 6.3 LTS. Grouped by risk.
 
 ## HIGH RISK — Will Break Existing Code
 
@@ -31,7 +30,7 @@ public partial struct DamageSystem : ISystem {
 }
 ```
 
-**Migration:** Follow Unity's ECS migration guide. Major architectural changes required.
+**Migration:** Follow Unity ECS migration guide. Major architectural changes required.
 
 ---
 
@@ -47,7 +46,7 @@ using UnityEngine.InputSystem;
 if (Keyboard.current.spaceKey.wasPressedThisFrame) { }
 ```
 
-**Migration:** Install Input System package, replace all `Input.*` calls with new API.
+**Migration:** Install Input System package; replace all `Input.*` calls with new API.
 
 ---
 
@@ -62,7 +61,7 @@ public override void Execute(ScriptableRenderContext context, ref RenderingData 
 public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer frameData)
 ```
 
-**Migration:** Update custom render passes to use RenderGraph API.
+**Migration:** Update custom render passes to RenderGraph API.
 
 ---
 
@@ -71,8 +70,7 @@ public override void RecordRenderGraph(RenderGraph renderGraph, ContextContainer
 ### Addressables — Asset Loading Returns
 **Versions:** Unity 6.2+
 
-Asset loading failures now throw exceptions by default instead of returning null.
-Add proper exception handling or use `TryLoad` variants.
+Asset load failures now throw exceptions by default instead of returning null. Add exception handling or use `TryLoad` variants.
 
 ```csharp
 // ❌ OLD: Silent null on failure
@@ -93,8 +91,7 @@ try {
 ### Physics — Default Solver Iterations Changed
 **Versions:** Unity 6.0+
 
-Default solver iterations increased for better stability.
-Check `Physics.defaultSolverIterations` if you rely on old behavior.
+Default solver iterations increased for stability. Check `Physics.defaultSolverIterations` if relying on old behavior.
 
 ---
 
@@ -104,7 +101,7 @@ Check `Physics.defaultSolverIterations` if you rely on old behavior.
 **Status:** Deprecated but supported
 **Replacement:** UI Toolkit
 
-UGUI still works but UI Toolkit is recommended for new projects.
+UGUI still works; UI Toolkit recommended for new projects.
 
 ---
 
@@ -123,29 +120,29 @@ UGUI still works but UI Toolkit is recommended for new projects.
 ## Platform-Specific Breaking Changes
 
 ### WebGL
-- **Unity 6.0+**: WebGPU is now the default (WebGL 2.0 fallback available)
-- Update shaders for WebGPU compatibility
+- **Unity 6.0+**: WebGPU now default (WebGL 2.0 fallback available).
+- Update shaders for WebGPU compatibility.
 
 ### Android
-- **Unity 6.0+**: Minimum API level raised to 24 (Android 7.0)
+- **Unity 6.0+**: Min API level raised to 24 (Android 7.0).
 
 ### iOS
-- **Unity 6.0+**: Minimum deployment target raised to iOS 13
+- **Unity 6.0+**: Min deployment target raised to iOS 13.
 
 ---
 
 ## Migration Checklist
 
-When upgrading from 2022 LTS to Unity 6.3 LTS:
+Upgrading 2022 LTS → Unity 6.3 LTS:
 
-- [ ] Audit all DOTS/ECS code (complete rewrite likely needed)
+- [ ] Audit all DOTS/ECS code (likely full rewrite)
 - [ ] Replace `Input` class with Input System package
 - [ ] Update custom render passes to RenderGraph API
 - [ ] Add exception handling to Addressables calls
-- [ ] Test physics behavior (solver iterations changed)
-- [ ] Consider migrating UGUI to UI Toolkit for new UI
+- [ ] Test physics (solver iterations changed)
+- [ ] Consider migrating UGUI → UI Toolkit for new UI
 - [ ] Update WebGL shaders for WebGPU
-- [ ] Verify minimum platform versions (Android/iOS)
+- [ ] Verify min platform versions (Android/iOS)
 
 ---
 

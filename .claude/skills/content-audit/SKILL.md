@@ -61,14 +61,14 @@ what has been implemented. Use Glob and Grep to locate files.
 
 **Levels / Areas / Maps:**
 - Glob `assets/**/*.tscn`, `assets/**/*.unity`, `assets/**/*.umap`
-- Glob `src/**/*.tscn`, `src/**/*.unity`
+- Glob `Assets/Scripts/**/*.tscn`, `Assets/Scripts/**/*.unity`
 - Look for scene files in subdirectories named `levels/`, `areas/`, `maps/`,
   `worlds/`, `stages/`
 - Count unique files that appear to be level/scene definitions (not UI scenes)
 
 **Enemies / Characters / NPCs:**
 - Glob `assets/data/**/enemies/**`, `assets/data/**/characters/**`
-- Glob `src/**/enemies/**`, `src/**/characters/**`
+- Glob `Assets/Scripts/**/enemies/**`, `Assets/Scripts/**/characters/**`
 - Look for `.json`, `.tres`, `.asset`, `.yaml` data files defining entity stats
 - Look for scene/prefab files in character subdirectories
 
@@ -182,7 +182,7 @@ After writing the report, ask:
 > "Would you like to create backlog stories for any of the content gaps?"
 
 If yes: for each system the user selects, suggest a story title and point them
-to `/create-stories [epic-slug]` or `/quick-design` depending on the size of the gap.
+to `/create-stories [epic-slug]`.
 
 ### --summary mode
 
@@ -193,12 +193,11 @@ End with: "Run `/content-audit` without `--summary` to write the full report."
 
 ## Phase 5 — Next Steps
 
-After the audit, recommend the highest-value follow-up actions:
+After audit, recommend highest-value follow-up actions:
 
-- If any system is `NOT STARTED` and MVP-tagged → "Run `/design-system [name]` to
-  add missing content counts to the GDD before implementation begins."
-- If total gap is >50% → "Run `/sprint-plan` to allocate content work across upcoming sprints."
-- If backlog stories are needed → "Run `/create-stories [epic-slug]` for each HIGH PRIORITY gap."
-- If `--summary` was used → "Run `/content-audit` (no flag) to write the full report to `docs/`."
+- System `NOT STARTED` + MVP-tagged → `/design-system [name]` to add missing content counts before implementation.
+- Total gap >50% → `/sprint-plan` to allocate content work across sprints.
+- Backlog stories needed → `/create-stories [epic-slug]` for each HIGH PRIORITY gap.
+- `--summary` used → `/content-audit` (no flag) to write full report to `docs/`.
 
 Verdict: **COMPLETE** — content audit finished.

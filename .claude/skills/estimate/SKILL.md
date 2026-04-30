@@ -1,4 +1,4 @@
-﻿---
+---
 name: estimate
 description: "Estimates task effort by analyzing complexity, dependencies, historical velocity, and risk factors. Produces a structured estimate with confidence levels."
 argument-hint: "[task-description]"
@@ -8,44 +8,44 @@ allowed-tools: Read, Glob, Grep
 
 ## Phase 1: Understand the Task
 
-Read the task description from the argument. If the description is too vague to estimate meaningfully, ask for clarification before proceeding.
+Read task description from argument. If too vague to estimate, ask clarification first.
 
-Read CLAUDE.md for project context: tech stack, coding standards, architectural patterns, and any estimation guidelines.
+Read CLAUDE.md for project context: tech stack, coding standards, architectural patterns, estimation guidelines.
 
-Read relevant design documents from `design/gdd/` if the task relates to a documented feature or system.
+Read relevant docs from `design/gdd/` if task relates to documented feature.
 
 ---
 
 ## Phase 2: Scan Affected Code
 
-Identify files and modules that would need to change:
+Identify files/modules to change:
 
-- Assess complexity (size, dependency count, cyclomatic complexity)
-- Identify integration points with other systems
-- Check for existing test coverage in the affected areas
-- Read past sprint data from `.ags/project/sprints/` for similar completed tasks and historical velocity
+- Assess complexity (size, dependency count, cyclomatic)
+- Identify integration points
+- Check existing test coverage
+- Read past sprint data from `.ags/project/sprints/` for similar tasks and historical velocity
 
 ---
 
 ## Phase 3: Analyze Complexity Factors
 
 **Code Complexity:**
-- Lines of code in affected files
-- Number of dependencies and coupling level
-- Whether this touches core/engine code vs leaf/feature code
-- Whether existing patterns can be followed or new patterns are needed
+- LOC in affected files
+- Dependencies and coupling
+- Core/engine vs leaf/feature
+- Existing patterns vs new patterns
 
 **Scope:**
-- Number of systems touched
-- New code vs modification of existing code
-- Amount of new test coverage required
-- Data migration or configuration changes needed
+- Systems touched
+- New code vs modification
+- New test coverage required
+- Data/config migrations
 
 **Risk:**
-- New technology or unfamiliar libraries
-- Unclear or ambiguous requirements
+- New tech or unfamiliar libs
+- Ambiguous requirements
 - Dependencies on unfinished work
-- Cross-system integration complexity
+- Cross-system integration
 - Performance sensitivity
 
 ---
@@ -57,35 +57,35 @@ Identify files and modules that would need to change:
 Generated: [Date]
 
 ### Task Description
-[Restate the task clearly in 1-2 sentences]
+[Restate clearly in 1-2 sentences]
 
 ### Complexity Assessment
 
 | Factor | Assessment | Notes |
 |--------|-----------|-------|
 | Systems affected | [List] | [Core, gameplay, UI, etc.] |
-| Files likely modified | [Count] | [Key files listed below] |
+| Files likely modified | [Count] | [Key files below] |
 | New code vs modification | [Ratio] | |
-| Integration points | [Count] | [Which systems interact] |
+| Integration points | [Count] | [Which systems] |
 | Test coverage needed | [Low / Medium / High] | |
 | Existing patterns available | [Yes / Partial / No] | |
 
 **Key files likely affected:**
-- `[path/to/file1]` -- [what changes here]
+- `[path/to/file1]` -- [what changes]
 
 ### Effort Estimate
 
 | Scenario | Days | Assumption |
 |----------|------|------------|
-| Optimistic | [X] | Everything goes right, no surprises |
-| Expected | [Y] | Normal pace, minor issues, one round of review |
-| Pessimistic | [Z] | Significant unknowns surface, blocked for a day |
+| Optimistic | [X] | No surprises |
+| Expected | [Y] | Normal pace, minor issues, one review |
+| Pessimistic | [Z] | Unknowns surface, blocked for a day |
 
 **Recommended budget: [Y days]**
 
 ### Confidence: [High / Medium / Low]
 
-[Explain which factors drive the confidence level for this specific task.]
+[Explain factors driving confidence.]
 
 ### Risk Factors
 
@@ -107,25 +107,25 @@ Generated: [Date]
 | | **Total** | **[Y days]** | |
 
 ### Notes and Assumptions
-- [Key assumption that affects the estimate]
-- [Any caveats about scope boundaries]
+- [Key assumption affecting estimate]
+- [Caveats about scope]
 ```
 
-Output the estimate with a brief summary: recommended budget, confidence level, and the single biggest risk factor.
+Output estimate with summary: recommended budget, confidence, biggest risk.
 
-This skill is read-only вЂ” no files are written. Verdict: **COMPLETE** вЂ” estimate generated.
+Read-only — no files written. Verdict: **COMPLETE** — estimate generated.
 
 ---
 
 ## Phase 5: Next Steps
 
-- If confidence is Low: recommend a time-boxed spike before committing.
-- If the task is > 10 days: recommend breaking it into smaller stories via `/create-stories`.
-- To schedule the task: run `/sprint-plan update` to add it to the next sprint.
+- Confidence Low → recommend time-boxed spike before commit.
+- Task > 10 days → break into smaller stories via `/create-stories`.
+- To schedule: run `/sprint-plan update`.
 
 ### Guidelines
 
-- Always give a range (optimistic / expected / pessimistic), never a single number
-- The recommended budget should be the expected estimate, not the optimistic one
-- Round to half-day increments вЂ” estimating in hours implies false precision for tasks longer than a day
-- Do not pad estimates silently вЂ” call out risk explicitly so the team can decide
+- Always range (optimistic/expected/pessimistic), never single number
+- Recommended budget = expected, not optimistic
+- Round to half-day increments — hours imply false precision past one day
+- No silent padding — call out risk explicitly

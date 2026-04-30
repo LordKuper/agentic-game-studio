@@ -1,7 +1,6 @@
-﻿# CLAUDE.local.md Template
+# CLAUDE.local.md Template
 
-Copy this file to the project root as `CLAUDE.local.md` for personal overrides.
-This file is gitignored and will not be committed.
+Copy to project root as `CLAUDE.local.md` for personal overrides. Gitignored. Not committed.
 
 ```markdown
 # Personal Preferences
@@ -26,12 +25,12 @@ This file is gitignored and will not be committed.
 - Explain architectural decisions briefly
 
 ## Personal Shortcuts
-- When I say "review", run /code-review on the last changed files
-- When I say "status", show git status + sprint progress
+- "review" → run /code-review on last changed files
+- "status" → show git status + sprint progress
 ```
 
 ## Setup
 
-1. Copy this template to your project root: `cp .ags/rules/CLAUDE-local-template.md CLAUDE.local.md`
-2. Edit to match your preferences
-3. Verify `CLAUDE.local.md` is in `.gitignore` (Claude Code reads it from the project root)
+1. Copy template: `cp .ags/rules/CLAUDE-local-template.md CLAUDE.local.md`
+2. Edit to match preferences.
+3. Verify `CLAUDE.local.md` in `.gitignore` (Claude Code reads from project root).

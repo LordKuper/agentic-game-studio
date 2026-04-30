@@ -1,14 +1,12 @@
-﻿# Hook: pre-commit-code-quality
+# Hook: pre-commit-code-quality
 
 ## Trigger
 
-Runs before any commit that modifies files in `src/`.
+Runs before commit touching `Assets/Scripts/`.
 
 ## Purpose
 
-Enforces coding standards before code enters version control. Catches style
-violations, missing documentation, overly complex methods, and hardcoded
-values that should be data-driven.
+Enforce code standards pre-VCS. Catch style violations, missing docs, complex methods, hardcoded values that should be data-driven.
 
 ## Implementation
 
@@ -17,14 +15,14 @@ values that should be data-driven.
 # Pre-commit hook: Code quality checks
 # Adapt the specific checks to your language and tooling
 
-CODE_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^src/')
+CODE_FILES=$(git diff --cached --name-only --diff-filter=ACM | grep -E '^Assets/Scripts/')
 
 EXIT_CODE=0
 
 if [ -n "$CODE_FILES" ]; then
     for file in $CODE_FILES; do
         # Check for hardcoded magic numbers in gameplay code
-        if [[ "$file" == src/gameplay/* ]]; then
+        if [[ "$file" == Assets/Scripts/Gameplay/* ]]; then
             # Look for numeric literals that are likely balance values
             # Adjust the pattern for your language
             if grep -nE '(damage|health|speed|rate|chance|cost|duration)[[:space:]]*[:=][[:space:]]*[0-9]+' "$file"; then
@@ -38,10 +36,8 @@ if [ -n "$CODE_FILES" ]; then
             echo "WARNING: $file has TODO/FIXME without owner tag. Use TODO(name) format."
         fi
 
-        # Run language-specific linter (uncomment appropriate line)
-        # For GDScript: gdlint "$file" || EXIT_CODE=1
-        # For C#: dotnet format --check "$file" || EXIT_CODE=1
-        # For C++: clang-format --dry-run -Werror "$file" || EXIT_CODE=1
+        # Run C# linter (Unity is the project's only engine)
+        # dotnet format --verify-no-changes --include "$file" || EXIT_CODE=1
     done
 
     # Run unit tests for modified systems
@@ -54,7 +50,7 @@ exit $EXIT_CODE
 
 ## Agent Integration
 
-When this hook fails:
-1. For style violations: auto-fix with your formatter or invoke `lead-programmer`
-2. For hardcoded values: invoke `gameplay-programmer` to externalize the values
-3. For test failures: invoke `qa-lead` to diagnose and `gameplay-programmer` to fix
+On fail:
+1. Style violations: auto-fix via formatter or call `lead-programmer`.
+2. Hardcoded values: call `gameplay-programmer` to externalize.
+3. Test failures: call `qa-lead` to diagnose, `gameplay-programmer` to fix.

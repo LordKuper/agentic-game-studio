@@ -27,8 +27,8 @@ If a matching file is found, present the user with:
 ```
 An existing retrospective was found: [filename]
 
-[A] Update existing retrospective вЂ” load it and add/revise sections
-[B] Start fresh вЂ” generate a new retrospective, archiving the old one
+[A] Update existing retrospective — load it and add/revise sections
+[B] Start fresh — generate a new retrospective, archiving the old one
 ```
 
 Wait for user selection before continuing. If updating, read the existing file and
@@ -50,9 +50,9 @@ Read the sprint or milestone plan from the appropriate location:
 
 Then use `AskUserQuestion` to present two options:
 
-- **[A] Provide data manually** вЂ” ask the user to paste or describe the sprint
+- **[A] Provide data manually** — ask the user to paste or describe the sprint
   tasks, dates, and outcomes; use that as the source of truth for the retrospective.
-- **[B] Stop** вЂ” abort the skill. Verdict: **BLOCKED** вЂ” no sprint data available.
+- **[B] Stop** — abort the skill. Verdict: **BLOCKED** — no sprint data available.
 
 If the user chooses [A], collect the data and continue to Phase 3 using what they provide.
 If the user chooses [B], stop here.
@@ -189,9 +189,9 @@ Present the retrospective and top findings to the user (completion rate, velocit
 
 Ask: "May I write this to `.ags/project/sprints/sprint-[N]-retrospective.md`?" (or the milestone path if applicable)
 
-If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** вЂ” retrospective saved.
+If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — retrospective saved.
 
-If no, stop here. Verdict: **BLOCKED** вЂ” user declined write.
+If no, stop here. Verdict: **BLOCKED** — user declined write.
 
 ---
 

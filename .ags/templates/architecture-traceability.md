@@ -1,12 +1,11 @@
-﻿# Architecture Traceability Index
+# Architecture Traceability Index
 
-<!-- Living document вЂ” updated by /architecture-review after each review run.
-     Do not edit manually unless correcting an error. -->
+<!-- Living document — updated by /architecture-review after each review. Do not edit manually unless correcting an error. -->
 
 ## Document Status
 
 - **Last Updated**: [YYYY-MM-DD]
-- **Engine**: [e.g. Godot 4.6]
+- **Engine**: [Unity 6000.0.30f1]
 - **GDDs Indexed**: [N]
 - **ADRs Indexed**: [M]
 - **Last Review**: [link to design/architecture/architecture-review-[date].md]
@@ -15,24 +14,21 @@
 
 | Status | Count | Percentage |
 |--------|-------|-----------|
-| вњ… Covered | [X] | [%] |
-| вљ пёЏ Partial | [Y] | [%] |
-| вќЊ Gap | [Z] | [%] |
+| Covered | [X] | [%] |
+| Partial | [Y] | [%] |
+| Gap | [Z] | [%] |
 | **Total** | **[N]** | |
 
 ---
 
 ## Traceability Matrix
 
-<!-- One row per technical requirement extracted from a GDD.
-     A "technical requirement" is any GDD statement that implies a specific
-     architectural decision: data structures, performance constraints, engine
-     capabilities needed, cross-system communication, state persistence. -->
+<!-- One row per technical requirement extracted from a GDD. "Technical requirement" = GDD statement implying specific architectural decision: data structures, performance constraints, engine capabilities, cross-system communication, state persistence. -->
 
 | Req ID | GDD | System | Requirement Summary | ADR(s) | Status | Notes |
 |--------|-----|--------|---------------------|--------|--------|-------|
-| TR-[gdd]-001 | [filename] | [system name] | [one-line summary] | [ADR-NNNN] | вњ… | |
-| TR-[gdd]-002 | [filename] | [system name] | [one-line summary] | вЂ” | вќЊ GAP | Needs `/architecture-decision [title]` |
+| TR-[gdd]-001 | [filename] | [system] | [one-line] | [ADR-NNNN] | Covered | |
+| TR-[gdd]-002 | [filename] | [system] | [one-line] | — | GAP | Needs `/architecture-decision [title]` |
 
 ---
 
@@ -40,33 +36,33 @@
 
 Requirements with no ADR coverage, prioritised by layer (Foundation first):
 
-### Foundation Layer Gaps (BLOCKING вЂ” must resolve before coding)
-- [ ] TR-[id]: [requirement] вЂ” GDD: [file] вЂ” Suggested ADR: "[title]"
+### Foundation Layer Gaps (BLOCKING — resolve before coding)
+- [ ] TR-[id]: [requirement] — GDD: [file] — Suggested ADR: "[title]"
 
-### Core Layer Gaps (must resolve before relevant system is built)
-- [ ] TR-[id]: [requirement] вЂ” GDD: [file] вЂ” Suggested ADR: "[title]"
+### Core Layer Gaps (resolve before relevant system built)
+- [ ] TR-[id]: [requirement] — GDD: [file] — Suggested ADR: "[title]"
 
-### Feature Layer Gaps (should resolve before feature sprint)
-- [ ] TR-[id]: [requirement] вЂ” GDD: [file] вЂ” Suggested ADR: "[title]"
+### Feature Layer Gaps (resolve before feature sprint)
+- [ ] TR-[id]: [requirement] — GDD: [file] — Suggested ADR: "[title]"
 
-### Presentation Layer Gaps (can defer to implementation)
-- [ ] TR-[id]: [requirement] вЂ” GDD: [file] вЂ” Suggested ADR: "[title]"
+### Presentation Layer Gaps (defer to implementation)
+- [ ] TR-[id]: [requirement] — GDD: [file] — Suggested ADR: "[title]"
 
 ---
 
 ## Cross-ADR Conflicts
 
-<!-- Pairs of ADRs that make contradictory claims. Must be resolved. -->
+<!-- Pairs of ADRs making contradictory claims. Must resolve. -->
 
 | Conflict ID | ADR A | ADR B | Type | Status |
 |-------------|-------|-------|------|--------|
-| CONFLICT-001 | ADR-NNNN | ADR-MMMM | Data ownership | рџ”ґ Unresolved |
+| CONFLICT-001 | ADR-NNNN | ADR-MMMM | Data ownership | Unresolved |
 
 ---
 
-## ADR в†’ GDD Coverage (Reverse Index)
+## ADR → GDD Coverage (Reverse Index)
 
-<!-- For each ADR, which GDD requirements does it address? -->
+<!-- Per ADR: which GDD requirements does it address? -->
 
 | ADR | Title | GDD Requirements Addressed | Engine Risk |
 |-----|-------|---------------------------|-------------|
@@ -76,26 +72,20 @@ Requirements with no ADR coverage, prioritised by layer (Foundation first):
 
 ## Superseded Requirements
 
-<!-- Requirements that existed in a GDD when an ADR was written, but the GDD
-     has since changed. The ADR may need updating. -->
+<!-- Requirements that existed in GDD when ADR was written, but GDD has changed. ADR may need update. -->
 
 | Req ID | GDD | Change | Affected ADR | Status |
 |--------|-----|--------|-------------|--------|
-| TR-[id] | [file] | [what changed] | ADR-NNNN | рџ”ґ ADR needs update |
+| TR-[id] | [file] | [what changed] | ADR-NNNN | ADR needs update |
 
 ---
 
 ## How to Use This Document
 
-**When writing a new ADR**: Add it to the "ADR в†’ GDD Coverage" table and mark
-the requirements it satisfies as вњ… in the matrix.
+**New ADR**: Add to "ADR → GDD Coverage" table. Mark satisfied requirements as Covered.
 
-**When approving a GDD change**: Scan the matrix for requirements from that GDD
-and check whether the change invalidates any existing ADR. Add to "Superseded
-Requirements" if so.
+**Approving GDD change**: Scan matrix for that GDD's requirements. Check if change invalidates any ADR. Add to "Superseded" if so.
 
-**When running `/architecture-review`**: The skill will update this document
-automatically with the current state.
+**Running `/architecture-review`**: Skill updates this doc automatically.
 
-**Gate check**: The Pre-Production gate requires this document to exist and to
-have zero Foundation Layer Gaps.
+**Gate check**: Pre-Production gate requires this doc to exist with zero Foundation Layer Gaps.

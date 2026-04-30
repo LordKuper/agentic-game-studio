@@ -10,8 +10,8 @@
 │   ├── hooks-reference/               # Hook reference docs
 │   └── settings.json                  # Project Claude Code settings
 ├── .ags/                              # Studio workflow: rules, templates, project state
-│   ├── docs/                          # Technical documentation, curated engine API snapshots (version-pinned), examples
-│   ├── project/                       # Project-state working directory (gitignored except patterns below)
+│   ├── docs/                          # Technical docs, version-pinned engine API snapshots, examples
+│   ├── project/                       # Project-state working dir (gitignored except patterns below)
 │   │   ├── state.md                   # Active session state (single file, overwritten on new task)
 │   │   ├── stage.txt                  # Current development phase
 │   │   ├── review-mode.md             # Director-gate intensity (full / lean / solo)
@@ -36,17 +36,12 @@
 │   ├── accessibility-requirements.md  # Accessibility tier and feature matrix
 │   └── registry/                      # Cross-document entity registry
 ├── tests/                             # Test code (engine-agnostic location)
-└── <engine project>/                  # Engine-specific source root, e.g. `Assets/` for Unity
+└── <engine project>/                  # Engine source root, e.g. `Assets/` for Unity
 ```
 
 ## Notes
 
-- **Production code** lives in the engine's source root (e.g. `Assets/` for Unity).
-  Tests live in `tests/` regardless of engine.
-- **Active session**: a single file `.ags/project/state.md` holds the entire
-  working session. Only one active session at a time. Starting a new task
-  overwrites it. History lives in git.
-- **Project state files** (`stage.txt`, `review-mode.md  `, `sprint-status.yaml`)
-  live directly under `.ags/project/` and persist across `state.md` overwrites.
-- **`.ags/project/`** subtree is mostly working state — keep it gitignored
-  unless the project has explicit reasons to track sprint/epic history in git.
+- **Production code**: engine source root (e.g. `Assets/` for Unity). Tests in `tests/` regardless of engine.
+- **Active session**: single file `.ags/project/state.md` holds entire working session. One active session at a time. New task overwrites it. History in git.
+- **Project state files** (`stage.txt`, `review-mode.md`, `sprint-status.yaml`) live under `.ags/project/`. Persist across `state.md` overwrites.
+- **`.ags/project/`** mostly working state — keep gitignored unless project explicitly tracks sprint/epic history in git.

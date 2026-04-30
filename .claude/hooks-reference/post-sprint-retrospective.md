@@ -1,39 +1,35 @@
-﻿# Hook: post-sprint-retrospective
+# Hook: post-sprint-retrospective
 
 ## Trigger
 
-Manual trigger at the end of each sprint (typically invoked by the producer
-agent or the human developer).
+Manual at sprint end. Producer agent or human invokes.
 
 ## Purpose
 
-Automatically generates a retrospective starting point by analyzing the sprint
-data: what was planned vs completed, velocity changes, bug trends, and common
-blockers. This is not a git hook but a workflow hook invoked through the
-`producer` agent.
+Auto-generate retro starting point from sprint data: planned vs done, velocity, bug trends, blockers. Workflow hook, not git hook.
 
 ## Implementation
 
-This is a workflow hook, not a git hook. It is invoked by running:
+Workflow hook. Invoke via:
 
 ```
 @producer Generate sprint retrospective for Sprint [N]
 ```
 
-The producer agent should:
+Producer agent must:
 
-1. **Read the sprint plan** from `.ags/project/sprints/sprint-[N].md`
-2. **Calculate metrics**:
-   - Tasks planned vs completed
-   - Story points planned vs completed (if used)
-   - Carryover items from previous sprint
+1. **Read sprint plan** from `.ags/project/sprints/sprint-[N].md`
+2. **Calc metrics**:
+   - Tasks planned vs done
+   - Story points planned vs done (if used)
+   - Carryover from prior sprint
    - New tasks added mid-sprint
-   - Average task completion time
-3. **Analyze patterns**:
+   - Avg task completion time
+3. **Find patterns**:
    - Most common blockers
-   - Which agent/area had the most incomplete work
-   - Which estimates were most inaccurate
-4. **Generate the retrospective**:
+   - Agent/area with most incomplete work
+   - Most inaccurate estimates
+4. **Generate retro**:
 
 ```markdown
 # Sprint [N] Retrospective

@@ -9,14 +9,13 @@ agent: lead-programmer
 
 # Security Audit
 
-Security is not optional for any shipped game. Even single-player games have
-save tampering vectors. Multiplayer games have cheat surfaces, data exposure
-risks, and denial-of-service potential. This skill systematically audits the
-codebase for the most common game security failures and produces a prioritised
-remediation plan.
+Security is not optional. Single-player games have save tampering vectors.
+Multiplayer games have cheat surfaces, data exposure risks, and DoS potential.
+Systematically audits codebase for common game security failures and produces
+prioritised remediation plan.
 
 **Run this skill:**
-- Before any public release (required for the Polish в†’ Release gate)
+- Before any public release (required for the Polish → Release gate)
 - Before enabling any online/multiplayer feature
 - After implementing any system that reads from disk or network
 - When a security-related bug is reported
@@ -28,12 +27,12 @@ remediation plan.
 ## Phase 1: Parse Arguments and Scope
 
 **Modes:**
-- `full` вЂ” all categories (recommended before release)
-- `network` вЂ” network/multiplayer only
-- `save` вЂ” save file and serialization only
-- `input` вЂ” input validation and injection only
-- `quick` вЂ” high-severity checks only (fastest, for iterative use)
-- No argument вЂ” run `full`
+- `full` — all categories (recommended before release)
+- `network` — network/multiplayer only
+- `save` — save file and serialization only
+- `input` — input validation and injection only
+- `quick` — high-severity checks only (fastest, for iterative use)
+- No argument — run `full`
 
 Read `.ags/rules/technical-preferences.md` to determine:
 - Engine and language (affects which patterns to search for)
@@ -47,7 +46,7 @@ Read `.ags/rules/technical-preferences.md` to determine:
 Spawn `lead-programmer` via Task. Pass:
 - The audit scope/mode
 - Engine and language from technical preferences
-- A manifest of all source directories: `src/`, `assets/data/`, any config files
+- A manifest of all source directories: `Assets/Scripts/`, `assets/data/`, any config files
 
 The lead-programmer runs the audit across 6 categories (see Phase 3). Collect their full findings before proceeding.
 
@@ -64,7 +63,7 @@ The lead-programmer evaluates each of the following. Skip categories not applica
 - Does the game trust numeric values from save files without bounds checking?
 - Are there any eval() or dynamic code execution calls near save loading?
 
-Grep patterns: `File.open`, `load`, `deserialize`, `JSON.parse`, `from_json`, `read_file` вЂ” check each for validation.
+Grep patterns: `File.open`, `load`, `deserialize`, `JSON.parse`, `from_json`, `read_file` — check each for validation.
 
 ### Category 2: Network and Multiplayer Security (skip if single-player only)
 - Is game state authoritative on the server, or does the client dictate outcomes?
@@ -74,7 +73,7 @@ Grep patterns: `File.open`, `load`, `deserialize`, `JSON.parse`, `from_json`, `r
 - Are authentication tokens handled correctly (never sent in plaintext)?
 - Does the game expose any debug endpoints in release builds?
 
-Grep for: `recv`, `receive`, `PacketPeer`, `socket`, `NetworkedMultiplayerPeer`, `rpc`, `rpc_id` вЂ” check each call site for validation.
+Grep for: `recv`, `receive`, `PacketPeer`, `socket`, `NetworkedMultiplayerPeer`, `rpc`, `rpc_id` — check each call site for validation.
 
 ### Category 3: Input Validation
 - Are any player-supplied strings used in file paths? (path traversal)
@@ -82,10 +81,10 @@ Grep for: `recv`, `receive`, `PacketPeer`, `socket`, `NetworkedMultiplayerPeer`,
 - Are numeric inputs (e.g., item quantities, character stats) bounds-checked before use?
 - Are achievement/stat values checked before being written to any backend?
 
-Grep for: `get_input`, `Input.get_`, `input_map`, user-facing text fields вЂ” check validation.
+Grep for: `get_input`, `Input.get_`, `input_map`, user-facing text fields — check validation.
 
 ### Category 4: Data Exposure
-- Are any API keys, credentials, or secrets hardcoded in `src/` or `assets/`?
+- Are any API keys, credentials, or secrets hardcoded in `Assets/Scripts/` or `assets/`?
 - Are debug symbols or verbose error messages included in release builds?
 - Does the game log sensitive player data to disk or console?
 - Are any internal file paths or system information exposed to players?
@@ -105,7 +104,7 @@ Note: Client-side anti-cheat is largely unenforceable. Focus on server-side vali
 - Do any plugins have known CVEs in the version being used?
 - Are plugin sources verified (official marketplace, reviewed repository)?
 
-Glob for: `addons/`, `plugins/`, `third_party/`, `vendor/` вЂ” list all external dependencies.
+Glob for: `addons/`, `plugins/`, `third_party/`, `vendor/` — list all external dependencies.
 
 ---
 
@@ -119,7 +118,7 @@ For each finding, assign:
 | **CRITICAL** | Remote code execution, data breach, or trivially-exploitable cheat that breaks multiplayer integrity |
 | **HIGH** | Save tampering that bypasses progression, credential exposure, or server-side authority bypass |
 | **MEDIUM** | Client-side cheat enablement, information disclosure, or input validation gap with limited impact |
-| **LOW** | Defence-in-depth improvement вЂ” hardening that reduces attack surface but no direct exploit exists |
+| **LOW** | Defence-in-depth improvement — hardening that reduces attack surface but no direct exploit exists |
 
 **Status:** Open / Accepted Risk / Out of Scope
 
@@ -142,8 +141,8 @@ For each finding, assign:
 
 | Severity | Count | Must Fix Before Release |
 |----------|-------|------------------------|
-| CRITICAL | [N] | Yes вЂ” all |
-| HIGH | [N] | Yes вЂ” all |
+| CRITICAL | [N] | Yes — all |
+| HIGH | [N] | Yes — all |
 | MEDIUM | [N] | Recommended |
 | LOW | [N] | Optional |
 
@@ -199,7 +198,7 @@ For each finding, assign:
 
 ## Remediation Priority Order
 
-1. [SEC-NNN] вЂ” [1-line description] вЂ” Est. effort: [Low/Medium/High]
+1. [SEC-NNN] — [1-line description] — Est. effort: [Low/Medium/High]
 2. ...
 
 ---
@@ -207,7 +206,7 @@ For each finding, assign:
 ## Re-Audit Trigger
 
 Run `/security-audit` again after remediating any CRITICAL or HIGH findings.
-The Polish в†’ Release gate requires this report with no open CRITICAL or HIGH items.
+The Polish → Release gate requires this report with no open CRITICAL or HIGH items.
 ```
 
 ---
@@ -224,21 +223,21 @@ Write only after approval.
 
 ## Phase 7: Gate Integration
 
-This report is a required artifact for the **Polish в†’ Release gate**.
+This report is a required artifact for the **Polish → Release gate**.
 
 After remediating findings, re-run: `/security-audit quick` to confirm CRITICAL/HIGH items are resolved before running `/gate-check release`.
 
 If CRITICAL findings exist:
-> "в›” CRITICAL security findings must be resolved before any public release. Do not proceed to `/launch-checklist` until these are addressed."
+> "⛔ CRITICAL security findings must be resolved before any public release. Do not proceed to `/launch-checklist` until these are addressed."
 
 If no CRITICAL/HIGH findings:
-> "вњ… No blocking security findings. Report written to `.ags/project/security/`. Include this path when running `/gate-check release`."
+> "✅ No blocking security findings. Report written to `.ags/project/security/`. Include this path when running `/gate-check release`."
 
 ---
 
 ## Collaborative Protocol
 
-- **Never assume a pattern is safe** вЂ” flag it and let the user decide
-- **Accepted risk is a valid outcome** вЂ” some LOW findings are acceptable trade-offs for a solo team; document the decision
-- **Multiplayer games have a higher bar** вЂ” any HIGH finding in a multiplayer context should be treated as CRITICAL
-- **This is not a penetration test** вЂ” this audit covers common patterns; a real pentest by a human security professional is recommended before any competitive or monetised multiplayer launch
+- **Never assume a pattern is safe** — flag it and let the user decide
+- **Accepted risk is a valid outcome** — some LOW findings are acceptable trade-offs for a solo team; document the decision
+- **Multiplayer games have a higher bar** — any HIGH finding in a multiplayer context should be treated as CRITICAL
+- **This is not a penetration test** — this audit covers common patterns; a real pentest by a human security professional is recommended before any competitive or monetised multiplayer launch

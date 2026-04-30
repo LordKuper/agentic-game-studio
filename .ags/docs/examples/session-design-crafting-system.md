@@ -1,16 +1,16 @@
-﻿# Example Session: Designing the Crafting System
+# Example Session: Designing the Crafting System
 
-**Context:** Solo indie dev, week 2 of project, needs to design the crafting system mentioned in the game pillars.
+**Context:** Solo indie dev, week 2, designs crafting system from game pillars.
 
 **Starting State:**
-- Game concept and pillars defined
-- Engine set up (Godot 4.6)
-- Core combat system designed but not implemented yet
+- Game concept + pillars defined
+- Engine set up (Unity 6000.0.30f1)
+- Core combat designed, not implemented
 - Pillar 2: "Emergent Discovery Through Experimentation"
 
-**Session Duration:** ~45 minutes
+**Session Duration:** ~45 min
 **Turns:** 12
-**Outcome:** Complete crafting system GDD ready for implementation
+**Outcome:** Complete crafting GDD ready for impl
 
 ---
 
@@ -22,16 +22,16 @@
 ## Turn 2: Agent Asks Clarifying Questions
 
 **Agent (game-designer):**
-> I'll help design the crafting system with discovery at its core. Before proposing mechanics, I need to understand your vision:
+> I'll help design crafting with discovery at core. Before proposing mechanics:
 >
-> 1. **Discovery Method**: Should recipes be pure trial-and-error, or should there be hints/clues to guide players?
-> 2. **Failure Punishment**: When players try an invalid combination, what happens?
->    - Materials completely lost (harsh)
->    - Materials partially refunded (moderate)
->    - No cost to experiment (forgiving)
-> 3. **Progression**: Does crafting skill improve over time? If so, what does higher skill unlock?
-> 4. **Scope**: How central is crafting to the game? Core pillar feature or supporting system?
-> 5. **Reference Games**: Any crafting systems you love or hate? (Minecraft, Terraria, Stardew Valley, Potion Craft?)
+> 1. **Discovery Method**: Pure trial-and-error, or hints/clues?
+> 2. **Failure Punishment**: Invalid combo:
+>    - Materials lost (harsh)
+>    - Partial refund (moderate)
+>    - No cost (forgiving)
+> 3. **Progression**: Crafting skill improves? What does it unlock?
+> 4. **Scope**: Core pillar or supporting system?
+> 5. **Reference Games**: Loved/hated systems? (Minecraft, Terraria, Stardew, Potion Craft?)
 
 ## Turn 3: User Provides Context
 
@@ -45,63 +45,63 @@
 ## Turn 4: Agent Presents Options
 
 **Agent:**
-> Perfect context! Based on "emergent discovery" + "deduction over wikis" + "Potion Craft inspiration", here are three mechanical approaches:
+> Perfect context! Based on emergent discovery + deduction-over-wikis + Potion Craft inspiration:
 >
 > **Option A: Pure Randomized Discovery**
-> - **Mechanics**: Try any 2-4 ingredient combo, roll for success based on compatibility
-> - **Hint System**: None - players document discoveries manually
+> - **Mechanics**: Try 2-4 ingredient combos, roll for success
+> - **Hints**: None — players document manually
 > - **Pros**:
->   - Maximum emergent discovery
->   - Community can share findings without breaking core loop
->   - Aligns strongly with "experimentation" pillar
+>   - Max emergent discovery
+>   - Community sharing doesn't break loop
+>   - Strong pillar align
 > - **Cons**:
 >   - High frustration for completionists
->   - Low skill expression (mostly RNG)
->   - Players may feel "wiki is required" despite your intent
-> - **Aligns with Pillars**: вњ…вњ… Emergent Discovery, вљ пёЏ Meaningful Choices (randomness reduces agency)
+>   - Low skill expression (RNG)
+>   - Wiki may feel required despite intent
+> - **Aligns**: ✅✅ Discovery, ⚠️ Meaningful Choices (RNG reduces agency)
 >
-> **Option B: Tag-Based Deduction System (Potion Craft-style)**
-> - **Mechanics**: Each ingredient has hidden "tags" (Fire, Water, Healing, Damage, etc.)
->   - Recipes require specific tag combinations
->   - At Skill 0: No tags visible, pure experimentation
->   - At Skill 5: Can inspect items to see 1 tag
->   - At Skill 10: See 2 tags, etc.
-> - **Hint System**: Tags ARE the hint system, unlocked by skill
+> **Option B: Tag-Based Deduction (Potion Craft-style)**
+> - **Mechanics**: Each ingredient has hidden tags (Fire, Water, Healing, Damage, etc.)
+>   - Recipes need specific tag combos
+>   - Skill 0: No tags visible, pure experimentation
+>   - Skill 5: Inspect items, see 1 tag
+>   - Skill 10: See 2 tags, etc.
+> - **Hints**: Tags ARE hints, unlocked by skill
 > - **Pros**:
->   - Rewards observation and pattern recognition (skill expression!)
->   - Progressive scaffolding - accessible to all player types
->   - Creates "aha!" moments when patterns click
->   - No wiki needed - everything discoverable in-game
+>   - Rewards observation/pattern recognition (skill expression)
+>   - Progressive scaffolding — accessible to all
+>   - "Aha!" moments when patterns click
+>   - No wiki — discoverable in-game
 > - **Cons**:
->   - More complex to implement (tag system + UI)
->   - Requires careful tag design to avoid degeneracy
-> - **Aligns with Pillars**: вњ…вњ… Emergent Discovery, вњ…вњ… Meaningful Choices
+>   - More complex (tag system + UI)
+>   - Careful tag design needed to avoid degeneracy
+> - **Aligns**: ✅✅ Discovery, ✅✅ Meaningful Choices
 >
 > **Option C: Ingredient Compatibility Matrix**
-> - **Mechanics**: Each ingredient pairs well/poorly with others
+> - **Mechanics**: Each ingredient pairs well/poorly
 >   - Success rate = compatibility score
->   - Skill 0: No compatibility shown, ~30% base success
->   - Higher skill: See color-coded compatibility (red/yellow/green)
-> - **Hint System**: Visual compatibility indicators unlock with skill
+>   - Skill 0: No compat shown, ~30% base
+>   - Higher skill: Color-coded compat (red/yellow/green)
+> - **Hints**: Visual compat indicators unlock with skill
 > - **Pros**:
->   - Simple to implement and understand
->   - Clear progression arc (skill = more information)
->   - Feels fair (players understand why they failed)
+>   - Simple to implement/understand
+>   - Clear progression arc
+>   - Feels fair (players know why they failed)
 > - **Cons**:
->   - Less emergent than tag system (more prescriptive)
->   - Optimal recipes more obvious once you have hints
-> - **Aligns with Pillars**: вњ… Emergent Discovery, вњ… Meaningful Choices
+>   - Less emergent (more prescriptive)
+>   - Optimal recipes obvious with hints
+> - **Aligns**: ✅ Discovery, ✅ Meaningful Choices
 >
 > **My Recommendation: Option B (Tag-Based Deduction)**
 >
 > **Reasoning:**
-> - It's the only option that creates TRUE emergent discovery through systems interaction
-> - Players develop mastery by learning tag patterns, not memorizing recipes
-> - The progressive reveal (tags unlock with skill) serves both Explorers (discovery) and Achievers (progression)
-> - Potion Craft proved this works and is satisfying
-> - Avoids wiki-dependency because the deduction is solvable in-game
+> - Only option with TRUE emergent discovery via systems
+> - Mastery via tag patterns, not memorizing recipes
+> - Progressive reveal serves Explorers + Achievers
+> - Potion Craft proved it works
+> - Avoids wiki — solvable in-game
 >
-> Which option resonates with your vision? Or should I explore a hybrid?
+> Which option resonates? Or hybrid?
 
 ## Turn 5: User Decides with Modification
 
@@ -111,9 +111,9 @@
 ## Turn 6: Agent Incorporates Feedback and Drafts
 
 **Agent:**
-> Excellent modification! That adds a deduction game on TOP of the tag discovery. Now failed attempts aren't just "waste" - they're valuable information.
+> Excellent! Adds deduction game ON TOP of tag discovery. Failed attempts = info, not waste.
 >
-> Let me draft the **Overview** and **Player Fantasy** sections:
+> Drafting **Overview** + **Player Fantasy**:
 >
 > ---
 >
@@ -128,11 +128,11 @@
 > **Target MDA Aesthetics**:
 > - Discovery (primary): Uncovering hidden tag patterns
 > - Challenge (secondary): Deduction puzzle
-> - Expression (tertiary): Creating custom recipes once rules are mastered
+> - Expression (tertiary): Creating custom recipes once rules mastered
 >
 > ---
 >
-> Does this capture your intent? Should I continue to **Detailed Rules**?
+> Capture intent? Continue to **Detailed Rules**?
 
 ## Turn 7: User Approves and Requests Next Section
 
@@ -158,15 +158,15 @@
 >
 > ### Tag System
 > - 12 core tags: Fire, Water, Earth, Air, Healing, Damage, Poison, Light, Dark, Metal, Plant, Magic
-> - Each ingredient has 1-3 tags (simple ingredients have 1, rare ingredients have 3)
-> - Each recipe requires 2-6 total tags (basic potions need 2, advanced need 6)
-> - Tag combinations must be unique (no two recipes with identical tag sets)
+> - Each ingredient has 1-3 tags (simple = 1, rare = 3)
+> - Each recipe needs 2-6 total tags (basic = 2, advanced = 6)
+> - Tag combos must be unique
 >
 > ### Skill Progression
-> - Skill 0-4: No inspection ability. Pure experimentation.
-> - Skill 5-9: Can inspect ingredients to see 1 tag
-> - Skill 10-14: Can see 2 tags per ingredient
-> - Skill 15+: Can see all tags per ingredient
+> - Skill 0-4: No inspection. Pure experimentation.
+> - Skill 5-9: Inspect, see 1 tag
+> - Skill 10-14: See 2 tags per ingredient
+> - Skill 15+: See all tags
 >
 > ### XP Gain
 > ```
@@ -175,16 +175,16 @@
 > failure_xp_none = success_xp * 0.15
 > ```
 >
-> Where `recipe_complexity` = number of unique tags required (2-6)
+> Where `recipe_complexity` = unique tags required (2-6)
 >
 > ---
 >
-> **Question before I continue:** What happens if a player discovers a tag combination that DOESN'T match any recipe in the database? Should we:
-> A) Allow it and create "junk items" (player wasted materials)
+> **Question:** Player discovers tag combo NOT matching any recipe. Should we:
+> A) Allow it, create "junk items" (wasted materials)
 > B) Always provide feedback steering toward valid recipes
-> C) Procedurally generate a minor potion for any valid tag combo not in the DB
+> C) Procedurally generate minor potion for any valid tag combo not in DB
 >
-> This affects the "experimentation" feel - option A is harsh but realistic, option C rewards all experimentation.
+> Affects "experimentation" feel — A harsh but realistic, C rewards all experimentation.
 
 ## Turn 9: User Resolves Edge Case
 
@@ -194,29 +194,29 @@
 ## Turn 10: Agent Completes Remaining Sections
 
 **Agent:**
-> Perfect! That keeps experimentation always rewarding. Updating rules with that edge case...
+> Perfect! Keeps experimentation always rewarding. Updating rules...
 >
-> [Agent continues drafting Formulas, Edge Cases, Dependencies, Tuning Knobs, and Acceptance Criteria sections, showing each and incorporating minor feedback]
+> [Agent drafts Formulas, Edge Cases, Dependencies, Tuning Knobs, AC sections — each shown, minor feedback incorporated]
 >
-> [After all sections complete]
+> [After all sections]
 >
-> Complete crafting system GDD ready. Here's the summary:
+> Complete crafting GDD ready. Summary:
 >
 > **8 Required Sections:**
-> вњ… Overview - Tag-based deduction system
-> вњ… Player Fantasy - Alchemist-scientist discovering patterns
-> вњ… Detailed Rules - Core loop with tag matching and feedback system
-> вњ… Formulas - XP curves, success rates, skill thresholds
-> вњ… Edge Cases - Procedural minor potions for non-recipe combos, inventory full, skill at max
-> вњ… Dependencies - Requires inventory system, integrates with progression system
-> вњ… Tuning Knobs - XP rates, skill thresholds, tag count per ingredient, feedback verbosity
-> вњ… Acceptance Criteria - Players discover 10 recipes in 30 minutes without wiki, skill progression feels meaningful
+> ✅ Overview - Tag-based deduction
+> ✅ Player Fantasy - Alchemist-scientist
+> ✅ Detailed Rules - Core loop with tag matching + feedback
+> ✅ Formulas - XP curves, success rates, skill thresholds
+> ✅ Edge Cases - Procedural minor potions, inventory full, max skill
+> ✅ Dependencies - Inventory system, progression integration
+> ✅ Tuning Knobs - XP rates, skill thresholds, tag count, feedback verbosity
+> ✅ AC - Discover 10 recipes in 30 min sans wiki, skill progression meaningful
 >
-> **Delegations Made:**
-> - Consulted `systems-designer` for XP curve formula validation
+> **Delegations:**
+> - Consulted `systems-designer` for XP curve validation
 > - Consulted `systems-designer` for material cost balancing
 >
-> May I write this to `design/gdd/crafting-system.md`?
+> May I write to `design/gdd/crafting-system.md`?
 
 ## Turn 11: User Approves Writing
 
@@ -226,37 +226,37 @@
 ## Turn 12: Agent Writes File and Offers Next Steps
 
 **Agent:**
-> вњ… Created `design/gdd/crafting-system.md`
+> ✅ Created `design/gdd/crafting-system.md`
 >
 > **Next Steps:**
-> 1. Run `/design-review design/gdd/crafting-system.md` to validate against 8-section standard
-> 2. Create data file structure in `assets/data/` for ingredients and recipes
-> 3. When ready to implement, use `/team-combat` pattern but for crafting (game-designer в†’ gameplay-programmer в†’ ui-programmer в†’ qa-lead)
+> 1. Run `/design-review design/gdd/crafting-system.md` to validate vs 8-section standard
+> 2. Create data file structure in `assets/data/` for ingredients/recipes
+> 3. When implementing: `/team-combat` pattern but for crafting (game-designer → gameplay-programmer → ui-programmer → qa-lead)
 >
-> Would you like me to run the design review now, or would you prefer to read it first?
+> Run design review now, or read it first?
 
 ---
 
 ## Session Summary
 
-**What Worked Well:**
-- Agent asked clarifying questions upfront instead of guessing
-- Presented 3 distinct options with clear pros/cons and pillar alignment
-- User's modification ("wrong tag feedback") was incorporated immediately
-- Edge case (non-recipe combos) was flagged proactively, not assumed
-- Each section was shown for approval before moving to next
-- Explicit permission requested before writing file
+**What Worked:**
+- Agent asked Qs upfront, didn't guess
+- 3 distinct options with pros/cons + pillar align
+- User mod ("wrong tag feedback") incorporated immediately
+- Edge case (non-recipe combos) flagged proactively
+- Each section approved before next
+- Explicit permission before writing file
 
 **Key Collaborative Moments:**
-- Turn 2: Agent asked 5 questions to understand vision
-- Turn 4: Agent presented 3 options, made recommendation but deferred to user
-- Turn 5: User modified recommended option, agent incorporated it
-- Turn 8: Agent caught edge case and asked rather than assuming
-- Turn 9: User's choice (procedural potions) changed design direction
-- Turn 10: Agent requested approval before writing file
+- Turn 2: Agent asked 5 Qs to understand vision
+- Turn 4: 3 options, recommended but deferred
+- Turn 5: User modified rec, agent incorporated
+- Turn 8: Agent caught edge case, asked
+- Turn 9: User choice (procedural potions) changed direction
+- Turn 10: Approval before writing
 
 **Files Created:**
-- `design/gdd/crafting-system.md` (complete 8-section GDD)
+- `design/gdd/crafting-system.md` (8-section GDD)
 
 **Context Usage:** ~35% (estimated)
-**User Satisfaction:** High - user made all creative decisions, agent provided expert guidance
+**User Satisfaction:** High — user made all creative decisions

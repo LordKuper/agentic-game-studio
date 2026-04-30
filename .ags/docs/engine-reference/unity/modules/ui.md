@@ -1,16 +1,16 @@
 # Unity 6.3 — UI Module Reference
 
 **Last verified:** 2026-02-13
-**Knowledge Gap:** Unity 6 UI Toolkit is production-ready for runtime UI
+**Knowledge Gap:** Unity 6 UI Toolkit production-ready for runtime UI
 
 ---
 
 ## Overview
 
 Unity 6 UI systems:
-- **UI Toolkit** (RECOMMENDED): Modern, performant, HTML/CSS-like (production-ready in Unity 6)
-- **UGUI (Canvas)**: Legacy system, still supported but not recommended for new projects
-- **IMGUI**: Editor-only, deprecated for runtime UI
+- **UI Toolkit** (RECOMMENDED): Modern, performant, HTML/CSS-like (production-ready Unity 6).
+- **UGUI (Canvas)**: Legacy; still supported, not recommended for new projects.
+- **IMGUI**: Editor-only, deprecated for runtime UI.
 
 ---
 
@@ -18,13 +18,13 @@ Unity 6 UI systems:
 
 ### Setup UI Document
 
-1. Create UXML (UI structure):
+1. Create UXML (structure):
    - `Assets > Create > UI Toolkit > UI Document`
-2. Create USS (styling):
+2. Create USS (style):
    - `Assets > Create > UI Toolkit > StyleSheet`
 3. Add to scene:
    - `GameObject > UI Toolkit > UI Document`
-   - Assign UXML to `UIDocument > Source Asset`
+   - Assign UXML to `UIDocument > Source Asset`.
 
 ---
 
@@ -311,15 +311,15 @@ tmpText.color = Color.white;
 ## Performance (UI Toolkit vs UGUI)
 
 ### UI Toolkit Advantages
-- ✅ Faster rendering (retained mode)
-- ✅ Better for complex UIs with many elements
-- ✅ Easier styling (CSS-like)
-- ✅ Better for dynamic UIs
+- ✅ Faster rendering (retained mode).
+- ✅ Better for complex UIs with many elements.
+- ✅ Easier styling (CSS-like).
+- ✅ Better for dynamic UIs.
 
 ### UGUI Advantages
-- ✅ More mature, widely documented
-- ✅ Better integration with Unity Editor
-- ✅ Easier for beginners
+- ✅ More mature, widely documented.
+- ✅ Better Unity Editor integration.
+- ✅ Easier for beginners.
 
 ---
 
@@ -363,11 +363,11 @@ IEnumerator FadeIn(VisualElement element, float duration) {
 
 ### UI Toolkit Debugger
 - `Window > UI Toolkit > Debugger`
-- Inspect element hierarchy, styles, layout
+- Inspect element hierarchy, styles, layout.
 
 ### UGUI Event System Debugger
-- Select EventSystem in Hierarchy
-- Inspector shows active input module, raycast info
+- Select EventSystem in Hierarchy.
+- Inspector shows active input module, raycast info.
 
 ---
 

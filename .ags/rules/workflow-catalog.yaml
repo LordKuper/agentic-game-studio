@@ -41,7 +41,7 @@ phases:
         command: /brainstorm
         required: true
         artifact:
-          glob: "design/gdd/concept.md"
+          glob: "design/gdd/game-concept.md"
         description: "Formalize concept with pillars, MDA analysis, and scope tiers"
 
       - id: design-review-concept

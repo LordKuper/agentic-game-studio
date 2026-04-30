@@ -1,34 +1,33 @@
-﻿# Incident Response: [Incident Title]
+# Incident Response: [Incident Title]
 
 **Severity**: [S1-Critical / S2-Major / S3-Moderate / S4-Minor]
 **Status**: [Active / Mitigated / Resolved / Post-Mortem Complete]
 **Detected**: [Date Time UTC]
 **Resolved**: [Date Time UTC or ONGOING]
-**Duration**: [Total time from detection to resolution]
+**Duration**: [Detection to resolution]
 **Incident Commander**: [Name/Role]
 
 ---
 
 ## Impact Summary
 
-[2-3 sentences describing what players experienced. Write from the player
-perspective, not the technical perspective.]
+[2-3 sentences: what players experienced. Player perspective, not technical.]
 
-- **Players affected**: [estimated count or percentage]
-- **Platforms affected**: [PC / Console / Mobile / All]
-- **Regions affected**: [All / specific regions]
-- **Revenue impact**: [estimated if applicable]
+- **Players affected**: [count or %]
+- **Platforms**: [PC / Console / Mobile / All]
+- **Regions**: [All / specific]
+- **Revenue impact**: [if applicable]
 
 ---
 
 ## Timeline
 
-| Time (UTC) | Event | Action Taken |
+| Time (UTC) | Event | Action |
 | ---- | ---- | ---- |
-| [HH:MM] | Incident detected via [monitoring/player report/etc.] | Incident commander assigned |
-| [HH:MM] | Root cause identified | [Brief description of cause] |
-| [HH:MM] | Mitigation deployed | [What was done] |
-| [HH:MM] | Service restored / Fix confirmed | Monitoring for recurrence |
+| [HH:MM] | Detected via [monitoring/player report/etc.] | Commander assigned |
+| [HH:MM] | Root cause identified | [Brief cause] |
+| [HH:MM] | Mitigation deployed | [What done] |
+| [HH:MM] | Service restored / Fix confirmed | Monitor recurrence |
 | [HH:MM] | All-clear declared | Post-mortem scheduled |
 
 ---
@@ -36,16 +35,14 @@ perspective, not the technical perspective.]
 ## Root Cause
 
 ### What Happened
-[Technical description of the root cause. Be specific about the chain of events
-that led to the incident.]
+[Technical description. Specific chain of events.]
 
 ### Why It Happened
-[Systemic cause вЂ” why did existing processes, tests, or safeguards fail to
-prevent this? This is more important than the technical cause.]
+[Systemic cause — why processes/tests/safeguards failed. More important than technical cause.]
 
 ### Contributing Factors
-- [Factor 1 вЂ” e.g., "Insufficient load testing for the new matchmaking system"]
-- [Factor 2 вЂ” e.g., "Monitoring alert threshold was set too high"]
+- [Factor 1 — e.g., "Insufficient load testing for new matchmaking"]
+- [Factor 2 — e.g., "Alert threshold too high"]
 - [Factor 3]
 
 ---
@@ -53,14 +50,14 @@ prevent this? This is more important than the technical cause.]
 ## Mitigation and Resolution
 
 ### Immediate Actions (during incident)
-1. [Action taken to stop the bleeding]
-2. [Action taken to restore service]
-3. [Action taken to verify resolution]
+1. [Stop bleeding]
+2. [Restore service]
+3. [Verify resolution]
 
 ### Follow-Up Actions (after resolution)
-1. [Permanent fix if immediate action was a workaround]
-2. [Additional testing or monitoring added]
-3. [Process changes to prevent recurrence]
+1. [Permanent fix if immediate was workaround]
+2. [Additional testing/monitoring added]
+3. [Process changes preventing recurrence]
 
 ---
 
@@ -68,21 +65,21 @@ prevent this? This is more important than the technical cause.]
 
 ### Initial Acknowledgment
 *Sent: [Time] via [channel]*
-> [Exact text of the first public message acknowledging the issue]
+> [Exact text of first public message]
 
 ### Status Updates
 *Sent: [Time] via [channel]*
-> [Text of each subsequent update]
+> [Each subsequent update]
 
 ### Resolution Notice
 *Sent: [Time] via [channel]*
-> [Text announcing the fix and any compensation]
+> [Fix announcement + compensation]
 
 ### Compensation (if applicable)
-- **What**: [description of compensation вЂ” e.g., "500 premium currency + 24-hour XP boost"]
-- **Who**: [all players / affected players only / players who logged in during incident]
-- **When**: [delivery date and method]
-- **Rationale**: [why this compensation is appropriate for the impact]
+- **What**: [e.g., "500 premium currency + 24-hr XP boost"]
+- **Who**: [all / affected only / players logged in during]
+- **When**: [delivery + method]
+- **Rationale**: [why appropriate for impact]
 
 ---
 
@@ -90,15 +87,15 @@ prevent this? This is more important than the technical cause.]
 
 ### What We Are Changing
 
-| Action Item | Owner | Deadline | Status |
+| Action | Owner | Deadline | Status |
 | ---- | ---- | ---- | ---- |
-| [Specific preventive measure] | [Role] | [Date] | [TODO/Done] |
+| [Preventive measure] | [Role] | [Date] | [TODO/Done] |
 | [Add monitoring for X] | [Role] | [Date] | [TODO/Done] |
 | [Add test coverage for Y] | [Role] | [Date] | [TODO/Done] |
 | [Update runbook for Z] | [Role] | [Date] | [TODO/Done] |
 
 ### Process Improvements
-- [Process change to prevent similar incidents]
+- [Process change preventing similar]
 - [Monitoring/alerting improvement]
 - [Testing improvement]
 
@@ -107,29 +104,25 @@ prevent this? This is more important than the technical cause.]
 ## Lessons Learned
 
 ### What Went Well
-- [Positive aspect of incident response вЂ” e.g., "Detection was fast due to
-  monitoring alerts"]
-- [Positive aspect]
+- [Positive — e.g., "Detection fast due to alerts"]
+- [Positive]
 
 ### What Went Poorly
-- [Problem with response вЂ” e.g., "Took 20 minutes to identify the correct
-  on-call person"]
+- [Problem — e.g., "20 min to identify on-call person"]
 - [Problem]
 
 ### Where We Got Lucky
-- [Factor that reduced impact by chance rather than design вЂ” these are hidden
-  risks to address]
+- [Reduced impact by chance not design — hidden risks]
 
 ---
 
 ## Sign-Offs
 
-- [ ] Technical Director вЂ” Root cause accurate, prevention plan sufficient
-- [ ] QA Lead вЂ” Test coverage gaps addressed
-- [ ] Producer вЂ” Timeline and communication reviewed
-- [ ] Community Manager вЂ” Player communication reviewed
+- [ ] Technical Director — Root cause accurate, prevention sufficient
+- [ ] QA Lead — Test coverage gaps addressed
+- [ ] Producer — Timeline + communication reviewed
+- [ ] Community Manager — Player communication reviewed
 
 ---
 
-*This document is filed in `.ags/project/hotfixes/` and linked from the
-release notes for the fix version.*
+*Filed in `.ags/project/hotfixes/`. Linked from release notes for fix version.*

@@ -1,4 +1,4 @@
-﻿# Game Pillars: [Game Title]
+# Game Pillars: [Game Title]
 
 ## Document Status
 - **Version**: 1.0
@@ -10,81 +10,63 @@
 
 ## What Are Game Pillars?
 
-Pillars are the 3-5 non-negotiable principles that define this game's identity.
-Every design, art, audio, narrative, and technical decision must serve at least
-one pillar. If a feature doesn't serve a pillar, it doesn't belong in the game.
+3-5 non-negotiable principles defining game's identity. Every design/art/audio/narrative/technical decision must serve a pillar. No pillar served = doesn't belong.
 
-**Why pillars matter**: In a typical development cycle, the team makes thousands
-of small creative decisions. Pillars ensure all those decisions push in the same
-direction, creating a coherent player experience rather than a collection of
-disconnected features.
+**Why**: Dev cycle = thousands of small decisions. Pillars = same direction. Coherent experience, not disconnected features.
 
 ### What Makes a Good Pillar
 
-A good pillar is:
-- **Falsifiable**: "Fun gameplay" is not a pillar. "Combat rewards patience over
-  aggression" is вЂ” it makes a testable claim about design choices.
-- **Constraining**: If a pillar never forces you to say no to something, it's
-  too vague. Good pillars eliminate options.
-- **Cross-departmental**: A pillar that only constrains game design but says
-  nothing about art, audio, or narrative is incomplete. Real pillars shape
-  every discipline.
-- **Memorable**: The team should be able to recite the pillars from memory.
-  If they can't, the pillars are too numerous or too complex.
+- **Falsifiable**: "Fun gameplay" not a pillar. "Combat rewards patience over aggression" is — testable.
+- **Constraining**: Never forces "no" → too vague. Good pillars eliminate options.
+- **Cross-departmental**: Constrains design AND art AND audio AND narrative. Single-discipline pillar = incomplete.
+- **Memorable**: Team recites from memory. Can't → too many or too complex.
 
 ### Real AAA Examples
 
-These studios publicly shared their game pillars, showing how concrete and
-specific effective pillars can be:
-
 | Game | Pillars | Why They Work |
 | ---- | ---- | ---- |
-| **God of War (2018)** | Visceral combat; Father-son emotional journey; Continuous camera (no cuts); Norse mythology reimagined | "Continuous camera" is radical вЂ” it cut a standard cinematic tool. "Father-son journey" constrains narrative, level design, AND combat (Atreus as companion). |
-| **Hades** | Fast fluid combat; Story depth through repetition; Every run teaches something new | "Story through repetition" justified the roguelike structure narratively вЂ” death IS the story. "Every run teaches" constrains level and encounter design. |
-| **The Last of Us** | Story is essential, not optional; AI partners build relationships; Stealth is always an option | "AI partners build relationships" drove massive investment in companion AI вЂ” not just pathfinding, but emotional presence. |
-| **Celeste** | Tough but fair; Accessibility without compromise; Story and mechanics are the same thing | "Story and mechanics are the same thing" вЂ” climbing IS the struggle, the dash IS the anxiety. Pillar prevented mechanics from being "just gameplay." |
-| **Hollow Knight** | Atmosphere over explanation; Earned mastery; World tells its own story | "Atmosphere over explanation" вЂ” no tutorials, no hand-holding, the world teaches through environmental design. |
-| **Dead Cells** | Every weapon is viable; Combat is a dance; Permanent death creates meaning | "Every weapon is viable" is extremely constraining вЂ” it demands constant balance work across hundreds of items. |
+| **God of War (2018)** | Visceral combat; Father-son journey; Continuous camera (no cuts); Norse reimagined | "Continuous camera" radical — cut cinematic tool. "Father-son" constrains narrative + level design + combat (Atreus companion). |
+| **Hades** | Fast fluid combat; Story depth through repetition; Every run teaches | "Story through repetition" justified roguelike narratively — death IS story. "Every run teaches" constrains level + encounter design. |
+| **Last of Us** | Story essential, not optional; AI partners build relationships; Stealth always option | "AI partners" drove massive companion AI investment — emotional presence not just pathfinding. |
+| **Celeste** | Tough but fair; Accessibility without compromise; Story + mechanics same thing | Climbing IS struggle, dash IS anxiety. Prevented mechanics from being "just gameplay". |
+| **Hollow Knight** | Atmosphere over explanation; Earned mastery; World tells own story | No tutorials, no hand-holding. World teaches via environment. |
+| **Dead Cells** | Every weapon viable; Combat is dance; Permanent death creates meaning | "Every weapon viable" extremely constraining — constant balance work across hundreds of items. |
 
 ---
 
 ## Core Fantasy
 
-> [What power, experience, or feeling does the player get from this game? What
-> can they do here that they can't do anywhere else? The core fantasy is the
-> emotional promise вЂ” the answer to "why would someone choose THIS game?"
+> [Power/experience/feeling player gets. Can do here, nowhere else. Emotional promise. Why choose THIS game?
 >
-> Strong core fantasies are visceral and immediate:
-> - "You are a lone survivor building a new life in a hostile wilderness"
-> - "You command a civilization across millennia"
-> - "You explore a vast, beautiful world at your own pace"
-> - "You master intricate combat and overcome impossible odds"]
+> Strong fantasies = visceral + immediate:
+> - "Lone survivor building life in hostile wilderness"
+> - "Command civilization across millennia"
+> - "Explore vast beautiful world at your pace"
+> - "Master intricate combat, overcome impossible odds"]
 
 ---
 
 ## Target MDA Aesthetics
 
-[Rank the aesthetic goals this game serves, from the MDA Framework. This ranking
-guides every pillar вЂ” your pillars should collectively deliver your top 2-3
-aesthetics.]
+[Rank aesthetics game serves. Pillars collectively deliver top 2-3.]
 
-| Rank | Aesthetic | How Our Game Delivers It |
+| Rank | Aesthetic | How Game Delivers |
 | ---- | ---- | ---- |
-| 1 | [e.g., Challenge] | [Specific delivery mechanism] |
-| 2 | [e.g., Discovery] | [Specific delivery mechanism] |
-| 3 | [e.g., Fantasy] | [Specific delivery mechanism] |
-| 4 | [e.g., Narrative] | [Specific delivery mechanism] |
-| N/A | [Aesthetics not targeted] | [Why this isn't a priority] |
+| 1 | [Challenge] | [Specific delivery] |
+| 2 | [Discovery] | [Specific delivery] |
+| 3 | [Fantasy] | [Specific delivery] |
+| 4 | [Narrative] | [Specific delivery] |
+| N/A | [Not targeted] | [Why not priority] |
 
-**Aesthetics reference** (Hunicke, LeBlanc, Zubek):
-- **Sensation**: Sensory pleasure (visual beauty, satisfying audio, haptic feedback)
-- **Fantasy**: Make-believe, inhabiting a role or world
-- **Narrative**: Drama, story arcs, emotional plot progression
-- **Challenge**: Obstacle course, skill mastery, overcoming difficulty
-- **Fellowship**: Social connection, cooperation, shared experience
-- **Discovery**: Exploration, uncovering secrets, understanding hidden systems
-- **Expression**: Self-expression, creativity, personal identity
-- **Submission**: Relaxation, comfort, meditative play
+**Aesthetics ref** (Hunicke, LeBlanc, Zubek):
+- **Sensation**: Sensory pleasure
+- **Fantasy**: Make-believe, role
+- **Narrative**: Drama, story arcs
+- **Challenge**: Skill mastery, difficulty
+- **Fellowship**: Social, cooperation
+- **Discovery**: Exploration, secrets, hidden systems
+- **Expression**: Self-expression, creativity
+- **Submission**: Relaxation, comfort, meditative
 
 ---
 
@@ -92,43 +74,39 @@ aesthetics.]
 
 ### Pillar 1: [Name]
 
-**One-Sentence Definition**: [A clear, falsifiable statement of what this pillar
-means. Must be specific enough that two people would reach the same conclusion
-when applying it to a design question.]
+**One-Sentence Definition**: [Clear, falsifiable. Two people reach same conclusion applying it.]
 
-**Target Aesthetics Served**: [Which MDA aesthetics from the ranking above does
-this pillar primarily deliver?]
+**Target Aesthetics Served**: [Which MDA from ranking?]
 
-**Design Test**: [A concrete decision this pillar resolves. "If we're debating
-between X and Y, this pillar says we choose __."]
+**Design Test**: [Concrete decision pillar resolves. "Debating X vs Y → pillar says __."]
 
 #### What This Means for Each Department
 
 | Department | This Pillar Says... | Example |
 | ---- | ---- | ---- |
-| **Game Design** | [How this constrains and inspires mechanics] | [Concrete example] |
-| **Art** | [How this constrains and inspires visuals] | [Concrete example] |
-| **Audio** | [How this constrains and inspires sound/music] | [Concrete example] |
-| **Narrative** | [How this constrains and inspires story/writing] | [Concrete example] |
-| **Engineering** | [Technical implications and priorities] | [Concrete example] |
+| **Game Design** | [Constrains/inspires mechanics] | [Concrete] |
+| **Art** | [Constrains/inspires visuals] | [Concrete] |
+| **Audio** | [Constrains/inspires sound/music] | [Concrete] |
+| **Narrative** | [Constrains/inspires story] | [Concrete] |
+| **Engineering** | [Technical implications] | [Concrete] |
 
 #### Serving This Pillar
-- [Concrete example of a feature/decision that embodies this pillar]
-- [Another example]
+- [Concrete feature/decision embodying pillar]
+- [Another]
 
 #### Violating This Pillar
-- [Concrete example of what would betray this pillar вЂ” things we must never do]
-- [Another example]
+- [What would betray pillar — never do]
+- [Another]
 
 ---
 
 ### Pillar 2: [Name]
 
-**One-Sentence Definition**: [Specific, falsifiable statement]
+**One-Sentence Definition**: [Specific, falsifiable]
 
-**Target Aesthetics Served**: [MDA aesthetics]
+**Target Aesthetics Served**: [MDA]
 
-**Design Test**: [Concrete decision it resolves]
+**Design Test**: [Concrete decision]
 
 #### What This Means for Each Department
 
@@ -152,11 +130,11 @@ between X and Y, this pillar says we choose __."]
 
 ### Pillar 3: [Name]
 
-**One-Sentence Definition**: [Specific, falsifiable statement]
+**One-Sentence Definition**: [Specific, falsifiable]
 
-**Target Aesthetics Served**: [MDA aesthetics]
+**Target Aesthetics Served**: [MDA]
 
-**Design Test**: [Concrete decision it resolves]
+**Design Test**: [Concrete decision]
 
 #### What This Means for Each Department
 
@@ -180,121 +158,107 @@ between X and Y, this pillar says we choose __."]
 
 ### Pillar 4: [Name] (Optional)
 
-[Same structure as Pillars 1-3]
+[Same structure as 1-3]
 
 ### Pillar 5: [Name] (Optional)
 
-[Same structure as Pillars 1-3]
+[Same structure as 1-3]
 
 ---
 
 ## Anti-Pillars (What This Game Is NOT)
 
-Anti-pillars are equally important as pillars вЂ” they prevent scope creep and
-keep the vision focused. Every "no" protects the "yes."
+Equally important — prevent scope creep. Every "no" protects "yes".
 
-Great anti-pillars are things the team might actually want to do. "NOT a racing
-game" is obvious and useless. "NOT an open-world game" is useful if the genre
-could plausibly support it.
+Great anti-pillars = things team might want to do. "NOT racing game" = useless. "NOT open-world" = useful if genre could plausibly support it.
 
-- **NOT [thing]**: [Why this is explicitly excluded, what pillar it would
-  compromise, and what it would cost in development focus]
-- **NOT [thing]**: [Why excluded]
-- **NOT [thing]**: [Why excluded]
+- **NOT [thing]**: [Why excluded, which pillar compromised, dev focus cost]
+- **NOT [thing]**: [Why]
+- **NOT [thing]**: [Why]
 
 ---
 
 ## Pillar Conflict Resolution
 
-When two pillars conflict (and they will), use this priority order. The ranking
-reflects which aspects of the experience are most essential to the core fantasy.
+When pillars conflict, use priority. Reflects what's most essential to core fantasy.
 
 | Priority | Pillar | Rationale |
 | ---- | ---- | ---- |
-| 1 | [Highest priority pillar] | [Why this wins when it conflicts with others] |
-| 2 | [Second priority] | [Why] |
-| 3 | [Third priority] | [Why] |
+| 1 | [Highest] | [Why wins on conflict] |
+| 2 | [Second] | [Why] |
+| 3 | [Third] | [Why] |
 
-**Resolution Process**:
-1. Identify which pillars are in tension
-2. Consult the priority ranking above
-3. If the lower-priority pillar can be served partially without compromising the
-   higher-priority one, do so
-4. If not, the higher-priority pillar wins
-5. Document the decision and rationale in the relevant design document
-6. If the conflict is fundamental (two pillars are irreconcilable), escalate to
-   the creative-director to consider revising the pillars themselves
+**Process**:
+1. Identify pillars in tension
+2. Consult priority ranking
+3. Lower-priority served partially without compromising higher → do so
+4. If not, higher wins
+5. Document decision + rationale in design doc
+6. Fundamental conflict (irreconcilable) → escalate to creative-director, consider revising pillars
 
 ---
 
 ## Player Motivation Alignment
 
-[Verify that the pillars collectively serve the target player's psychological needs.
-Based on Self-Determination Theory (Deci & Ryan) and the Player Experience of
-Need Satisfaction model.]
+[Verify pillars collectively serve target's psychological needs. SDT (Deci & Ryan) + PENS.]
 
-| Need | Which Pillar Serves It | How |
+| Need | Pillar Serving | How |
 | ---- | ---- | ---- |
-| **Autonomy** (meaningful choice, player agency) | [Pillar name] | [How this pillar creates autonomy] |
-| **Competence** (mastery, skill growth, clear feedback) | [Pillar name] | [How this pillar creates competence] |
-| **Relatedness** (connection, belonging, emotional bond) | [Pillar name] | [How this pillar creates relatedness] |
+| **Autonomy** (meaningful choice, agency) | [Pillar] | [How creates autonomy] |
+| **Competence** (mastery, growth, feedback) | [Pillar] | [How creates competence] |
+| **Relatedness** (connection, belonging, bond) | [Pillar] | [How creates relatedness] |
 
-**Gap check**: If any of the three needs is not served by at least one pillar,
-consider whether the pillar set is complete. A game that satisfies all three
-SDT needs has the strongest foundation for sustained engagement.
+**Gap check**: Need not served by any pillar → consider pillar set incomplete. All three SDT needs served = strongest foundation for sustained engagement.
 
 ---
 
 ## Emotional Arc
 
-[Map the intended emotional journey of a play session. This should be a
-deliberate design, not an accident.]
+[Map intended session emotional journey. Deliberate design, not accident.]
 
 ### Session Emotional Arc
 
-| Phase | Duration | Target Emotion | Pillar(s) Driving It | Mechanics Delivering It |
+| Phase | Duration | Target Emotion | Pillar(s) Driving | Mechanics Delivering |
 | ---- | ---- | ---- | ---- | ---- |
-| Opening | [e.g., 0-5 min] | [e.g., Curiosity, anticipation] | [Which pillar] | [What the player does] |
-| Rising | [e.g., 5-20 min] | [e.g., Tension, focus, flow] | [Which pillar] | [What the player does] |
-| Climax | [e.g., 20-30 min] | [e.g., Triumph, relief, awe] | [Which pillar] | [What the player does] |
-| Resolution | [e.g., 30-40 min] | [e.g., Satisfaction, reflection] | [Which pillar] | [What the player does] |
-| Hook | [End of session] | [e.g., Curiosity, unfinished business] | [Which pillar] | [What makes them return] |
+| Opening | [0-5 min] | [Curiosity, anticipation] | [Pillar] | [What player does] |
+| Rising | [5-20 min] | [Tension, focus, flow] | [Pillar] | [What player does] |
+| Climax | [20-30 min] | [Triumph, relief, awe] | [Pillar] | [What player does] |
+| Resolution | [30-40 min] | [Satisfaction, reflection] | [Pillar] | [What player does] |
+| Hook | [End of session] | [Curiosity, unfinished business] | [Pillar] | [What makes them return] |
 
 ### Long-Term Emotional Progression
 
-[How does the emotional experience evolve across the full game? Early game vs
-mid game vs late game vs endgame should each feel distinct.]
+[How emotional experience evolves across full game. Early/mid/late/endgame distinct.]
 
 ---
 
 ## Reference Games
 
-| Reference | What We Take From It | What We Do Differently | Which Pillar It Validates |
+| Reference | What We Take | What We Do Differently | Pillar Validated |
 | ---- | ---- | ---- | ---- |
-| [Game 1] | [Specific mechanic, feeling, or approach] | [Our twist] | [Pillar name] |
-| [Game 2] | [What we learn] | [Our twist] | [Pillar name] |
-| [Game 3] | [What we learn] | [Our twist] | [Pillar name] |
+| [Game 1] | [Mechanic, feeling, approach] | [Our twist] | [Pillar] |
+| [Game 2] | [What we learn] | [Our twist] | [Pillar] |
+| [Game 3] | [What we learn] | [Our twist] | [Pillar] |
 
-**Non-game inspirations**: [Films, books, music, art, real-world experiences
-that inform the tone, world, or feel. Great games pull from outside the medium.]
+**Non-game inspirations**: [Films, books, music, art, real-world. Great games pull outside medium.]
 
 ---
 
 ## Pillar Validation Checklist
 
-Before finalizing the pillars, verify:
+Before finalizing:
 
-- [ ] **Count**: 3-5 pillars (no more, no fewer)
-- [ ] **Falsifiable**: Each pillar makes a claim that could be wrong
-- [ ] **Constraining**: Each pillar forces saying "no" to some plausible ideas
-- [ ] **Cross-departmental**: Each pillar has implications for design, art, audio, narrative, AND engineering
-- [ ] **Design-tested**: Each pillar has a concrete design test that resolves a real decision
-- [ ] **Anti-pillars defined**: At least 3 explicit "this game is NOT" statements
-- [ ] **Priority-ranked**: Clear order for resolving conflicts between pillars
-- [ ] **MDA-aligned**: Pillars collectively deliver the top-ranked target aesthetics
-- [ ] **SDT coverage**: At least one pillar serves Autonomy, one Competence, one Relatedness
-- [ ] **Memorable**: The team can recite all pillars from memory
-- [ ] **Core fantasy served**: Every pillar traces back to the core fantasy promise
+- [ ] **Count**: 3-5 pillars
+- [ ] **Falsifiable**: Each makes a claim that could be wrong
+- [ ] **Constraining**: Each forces "no" to plausible ideas
+- [ ] **Cross-departmental**: Each implications for design, art, audio, narrative, engineering
+- [ ] **Design-tested**: Each has concrete test resolving real decision
+- [ ] **Anti-pillars**: ≥3 explicit "NOT" statements
+- [ ] **Priority-ranked**: Clear conflict resolution order
+- [ ] **MDA-aligned**: Pillars deliver top-ranked aesthetics
+- [ ] **SDT coverage**: ≥1 pillar each for Autonomy, Competence, Relatedness
+- [ ] **Memorable**: Team recites from memory
+- [ ] **Core fantasy**: Every pillar traces to core fantasy
 
 ---
 
@@ -302,12 +266,10 @@ Before finalizing the pillars, verify:
 
 - [ ] Get pillar approval from creative-director
 - [ ] Distribute to all department leads for sign-off
-- [ ] Create design tests for each pillar using real upcoming decisions
-- [ ] Schedule first pillar review (after 2 weeks of development)
-- [ ] Add pillars to the game-concept document and pitch document
+- [ ] Create design tests using real upcoming decisions
+- [ ] Schedule first review (after 2 weeks dev)
+- [ ] Add pillars to game-concept + pitch doc
 
 ---
 
-*This document is the creative north star. It lives in `design/gdd/game-pillars.md`
-and is referenced by every design, art, audio, and narrative document in the project.
-Review quarterly or after major milestone pivots.*
+*Creative north star. Lives in `design/gdd/game-pillars.md`. Referenced by every design, art, audio, narrative doc. Review quarterly or after major milestone pivots.*

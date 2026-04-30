@@ -11,11 +11,11 @@ agent: systems-designer
 
 Determine the balance domain from `$ARGUMENTS[0]`:
 
-- **Combat** в†’ weapon/ability DPS, time-to-kill, damage type interactions
-- **Economy** в†’ resource faucets/sinks, acquisition rates, item pricing
-- **Progression** в†’ XP/power curves, dead zones, power spikes
-- **Loot** в†’ rarity distribution, pity timers, inventory pressure
-- **File path given** в†’ load that file directly and infer domain from content
+- **Combat** → weapon/ability DPS, time-to-kill, damage type interactions
+- **Economy** → resource faucets/sinks, acquisition rates, item pricing
+- **Progression** → XP/power curves, dead zones, power spikes
+- **Loot** → rarity distribution, pity timers, inventory pressure
+- **File path given** → load that file directly and infer domain from content
 
 If no argument, ask the user which system to check.
 
@@ -24,7 +24,7 @@ If no argument, ask the user which system to check.
 ## Phase 2: Read Data Files
 
 Read relevant files from `assets/data/` and `design/balance/` for the identified domain.
-Note every file read вЂ” they will appear in the Data Sources section of the report.
+Note every file read — they will appear in the Data Sources section of the report.
 
 ---
 
@@ -100,19 +100,15 @@ Run domain-specific checks:
 
 ## Phase 6: Fix & Verify Cycle
 
-After presenting the report, ask:
-
-> "Would you like to fix any of these balance issues now?"
+After report, ask: "Would you like to fix any balance issues now?"
 
 If yes:
-- Ask which issue to address first (refer to the Recommendations table by priority row)
-- Guide the user to update the relevant data file in `assets/data/` or formula in `design/balance/`
-- After each fix, offer to re-run the relevant balance checks to verify no new outliers were introduced
-- If the fix changes a tuning knob defined in a GDD or referenced by an ADR, remind the user:
-  > "This value is defined in a design document. Run `/propagate-design-change [path]` on the affected GDD to find downstream impacts before committing."
+- Ask which issue first (by priority row in Recommendations table)
+- Guide user to update relevant data file in `assets/data/` or formula in `design/balance/`
+- After each fix, offer to re-run balance checks to verify no new outliers
+- If fix changes a tuning knob from a GDD or ADR, remind:
+  > "This value is defined in a design document. Run `/propagate-design-change [path]` to find downstream impacts before committing."
 
-If no:
-- Summarize open issues and suggest saving the report to `design/balance/balance-check-[system]-[date].md` for later
+If no: summarize open issues, suggest saving to `design/balance/balance-check-[system]-[date].md`.
 
-End with:
-> "Re-run `/balance-check` after fixes to verify."
+End: "Re-run `/balance-check` after fixes to verify."

@@ -1,7 +1,7 @@
 ﻿---
 name: create-control-manifest
-description: "After architecture is complete, produces a flat actionable rules sheet for programmers вЂ” what you must do, what you must never do, per system and per layer. Extracted from all Accepted ADRs, technical preferences, and engine reference docs. More immediately actionable than ADRs (which explain why)."
-argument-hint: "[update вЂ” regenerate from current ADRs]"
+description: "After architecture is complete, produces a flat actionable rules sheet for programmers — what you must do, what you must never do, per system and per layer. Extracted from all Accepted ADRs, technical preferences, and engine reference docs. More immediately actionable than ADRs (which explain why)."
+argument-hint: "[update — regenerate from current ADRs]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task
 agent: technical-director
@@ -9,10 +9,10 @@ agent: technical-director
 
 # Create Control Manifest
 
-The Control Manifest is a flat, actionable rules sheet for programmers. It
-answers "what do I do?" and "what must I never do?" вЂ” organized by architectural
-layer, extracted from all Accepted ADRs, technical preferences, and engine
-reference docs. Where ADRs explain *why*, the manifest tells you *what*.
+Flat, actionable rules sheet for programmers. Answers "what do I do?" and
+"what must I never do?" — organized by architectural layer, extracted from
+Accepted ADRs, technical preferences, and engine reference docs. ADRs explain
+*why*; manifest tells you *what*.
 
 **Output:** `design/architecture/control-manifest.md`
 
@@ -25,7 +25,7 @@ status. Re-run whenever new ADRs are accepted or existing ADRs are revised.
 
 ### ADRs
 - Glob `design/architecture/adr-*.md` and read every file
-- Filter to only Accepted ADRs (Status: Accepted) вЂ” skip Proposed, Deprecated,
+- Filter to only Accepted ADRs (Status: Accepted) — skip Proposed, Deprecated,
   Superseded
 - Note the ADR number and title for every rule sourced
 
@@ -36,7 +36,7 @@ status. Re-run whenever new ADRs are accepted or existing ADRs are revised.
 
 ### Engine Reference
 - Read `.ags/docs/engine-reference/[engine]/VERSION.md` for engine + version
-- Read `.ags/docs/engine-reference/[engine]/deprecated-apis.md` вЂ” these become
+- Read `.ags/docs/engine-reference/[engine]/deprecated-apis.md` — these become
   forbidden API entries
 - Read `.ags/docs/engine-reference/[engine]/current-best-practices.md` if it exists
 
@@ -53,7 +53,7 @@ For each Accepted ADR, extract:
 - Every specific pattern or approach mandated
 
 ### Forbidden Approaches (from "Alternatives Considered" sections)
-- Every alternative that was explicitly rejected вЂ” *why* it was rejected becomes
+- Every alternative that was explicitly rejected — *why* it was rejected becomes
   the rule ("never use X because Y")
 - Any anti-patterns explicitly called out
 
@@ -86,10 +86,10 @@ Combine rules that apply to all layers:
 - Performance budgets (target framerate, frame budget, draw call limits, memory ceiling)
 
 ### From deprecated-apis.md:
-- All deprecated APIs в†’ Forbidden API entries
+- All deprecated APIs → Forbidden API entries
 
 ### From current-best-practices.md (if available):
-- Engine-recommended patterns в†’ Required entries
+- Engine-recommended patterns → Required entries
 
 ### From technical-preferences.md forbidden patterns:
 - Copy any "Forbidden Patterns" entries directly
@@ -116,12 +116,12 @@ Ask: "Does this look complete? Any rules to add or remove before I write the man
 
 ---
 
-## 4b. Director Gate вЂ” Technical Review
+## 4b. Director Gate — Technical Review
 
-**Review mode check** вЂ” apply before spawning TD-MANIFEST:
-- `solo` в†’ skip. Note: "TD-MANIFEST skipped вЂ” Solo mode." Proceed to Phase 5.
-- `lean` в†’ skip. Note: "TD-MANIFEST skipped вЂ” Lean mode." Proceed to Phase 5.
-- `full` в†’ spawn as normal.
+**Review mode check** — apply before spawning TD-MANIFEST:
+- `solo` → skip. Note: "TD-MANIFEST skipped — Solo mode." Proceed to Phase 5.
+- `lean` → skip. Note: "TD-MANIFEST skipped — Lean mode." Proceed to Phase 5.
+- `full` → spawn as normal.
 
 Spawn `technical-director` via Task using gate **TD-MANIFEST** (`.ags/rules/director-gates.md`).
 
@@ -134,9 +134,9 @@ The technical-director reviews whether:
 - Performance guardrails are consistent with the ADR constraints
 
 Apply the verdict:
-- **APPROVE** в†’ proceed to Phase 5
-- **CONCERNS** в†’ surface via `AskUserQuestion` with options: `Revise flagged rules` / `Accept and proceed` / `Discuss further`
-- **REJECT** в†’ do not write the manifest; fix the flagged rules and re-present the summary
+- **APPROVE** → proceed to Phase 5
+- **CONCERNS** → surface via `AskUserQuestion` with options: `Revise flagged rules` / `Accept and proceed` / `Discuss further`
+- **REJECT** → do not write the manifest; fix the flagged rules and re-present the summary
 
 ---
 
@@ -153,12 +153,12 @@ Format:
 > **Last Updated**: [date]
 > **Manifest Version**: [date]
 > **ADRs Covered**: [ADR-NNNN, ADR-MMMM, ...]
-> **Status**: [Active вЂ” regenerate with `/create-control-manifest update` when ADRs change]
+> **Status**: [Active — regenerate with `/create-control-manifest update` when ADRs change]
 
 `Manifest Version` is the date this manifest was generated. Story files embed
 this date when created. `/story-readiness` compares a story's embedded version
 to this field to detect stories written against stale rules. Always matches
-`Last Updated` вЂ” they are the same date, serving different consumers.
+`Last Updated` — they are the same date, serving different consumers.
 
 This manifest is a programmer's quick-reference extracted from all Accepted ADRs,
 technical preferences, and engine reference docs. For the reasoning behind each
@@ -171,14 +171,14 @@ rule, see the referenced ADR.
 *Applies to: scene management, event architecture, save/load, engine initialisation*
 
 ### Required Patterns
-- **[rule]** вЂ” source: [ADR-NNNN]
-- **[rule]** вЂ” source: [ADR-NNNN]
+- **[rule]** — source: [ADR-NNNN]
+- **[rule]** — source: [ADR-NNNN]
 
 ### Forbidden Approaches
-- **Never [anti-pattern]** вЂ” [brief reason] вЂ” source: [ADR-NNNN]
+- **Never [anti-pattern]** — [brief reason] — source: [ADR-NNNN]
 
 ### Performance Guardrails
-- **[system]**: max [N]ms/frame вЂ” source: [ADR-NNNN]
+- **[system]**: max [N]ms/frame — source: [ADR-NNNN]
 
 ---
 
@@ -241,11 +241,11 @@ rule, see the referenced ADR.
 | Memory ceiling | [from technical-preferences] |
 
 ### Approved Libraries / Addons
-- [library] вЂ” approved for [purpose]
+- [library] — approved for [purpose]
 
 ### Forbidden APIs ([engine version])
 These APIs are deprecated or unverified for [engine + version]:
-- `[api name]` вЂ” deprecated since [version] / unverified post-cutoff
+- `[api name]` — deprecated since [version] / unverified post-cutoff
 - Source: `.ags/docs/engine-reference/[engine]/deprecated-apis.md`
 
 ### Cross-Cutting Constraints
@@ -258,19 +258,17 @@ These APIs are deprecated or unverified for [engine + version]:
 
 After writing the manifest:
 
-- If epics/stories don't exist yet: "Run `/create-epics layer: foundation` then `/create-stories [epic-slug]` вЂ” programmers
+- If epics/stories don't exist yet: "Run `/create-epics layer: foundation` then `/create-stories [epic-slug]` — programmers
   can now use this manifest when writing story implementation notes."
 - If this is a regeneration (manifest already existed): "Updated. Recommend
-  notifying the team of changed rules вЂ” especially any new Forbidden entries."
+  notifying the team of changed rules — especially any new Forbidden entries."
 
 ---
 
 ## Collaborative Protocol
 
-1. **Load silently** вЂ” read all inputs before presenting anything
-2. **Show the summary first** вЂ” let the user see the scope before writing
-3. **Ask before writing** вЂ” always confirm before creating or overwriting the manifest. On write: Verdict: **COMPLETE** вЂ” control manifest written. On decline: Verdict: **BLOCKED** вЂ” user declined write.
-4. **Source every rule** вЂ” never add a rule that doesn't trace to an ADR, a
-   technical preference, or an engine reference doc
-5. **No interpretation** вЂ” extract rules as stated in ADRs; do not paraphrase
-   in ways that change meaning
+1. **Load silently** — read all inputs before presenting
+2. **Show summary first** — let user see scope before writing
+3. **Ask before writing** — confirm before creating/overwriting. Write → **COMPLETE**. Decline → **BLOCKED**.
+4. **Source every rule** — no rule without trace to ADR, technical preference, or engine ref doc
+5. **No interpretation** — extract rules as stated; never paraphrase in ways that change meaning

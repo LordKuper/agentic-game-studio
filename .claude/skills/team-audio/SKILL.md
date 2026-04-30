@@ -7,7 +7,7 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoW
 ---
 
 If no argument is provided, output usage guidance and exit without spawning any agents:
-> Usage: `/team-audio [feature or area]` вЂ” specify the feature or area to design audio for (e.g., `combat`, `main menu`, `forest biome`, `boss encounter`). Do not use `AskUserQuestion` here; output the guidance directly.
+> Usage: `/team-audio [feature or area]` — specify the feature or area to design audio for (e.g., `combat`, `main menu`, `forest biome`, `boss encounter`). Do not use `AskUserQuestion` here; output the guidance directly.
 
 When this skill is invoked with an argument, orchestrate the audio team through a structured pipeline.
 
@@ -28,11 +28,11 @@ The user must approve before moving to the next step.
 ## How to Delegate
 
 Use the Task tool to spawn each team member as a subagent:
-- `subagent_type: audio-director` вЂ” Sonic identity, emotional tone, audio palette
-- `subagent_type: audio-director` вЂ” SFX specifications, audio events, mixing groups
-- `subagent_type: technical-artist` вЂ” Audio middleware, bus structure, memory budgets
-- `subagent_type: [primary engine specialist]` вЂ” Validate audio integration patterns for the engine
-- `subagent_type: gameplay-programmer` вЂ” Audio manager, gameplay triggers, adaptive music
+- `subagent_type: audio-director` — Sonic identity, emotional tone, audio palette
+- `subagent_type: audio-director` — SFX specifications, audio events, mixing groups
+- `subagent_type: technical-artist` — Audio middleware, bus structure, memory budgets
+- `subagent_type: [primary engine specialist]` — Validate audio integration patterns for the engine
+- `subagent_type: gameplay-programmer` — Audio manager, gameplay triggers, adaptive music
 
 Always provide full context in each agent's prompt (feature description, existing audio assets, design doc references).
 
@@ -92,11 +92,11 @@ Spawn the `gameplay-programmer` agent to:
 6. **Output a summary** with: audio event count, estimated asset count,
    implementation tasks, and any open questions between team members.
 
-Verdict: **COMPLETE** вЂ” audio design document produced and team pipeline finished.
+Verdict: **COMPLETE** — audio design document produced and team pipeline finished.
 
 If the pipeline stops because a dependency is unresolved (e.g., critical accessibility gap or missing GDD not resolved by the user):
 
-Verdict: **BLOCKED** вЂ” [reason]
+Verdict: **BLOCKED** — [reason]
 
 ## File Write Protocol
 
@@ -114,16 +114,16 @@ protocol. This orchestrator does not write files directly.
 
 If any spawned agent (via Task) returns BLOCKED, errors, or cannot complete:
 
-1. **Surface immediately**: Report "[AgentName]: BLOCKED вЂ” [reason]" to the user before continuing to dependent phases
+1. **Surface immediately**: Report "[AgentName]: BLOCKED — [reason]" to the user before continuing to dependent phases
 2. **Assess dependencies**: Check whether the blocked agent's output is required by subsequent phases. If yes, do not proceed past that dependency point without user input.
 3. **Offer options** via AskUserQuestion with choices:
    - Skip this agent and note the gap in the final report
    - Retry with narrower scope
    - Stop here and resolve the blocker first
-4. **Always produce a partial report** вЂ” output whatever was completed. Never discard work because one agent blocked.
+4. **Always produce a partial report** — output whatever was completed. Never discard work because one agent blocked.
 
 Common blockers:
-- Input file missing (story not found, GDD absent) в†’ redirect to the skill that creates it
-- ADR status is Proposed в†’ do not implement; run `/architecture-decision` first
-- Scope too large в†’ split into two stories via `/create-stories`
-- Conflicting instructions between ADR and story в†’ surface the conflict, do not guess
+- Input file missing (story not found, GDD absent) → redirect to the skill that creates it
+- ADR status is Proposed → do not implement; run `/architecture-decision` first
+- Scope too large → split into two stories via `/create-stories`
+- Conflicting instructions between ADR and story → surface the conflict, do not guess

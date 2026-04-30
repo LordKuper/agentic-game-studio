@@ -8,19 +8,18 @@
 
 ## Overview
 
-**Addressables** is Unity's advanced asset management system that replaces `Resources.Load()`
-with async loading, remote content delivery, and better memory control.
+**Addressables** = Unity advanced asset management. Replaces `Resources.Load()` with async loading, remote content, better memory control.
 
 **Use Addressables for:**
-- Async asset loading (non-blocking)
-- DLC and remote content
-- Memory optimization (load/unload on demand)
-- Asset dependency management
-- Large projects with many assets
+- Async asset loading (non-blocking).
+- DLC and remote content.
+- Memory optimization (load/unload on demand).
+- Asset dependency management.
+- Large projects.
 
 **DON'T use Addressables for:**
-- Tiny projects (overhead not worth it)
-- Assets needed immediately at startup (use direct references)
+- Tiny projects (overhead not worth it).
+- Assets needed at startup (use direct refs).
 
 ---
 
@@ -29,28 +28,28 @@ with async loading, remote content delivery, and better memory control.
 ### Install via Package Manager
 
 1. `Window > Package Manager`
-2. Unity Registry > Search "Addressables"
-3. Install `Addressables`
+2. Unity Registry > Search "Addressables".
+3. Install `Addressables`.
 
 ---
 
 ## Core Concepts
 
 ### 1. **Addressable Assets**
-- Assets marked as "Addressable" (assigned unique keys)
-- Can be loaded by key at runtime
+- Assets marked "Addressable" (assigned unique keys).
+- Loaded by key at runtime.
 
 ### 2. **Asset Groups**
-- Organize assets (e.g., "UI", "Weapons", "Level1")
-- Groups determine build settings (local vs remote)
+- Organize assets (e.g., "UI", "Weapons", "Level1").
+- Groups determine build settings (local vs remote).
 
 ### 3. **Async Loading**
-- All loading is async (non-blocking)
-- Returns `AsyncOperationHandle`
+- All loading async (non-blocking).
+- Returns `AsyncOperationHandle`.
 
 ### 4. **Reference Counting**
-- Addressables tracks asset usage
-- Must manually release assets when done
+- Tracks asset usage.
+- Must manually release assets when done.
 
 ---
 
@@ -58,9 +57,9 @@ with async loading, remote content delivery, and better memory control.
 
 ### 1. Mark Assets as Addressable
 
-1. Select asset in Project window
-2. Inspector > Check "Addressable"
-3. Assign key (e.g., "Enemies/Goblin")
+1. Select asset in Project window.
+2. Inspector > Check "Addressable".
+3. Assign key (e.g., "Enemies/Goblin").
 
 **OR via script:**
 ```csharp
@@ -78,8 +77,8 @@ AddressableAssetSettings.AddAssetEntry(guid, "MyAssetKey", "Default Local Group"
 
 `Window > Asset Management > Addressables > Groups`
 
-- **Default Local Group**: Bundled with build
-- **Remote Group**: Hosted on server (CDN)
+- **Default Local Group**: Bundled with build.
+- **Remote Group**: Hosted on server (CDN).
 
 ---
 
@@ -153,7 +152,7 @@ async void LoadAllWeapons() {
 ### Assign Labels
 
 1. `Window > Asset Management > Addressables > Groups`
-2. Select asset > Inspector > Labels > Add label (e.g., "Level1", "UI")
+2. Select asset > Inspector > Labels > Add label (e.g., "Level1", "UI").
 
 ### Load by Label
 
@@ -168,16 +167,16 @@ Addressables.LoadAssetsAsync<GameObject>("Level1", null);
 
 ### Setup Remote Groups
 
-1. Create new group: `Window > Addressables > Groups > Create New Group > Packed Assets`
+1. Create new group: `Window > Addressables > Groups > Create New Group > Packed Assets`.
 2. Group Settings:
    - **Build Path**: `ServerData/[BuildTarget]`
    - **Load Path**: `http://yourcdn.com/content/[BuildTarget]`
 
 ### Build Remote Content
 
-1. `Window > Asset Management > Addressables > Build > New Build > Default Build Script`
-2. Upload `ServerData/` folder to CDN
-3. Game loads assets from remote server
+1. `Window > Asset Management > Addressables > Build > New Build > Default Build Script`.
+2. Upload `ServerData/` folder to CDN.
+3. Game loads assets from remote server.
 
 ---
 
@@ -334,10 +333,10 @@ async void CheckForUpdates() {
 
 ## Performance Tips
 
-- **Preload** frequently used assets at startup
-- **Release** assets immediately when not needed
-- Use **labels** to batch-load related assets
-- **Cache** remote content for offline use
+- **Preload** frequently used assets at startup.
+- **Release** assets immediately when not needed.
+- Use **labels** to batch-load related assets.
+- **Cache** remote content for offline use.
 
 ---
 
@@ -347,16 +346,16 @@ async void CheckForUpdates() {
 
 `Window > Asset Management > Addressables > Event Viewer`
 
-- Shows all load/release operations
-- Memory usage per asset
-- Reference counts
+- Shows all load/release operations.
+- Memory usage per asset.
+- Reference counts.
 
 ### Addressables Profiler
 
 `Window > Asset Management > Addressables > Profiler`
 
-- Real-time asset usage
-- Bundle loading stats
+- Real-time asset usage.
+- Bundle loading stats.
 
 ---
 

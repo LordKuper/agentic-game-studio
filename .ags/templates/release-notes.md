@@ -6,18 +6,16 @@
 
 ## Headline
 
-> [One compelling sentence summarizing the most exciting part of this release.
-> This is what appears in store update notifications and social media.]
+> [One compelling sentence. Most exciting part of release. Appears in store update notifications + social media.]
 
 ---
 
 ## What's New
 
-### [Major Feature 1 Name]
-[2-4 sentences describing the feature. Focus on what players can DO, not
-how it works internally. Include a screenshot or GIF reference if applicable.]
+### [Major Feature 1]
+[2-4 sentences. What players can DO, not how it works internally. Screenshot/GIF reference if applicable.]
 
-### [Major Feature 2 Name]
+### [Major Feature 2]
 [Description]
 
 ---
@@ -28,18 +26,17 @@ how it works internally. Include a screenshot or GIF reference if applicable.]
 
 | Target | Change | Before | After | Context |
 | ---- | ---- | ---- | ---- | ---- |
-| [Weapon/Ability/Item] | [What changed] | [Old value] | [New value] | [Why — 1 sentence] |
+| [Weapon/Ability/Item] | [What changed] | [Old] | [New] | [Why — 1 sentence] |
 | | | | | |
 
 ### Mechanic Changes
-- **[Change Name]**: [What changed and how it affects gameplay. Be specific
-  about what players will experience differently.]
+- **[Change]**: [What changed + how affects gameplay. Specific about player experience.]
 
 ---
 
 ## Quality of Life
 
-- [Improvement 1 — describe the player benefit, not the technical change]
+- [Improvement 1 — player benefit, not technical change]
 - [Improvement 2]
 - [Improvement 3]
 
@@ -48,11 +45,10 @@ how it works internally. Include a screenshot or GIF reference if applicable.]
 ## Bug Fixes
 
 ### Critical Fixes
-- Fixed [describe what players experienced, e.g., "a crash when loading
-  saved games from version 1.0"]
+- Fixed [what players experienced — e.g., "crash loading saves from v1.0"]
 
 ### Gameplay Fixes
-- Fixed [describe the incorrect behavior and the correct behavior now]
+- Fixed [incorrect behavior + correct now]
 
 ### UI Fixes
 - Fixed [description]
@@ -67,37 +63,34 @@ how it works internally. Include a screenshot or GIF reference if applicable.]
 
 ## Performance Improvements
 
-- [Improvement players will notice, e.g., "Reduced load times by approximately
-  30% on all platforms"]
+- [Player-noticeable improvement — e.g., "Load times -30% all platforms"]
 - [Improvement]
 
 ---
 
 ## Known Issues
 
-We are aware of the following issues and are working on fixes for a future update:
+Aware of these, working on fixes for future update:
 
-- **[Issue]**: [Brief description and workaround if available]
+- **[Issue]**: [Brief description + workaround if available]
 - **[Issue]**: [Description]
 
 ---
 
 ## Coming Next
 
-[Optional — tease upcoming content to build anticipation. Keep it vague enough
-to not create binding commitments.]
+[Optional — tease upcoming. Vague enough not to commit.]
 
-> [1-2 sentences about what the team is working on next]
+> [1-2 sentences about what team works on next]
 
 ---
 
 ## Thank You
 
-[Brief message thanking the community. Reference specific community feedback
-that influenced changes in this release if applicable.]
+[Brief community thanks. Reference specific feedback that influenced changes if applicable.]
 
 ---
 
-*For the full changelog with technical details, see the [developer changelog](link).*
-*Report bugs: [link to bug report channel/form]*
-*Join the community: [link to Discord/forum]*
+*Full changelog with technical details: [developer changelog](link).*
+*Report bugs: [link]*
+*Community: [Discord/forum link]*

@@ -22,7 +22,7 @@ Read `.ags/rules/technical-preferences.md`, section `## Engine Specialists`. Not
 - The **Shader Specialist** (used when reviewing shader files)
 - The **UI Specialist** (used when reviewing UI code)
 
-If the section reads `[TO BE CONFIGURED]`, no engine is pinned вЂ” skip engine specialist steps.
+If the section reads `[TO BE CONFIGURED]`, no engine is pinned — skip engine specialist steps.
 
 ---
 
@@ -30,7 +30,7 @@ If the section reads `[TO BE CONFIGURED]`, no engine is pinned вЂ” skip engi
 
 Search for ADR references in the story file, commit messages, and header comments. Look for patterns like `ADR-NNN` or `design/architecture/ADR-`.
 
-If no ADR references found, note: "No ADR references found вЂ” skipping ADR compliance check."
+If no ADR references found, note: "No ADR references found — skipping ADR compliance check."
 
 For each referenced ADR: read the file, extract the **Decision** and **Consequences** sections, then classify any deviation:
 
@@ -83,16 +83,16 @@ Identify the system category (engine, gameplay, AI, networking, UI, tools) and e
 
 ## Phase 7: Specialist Reviews (Parallel)
 
-Spawn all applicable specialists simultaneously via Task вЂ” do not wait for one before starting the next.
+Spawn all applicable specialists simultaneously via Task — do not wait for one before starting the next.
 
 ### Engine Specialists
 
 If an engine is configured, determine which specialist applies to each file and spawn in parallel:
 
-- Primary language files (`.gd`, `.cs`, `.cpp`) в†’ Language/Code Specialist
-- Shader files (`.gdshader`, `.hlsl`, shader graph) в†’ Shader Specialist
-- UI screen/widget code в†’ UI Specialist
-- Cross-cutting or unclear в†’ Primary Specialist
+- Primary language files (`.cs`) → Language/Code Specialist
+- Shader files (`.shader`, `.hlsl`, `.shadergraph`) → Shader Specialist
+- UI screen/widget code → UI Specialist
+- Cross-cutting or unclear → Primary Specialist
 
 Also spawn the **Primary Specialist** for any file touching engine architecture (scene structure, node hierarchy, lifecycle hooks).
 
@@ -110,7 +110,7 @@ Ask the qa-lead to evaluate:
 - [ ] Does the implementation introduce any new edge cases not covered by the existing QA test cases?
 - [ ] Are there any observable side effects that should have a test but don't?
 
-For Visual/Feel and UI stories: qa-lead reviews whether the manual verification steps in `## QA Test Cases` are achievable with the implementation as written вЂ” e.g., "is the state the manual checker needs to reach actually reachable?"
+For Visual/Feel and UI stories: qa-lead reviews whether the manual verification steps in `## QA Test Cases` are achievable with the implementation as written — e.g., "is the state the manual checker needs to reach actually reachable?"
 
 Collect all specialist findings before producing output.
 
@@ -121,10 +121,10 @@ Collect all specialist findings before producing output.
 ```
 ## Code Review: [File/System Name]
 
-### Engine Specialist Findings: [N/A вЂ” no engine configured / CLEAN / ISSUES FOUND]
+### Engine Specialist Findings: [N/A — no engine configured / CLEAN / ISSUES FOUND]
 [Findings from engine specialist(s), or "No engine configured." if skipped]
 
-### Testability: [N/A вЂ” Visual/Feel or Config story / TESTABLE / GAPS / BLOCKING]
+### Testability: [N/A — Visual/Feel or Config story / TESTABLE / GAPS / BLOCKING]
 [qa-lead findings: test hooks, coverage gaps, untestable paths, new edge cases]
 [If BLOCKING: implementation must expose [X] before tests in ## QA Test Cases can run]
 
@@ -147,7 +147,7 @@ Collect all specialist findings before producing output.
 [What is done well -- always include this section]
 
 ### Required Changes
-[Must-fix items before approval вЂ” ARCHITECTURAL VIOLATIONs always appear here]
+[Must-fix items before approval — ARCHITECTURAL VIOLATIONs always appear here]
 
 ### Suggestions
 [Nice-to-have improvements]
@@ -155,7 +155,7 @@ Collect all specialist findings before producing output.
 ### Verdict: [APPROVED / APPROVED WITH SUGGESTIONS / CHANGES REQUIRED]
 ```
 
-This skill is read-only вЂ” no files are written.
+This skill is read-only — no files are written.
 
 ---
 

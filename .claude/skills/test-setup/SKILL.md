@@ -8,14 +8,11 @@ allowed-tools: Read, Glob, Grep, Bash, Write
 
 # Test Setup
 
-This skill scaffolds the automated testing infrastructure for the project.
-It detects the configured engine, generates the appropriate test runner
-configuration, creates the standard directory layout, and wires up CI/CD
-so tests run on every push.
+Scaffolds automated testing infrastructure. Detects engine, generates test runner
+config, creates standard directory layout, wires up CI/CD.
 
-Run this once during the Technical Setup phase, before any implementation
-begins. A test framework installed at sprint start costs 30 minutes.
-A test framework installed at sprint four costs 3 sprints.
+Run once during Technical Setup, before any implementation. Framework at sprint
+start: 30 minutes. Framework at sprint four: 3 sprints.
 
 **Output:** `tests/` directory structure + `.github/workflows/tests.yml`
 
@@ -29,9 +26,9 @@ A test framework installed at sprint four costs 3 sprints.
      "Engine not configured. Run `/setup-engine` first, then re-run `/test-setup`."
 
 2. **Check for existing test infrastructure**:
-   - Glob `tests/` вЂ” does the directory exist?
-   - Glob `tests/unit/` and `tests/integration/` вЂ” do subdirectories exist?
-   - Glob `.github/workflows/` вЂ” does a CI workflow file exist?
+   - Glob `tests/` — does the directory exist?
+   - Glob `tests/unit/` and `tests/integration/` — do subdirectories exist?
+   - Glob `.github/workflows/` — does a CI workflow file exist?
    - Glob `tests/EditMode/` and `tests/PlayMode/` (Unity Test Framework) for
      engine-specific artifacts.
 
@@ -42,7 +39,7 @@ A test framework installed at sprint four costs 3 sprints.
      to regenerate. Proceeding will not overwrite existing test files."
 
 If the `force` argument is passed, skip the "already exists" early-exit and
-proceed вЂ” but still do not overwrite files that already exist at a given path.
+proceed — but still do not overwrite files that already exist at a given path.
 Only create files that are missing.
 
 ---
@@ -52,20 +49,20 @@ Only create files that are missing.
 Based on the engine detected and the existing state, present a plan:
 
 ```
-## Test Setup Plan вЂ” [Engine]
+## Test Setup Plan — [Engine]
 
 I will create the following (skipping any that already exist):
 
 tests/
-  unit/           вЂ” Isolated unit tests for formulas, state, and logic
-  integration/    вЂ” Cross-system tests and save/load round-trips
-  smoke/          вЂ” Critical path test list (15-minute manual gate)
-  evidence/       вЂ” Screenshot and manual test sign-off records
-  README.md       вЂ” Test framework documentation
+  unit/           — Isolated unit tests for formulas, state, and logic
+  integration/    — Cross-system tests and save/load round-trips
+  smoke/          — Critical path test list (15-minute manual gate)
+  evidence/       — Screenshot and manual test sign-off records
+  README.md       — Test framework documentation
 
-[Engine-specific files вЂ” see per-engine details below]
+[Engine-specific files — see per-engine details below]
 
-.github/workflows/tests.yml  вЂ” CI: run tests on every push to main
+.github/workflows/tests.yml  — CI: run tests on every push to main
 
 Estimated time: ~5 minutes to create all files.
 ```
@@ -103,19 +100,19 @@ tests/
 
 ## Running Tests
 
-[Engine-specific command вЂ” see below]
+[Engine-specific command — see below]
 
 ## Test Naming
 
-- **Files**: `[system]_[feature]_test.[ext]`
-- **Functions**: `test_[scenario]_[expected]`
-- **Example**: `combat_damage_test.gd` в†’ `test_base_attack_returns_expected_damage()`
+- **Files**: `[System][Feature]Tests.cs`
+- **Functions**: `[Scenario]_[Expected]`
+- **Example**: `CombatDamageTests.cs` → `BaseAttack_ReturnsExpectedDamage()`
 
-## Story Type в†’ Test Evidence
+## Story Type → Test Evidence
 
 | Story Type | Required Evidence | Location |
 |---|---|---|
-| Logic | Automated unit test вЂ” must pass | `tests/unit/[system]/` |
+| Logic | Automated unit test — must pass | `tests/unit/[system]/` |
 | Integration | Integration test OR playtest doc | `tests/integration/[system]/` |
 | Visual/Feel | Screenshot + lead sign-off | `tests/evidence/` |
 | UI | Manual walkthrough OR interaction test | `tests/evidence/` |
@@ -150,7 +147,7 @@ Assembly definition required: `tests/PlayMode/PlayModeTests.asmdef`
 
 Note in the README: **Enabling Unity Test Framework**
 ```
-Window в†’ General в†’ Test Runner
+Window → General → Test Runner
 (Unity Test Framework is included by default in Unity 2019+)
 ```
 
@@ -175,7 +172,7 @@ Create `tests/smoke/critical-paths.md`:
 
 <!-- Add the primary mechanic for each sprint here as it is implemented -->
 <!-- Example: "Player can move, jump, and the camera follows correctly" -->
-4. [Primary mechanic вЂ” update when first core system is implemented]
+4. [Primary mechanic — update when first core system is implemented]
 
 ## Data Integrity
 
@@ -213,23 +210,23 @@ Next steps:
    test evidence requirements
 4. `/smoke-check` before every QA hand-off
 
-Gate note: /gate-check Technical Setup в†’ Pre-Production now requires:
+Gate note: /gate-check Technical Setup → Pre-Production now requires:
 - tests/ directory with unit/ and integration/ subdirectories
 - .github/workflows/tests.yml
 - At least one example test file
 Run /test-setup and write one example test before advancing.
 
-Verdict: **COMPLETE** вЂ” test framework scaffolded and CI/CD wired up.
+Verdict: **COMPLETE** — test framework scaffolded and CI/CD wired up.
 ```
 
 ---
 
 ## Collaborative Protocol
 
-- **Never overwrite existing test files** вЂ” only create files that are missing.
+- **Never overwrite existing test files** — only create files that are missing.
   If a test runner file exists, leave it as-is.
-- **Always ask before creating files** вЂ” Phase 2 requires explicit approval.
-- **Engine detection is non-negotiable** вЂ” if the engine is not configured,
+- **Always ask before creating files** — Phase 2 requires explicit approval.
+- **Engine detection is non-negotiable** — if the engine is not configured,
   stop and redirect to `/setup-engine`. Do not guess.
 - **`force` flag skips the "already exists" early-exit but never overwrites.**
   It means "create any missing files even if the directory already exists."

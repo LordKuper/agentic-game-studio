@@ -12,9 +12,9 @@ model: haiku
 
 ## Phase 1: Parse Arguments
 
-Read the argument for the target version or sprint number. If a version is given, use the corresponding git tag. If a sprint number is given, use the sprint date range.
+Read argument for target version or sprint number. Version → git tag. Sprint number → date range.
 
-Verify the repository is initialized: run `git rev-parse --is-inside-work-tree` to confirm git is available. If not a git repo, inform the user and abort gracefully.
+Verify repo initialized: run `git rev-parse --is-inside-work-tree`. Not a git repo → inform user and abort.
 
 ---
 
@@ -148,7 +148,7 @@ After presenting the changelogs, ask the user:
 > "May I write this changelog to `docs/CHANGELOG.md`?
 > [A] Yes, append this entry (recommended if the file already exists)
 > [B] Yes, overwrite the file entirely
-> [C] No вЂ” I'll copy it manually"
+> [C] No — I'll copy it manually"
 
 - Check whether `docs/CHANGELOG.md` exists before asking. If it does, default the
   recommendation to **[A] append**.
@@ -157,8 +157,8 @@ After presenting the changelogs, ask the user:
 - If the user selects [B]: overwrite the file with the new changelog.
 - If the user selects [C]: stop here without writing.
 
-After a successful write: Verdict: **CHANGELOG WRITTEN** вЂ” changelog saved to `docs/CHANGELOG.md`.
-If the user declines: Verdict: **COMPLETE** вЂ” changelog generated.
+After a successful write: Verdict: **CHANGELOG WRITTEN** — changelog saved to `docs/CHANGELOG.md`.
+If the user declines: Verdict: **COMPLETE** — changelog generated.
 
 ---
 
@@ -169,9 +169,9 @@ If the user declines: Verdict: **COMPLETE** вЂ” changelog generated.
 
 ### Guidelines
 
-- Never expose internal code references, file paths, or developer names in the player-facing changelog
-- Group related changes together rather than listing individual commits
-- If a commit message is unclear, check the associated files and sprint data for context
-- Balance changes should always include the design reasoning, not just the numbers
-- Known issues should be honest вЂ” players appreciate transparency
-- If the git history is messy (merge commits, reverts, fixup commits), clean up the narrative rather than listing every commit literally
+- Never expose code refs, file paths, or developer names in player-facing changelog
+- Group related changes; don't list individual commits
+- Unclear commit message → check files and sprint data for context
+- Balance changes: always include design reasoning, not just numbers
+- Known issues: be honest — players appreciate transparency
+- Messy git history (merges, reverts, fixups): clean the narrative, don't list every commit literally

@@ -1,4 +1,4 @@
-﻿# ADR-[NNNN]: [Title]
+# ADR-[NNNN]: [Title]
 
 ## Status
 
@@ -6,123 +6,113 @@
 
 ## Date
 
-[YYYY-MM-DD вЂ” when this ADR was written]
+[YYYY-MM-DD]
 
 ## Last Verified
 
-[YYYY-MM-DD вЂ” when this ADR was last confirmed accurate against the current
-engine version and design. Update this date when you re-read and confirm it
-is still correct, even if nothing changed.]
+[YYYY-MM-DD — last confirmed accurate against current engine + design. Update on re-read confirmation, even if nothing changed.]
 
 ## Decision Makers
 
-[Who was involved in this decision]
+[Who involved]
 
 ## Summary
 
-[2 sentences: what problem this ADR solves, and what was decided. Written for
-tiered context loading вЂ” a skill scanning 20 ADRs uses this to decide whether
-to read the full decision. Be specific: name the system, the problem, and the
-chosen approach.]
+[2 sentences: problem solved + decision. For tiered context loading — skill scanning 20 ADRs uses this. Be specific: name system, problem, approach.]
 
 ## Engine Compatibility
 
 | Field | Value |
 |-------|-------|
-| **Engine** | [e.g. Unity 6000.0.30f1 / Unity 6 / Unreal Engine 5.4] |
+| **Engine** | [Unity 6000.0.30f1 / Unity 6] |
 | **Domain** | [Physics / Rendering / UI / Audio / Navigation / Animation / Networking / Core / Input / Scripting] |
-| **Knowledge Risk** | [LOW вЂ” in training data / MEDIUM вЂ” near cutoff, verify / HIGH вЂ” post-cutoff, must verify] |
-| **References Consulted** | [e.g. `.ags/.ags/docs/engine-reference/unity/modules/physics.md`, `breaking-changes.md`] |
-| **Post-Cutoff APIs Used** | [Specific APIs from post-cutoff engine versions this decision depends on, or "None"] |
-| **Verification Required** | [Concrete behaviours to test against the target engine version before shipping, or "None"] |
+| **Knowledge Risk** | [LOW — in training data / MEDIUM — near cutoff, verify / HIGH — post-cutoff, must verify] |
+| **References Consulted** | [`.ags/.ags/docs/engine-reference/unity/modules/physics.md`, `breaking-changes.md`] |
+| **Post-Cutoff APIs Used** | [Specific post-cutoff APIs depended on, or "None"] |
+| **Verification Required** | [Concrete behaviours to test against target engine before ship, or "None"] |
 
-> **Note**: If Knowledge Risk is MEDIUM or HIGH, this ADR must be re-validated if the
-> project upgrades engine versions. Flag it as "Superseded" and write a new ADR.
+> **Note**: Knowledge Risk MEDIUM/HIGH → re-validate on engine version upgrade. Flag "Superseded", write new ADR.
 
 ## ADR Dependencies
 
 | Field | Value |
 |-------|-------|
-| **Depends On** | [ADR-NNNN (must be Accepted before this can be implemented), or "None"] |
-| **Enables** | [ADR-NNNN (this ADR unlocks that decision), or "None"] |
-| **Blocks** | [Epic/Story name вЂ” cannot start until this ADR is Accepted, or "None"] |
-| **Ordering Note** | [Any sequencing constraint that isn't captured above] |
+| **Depends On** | [ADR-NNNN (must be Accepted before implementation), or "None"] |
+| **Enables** | [ADR-NNNN (this unlocks that), or "None"] |
+| **Blocks** | [Epic/Story name — cannot start until Accepted, or "None"] |
+| **Ordering Note** | [Sequencing constraint not captured above] |
 
 ## Context
 
 ### Problem Statement
 
-[What problem are we solving? Why must this decision be made now? What is the
-cost of not deciding?]
+[What problem? Why decide now? Cost of not deciding?]
 
 ### Current State
 
-[How does the system work today? What is wrong with the current approach?]
+[How system works today? What's wrong?]
 
 ### Constraints
 
-- [Technical constraints -- engine limitations, platform requirements]
-- [Timeline constraints -- deadline pressures, dependencies]
-- [Resource constraints -- team size, expertise available]
-- [Compatibility requirements -- must work with existing systems]
+- [Technical — engine limits, platform reqs]
+- [Timeline — deadlines, dependencies]
+- [Resource — team size, expertise]
+- [Compatibility — must work with existing systems]
 
 ### Requirements
 
-- [Functional requirement 1]
-- [Functional requirement 2]
-- [Performance requirement -- specific, measurable]
-- [Scalability requirement]
+- [Functional req 1]
+- [Functional req 2]
+- [Performance — specific, measurable]
+- [Scalability]
 
 ## Decision
 
-[The specific technical decision, described in enough detail for someone to
-implement it without further clarification.]
+[Specific technical decision, detailed enough for implementation without further clarification.]
 
 ### Architecture
 
 ```
-[ASCII diagram showing the system architecture this decision creates.
-Show components, data flow direction, and key interfaces.]
+[ASCII diagram: components, data flow, key interfaces.]
 ```
 
 ### Key Interfaces
 
 ```
-[Pseudocode or language-specific interface definitions that this decision
-creates. These become the contracts that implementers must respect.]
+[Pseudocode/language interface definitions. Contracts implementers respect.]
 ```
 
 ### Implementation Guidelines
 
-[Specific guidance for the programmer implementing this decision.]
+[Specific guidance for implementer.]
 
 ## Alternatives Considered
 
 ### Alternative 1: [Name]
 
-- **Description**: [How this approach would work]
-- **Pros**: [What is good about this approach]
-- **Cons**: [What is bad about this approach]
-- **Estimated Effort**: [Relative effort compared to chosen approach]
-- **Rejection Reason**: [Why this was not chosen]
+- **Description**: [How it would work]
+- **Pros**: [Good]
+- **Cons**: [Bad]
+- **Estimated Effort**: [Relative to chosen]
+- **Rejection Reason**: [Why not chosen]
 
 ### Alternative 2: [Name]
 
-[Same structure as above]
+[Same structure]
 
 ## Consequences
 
 ### Positive
 
-- [Good outcomes of this decision]
+- [Good outcomes]
 
 ### Negative
 
-- [Trade-offs and costs we are accepting]
+- [Trade-offs accepted]
 
 ### Neutral
 
-- [Changes that are neither good nor bad, just different]
+- [Different, not better/worse]
 
 ## Risks
 
@@ -140,17 +130,17 @@ creates. These become the contracts that implementers must respect.]
 
 ## Migration Plan
 
-[If this changes existing systems, the step-by-step plan to migrate.]
+[If changes existing systems, step-by-step.]
 
-1. [Step 1 -- what changes, what breaks, how to verify]
+1. [Step 1 — what changes, what breaks, how to verify]
 2. [Step 2]
 3. [Step 3]
 
-**Rollback plan**: [How to revert if this decision proves wrong]
+**Rollback plan**: [How to revert if wrong]
 
 ## Validation Criteria
 
-[How we will know this decision was correct after implementation.]
+[How we'll know this was correct after implementation.]
 
 - [ ] [Measurable criterion 1]
 - [ ] [Measurable criterion 2]
@@ -158,19 +148,15 @@ creates. These become the contracts that implementers must respect.]
 
 ## GDD Requirements Addressed
 
-<!-- This section is MANDATORY. Every ADR must trace back to at least one GDD
-     requirement, or explicitly state it is a foundational decision with no GDD
-     dependency. Traceability is audited by /architecture-review. -->
+<!-- MANDATORY. Every ADR traces to ≥1 GDD requirement OR explicitly states foundational with no GDD dependency. Audited by /architecture-review. -->
 
-| GDD Document | System | Requirement | How This ADR Satisfies It |
-|-------------|--------|-------------|--------------------------|
-| [e.g. `design/gdd/combat.md`] | [e.g. Combat] | [e.g. "Hitbox detection must resolve within 1 frame"] | [e.g. "Jolt physics collision queries run synchronously in _physics_process"] |
+| GDD Document | System | Requirement | How ADR Satisfies |
+|-------------|--------|-------------|-------------------|
+| [`design/gdd/combat.md`] | [Combat] | ["Hitbox detection within 1 frame"] | ["Physics raycasts sync in `FixedUpdate`"] |
 
-> If this is a foundational decision with no direct GDD dependency, write:
-> "Foundational вЂ” no GDD requirement. Enables: [list what GDD systems this
-> decision unlocks or constrains]"
+> Foundational with no GDD dependency: write "Foundational — no GDD requirement. Enables: [GDD systems unlocked or constrained]"
 
 ## Related
 
-- [Link to related ADRs вЂ” note if supersedes, contradicts, or depends on]
-- [Link to relevant code files once implemented]
+- [Related ADRs — supersedes, contradicts, depends on]
+- [Code files once implemented]

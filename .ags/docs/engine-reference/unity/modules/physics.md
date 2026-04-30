@@ -7,17 +7,17 @@
 
 ## Overview
 
-Unity 6.3 uses **PhysX 5.1** (improved from PhysX 4.x in 2022 LTS):
-- Better solver stability
-- Improved performance
-- Enhanced collision detection
+Unity 6.3 uses **PhysX 5.1** (up from PhysX 4.x in 2022 LTS):
+- Better solver stability.
+- Better perf.
+- Enhanced collision detection.
 
 ---
 
 ## Key Changes from 2022 LTS
 
 ### Default Solver Iterations Increased
-Unity 6 increased default solver iterations for better stability:
+Unity 6 raised default solver iterations for stability:
 
 ```csharp
 // Default changed from 6 to 8 iterations
@@ -204,18 +204,18 @@ hinge.limits = new JointLimits { min = -90, max = 90 };
 
 ### Physics Layer Collision Matrix
 `Edit > Project Settings > Physics > Layer Collision Matrix`
-- Disable unnecessary collision checks between layers
-- Massive performance gain
+- Disable unnecessary collision checks between layers.
+- Massive perf gain.
 
 ### Fixed Timestep
 `Edit > Project Settings > Time > Fixed Timestep`
-- Default: 0.02 (50 FPS physics)
-- Lower = more accurate, higher CPU cost
-- Match game's target framerate if possible
+- Default: 0.02 (50 FPS physics).
+- Lower = more accurate, higher CPU cost.
+- Match game's target framerate if possible.
 
 ### Simplified Collision Geometry
-- Use primitive colliders (box, sphere, capsule) over mesh colliders
-- Bake mesh colliders at build time, not runtime
+- Use primitive colliders (box, sphere, capsule) over mesh colliders.
+- Bake mesh colliders at build time, not runtime.
 
 ---
 
@@ -250,7 +250,7 @@ void ApplyExplosion(Vector3 explosionPos, float radius, float force) {
 
 ### Physics Debugger (Unity 6+)
 - `Window > Analysis > Physics Debugger`
-- Visualize colliders, contacts, queries
+- Visualize colliders, contacts, queries.
 
 ### Gizmos
 

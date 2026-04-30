@@ -2,7 +2,7 @@
 
 ## Choice
 
-<!-- The studio currently supports Unity only. -->
+<!-- Studio currently supports Unity only. -->
 
 Unity
 

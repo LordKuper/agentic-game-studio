@@ -1,17 +1,16 @@
-﻿# Test Evidence: [Story Title]
+# Test Evidence: [Story Title]
 
-> **Story**: `[path to story file]`
+> **Story**: `[path to story]`
 > **Story Type**: [Visual/Feel | UI]
 > **Date**: [date]
-> **Tester**: [who performed the test]
+> **Tester**: [who tested]
 > **Build / Commit**: [version or git hash]
 
 ---
 
 ## What Was Tested
 
-[One paragraph describing the feature or behaviour that was validated. Include
-the acceptance criteria numbers from the story that this evidence covers.]
+[One paragraph: feature/behaviour validated. Include AC numbers from story this evidence covers.]
 
 **Acceptance criteria covered**: [AC-1, AC-2, AC-3]
 
@@ -21,7 +20,7 @@ the acceptance criteria numbers from the story that this evidence covers.]
 
 | # | Criterion (from story) | Result | Notes |
 |---|----------------------|--------|-------|
-| AC-1 | [exact criterion text] | PASS / FAIL | [any observations] |
+| AC-1 | [exact criterion text] | PASS / FAIL | [observations] |
 | AC-2 | [exact criterion text] | PASS / FAIL | |
 | AC-3 | [exact criterion text] | PASS / FAIL | |
 
@@ -29,32 +28,29 @@ the acceptance criteria numbers from the story that this evidence covers.]
 
 ## Screenshots / Video
 
-List all captured evidence below. Store files in the same directory as this
-document or in `.ags/project/qa/evidence/[story-slug]/`.
+Captured evidence. Store in same directory or `.ags/project/qa/evidence/[story-slug]/`.
 
-| # | Filename | What It Shows | Acceptance Criterion |
-|---|----------|--------------|----------------------|
-| 1 | `[filename.png]` | [brief description of what is visible] | AC-1 |
+| # | Filename | Shows | AC |
+|---|----------|-------|-----|
+| 1 | `[filename.png]` | [description of what visible] | AC-1 |
 | 2 | `[filename.png]` | | AC-2 |
 
-*If video: note the timestamp and what it demonstrates.*
+*Video: note timestamp + what demonstrates.*
 
 ---
 
 ## Test Conditions
 
-- **Game state at start**: [e.g., "fresh save, player at level 1, no items"]
-- **Platform / hardware**: [e.g., "Windows 11, GTX 1080, 1080p"]
-- **Framerate during test**: [e.g., "stable 60fps" or "~45fps вЂ” within budget"]
-- **Any special setup required**: [e.g., "dev menu used to trigger specific state"]
+- **Game state at start**: [e.g., "fresh save, level 1, no items"]
+- **Platform / hardware**: [Windows 11, GTX 1080, 1080p]
+- **Framerate during test**: ["stable 60fps" or "~45fps — within budget"]
+- **Special setup**: ["dev menu used to trigger state"]
 
 ---
 
 ## Observations
 
-[Anything noteworthy that didn't cause a FAIL but should be recorded. Examples:
-minor visual jitter, frame dip under load, behaviour that technically passes
-but felt slightly off. These become candidates for polish work.]
+[Noteworthy items not causing FAIL but recorded. Minor jitter, frame dip under load, technically passes but felt off. Polish candidates.]
 
 - [Observation 1]
 - [Observation 2]
@@ -65,9 +61,7 @@ If nothing notable: *No significant observations.*
 
 ## Sign-Off
 
-All three sign-offs are required before the story can be marked COMPLETE via
-`/story-done`. Visual/Feel stories require the designer or art-lead sign-off.
-UI stories require the UX lead or designer sign-off.
+All three required before story COMPLETE via `/story-done`. Visual/Feel needs designer or art-lead. UI needs UX lead or designer.
 
 | Role | Name | Date | Signature |
 |------|------|------|-----------|
@@ -75,12 +69,10 @@ UI stories require the UX lead or designer sign-off.
 | Designer / Art Lead / UX Lead | | | [ ] Approved |
 | QA Lead | | | [ ] Approved |
 
-**Any sign-off can be marked "Deferred вЂ” [reason]"** if the person is
-unavailable. Deferred sign-offs must be resolved before the story advances
-past the sprint review.
+**Any sign-off can be "Deferred — [reason]"** if person unavailable. Deferred resolved before sprint review.
 
 ---
 
 *Template: `.ags/templates/test-evidence.md`*
-*Used for: Visual/Feel and UI story type evidence records*
+*Used for: Visual/Feel + UI story evidence records*
 *Location: `.ags/project/qa/evidence/[story-slug]-evidence.md`*

@@ -9,9 +9,9 @@ allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 ## Phase 0: Parse Arguments
 
 Extract the milestone name (`current` or a specific name) and resolve the review mode (once, store for all gate spawns this run):
-1. If `--review [full|lean|solo]` was passed в†’ use that
-2. Else read `.ags/project/review-mode.md` в†’ use that value
-3. Else в†’ default to `lean`
+1. If `--review [full|lean|solo]` was passed → use that
+2. Else read `.ags/project/review-mode.md` → use that value
+3. Else → default to `lean`
 
 See `.ags/rules/director-gates.md` for the full check pattern.
 
@@ -108,16 +108,16 @@ Read all sprint reports for sprints within this milestone from `.ags/project/spr
 
 ## Phase 3b: Producer Risk Assessment
 
-**Review mode check** вЂ” apply before spawning PR-MILESTONE:
-- `solo` в†’ skip. Note: "PR-MILESTONE skipped вЂ” Solo mode." Present the Go/No-Go section without a producer verdict.
-- `lean` в†’ skip (not a PHASE-GATE). Note: "PR-MILESTONE skipped вЂ” Lean mode." Present the Go/No-Go section without a producer verdict.
-- `full` в†’ spawn as normal.
+**Review mode check** — apply before spawning PR-MILESTONE:
+- `solo` → skip. Note: "PR-MILESTONE skipped — Solo mode." Present the Go/No-Go section without a producer verdict.
+- `lean` → skip (not a PHASE-GATE). Note: "PR-MILESTONE skipped — Lean mode." Present the Go/No-Go section without a producer verdict.
+- `full` → spawn as normal.
 
 Before generating the Go/No-Go recommendation, spawn `producer` via Task using gate **PR-MILESTONE** (`.ags/rules/director-gates.md`).
 
 Pass: milestone name and target date, current completion percentage, blocked story count, velocity data from sprint reports (if available), list of cut candidates.
 
-Present the producer's assessment inline within the Go/No-Go section. The producer's verdict (ON TRACK / AT RISK / OFF TRACK) informs the overall recommendation вЂ” do not issue a GO against an OFF TRACK producer verdict without explicit user acknowledgement.
+Present the producer's assessment inline within the Go/No-Go section. The producer's verdict (ON TRACK / AT RISK / OFF TRACK) informs the overall recommendation — do not issue a GO against an OFF TRACK producer verdict without explicit user acknowledgement.
 
 ---
 
@@ -127,9 +127,9 @@ Present the review to the user.
 
 Ask: "May I write this to `.ags/project/milestones/[milestone-name]-review.md`?"
 
-If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** вЂ” milestone review saved.
+If yes, write the file, creating the directory if needed. Verdict: **COMPLETE** — milestone review saved.
 
-If no, stop here. Verdict: **BLOCKED** вЂ” user declined write.
+If no, stop here. Verdict: **BLOCKED** — user declined write.
 
 ---
 
