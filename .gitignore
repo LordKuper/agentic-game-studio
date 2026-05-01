@@ -3,3 +3,6 @@
 
 # Project AGS-settings
 .ags/project/
+
+# Claude Code
+.claude/settings.local.json
