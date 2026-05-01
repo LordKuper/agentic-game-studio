@@ -106,3 +106,4 @@ Vertical-slice epics may stub neighbor systems instead of implementing them all 
 - Reference relevant story ID or design doc in commit message.
 - Prefer new commits over amending.
 - Never commit secrets (`.env`, credentials, keys).
+- Epic work goes on branch `epic/[slug]`; PR to `main` before epic close. See `.ags/rules/coordination.md` § Epic Branching.

@@ -77,6 +77,15 @@ producer (epic-plan from systems-index, `/ags-create-epics`) → game-designer (
 
 Loop: next epic until feature-complete → polish phase.
 
+### Epic Branching
+
+- Each epic developed on branch `epic/[slug]` (slug from `epics/index.md`).
+- Branch cut from `main` at epic start (`/ags-create-epics`).
+- All epic commits go to this branch only.
+- Before `/ags-gate-check epic-done`, open PR from `epic/[slug]` to `main`.
+- Gate blocks epic close if PR missing, unmerged, or CI red.
+- Merge to `main` = epic close in `epics/index.md`.
+
 ### Bug Fix
 qa-lead (report + triage) → producer (assign) → lead-programmer (root cause) → specialist (fix) → lead-programmer (review) → qa-lead (verify + regression).
 
