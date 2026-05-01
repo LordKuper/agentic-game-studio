@@ -9,30 +9,30 @@ Visual maps of skill chains across 7 dev phases. Show what runs before/after, wh
 ```
 PHASE 1: CONCEPT
   /ags-start ──────────────────────────────────────────────────────► routes to A/B/C/D
-  /brainstorm ──────────────────────────────────────────────────► design/gdd/game-concept.md
-  /setup-engine ────────────────────────────────────────────────► CLAUDE.md + technical-preferences.md
-  /design-review [game-concept.md] ────────────────────────────► concept validated
-  /gate-check ─────────────────────────────────────────────────► PASS → advance to systems-design
+  /ags-brainstorm ──────────────────────────────────────────────────► design/gdd/game-concept.md
+  /ags-setup-engine ────────────────────────────────────────────────► CLAUDE.md + technical-preferences.md
+  /ags-design-review [game-concept.md] ────────────────────────────► concept validated
+  /ags-gate-check ─────────────────────────────────────────────────► PASS → advance to systems-design
         │
         ▼
 PHASE 2: SYSTEMS DESIGN
-  /map-systems ────────────────────────────────────────────────► design/gdd/systems-index.md
+  /ags-map-systems ────────────────────────────────────────────────► design/gdd/systems-index.md
         │
         ▼ (per system, dep order)
-  /design-system [name] ──────────────────────────────────────► design/gdd/[system].md
-  /design-review [system].md ─────────────────────────────────► per-GDD review comments
+  /ags-design-system [name] ──────────────────────────────────────► design/gdd/[system].md
+  /ags-design-review [system].md ─────────────────────────────────► per-GDD review comments
         │
         ▼ (after all MVP GDDs done)
-  /review-all-gdds ────────────────────────────────────────────► design/gdd/gdd-cross-review-[date].md
-  /gate-check ─────────────────────────────────────────────────► PASS → advance to technical-setup
+  /ags-review-all-gdds ────────────────────────────────────────────► design/gdd/gdd-cross-review-[date].md
+  /ags-gate-check ─────────────────────────────────────────────────► PASS → advance to technical-setup
         │
         ▼
 PHASE 3: TECHNICAL SETUP
-  /create-architecture ────────────────────────────────────────► design/architecture/master.md
-  /architecture-decision (×N) ─────────────────────────────────► design/architecture/[adr-nnn].md
-  /architecture-review ────────────────────────────────────────► review report + design/architecture/tr-registry.yaml
-  /create-control-manifest ────────────────────────────────────► design/architecture/control-manifest.md
-  /gate-check ─────────────────────────────────────────────────► PASS → advance to pre-production
+  /ags-create-architecture ────────────────────────────────────────► design/architecture/master.md
+  /ags-architecture-decision (×N) ─────────────────────────────────► design/architecture/[adr-nnn].md
+  /ags-architecture-review ────────────────────────────────────────► review report + design/architecture/tr-registry.yaml
+  /ags-create-control-manifest ────────────────────────────────────► design/architecture/control-manifest.md
+  /ags-gate-check ─────────────────────────────────────────────────► PASS → advance to pre-production
         │
         ▼
 PHASE 4: PRE-PRODUCTION
@@ -45,73 +45,73 @@ PHASE 4: PRE-PRODUCTION
   /test-helpers ───────────────────────────────────────────────► tests/Helpers/[engine-specific].cs
 
   [Stories]
-  /create-epics [layer] ───────────────────────────────────────► .ags/project/epics/*/EPIC.md
-  /create-stories [epic-slug] ─────────────────────────────────► .ags/project/epics/*/story-*.md
-  /playtest-report ────────────────────────────────────────────► tests/playtest/vertical-slice.md
-  /sprint-plan new ────────────────────────────────────────────► .ags/project/sprints/sprint-01.md
-  /gate-check ─────────────────────────────────────────────────► PASS → advance to production
+  /ags-create-epics [layer] ───────────────────────────────────────► .ags/project/epics/*/EPIC.md
+  /ags-create-stories [epic-slug] ─────────────────────────────────► .ags/project/epics/*/story-*.md
+  /ags-playtest-report ────────────────────────────────────────────► tests/playtest/vertical-slice.md
+  /ags-sprint-plan new ────────────────────────────────────────────► .ags/project/sprints/sprint-01.md
+  /ags-gate-check ─────────────────────────────────────────────────► PASS → advance to production
         │
         ▼
 PHASE 5: PRODUCTION (sprint loop)
-  /sprint-status ──────────────────────────────────────────────► sprint snapshot
-  /story-readiness [story] ────────────────────────────────────► story validated READY
+  /ags-sprint-status ──────────────────────────────────────────────► sprint snapshot
+  /ags-story-readiness [story] ────────────────────────────────────► story validated READY
         │
         ▼ (pick up + implement)
-  /dev-story [story] ──────────────────────────────────────────► routes to correct programmer agent
+  /ags-dev-story [story] ──────────────────────────────────────────► routes to correct programmer agent
         │
         ▼ (during impl, as needed)
-  /code-review ────────────────────────────────────────────────► code review report
-  /scope-check ────────────────────────────────────────────────► scope creep detected / clear
-  /content-audit ──────────────────────────────────────────────► GDD content gaps
-  /bug-report ─────────────────────────────────────────────────► .ags/project/qa/bugs/bug-NNN.md
-  /bug-triage ─────────────────────────────────────────────────► bugs re-prioritized + assigned
+  /ags-code-review ────────────────────────────────────────────────► code review report
+  /ags-scope-check ────────────────────────────────────────────────► scope creep detected / clear
+  /ags-content-audit ──────────────────────────────────────────────► GDD content gaps
+  /ags-bug-report ─────────────────────────────────────────────────► .ags/project/qa/bugs/bug-NNN.md
+  /ags-bug-triage ─────────────────────────────────────────────────► bugs re-prioritized + assigned
 
   [Team skills for feature areas]
-  /team-combat / /team-narrative / /team-ui / /team-level / /team-audio
+  /ags-team-combat / /ags-team-narrative / /team-ui / /ags-team-level / /ags-team-audio
 
   [QA cycle per sprint]
-  /qa-plan ────────────────────────────────────────────────────► .ags/project/qa/qa-plan-sprint-NN.md
-  /smoke-check ────────────────────────────────────────────────► smoke test gate (PASS/FAIL)
-  /regression-suite ───────────────────────────────────────────► coverage gaps + missing regression tests
+  /ags-qa-plan ────────────────────────────────────────────────────► .ags/project/qa/qa-plan-sprint-NN.md
+  /ags-smoke-check ────────────────────────────────────────────────► smoke test gate (PASS/FAIL)
+  /ags-regression-suite ───────────────────────────────────────────► coverage gaps + missing regression tests
   /test-evidence-review ───────────────────────────────────────► evidence quality report
   /test-flakiness ─────────────────────────────────────────────► flaky test report
         │
         ▼
-  /story-done [story] ─────────────────────────────────────────► story closed + next surfaced
-  /sprint-plan [next] ─────────────────────────────────────────► next sprint
+  /ags-story-done [story] ─────────────────────────────────────────► story closed + next surfaced
+  /ags-sprint-plan [next] ─────────────────────────────────────────► next sprint
         │
         ▼ (after Production milestone)
-  /milestone-review ───────────────────────────────────────────► milestone report
-  /gate-check ─────────────────────────────────────────────────► PASS → advance to polish
+  /ags-milestone-review ───────────────────────────────────────────► milestone report
+  /ags-gate-check ─────────────────────────────────────────────────► PASS → advance to polish
         │
         ▼
 PHASE 6: POLISH
-  /perf-profile ───────────────────────────────────────────────► perf report + fixes
-  /balance-check ──────────────────────────────────────────────► balance report + fixes
-  /asset-audit ────────────────────────────────────────────────► asset compliance report
+  /ags-perf-profile ───────────────────────────────────────────────► perf report + fixes
+  /ags-balance-check ──────────────────────────────────────────────► balance report + fixes
+  /ags-asset-audit ────────────────────────────────────────────────► asset compliance report
   /tech-debt ──────────────────────────────────────────────────► docs/tech-debt-register.md
-  /soak-test ──────────────────────────────────────────────────► soak test protocol + results
-  /localize ───────────────────────────────────────────────────► localization readiness report
-  /team-polish ────────────────────────────────────────────────► polish sprint orchestrated
-  /team-qa ────────────────────────────────────────────────────► full QA cycle sign-off
-  /gate-check ─────────────────────────────────────────────────► PASS → advance to release
+  /ags-soak-test ──────────────────────────────────────────────────► soak test protocol + results
+  /ags-localize ───────────────────────────────────────────────────► localization readiness report
+  /ags-team-polish ────────────────────────────────────────────────► polish sprint orchestrated
+  /ags-team-qa ────────────────────────────────────────────────────► full QA cycle sign-off
+  /ags-gate-check ─────────────────────────────────────────────────► PASS → advance to release
         │
         ▼
 PHASE 7: RELEASE
-  /launch-checklist ───────────────────────────────────────────► launch readiness report
-  /release-checklist ──────────────────────────────────────────► platform-specific checklist
-  /changelog ──────────────────────────────────────────────────► CHANGELOG.md
-  /patch-notes ────────────────────────────────────────────────► player-facing notes
-  /team-release ───────────────────────────────────────────────► release pipeline orchestrated
+  /ags-launch-checklist ───────────────────────────────────────────► launch readiness report
+  /ags-release-checklist ──────────────────────────────────────────► platform-specific checklist
+  /ags-changelog ──────────────────────────────────────────────────► CHANGELOG.md
+  /ags-patch-notes ────────────────────────────────────────────────► player-facing notes
+  /ags-team-release ───────────────────────────────────────────────► release pipeline orchestrated
         │
         ▼ (post-launch, ongoing)
-  /hotfix ─────────────────────────────────────────────────────► emergency fix with audit trail
-  /team-live-ops ──────────────────────────────────────────────► live-ops content plan
+  /ags-hotfix ─────────────────────────────────────────────────────► emergency fix with audit trail
+  /ags-team-live-ops ──────────────────────────────────────────────► live-ops content plan
 ```
 
 ---
 
-## Skill Chain: /design-system in Detail
+## Skill Chain: /ags-design-system in Detail
 
 How single GDD authored, reviewed, handed to architecture:
 
@@ -121,7 +121,7 @@ game-concept.md (input)
 upstream GDDs (input, if any)
         │
         ▼
-/design-system [name]
+/ags-design-system [name]
         │
         ├── Pre-check: feasibility table + engine risk flags
         │
@@ -132,14 +132,14 @@ upstream GDDs (input, if any)
         └── Output: design/gdd/[system].md (complete, 8 sections)
                 │
                 ▼
-        /design-review design/gdd/[system].md
+        /ags-design-review design/gdd/[system].md
                 │
                 ├── APPROVED → mark DONE in systems-index, next system
                 ├── NEEDS REVISION → agent shows issues, re-enter section cycle
                 └── MAJOR REVISION → significant redesign before next system
                         │
                         ▼ (after all MVP GDDs + cross-review)
-                /review-all-gdds
+                /ags-review-all-gdds
                         │
                         └── Output: gdd-cross-review-[date].md
 ```
@@ -162,7 +162,7 @@ design/player-journey.md (emotional arc, if authored)
         ▼
 /ux-review design/ux/
         │
-        ├── APPROVED → UX specs ready, proceed to /create-epics
+        ├── APPROVED → UX specs ready, proceed to /ags-create-epics
         ├── NEEDS REVISION → blocking issues listed → fix → re-run
         └── MAJOR REVISION → fundamental UX problems → redesign before epics
                 │
@@ -186,14 +186,14 @@ Note: /ux-design and /ux-review = Phase 4 (Pre-Production).
 How story moves backlog → closed:
 
 ```
-/story-readiness [story]
+/ags-story-readiness [story]
         │
         ├── READY → Status: ready-for-dev → pick up
         ├── NEEDS WORK → agent shows gaps → resolve → re-run
         └── BLOCKED → ADR still Proposed, or upstream story incomplete
                 │
                 ▼ (after READY)
-        /dev-story [story]
+        /ags-dev-story [story]
                 │
                 ├── Reads: story file, linked GDD requirement, ADR decisions, control manifest
                 ├── Routes to: gameplay-programmer / engine-programmer / ui-programmer / etc.
@@ -201,12 +201,12 @@ How story moves backlog → closed:
                 └── Implementation begins
                         │
                         ▼ (optional, during/after impl)
-                /code-review          → architectural review of changeset
-                /scope-check          → verify no scope creep vs original AC
+                /ags-code-review          → architectural review of changeset
+                /ags-scope-check          → verify no scope creep vs original AC
                 /test-evidence-review → validate test files + manual evidence
                         │
                         ▼
-                /story-done [story]
+                /ags-story-done [story]
                         │
                         ├── COMPLETE → Status: Complete, sprint-status.yaml updated, next surfaced
                         ├── COMPLETE WITH NOTES → complete but criteria deferred (logged)
@@ -220,20 +220,20 @@ How story moves backlog → closed:
 Story backlog → closed (summary):
 
 ```
-/create-epics [layer]
+/ags-create-epics [layer]
         │
         └── Output: .ags/project/epics/[slug]/EPIC.md
                 │
                 ▼
-        /create-stories [epic-slug]
+        /ags-create-stories [epic-slug]
                 │
                 └── Output: .ags/project/epics/[slug]/story-NNN-[slug].md
                             (Status: Ready or Blocked if ADR Proposed)
                 │
                 ▼
-        /story-readiness [story]
+        /ags-story-readiness [story]
                 │
-                ├── READY → /dev-story → implement → /story-done
+                ├── READY → /ags-dev-story → implement → /ags-story-done
                 ├── NEEDS WORK → resolve gaps → re-run
                 └── BLOCKED → fix upstream dep first
 ```
@@ -248,7 +248,7 @@ Story backlog → closed (summary):
 /test-helpers ──────────────────────────────────────────────────► tests/Helpers/[engine].cs (NUnit / Unity Test Framework)
 
 [Phase 5 — per-sprint QA cycle]
-/qa-plan [sprint or feature]
+/ags-qa-plan [sprint or feature]
         │
         ├── Reads: story files, GDDs, AC
         ├── Classifies each story by test type:
@@ -260,13 +260,13 @@ Story backlog → closed (summary):
         └── Output: .ags/project/qa/qa-plan-sprint-NN.md
                 │
                 ▼
-        /smoke-check
+        /ags-smoke-check
                 │
                 ├── PASS → QA hand-off cleared
                 └── FAIL → block sprint close → fix critical paths first
                         │
                         ▼
-                /regression-suite
+                /ags-regression-suite
                         │
                         └── Coverage gaps + fixed bugs without regression tests
                                 │
@@ -281,15 +281,15 @@ Story backlog → closed (summary):
                                 └── Flaky test report + fix recs
 
 [Phase 6 — extended stability]
-/soak-test ─────────────────────────────────────────────────────► soak test protocol + observed results
-/team-qa ───────────────────────────────────────────────────────► full QA cycle sign-off for release gate
+/ags-soak-test ─────────────────────────────────────────────────────► soak test protocol + observed results
+/ags-team-qa ───────────────────────────────────────────────────────► full QA cycle sign-off for release gate
 
 [Ongoing — bug mgmt]
-/bug-report ────────────────────────────────────────────────────► .ags/project/qa/bugs/bug-NNN.md
-/bug-triage ────────────────────────────────────────────────────► open bugs re-prioritized + assigned
+/ags-bug-report ────────────────────────────────────────────────────► .ags/project/qa/bugs/bug-NNN.md
+/ags-bug-triage ────────────────────────────────────────────────────► open bugs re-prioritized + assigned
 
 [Meta — harness validation]
-/skill-test [lint|spec|catalog] ────────────────────────────────► skill file structural + behavioral check
+/ags-skill-test [lint|spec|catalog] ────────────────────────────────► skill file structural + behavioral check
 ```
 
 ---
@@ -329,10 +329,10 @@ design/player-journey.md (emotional arc)
 For projects with existing work (use `/ags-start` option D or run directly):
 
 ```
-/project-stage-detect    → stage detection report
+/ags-project-stage-detect    → stage detection report
         │
         ▼
-/adopt
+/ags-adopt
         │
         ├── Phase 1: detect what exists
         ├── Phase 2: FORMAT audit (not just existence)
@@ -342,9 +342,9 @@ For projects with existing work (use `/ags-start` option D or run directly):
         └── Phase 6: fix most urgent gap inline (optional)
                 │
                 ▼
-        /design-system retrofit [path]    → fills missing GDD sections
-        /architecture-decision retrofit [path] → fills missing ADR sections
-        /gate-check                       → where are you in the pipeline?
+        /ags-design-system retrofit [path]    → fills missing GDD sections
+        /ags-architecture-decision retrofit [path] → fills missing ADR sections
+        /ags-gate-check                       → where are you in the pipeline?
 ```
 
 ---
@@ -367,18 +367,18 @@ For projects with existing work (use `/ags-start` option D or run directly):
 
 | Where you are | Run this |
 |---------------|---------|
-| Brand new, no idea | `/ags-start` → `/brainstorm` |
-| Have concept, no engine | `/setup-engine` |
-| Have concept + engine | `/map-systems` |
-| Mid-systems design | `/design-system [next system]` or `/map-systems next` |
-| All GDDs done | `/review-all-gdds` → `/gate-check` |
-| In technical setup | `/create-architecture` → `/architecture-decision` |
+| Brand new, no idea | `/ags-start` → `/ags-brainstorm` |
+| Have concept, no engine | `/ags-setup-engine` |
+| Have concept + engine | `/ags-map-systems` |
+| Mid-systems design | `/ags-design-system [next system]` or `/ags-map-systems next` |
+| All GDDs done | `/ags-review-all-gdds` → `/ags-gate-check` |
+| In technical setup | `/ags-create-architecture` → `/ags-architecture-decision` |
 | Starting UX design | `/ux-design screen [name]` or `/ux-design hud` |
 | Scaffolding tests | `/test-setup` → `/test-helpers` |
-| Stories ready, ready to code | `/story-readiness [story]` → `/dev-story [story]` |
-| Story done | `/story-done [story]` |
-| Sprint QA | `/qa-plan` → `/smoke-check` → `/regression-suite` |
-| Bug backlog needs sorting | `/bug-triage` |
-| Extended stability | `/soak-test` |
-| Not sure | `/help` |
-| Existing project | `/adopt` |
+| Stories ready, ready to code | `/ags-story-readiness [story]` → `/ags-dev-story [story]` |
+| Story done | `/ags-story-done [story]` |
+| Sprint QA | `/ags-qa-plan` → `/ags-smoke-check` → `/ags-regression-suite` |
+| Bug backlog needs sorting | `/ags-bug-triage` |
+| Extended stability | `/ags-soak-test` |
+| Not sure | `/ags-help` |
+| Existing project | `/ags-adopt` |

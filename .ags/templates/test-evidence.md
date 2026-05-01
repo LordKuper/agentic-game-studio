@@ -61,7 +61,7 @@ If nothing notable: *No significant observations.*
 
 ## Sign-Off
 
-All three required before story COMPLETE via `/story-done`. Visual/Feel needs designer or art-lead. UI needs UX lead or designer.
+All three required before story COMPLETE via `/ags-story-done`. Visual/Feel needs designer or art-lead. UI needs UX lead or designer.
 
 | Role | Name | Date | Signature |
 |------|------|------|-----------|

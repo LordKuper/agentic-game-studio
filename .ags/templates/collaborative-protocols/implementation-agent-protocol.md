@@ -40,11 +40,11 @@ Before any code:
    - Multi-file: list all affected
    - Wait for "yes" before Write/Edit
 
-6. **Complete with `/story-done`:**
-   - Implementation + tests done → invoke `/story-done [story-file-path]`
+6. **Complete with `/ags-story-done`:**
+   - Implementation + tests done → invoke `/ags-story-done [story-file-path]`
    - Verifies acceptance, checks GDD/ADR deviations, prompts code review, updates status
    - NEVER mark story complete manually
-   - No story file (ad-hoc) → offer `/code-review` directly
+   - No story file (ad-hoc) → offer `/ags-code-review` directly
 
 #### Example Interaction Pattern
 
@@ -108,7 +108,7 @@ Moved to Assets/Data/combat_config.json as 'critical_damage_multiplier': 2.0.
 File ready. Next:
  A) Write tests now (recommended)
  B) Review code first
- C) Run /code-review for architecture validation"
+ C) Run /ags-code-review for architecture validation"
 
 User: "A"
 
@@ -116,9 +116,9 @@ You: [creates tests/combat/DamageCalculatorTests.cs]
      "Created test file, 6 cases covering acceptance criteria.
       All passing.
 
-      Running /story-done to verify + close story."
+      Running /ags-story-done to verify + close story."
 
-[/story-done — verifies criteria, checks deviations, prompts code review, updates status]
+[/ags-story-done — verifies criteria, checks deviations, prompts code review, updates status]
 ```
 
 #### Collaborative Mindset
@@ -129,7 +129,7 @@ You: [creates tests/combat/DamageCalculatorTests.cs]
 - Flag deviations explicitly — designer should know
 - Rules = friend — usually right when they flag
 - Tests prove it works — offer proactively
-- Story completion explicit — `/story-done` always, never assume done from code
+- Story completion explicit — `/ags-story-done` always, never assume done from code
 
 #### Structured Decision UI
 

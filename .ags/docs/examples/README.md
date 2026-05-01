@@ -23,24 +23,24 @@ Full pipeline (zero to ship). Detailed chains: design-system, story lifecycle, U
 
 ---
 
-### [Session: Authoring a GDD with /design-system](session-design-system-skill.md)
+### [Session: Authoring a GDD with /ags-design-system](session-design-system-skill.md)
 **Type:** Design (skill-driven)
-**Skill:** `/design-system`
+**Skill:** `/ags-design-system`
 **Duration:** ~60 min (14 turns)
 **Complexity:** Medium
 
 **Scenario:**
-Dev runs `/design-system movement` after `/map-systems`. Skill loads context from concept + dep GDDs, runs feasibility pre-check, walks 8 GDD sections one at a time. Draft → approve → write each before next.
+Dev runs `/ags-design-system movement` after `/ags-map-systems`. Skill loads context from concept + dep GDDs, runs feasibility pre-check, walks 8 GDD sections one at a time. Draft → approve → write each before next.
 
 **Key Moments:**
 - Feasibility pre-check flags engine version risks (Unity 6000.0.30f1)
 - Incremental writing: each section on disk after approval
 - Session crash mid-section 5 → agent resumes from first empty section
 - Dep signals (stamina, inventory) surfaced in Dependencies section
-- Explicit handoff: "run `/design-review` before next system"
+- Explicit handoff: "run `/ags-design-review` before next system"
 
 **Learn:**
-- How `/design-system` differs from "write a GDD"
+- How `/ags-design-system` differs from "write a GDD"
 - Section-by-section cycle prevents 30k-token context bloat
 - Incremental writing survives crashes
 - Skill surfaces downstream dep contracts
@@ -49,22 +49,22 @@ Dev runs `/design-system movement` after `/map-systems`. Skill loads context fro
 
 ### [Session: Full Story Lifecycle](session-story-lifecycle.md)
 **Type:** Full Workflow
-**Skills:** `/story-readiness` → implementation → `/story-done`
+**Skills:** `/ags-story-readiness` → implementation → `/ags-story-done`
 **Duration:** ~50 min (13 turns)
 **Complexity:** Medium
 
 **Scenario:**
-Dev picks story from sprint backlog. `/story-readiness` catches roll-direction ambiguity pre-code. After implementation, `/story-done` verifies 9 ACs, identifies 2 deferred (inventory not integrated), closes story with notes.
+Dev picks story from sprint backlog. `/ags-story-readiness` catches roll-direction ambiguity pre-code. After implementation, `/ags-story-done` verifies 9 ACs, identifies 2 deferred (inventory not integrated), closes story with notes.
 
 **Key Moments:**
-- `/story-readiness` catches ambiguity Turn 2 — resolved before impl
+- `/ags-story-readiness` catches ambiguity Turn 2 — resolved before impl
 - ADR status check: story BLOCKED if ADR Proposed
 - Manifest version check: story guidance not drifted
 - Deferred criteria tracked (not lost) when integration impossible
 - `sprint-status.yaml` updated at close, next ready story surfaced
 
 **Learn:**
-- Why `/story-readiness` prevents late ambiguity
+- Why `/ags-story-readiness` prevents late ambiguity
 - Deferred criteria (COMPLETE WITH NOTES vs BLOCKED)
 - TR-ID refs prevent false deviation flags
 - Full loop: backlog → implemented → closed
@@ -73,17 +73,17 @@ Dev picks story from sprint backlog. `/story-readiness` catches roll-direction a
 
 ### [Session: Gate Check and Phase Transition](session-gate-check-phase-transition.md)
 **Type:** Phase Gate
-**Skill:** `/gate-check`
+**Skill:** `/ags-gate-check`
 **Duration:** ~20 min (7 turns)
 **Complexity:** Low
 
 **Scenario:**
-Dev finishes Systems Design, runs `/gate-check`. Gate finds 6 MVP GDDs complete, cross-review passed with 1 low concern. Gate passes, `stage.txt` updated, agent gives ordered checklist for Technical Setup.
+Dev finishes Systems Design, runs `/ags-gate-check`. Gate finds 6 MVP GDDs complete, cross-review passed with 1 low concern. Gate passes, `stage.txt` updated, agent gives ordered checklist for Technical Setup.
 
 **Key Moments:**
 - Gate validates artifacts AND internal completeness (8 sections per GDD)
 - CONCERNS ≠ FAIL: low cross-review note passes
-- stage.txt update changes what `/help`, `/sprint-status`, all skills see
+- stage.txt update changes what `/ags-help`, `/ags-sprint-status`, all skills see
 - Cross-review concern surfaces as concrete next ADR
 - Next-phase checklist specific + ordered, not generic
 
@@ -119,24 +119,24 @@ Dev designs HUD + inventory screen. `/ux-design` reads player journey + GDDs to 
 
 ---
 
-### [Session: Brownfield Onboarding with /adopt](session-adopt-brownfield.md)
+### [Session: Brownfield Onboarding with /ags-adopt](session-adopt-brownfield.md)
 **Type:** Brownfield Adoption
-**Skill:** `/adopt`
+**Skill:** `/ags-adopt`
 **Duration:** ~30 min (8 turns)
 **Complexity:** Low-Medium
 
 **Scenario:**
-Dev has 3 months of code + rough design notes, nothing in right format. `/adopt` audits format compliance (not just existence), classifies 4 gaps by severity, builds ordered 7-step migration plan, fixes BLOCKING gap (missing systems index) by inferring from codebase.
+Dev has 3 months of code + rough design notes, nothing in right format. `/ags-adopt` audits format compliance (not just existence), classifies 4 gaps by severity, builds ordered 7-step migration plan, fixes BLOCKING gap (missing systems index) by inferring from codebase.
 
 **Key Moments:**
 - FORMAT audit: "file exists" ≠ "file has required structure"
 - BLOCKING gap: missing systems index blocks 4+ skills
 - Migration plan ordered: blocking → high → medium
 - Systems index bootstrapped from code structure
-- Retrofit mode vs new authoring: `/design-system retrofit` fills gaps without overwrite
+- Retrofit mode vs new authoring: `/ags-design-system retrofit` fills gaps without overwrite
 
 **Learn:**
-- `/adopt` vs `/project-stage-detect`
+- `/ags-adopt` vs `/ags-project-stage-detect`
 - Format compliance check (section detection, not just presence)
 - Brownfield onboarding without losing existing work
 - When retrofit vs full authoring
@@ -282,7 +282,7 @@ Read examples BEFORE first session. Realistic expectations:
 
 ### For Specific Workflows:
 - **New?** → skill-flow-diagrams.md first
-- **First /design-system?** → session-design-system-skill.md
+- **First /ags-design-system?** → session-design-system-skill.md
 - **Picking up story?** → session-story-lifecycle.md
 - **Finishing phase?** → session-gate-check-phase-transition.md
 - **Starting UI?** → session-ux-pipeline.md

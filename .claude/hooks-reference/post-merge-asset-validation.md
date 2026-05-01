@@ -67,7 +67,7 @@ if [ -n "$WARNINGS" ]; then
     echo "=== Asset Validation Report ==="
     echo -e "$WARNINGS"
     echo "================================"
-    echo "Run /asset-audit for a full report."
+    echo "Run /ags-asset-audit for a full report."
 fi
 
 exit $EXIT_CODE
@@ -78,4 +78,4 @@ exit $EXIT_CODE
 On issues:
 1. Naming violations: fix manually or call `art-director`.
 2. Size violations: call `technical-artist` for optimization.
-3. Full audit: run `/asset-audit` skill.
+3. Full audit: run `/ags-asset-audit` skill.

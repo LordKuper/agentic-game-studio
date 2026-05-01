@@ -1,5 +1,5 @@
 ﻿# Workflow Catalog
-# Used by /help to determine where a user is and what comes next.
+# Used by /ags-help to determine where a user is and what comes next.
 #
 # Artifact checks:
 #   glob: file glob pattern вЂ” complete if в‰Ґ1 file matches (or min_count)
@@ -11,7 +11,7 @@
 # required: false в†’ optional enhancement (shown as OPTIONAL)
 # repeatable: true в†’ runs multiple times (one per system, story, etc.)
 #
-# Phase gates (/gate-check): verdicts are ADVISORY вЂ” they guide the decision
+# Phase gates (/ags-gate-check): verdicts are ADVISORY вЂ” they guide the decision
 # but never hard-block advancement. The user always decides whether to proceed.
 
 phases:
@@ -23,13 +23,13 @@ phases:
     steps:
       - id: brainstorm
         name: "Brainstorm"
-        command: /brainstorm
+        command: /ags-brainstorm
         required: false
         description: "Explore the game concept using MDA, verb-first, and player psychology frameworks"
 
       - id: engine-setup
         name: "Engine Setup"
-        command: /setup-engine
+        command: /ags-setup-engine
         required: true
         artifact:
           glob: ".ags/rules/technical-preferences.md"
@@ -38,7 +38,7 @@ phases:
 
       - id: game-concept
         name: "Game Concept Document"
-        command: /brainstorm
+        command: /ags-brainstorm
         required: true
         artifact:
           glob: "design/gdd/game-concept.md"
@@ -46,21 +46,21 @@ phases:
 
       - id: design-review-concept
         name: "Concept Review"
-        command: /design-review
+        command: /ags-design-review
         required: false
         description: "Validate the game concept (recommended before proceeding)"
 
       - id: art-bible
         name: "Art Bible"
-        command: /art-bible
+        command: /ags-art-bible
         required: true
         artifact:
-          glob: "design/art/art-bible.md"
-        description: "Author the visual identity specification (9 sections). Uses the Visual Identity Anchor produced by /brainstorm. Run after game concept is formed, before systems design."
+          glob: "design/art/ags-art-bible.md"
+        description: "Author the visual identity specification (9 sections). Uses the Visual Identity Anchor produced by /ags-brainstorm. Run after game concept is formed, before systems design."
 
       - id: map-systems
         name: "Systems Map"
-        command: /map-systems
+        command: /ags-map-systems
         required: true
         artifact:
           glob: "design/gdd/systems-index.md"
@@ -73,7 +73,7 @@ phases:
     steps:
       - id: design-system
         name: "System GDDs"
-        command: /design-system
+        command: /ags-design-system
         required: true
         repeatable: true
         artifact:
@@ -82,14 +82,14 @@ phases:
 
       - id: design-review
         name: "Per-System Design Review"
-        command: /design-review
+        command: /ags-design-review
         required: true
         repeatable: true
         description: "Validate each GDD (8 required sections, no MAJOR REVISION verdict). Run per system."
 
       - id: review-all-gdds
         name: "Cross-GDD Review"
-        command: /review-all-gdds
+        command: /ags-review-all-gdds
         required: true
         artifact:
           glob: "design/gdd/gdd-cross-review-*.md"
@@ -97,10 +97,10 @@ phases:
 
       - id: consistency-check
         name: "Consistency Check"
-        command: /consistency-check
+        command: /ags-consistency-check
         required: false
         repeatable: true
-        description: "Scan all GDDs for contradictions, undefined references, and mechanic conflicts. Run after /review-all-gdds, and again any time a GDD is added or revised mid-project."
+        description: "Scan all GDDs for contradictions, undefined references, and mechanic conflicts. Run after /ags-review-all-gdds, and again any time a GDD is added or revised mid-project."
 
   technical-setup:
     label: "Technical Setup"
@@ -109,7 +109,7 @@ phases:
     steps:
       - id: create-architecture
         name: "Architecture Document"
-        command: /create-architecture
+        command: /ags-create-architecture
         required: true
         artifact:
           glob: "design/architecture/architecture.md"
@@ -117,7 +117,7 @@ phases:
 
       - id: architecture-decision
         name: "Architecture Decisions (ADRs)"
-        command: /architecture-decision
+        command: /ags-architecture-decision
         required: true
         repeatable: true
         artifact:
@@ -127,7 +127,7 @@ phases:
 
       - id: architecture-review
         name: "Architecture Review"
-        command: /architecture-review
+        command: /ags-architecture-review
         required: true
         artifact:
           glob: "design/architecture/architecture-review-*.md"
@@ -135,7 +135,7 @@ phases:
 
       - id: control-manifest
         name: "Control Manifest"
-        command: /create-control-manifest
+        command: /ags-create-control-manifest
         required: true
         artifact:
           glob: "design/architecture/control-manifest.md"
@@ -155,7 +155,7 @@ phases:
     steps:
       - id: asset-spec
         name: "Asset Specs"
-        command: /asset-spec
+        command: /ags-asset-spec
         required: false
         repeatable: true
         artifact:
@@ -180,23 +180,23 @@ phases:
 
       - id: create-epics
         name: "Create Epics"
-        command: /create-epics
+        command: /ags-create-epics
         required: true
         repeatable: true
         artifact:
           glob: ".ags/project/epics/*/EPIC.md"
           min_count: 1
-        description: "Translate GDDs + ADRs into epics вЂ” one per architectural module. Run per layer: /create-epics layer: foundation, then /create-epics layer: core"
+        description: "Translate GDDs + ADRs into epics вЂ” one per architectural module. Run per layer: /ags-create-epics layer: foundation, then /ags-create-epics layer: core"
 
       - id: create-stories
         name: "Create Stories"
-        command: /create-stories
+        command: /ags-create-stories
         required: true
         repeatable: true
         artifact:
           glob: ".ags/project/epics/**/*.md"
           min_count: 2
-        description: "Break each epic into implementable story files. Run per epic: /create-stories [epic-slug]"
+        description: "Break each epic into implementable story files. Run per epic: /ags-create-stories [epic-slug]"
 
       - id: test-setup
         name: "Test Framework Setup"
@@ -204,11 +204,11 @@ phases:
         required: false
         artifact:
           note: "Check tests/ directory for engine-specific test framework scaffold"
-        description: "Scaffold the test framework and CI pipeline once before the first sprint. Leads to /test-helpers for fixture generation, /qa-plan per epic, and /smoke-check per sprint."
+        description: "Scaffold the test framework and CI pipeline once before the first sprint. Leads to /test-helpers for fixture generation, /ags-qa-plan per epic, and /ags-smoke-check per sprint."
 
       - id: sprint-plan
         name: "First Sprint Plan"
-        command: /sprint-plan
+        command: /ags-sprint-plan
         required: true
         artifact:
           glob: ".ags/project/sprints/sprint-*.md"
@@ -217,12 +217,12 @@ phases:
 
       - id: vertical-slice
         name: "Vertical Slice (playtested)"
-        command: /playtest-report
+        command: /ags-playtest-report
         required: true
         artifact:
           glob: ".ags/project/playtests/*.md"
           min_count: 1
-        description: "Document vertical slice playtest sessions using /playtest-report. Run at least once here (в‰Ґ1 session required before Production; в‰Ґ3 required before Polish). Each session should cover one complete run-through of the core loop."
+        description: "Document vertical slice playtest sessions using /ags-playtest-report. Run at least once here (в‰Ґ1 session required before Production; в‰Ґ3 required before Polish). Each session should cover one complete run-through of the core loop."
 
   production:
     label: "Production"
@@ -231,7 +231,7 @@ phases:
     steps:
       - id: sprint-plan
         name: "Sprint Plan"
-        command: /sprint-plan
+        command: /ags-sprint-plan
         required: true
         repeatable: true
         artifact:
@@ -240,50 +240,50 @@ phases:
 
       - id: story-readiness
         name: "Story Readiness Check"
-        command: /story-readiness
+        command: /ags-story-readiness
         required: false
         description: "Validate a story is implementation-ready before a developer picks it up"
 
       - id: implement
         name: "Implement Stories"
-        command: /dev-story
+        command: /ags-dev-story
         required: true
         repeatable: true
         artifact:
           note: "Check src/ for active code and .ags/project/epics/**/*.md for In Progress stories"
-        description: "Pick the next ready story and implement it with /dev-story [story-path]. Routes to the correct programmer agent."
+        description: "Pick the next ready story and implement it with /ags-dev-story [story-path]. Routes to the correct programmer agent."
 
       - id: code-review
         name: "Code Review"
-        command: /code-review
+        command: /ags-code-review
         required: false
         repeatable: true
-        description: "Architectural code review after each story implementation. Run after /dev-story, before /story-done."
+        description: "Architectural code review after each story implementation. Run after /ags-dev-story, before /ags-story-done."
 
       - id: story-done
         name: "Story Done Review"
-        command: /story-done
+        command: /ags-story-done
         required: true
         repeatable: true
         description: "Verify all acceptance criteria, check GDD/ADR deviations, close the story"
 
       - id: qa-plan
         name: "QA Plan"
-        command: /qa-plan
+        command: /ags-qa-plan
         required: false
         repeatable: true
-        description: "Generate a QA test plan per epic or sprint. Run /qa-plan [epic-slug]. Produces test cases for /smoke-check, /regression-suite, and /test-evidence-review."
+        description: "Generate a QA test plan per epic or sprint. Run /ags-qa-plan [epic-slug]. Produces test cases for /ags-smoke-check, /ags-regression-suite, and /test-evidence-review."
 
       - id: bug-report
         name: "Bug Report / Triage"
-        command: /bug-report
+        command: /ags-bug-report
         required: false
         repeatable: true
-        description: "Log and prioritize bugs found during implementation. /bug-report creates a structured report; /bug-triage prioritizes the open backlog."
+        description: "Log and prioritize bugs found during implementation. /ags-bug-report creates a structured report; /ags-bug-triage prioritizes the open backlog."
 
       - id: retrospective
         name: "Sprint Retrospective"
-        command: /retrospective
+        command: /ags-retrospective
         required: false
         repeatable: true
         description: "Post-sprint review to capture what worked and what to change. Run at the end of each sprint, before planning the next."
@@ -292,11 +292,11 @@ phases:
         name: "Team Orchestration (optional)"
         required: false
         repeatable: true
-        description: "Coordinate multiple agents on a complex feature. Use: /team-combat, /team-narrative, /team-ui, /team-audio, /team-level, /team-live-ops, /team-qa. Run when a feature spans multiple agent domains."
+        description: "Coordinate multiple agents on a complex feature. Use: /ags-team-combat, /ags-team-narrative, /team-ui, /ags-team-audio, /ags-team-level, /ags-team-live-ops, /ags-team-qa. Run when a feature spans multiple agent domains."
 
       - id: scope-check
         name: "Scope Check"
-        command: /scope-check
+        command: /ags-scope-check
         required: false
         repeatable: true
         artifact:
@@ -306,7 +306,7 @@ phases:
 
       - id: sprint-status
         name: "Sprint Status"
-        command: /sprint-status
+        command: /ags-sprint-status
         required: false
         description: "Quick 30-line snapshot of sprint progress without a full report"
 
@@ -317,25 +317,25 @@ phases:
     steps:
       - id: perf-profile
         name: "Performance Profile"
-        command: /perf-profile
+        command: /ags-perf-profile
         required: false
         description: "Profile and optimize CPU/GPU/memory bottlenecks"
 
       - id: balance-check
         name: "Balance Check"
-        command: /balance-check
+        command: /ags-balance-check
         required: false
         description: "Analyze game balance formulas and data for outliers and broken progressions"
 
       - id: asset-audit
         name: "Asset Audit"
-        command: /asset-audit
+        command: /ags-asset-audit
         required: false
         description: "Verify naming conventions, file format standards, and size budgets"
 
       - id: playtest-polish
         name: "Playtest Sessions (Г—3)"
-        command: /playtest-report
+        command: /ags-playtest-report
         required: true
         artifact:
           glob: ".ags/project/playtests/*.md"
@@ -344,7 +344,7 @@ phases:
 
       - id: team-polish
         name: "Polish Team Pass"
-        command: /team-polish
+        command: /ags-team-polish
         required: true
         description: "Coordinated polish pass across performance, audio, visual, and UX"
 
@@ -355,24 +355,24 @@ phases:
     steps:
       - id: release-checklist
         name: "Release Checklist"
-        command: /release-checklist
+        command: /ags-release-checklist
         required: true
         description: "Pre-release validation across all departments: code, content, store, legal"
 
       - id: patch-notes
         name: "Patch Notes"
-        command: /patch-notes
+        command: /ags-patch-notes
         required: false
         description: "Generate player-facing patch notes from git history and sprint data"
 
       - id: changelog
         name: "Changelog"
-        command: /changelog
+        command: /ags-changelog
         required: false
         description: "Auto-generate internal changelog from commits, sprints, and design docs"
 
       - id: launch-checklist
         name: "Launch Checklist"
-        command: /launch-checklist
+        command: /ags-launch-checklist
         required: true
         description: "Final launch readiness вЂ” last gate before shipping to players"

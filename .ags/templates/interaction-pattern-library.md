@@ -7,7 +7,7 @@
 > **Engine**: Unity [version]
 > **UI Framework**: Unity UI Toolkit (preferred) or uGUI
 > **Related Documents**:
-> - `docs/art-bible.md` — visual standards
+> - `docs/ags-art-bible.md` — visual standards
 > - `design/accessibility-requirements.md` — accessibility commitments
 > - `docs/ux/ux-spec-[screen].md` — screen specs that reference patterns
 

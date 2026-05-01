@@ -29,15 +29,15 @@ Review intensity controls whether director gates run. Set globally (persists acr
 
 Examples:
 ```
-/brainstorm space horror           → uses global mode
-/brainstorm space horror --review full   → forces full mode this run
-/architecture-decision --review solo     → skips all gates this run
+/ags-brainstorm space horror           → uses global mode
+/ags-brainstorm space horror --review full   → forces full mode this run
+/ags-architecture-decision --review solo     → skips all gates this run
 ```
 
 | Mode | What runs | Best for |
 |------|-----------|----------|
 | `full` | All gates active — every workflow step reviewed | Teams, learning users, or thorough director feedback at every step |
-| `lean` | PHASE-GATEs only (`/gate-check`) — per-skill gates skipped | **Default** — solo devs and small teams; directors review at milestones only |
+| `lean` | PHASE-GATEs only (`/ags-gate-check`) — per-skill gates skipped | **Default** — solo devs and small teams; directors review at milestones only |
 | `solo` | No director gates anywhere | Game jams, maximum speed |
 
 **Check pattern — apply before every gate spawn:**
@@ -164,7 +164,7 @@ Agent: `creative-director` | Model tier: Opus | Domain: Vision, pillars, player 
 
 ### CD-SYSTEMS — Systems Decomposition Vision Check
 
-**Trigger**: After systems index written by `/map-systems` — validates complete system set before GDD authoring begins
+**Trigger**: After systems index written by `/ags-map-systems` — validates complete system set before GDD authoring begins
 
 **Context to pass**:
 - Systems index path (`design/gdd/systems-index.md`)
@@ -210,7 +210,7 @@ Agent: `creative-director` | Model tier: Opus | Domain: Vision, pillars, player 
 
 ### CD-PLAYTEST — Player Experience Validation
 
-**Trigger**: After playtest reports generated (`/playtest-report`), or after any session producing player feedback
+**Trigger**: After playtest reports generated (`/ags-playtest-report`), or after any session producing player feedback
 
 **Context to pass**:
 - Playtest report file path
@@ -231,7 +231,7 @@ Agent: `creative-director` | Model tier: Opus | Domain: Vision, pillars, player 
 
 ### CD-PHASE-GATE — Creative Readiness at Phase Transition
 
-**Trigger**: Always at `/gate-check` — spawn parallel with TD-PHASE-GATE and PR-PHASE-GATE
+**Trigger**: Always at `/ags-gate-check` — spawn parallel with TD-PHASE-GATE and PR-PHASE-GATE
 
 **Context to pass**:
 - Target phase name
@@ -257,7 +257,7 @@ Agent: `technical-director` | Model tier: Opus | Domain: Architecture, engine ri
 
 ### TD-SYSTEM-BOUNDARY — System Boundary Architecture Review
 
-**Trigger**: After `/map-systems` Phase 3 dependency mapping agreed but before GDD authoring begins — validates system structure is architecturally sound before teams invest in GDDs
+**Trigger**: After `/ags-map-systems` Phase 3 dependency mapping agreed but before GDD authoring begins — validates system structure is architecturally sound before teams invest in GDDs
 
 **Context to pass**:
 - Systems index path (or dependency map summary if index not yet written)
@@ -307,7 +307,7 @@ Agent: `technical-director` | Model tier: Opus | Domain: Architecture, engine ri
 
 ### TD-ARCHITECTURE — Architecture Sign-Off
 
-**Trigger**: After master architecture document drafted (`/create-architecture` Phase 7), and after any major architecture revision
+**Trigger**: After master architecture document drafted (`/ags-create-architecture` Phase 7), and after any major architecture revision
 
 **Context to pass**:
 - Architecture document path (`design/architecture/architecture.md`)
@@ -329,7 +329,7 @@ Agent: `technical-director` | Model tier: Opus | Domain: Architecture, engine ri
 
 ### TD-ADR — Architecture Decision Review
 
-**Trigger**: After individual ADR authored (`/architecture-decision`), before marked Accepted
+**Trigger**: After individual ADR authored (`/ags-architecture-decision`), before marked Accepted
 
 **Context to pass**:
 - ADR file path
@@ -370,7 +370,7 @@ Agent: `technical-director` | Model tier: Opus | Domain: Architecture, engine ri
 
 ### TD-PHASE-GATE — Technical Readiness at Phase Transition
 
-**Trigger**: Always at `/gate-check` — spawn parallel with CD-PHASE-GATE and PR-PHASE-GATE
+**Trigger**: Always at `/ags-gate-check` — spawn parallel with CD-PHASE-GATE and PR-PHASE-GATE
 
 **Context to pass**:
 - Target phase name
@@ -420,7 +420,7 @@ Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, pr
 
 ### PR-SPRINT — Sprint Feasibility Review
 
-**Trigger**: Before finalising sprint plan (`/sprint-plan`), and after any mid-sprint scope change
+**Trigger**: Before finalising sprint plan (`/ags-sprint-plan`), and after any mid-sprint scope change
 
 **Context to pass**:
 - Proposed sprint story list (titles, estimates, dependencies)
@@ -442,7 +442,7 @@ Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, pr
 
 ### PR-MILESTONE — Milestone Risk Assessment
 
-**Trigger**: At milestone review (`/milestone-review`), at mid-sprint retrospectives, or when scope change proposed affecting milestone
+**Trigger**: At milestone review (`/ags-milestone-review`), at mid-sprint retrospectives, or when scope change proposed affecting milestone
 
 **Context to pass**:
 - Milestone definition and target date
@@ -464,7 +464,7 @@ Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, pr
 
 ### PR-EPIC — Epic Structure Feasibility Review
 
-**Trigger**: After epics defined by `/create-epics`, before stories broken out — validates epic structure producible before `/create-stories` invoked
+**Trigger**: After epics defined by `/ags-create-epics`, before stories broken out — validates epic structure producible before `/ags-create-stories` invoked
 
 **Context to pass**:
 - Epic definition file paths (all epics just created)
@@ -491,7 +491,7 @@ Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, pr
 
 ### PR-PHASE-GATE — Production Readiness at Phase Transition
 
-**Trigger**: Always at `/gate-check` — spawn parallel with CD-PHASE-GATE and TD-PHASE-GATE
+**Trigger**: Always at `/ags-gate-check` — spawn parallel with CD-PHASE-GATE and TD-PHASE-GATE
 
 **Context to pass**:
 - Target phase name
@@ -542,10 +542,10 @@ Agent: `art-director` | Model tier: Sonnet | Domain: Visual identity, art bible,
 
 ### AD-ART-BIBLE — Art Bible Sign-Off
 
-**Trigger**: After art bible drafted (`/art-bible`), before asset production begins
+**Trigger**: After art bible drafted (`/ags-art-bible`), before asset production begins
 
 **Context to pass**:
-- Art bible path (`design/art/art-bible.md`)
+- Art bible path (`design/art/ags-art-bible.md`)
 - Game pillars and core fantasy
 - Platform and performance constraints (from `.ags/rules/technical-preferences.md` if configured)
 - Visual identity anchor chosen during brainstorm (from `design/gdd/game-concept.md`)
@@ -567,13 +567,13 @@ Agent: `art-director` | Model tier: Sonnet | Domain: Visual identity, art bible,
 
 ### AD-PHASE-GATE — Visual Readiness at Phase Transition
 
-**Trigger**: Always at `/gate-check` — spawn parallel with CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE
+**Trigger**: Always at `/ags-gate-check` — spawn parallel with CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE
 
 **Context to pass**:
 - Target phase name
 - All art/visual artifacts present (file paths)
 - Visual identity anchor from `design/gdd/game-concept.md` (if present)
-- Art bible path if exists (`design/art/art-bible.md`)
+- Art bible path if exists (`design/art/ags-art-bible.md`)
 
 **Prompt**:
 > "Review the current project state for [target phase] gate readiness from a visual
@@ -598,7 +598,7 @@ Invoked by orchestration skills and senior skills when domain specialist's feasi
 
 ### LP-FEASIBILITY — Lead Programmer Implementation Feasibility
 
-**Trigger**: After master architecture document written (`/create-architecture` Phase 7b), or when new architectural pattern proposed
+**Trigger**: After master architecture document written (`/ags-create-architecture` Phase 7b), or when new architectural pattern proposed
 
 **Context to pass**:
 - Architecture document path
@@ -619,7 +619,7 @@ Invoked by orchestration skills and senior skills when domain specialist's feasi
 
 ### LP-CODE-REVIEW — Lead Programmer Code Review
 
-**Trigger**: After dev story implemented (`/dev-story`, `/story-done`), or as part of `/code-review`
+**Trigger**: After dev story implemented (`/ags-dev-story`, `/ags-story-done`), or as part of `/ags-code-review`
 
 **Context to pass**:
 - Implementation file paths
@@ -640,7 +640,7 @@ Invoked by orchestration skills and senior skills when domain specialist's feasi
 
 ### QL-STORY-READY — QA Lead Story Readiness Check
 
-**Trigger**: Before story accepted into sprint — invoked by `/create-stories`, `/story-readiness`, `/sprint-plan` during story selection
+**Trigger**: Before story accepted into sprint — invoked by `/ags-create-stories`, `/ags-story-readiness`, `/ags-sprint-plan` during story selection
 
 **Context to pass**:
 - Story file path
@@ -665,7 +665,7 @@ Invoked by orchestration skills and senior skills when domain specialist's feasi
 
 ### QL-TEST-COVERAGE — QA Lead Test Coverage Review
 
-**Trigger**: After implementation stories complete, before marking epic done, or at `/gate-check` Production → Polish
+**Trigger**: After implementation stories complete, before marking epic done, or at `/ags-gate-check` Production → Polish
 
 **Context to pass**:
 - Implemented stories list with story types (Logic / Integration / Visual / UI / Config)
@@ -711,7 +711,7 @@ Invoked by orchestration skills and senior skills when domain specialist's feasi
 **Trigger**: After art direction decisions made, when new asset types introduced, or when tech art decision affects visual style
 
 **Context to pass**:
-- Art bible path (if exists at `design/art-bible.md`)
+- Art bible path (if exists at `design/ags-art-bible.md`)
 - Specific asset type, style decision, or visual direction being reviewed
 - Reference images or style descriptions
 - Platform and performance constraints
@@ -729,7 +729,7 @@ Invoked by orchestration skills and senior skills when domain specialist's feasi
 
 ## Parallel Gate Protocol
 
-When workflow needs multiple directors at same checkpoint (most common at `/gate-check`), spawn all simultaneously:
+When workflow needs multiple directors at same checkpoint (most common at `/ags-gate-check`), spawn all simultaneously:
 
 ```
 Spawn in parallel (issue all Task calls before waiting for any result):

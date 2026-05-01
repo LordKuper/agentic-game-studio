@@ -25,7 +25,7 @@ Copy to project root as `CLAUDE.local.md` for personal overrides. Gitignored. No
 - Explain architectural decisions briefly
 
 ## Personal Shortcuts
-- "review" → run /code-review on last changed files
+- "review" → run /ags-code-review on last changed files
 - "status" → show git status + sprint progress
 ```
 

@@ -49,82 +49,82 @@ Ask: "What department would handle this in a real studio?"
 | Write Unity shaders/VFX, manage Addressables, build UI Toolkit/UGUI | `unity-specialist` |
 | Plan live events and seasons | `game-designer` |
 | Write patch notes for players | `producer` |
-| Brainstorm a new game idea | Use `/brainstorm` skill |
+| Brainstorm a new game idea | Use `/ags-brainstorm` skill |
 
 ### 3. Use Slash Commands for Common Tasks
 
 | Command | What it does |
 |---------|-------------|
 | `/ags-start` | First-time onboarding — asks where you are, routes to right workflow |
-| `/help` | Context-aware "what next?" — reads current phase and artifacts |
-| `/project-stage-detect` | Analyze project state, detect stage, identify gaps |
-| `/setup-engine` | Configure engine + version, populate reference docs |
-| `/adopt` | Brownfield audit and migration plan for existing projects |
-| `/brainstorm` | Guided game concept ideation from scratch |
-| `/map-systems` | Decompose concept into systems, map dependencies, guide per-system GDDs |
-| `/design-system` | Section-by-section GDD authoring for single game system |
-| `/review-all-gdds` | Cross-GDD consistency and game design theory review |
-| `/art-bible` | Author art bible: visual identity, palettes, art pipeline standards |
-| `/asset-spec` | Author per-asset specs: requirements, source files, references |
-| `/propagate-design-change` | Find ADRs and stories affected by GDD change |
+| `/ags-help` | Context-aware "what next?" — reads current phase and artifacts |
+| `/ags-project-stage-detect` | Analyze project state, detect stage, identify gaps |
+| `/ags-setup-engine` | Configure engine + version, populate reference docs |
+| `/ags-adopt` | Brownfield audit and migration plan for existing projects |
+| `/ags-brainstorm` | Guided game concept ideation from scratch |
+| `/ags-map-systems` | Decompose concept into systems, map dependencies, guide per-system GDDs |
+| `/ags-design-system` | Section-by-section GDD authoring for single game system |
+| `/ags-review-all-gdds` | Cross-GDD consistency and game design theory review |
+| `/ags-art-bible` | Author art bible: visual identity, palettes, art pipeline standards |
+| `/ags-asset-spec` | Author per-asset specs: requirements, source files, references |
+| `/ags-propagate-design-change` | Find ADRs and stories affected by GDD change |
 | `/ux-design` | Author UX specs (screen/flow, HUD, interaction patterns) |
 | `/ux-review` | Validate UX specs for accessibility and GDD alignment |
-| `/create-architecture` | Master architecture document for game |
-| `/architecture-decision` | Create ADR |
-| `/architecture-review` | Validate all ADRs, dependency ordering, GDD traceability |
-| `/create-control-manifest` | Flat programmer rules sheet from Accepted ADRs |
-| `/create-epics` | Translate GDDs + ADRs into epics (one per architectural module) |
-| `/create-stories` | Break single epic into implementable story files |
-| `/dev-story` | Read story and implement — routes to correct programmer agent |
-| `/sprint-plan` | Create or update sprint plans |
-| `/sprint-status` | Quick 30-line sprint snapshot |
-| `/story-readiness` | Validate story implementation-ready before pickup |
-| `/story-done` | End-of-story completion review — verifies acceptance criteria |
-| `/estimate` | Produce structured effort estimates |
-| `/design-review` | Review design document |
-| `/code-review` | Review code for quality and architecture |
-| `/security-audit` | Security review of changeset / branch (OWASP-style for game code) |
-| `/balance-check` | Analyze game balance data |
-| `/asset-audit` | Audit assets for compliance |
-| `/content-audit` | GDD-specified content vs implemented — find gaps |
-| `/scope-check` | Detect scope creep against plan |
-| `/perf-profile` | Performance profiling and bottleneck ID |
+| `/ags-create-architecture` | Master architecture document for game |
+| `/ags-architecture-decision` | Create ADR |
+| `/ags-architecture-review` | Validate all ADRs, dependency ordering, GDD traceability |
+| `/ags-create-control-manifest` | Flat programmer rules sheet from Accepted ADRs |
+| `/ags-create-epics` | Translate GDDs + ADRs into epics (one per architectural module) |
+| `/ags-create-stories` | Break single epic into implementable story files |
+| `/ags-dev-story` | Read story and implement — routes to correct programmer agent |
+| `/ags-sprint-plan` | Create or update sprint plans |
+| `/ags-sprint-status` | Quick 30-line sprint snapshot |
+| `/ags-story-readiness` | Validate story implementation-ready before pickup |
+| `/ags-story-done` | End-of-story completion review — verifies acceptance criteria |
+| `/ags-estimate` | Produce structured effort estimates |
+| `/ags-design-review` | Review design document |
+| `/ags-code-review` | Review code for quality and architecture |
+| `/ags-security-audit` | Security review of changeset / branch (OWASP-style for game code) |
+| `/ags-balance-check` | Analyze game balance data |
+| `/ags-asset-audit` | Audit assets for compliance |
+| `/ags-content-audit` | GDD-specified content vs implemented — find gaps |
+| `/ags-scope-check` | Detect scope creep against plan |
+| `/ags-perf-profile` | Performance profiling and bottleneck ID |
 | `/tech-debt` | Scan, track, prioritize tech debt |
-| `/gate-check` | Validate phase readiness (PASS/CONCERNS/FAIL) |
-| `/consistency-check` | Scan all GDDs for cross-document inconsistencies (conflicting stats, names, rules) |
-| `/reverse-document` | Generate design/architecture docs from existing code |
-| `/milestone-review` | Review milestone progress |
-| `/retrospective` | Run sprint/milestone retrospective |
-| `/bug-report` | Structured bug report creation |
-| `/playtest-report` | Create or analyze playtest feedback |
-| `/onboard` | Generate onboarding docs for a role |
-| `/release-checklist` | Validate pre-release checklist |
-| `/launch-checklist` | Complete launch readiness validation |
-| `/changelog` | Generate changelog from git history |
-| `/patch-notes` | Generate player-facing patch notes |
-| `/day-one-patch` | Plan and prepare day-one / launch patch (scope, risk, ship gate) |
-| `/hotfix` | Emergency fix with audit trail |
-| `/localize` | Localization scan, extract, validate |
-| `/team-combat` | Orchestrate full combat team pipeline |
-| `/team-narrative` | Orchestrate full narrative team pipeline |
+| `/ags-gate-check` | Validate phase readiness (PASS/CONCERNS/FAIL) |
+| `/ags-consistency-check` | Scan all GDDs for cross-document inconsistencies (conflicting stats, names, rules) |
+| `/ags-reverse-document` | Generate design/architecture docs from existing code |
+| `/ags-milestone-review` | Review milestone progress |
+| `/ags-retrospective` | Run sprint/milestone retrospective |
+| `/ags-bug-report` | Structured bug report creation |
+| `/ags-playtest-report` | Create or analyze playtest feedback |
+| `/ags-onboard` | Generate onboarding docs for a role |
+| `/ags-release-checklist` | Validate pre-release checklist |
+| `/ags-launch-checklist` | Complete launch readiness validation |
+| `/ags-changelog` | Generate changelog from git history |
+| `/ags-patch-notes` | Generate player-facing patch notes |
+| `/ags-day-one-patch` | Plan and prepare day-one / launch patch (scope, risk, ship gate) |
+| `/ags-hotfix` | Emergency fix with audit trail |
+| `/ags-localize` | Localization scan, extract, validate |
+| `/ags-team-combat` | Orchestrate full combat team pipeline |
+| `/ags-team-narrative` | Orchestrate full narrative team pipeline |
 | `/team-ui` | Orchestrate full UI team pipeline |
-| `/team-release` | Orchestrate full release team pipeline |
-| `/team-polish` | Orchestrate full polish team pipeline |
-| `/team-audio` | Orchestrate full audio team pipeline |
-| `/team-level` | Orchestrate full level creation pipeline |
-| `/team-live-ops` | Orchestrate live-ops team for seasons, events, post-launch content |
-| `/team-qa` | Orchestrate full QA team cycle — test plan, test cases, smoke check, sign-off |
-| `/qa-plan` | Generate QA test plan for sprint or feature |
-| `/bug-triage` | Re-prioritize open bugs, assign to sprints, surface systemic trends |
-| `/smoke-check` | Critical path smoke test gate before QA hand-off (PASS/FAIL) |
-| `/soak-test` | Soak test protocol for extended play sessions |
-| `/regression-suite` | Map coverage to GDD critical paths, flag gaps, maintain regression suite |
+| `/ags-team-release` | Orchestrate full release team pipeline |
+| `/ags-team-polish` | Orchestrate full polish team pipeline |
+| `/ags-team-audio` | Orchestrate full audio team pipeline |
+| `/ags-team-level` | Orchestrate full level creation pipeline |
+| `/ags-team-live-ops` | Orchestrate live-ops team for seasons, events, post-launch content |
+| `/ags-team-qa` | Orchestrate full QA team cycle — test plan, test cases, smoke check, sign-off |
+| `/ags-qa-plan` | Generate QA test plan for sprint or feature |
+| `/ags-bug-triage` | Re-prioritize open bugs, assign to sprints, surface systemic trends |
+| `/ags-smoke-check` | Critical path smoke test gate before QA hand-off (PASS/FAIL) |
+| `/ags-soak-test` | Soak test protocol for extended play sessions |
+| `/ags-regression-suite` | Map coverage to GDD critical paths, flag gaps, maintain regression suite |
 | `/test-setup` | Scaffold test framework + CI pipeline for project's engine (run once) |
 | `/test-helpers` | Generate engine-specific test helper libraries and factories |
 | `/test-flakiness` | Detect flaky tests from CI history, flag for quarantine or fix |
 | `/test-evidence-review` | Quality review of test files and manual evidence — ADEQUATE/INCOMPLETE/MISSING |
-| `/skill-test` | Validate skill files for compliance and correctness (static / spec / audit) |
-| `/skill-improve` | Improve skill via test-fix-retest loop |
+| `/ags-skill-test` | Validate skill files for compliance and correctness (static / spec / audit) |
+| `/ags-skill-improve` | Improve skill via test-fix-retest loop |
 
 ### 4. Use Templates for New Documents
 
@@ -167,7 +167,7 @@ Templates in `.ags/templates/`:
 Also in `.ags/templates/collaborative-protocols/` (used by agents, not edited directly):
 
 - `design-agent-protocol.md` — question-options-draft-approval cycle for design agents
-- `implementation-agent-protocol.md` — story pickup through /story-done cycle for programming agents
+- `implementation-agent-protocol.md` — story pickup through /ags-story-done cycle for programming agents
 - `leadership-agent-protocol.md` — cross-department delegation and escalation for director-tier agents
 
 ### 5. Follow the Coordination Rules
@@ -186,42 +186,42 @@ If you know what you need, jump to relevant path:
 
 ### Path A: "I have no idea what to build"
 
-1. **Run `/ags-start`** (or `/brainstorm open`) — guided creative exploration: what excites you, what you've played, your constraints
+1. **Run `/ags-start`** (or `/ags-brainstorm open`) — guided creative exploration: what excites you, what you've played, your constraints
    - Generates 3 concepts, helps pick one, defines core loop and pillars
    - Produces a game concept document
-2. **Set up engine** — Run `/setup-engine [version]` (studio is Unity-only)
+2. **Set up engine** — Run `/ags-setup-engine [version]` (studio is Unity-only)
    - Configures CLAUDE.md, detects knowledge gaps, populates reference docs
    - Creates `.ags/rules/technical-preferences.md` with naming, perf budgets, Unity defaults
    - If Unity version newer than LLM cutoff, fetches current docs from web so agents suggest correct APIs
-3. **Validate concept** — Run `/design-review design/gdd/game-concept.md`
-4. **Decompose into systems** — Run `/map-systems` to map all systems and dependencies
-5. **Design each system** — Run `/design-system [system-name]` (or `/map-systems next`) to write GDDs in dependency order
-6. **Plan first sprint** — Run `/sprint-plan new`
-7. **Playtest** — Run `/playtest-report` once vertical slice is playable
+3. **Validate concept** — Run `/ags-design-review design/gdd/game-concept.md`
+4. **Decompose into systems** — Run `/ags-map-systems` to map all systems and dependencies
+5. **Design each system** — Run `/ags-design-system [system-name]` (or `/ags-map-systems next`) to write GDDs in dependency order
+6. **Plan first sprint** — Run `/ags-sprint-plan new`
+7. **Playtest** — Run `/ags-playtest-report` once vertical slice is playable
 8. Start building
 
 ### Path B: "I know what I want to build"
 
 If you have game concept and engine choice:
 
-1. **Set up engine** — Run `/setup-engine [version]` (e.g., `/setup-engine 6000.0.30f1`) — pins Unity, creates technical preferences
+1. **Set up engine** — Run `/ags-setup-engine [version]` (e.g., `/ags-setup-engine 6000.0.30f1`) — pins Unity, creates technical preferences
 2. **Write Game Pillars** — delegate to `creative-director`
-3. **Decompose into systems** — Run `/map-systems` to enumerate systems and dependencies
-4. **Design each system** — Run `/design-system [system-name]` for GDDs in dependency order
-5. **Create initial ADR** — Run `/architecture-decision`
+3. **Decompose into systems** — Run `/ags-map-systems` to enumerate systems and dependencies
+4. **Design each system** — Run `/ags-design-system [system-name]` for GDDs in dependency order
+5. **Create initial ADR** — Run `/ags-architecture-decision`
 6. **Create first milestone** in `.ags/project/milestones/`
-7. **Plan first sprint** — Run `/sprint-plan new`
+7. **Plan first sprint** — Run `/ags-sprint-plan new`
 8. Start building
 
 ### Path C: "I have an existing project"
 
 If you have design docs or code:
 
-1. **Run `/ags-start`** (or `/project-stage-detect`) — analyzes what exists, identifies gaps, recommends steps
-2. **Run `/adopt`** if you have existing GDDs, ADRs, or stories — audits format compliance and builds numbered migration plan to fill gaps without overwriting your work
-3. **Configure engine if needed** — Run `/setup-engine` if not yet configured
-4. **Validate phase readiness** — Run `/gate-check` to see where you stand
-5. **Plan next sprint** — Run `/sprint-plan new`
+1. **Run `/ags-start`** (or `/ags-project-stage-detect`) — analyzes what exists, identifies gaps, recommends steps
+2. **Run `/ags-adopt`** if you have existing GDDs, ADRs, or stories — audits format compliance and builds numbered migration plan to fill gaps without overwriting your work
+3. **Configure engine if needed** — Run `/ags-setup-engine` if not yet configured
+4. **Validate phase readiness** — Run `/ags-gate-check` to see where you stand
+5. **Plan next sprint** — Run `/ags-sprint-plan new`
 
 ## File Structure Reference
 
@@ -237,12 +237,12 @@ CLAUDE.md                          -- Master config (read first)
   hooks-reference/                 -- Hook reference docs
 .ags/
   rules/                           -- Project rules (this file lives here)
-    technical-preferences.md       -- Project standards (populated by /setup-engine)
+    technical-preferences.md       -- Project standards (populated by /ags-setup-engine)
     coding.md                      -- Coding standards
     coordination.md                -- Agent coordination rules
     context-management.md          -- Context budgets and compaction
     directory-structure.md         -- Canonical directory layout
-    workflow-catalog.yaml          -- 7-phase pipeline definition (read by /help)
+    workflow-catalog.yaml          -- 7-phase pipeline definition (read by /ags-help)
     setup-requirements.md          -- System prerequisites
     settings-local-template.md     -- Personal settings.local.json guide
     director-gates.md              -- Director gate prompt catalog

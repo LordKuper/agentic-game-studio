@@ -21,7 +21,7 @@ Persist across overwrites of `state.md`:
 
 - `.ags/project/stage.txt` — current dev phase (concept, systems-design, technical-setup, …)
 - `.ags/project/review-mode.md` — director-gate intensity (full / lean / solo)
-- `.ags/project/sprint-status.yaml` — current sprint snapshot
+- `.ags/project/ags-sprint-status.yaml` — current sprint snapshot
 
 ### Incremental File Writing
 For multi-section docs (design docs, architecture docs, lore entries):

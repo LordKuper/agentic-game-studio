@@ -1,6 +1,6 @@
-# Example Session: Using /design-system to Author a GDD
+# Example Session: Using /ags-design-system to Author a GDD
 
-**Context:** Solo indie dev, week 3. `/map-systems` already ran, produced `design/gdd/systems-index.md`. Movement listed MVP tier, Foundation priority.
+**Context:** Solo indie dev, week 3. `/ags-map-systems` already ran, produced `design/gdd/systems-index.md`. Movement listed MVP tier, Foundation priority.
 
 **Starting State:**
 - `design/gdd/game-concept.md` exists (survival-crafting, 2D, Unity 6000.0.30f1)
@@ -10,18 +10,18 @@
 
 **Session Duration:** ~60 min
 **Turns:** 14
-**Outcome:** Complete `design/gdd/movement-system.md`, all 8 sections written, ready for `/design-review`
+**Outcome:** Complete `design/gdd/movement-system.md`, all 8 sections written, ready for `/ags-design-review`
 
 ---
 
 ## Turn 1: User Invokes Skill
 
 **User:**
-> /design-system movement
+> /ags-design-system movement
 
 ## Turn 2: Agent Loads Context, Presents Plan
 
-**Agent (game-designer, via /design-system):**
+**Agent (game-designer, via /ags-design-system):**
 > Loading context:
 >
 > - Read `design/gdd/game-concept.md` — survival-crafting, exploration-heavy, lone survivor on alien planet
@@ -253,7 +253,7 @@
 > - Roll = flat stamina cost (not per-second)
 > - Heavy carry disables run (signal-driven, not hardcoded check)
 >
-> **Next:** `/design-review design/gdd/movement-system.md` before next system in queue (stamina next per index).
+> **Next:** `/ags-design-review design/gdd/movement-system.md` before next system in queue (stamina next per index).
 >
 > Review validates completeness, consistency, catches issues before building on this GDD.
 

@@ -16,7 +16,7 @@
 
 > Per-screen accessibility = UX specs. This = project-wide commitments, feature matrix, test plan, audit history. Created once during Technical Setup. Updated as features added + audits done. Conflicts: this doc wins unless producer approves revision.
 >
-> **Update**: After each `/gate-check`, after audits, when new system added to `systems-index.md`.
+> **Update**: After each `/ags-gate-check`, after audits, when new system added to `systems-index.md`.
 
 ---
 

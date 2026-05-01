@@ -127,6 +127,6 @@
 ## Next Steps
 
 - [ ] Review + approve enumeration
-- [ ] Design MVP-tier first (`/design-system [name]`)
-- [ ] Run `/design-review` per completed GDD
-- [ ] Run `/gate-check pre-production` when MVP designed
+- [ ] Design MVP-tier first (`/ags-design-system [name]`)
+- [ ] Run `/ags-design-review` per completed GDD
+- [ ] Run `/ags-gate-check pre-production` when MVP designed

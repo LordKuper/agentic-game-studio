@@ -156,7 +156,7 @@ result = base_value * (1 + modifier_sum) * scaling_factor
 
 ## Cross-References
 
-[Every explicit dependency on another GDD's specific mechanic/value/rule. Machine-checked by `/review-all-gdds` Phase 2c. Prose references must appear here.]
+[Every explicit dependency on another GDD's specific mechanic/value/rule. Machine-checked by `/ags-review-all-gdds` Phase 2c. Prose references must appear here.]
 
 | References | Target GDD | Specific Element | Nature |
 |-----------|-----------|------------------|--------|

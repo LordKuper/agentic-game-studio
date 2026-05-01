@@ -177,7 +177,7 @@ D1, D7, D14, D30, D60, D90. Design re-engagement campaigns for lapsed players.
 ### Community Communication Standards (absorbs community-manager scope)
 
 #### Patch Notes
-Write for players, not devs. Structure: Headline → New Content → Gameplay Changes → Bug Fixes (grouped by system) → Known Issues → Developer Commentary (optional). Jargon-free. Before/after values for balance changes. Path: `.ags/project/releases/[version]/patch-notes.md`.
+Write for players, not devs. Structure: Headline → New Content → Gameplay Changes → Bug Fixes (grouped by system) → Known Issues → Developer Commentary (optional). Jargon-free. Before/after values for balance changes. Path: `.ags/project/releases/[version]/ags-patch-notes.md`.
 
 #### Dev Blogs / Community Updates
 Regular cadence (weekly/bi-weekly during active dev). Topics: upcoming features, behind-the-scenes, team spotlights, roadmap updates. Honest about delays. Visuals when possible. Path: `.ags/project/community/dev-blogs/`.

@@ -148,7 +148,7 @@
 
 ## GDD Requirements Addressed
 
-<!-- MANDATORY. Every ADR traces to ≥1 GDD requirement OR explicitly states foundational with no GDD dependency. Audited by /architecture-review. -->
+<!-- MANDATORY. Every ADR traces to ≥1 GDD requirement OR explicitly states foundational with no GDD dependency. Audited by /ags-architecture-review. -->
 
 | GDD Document | System | Requirement | How ADR Satisfies |
 |-------------|--------|-------------|-------------------|

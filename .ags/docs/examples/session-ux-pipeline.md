@@ -205,6 +205,6 @@ design/ux/hud.md
 - **UX review = hard gate**: `/team-ui` checks for passing `/ux-review` before visual design
 - **Accessibility caught early**: missing keyboard alt flagged by review, not by QA in final week
 - **Blocking vs advisory**: missing keyboard = BLOCKING (stops handoff); colorblind = ADVISORY (visual pass)
-- **Section-by-section UX**: same pattern as `/design-system` — each section to file before next
+- **Section-by-section UX**: same pattern as `/ags-design-system` — each section to file before next
 - **Separate HUD + screen files**: `design/ux/hud.md` = whole-game HUD; per-screen specs in `design/ux/screens/`
 - **Pattern library enforced by /team-ui**: after this session, inventory drag-drop becomes documented pattern in `design/ux/interaction-patterns.md` for future screens

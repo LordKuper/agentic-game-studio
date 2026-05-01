@@ -1,18 +1,18 @@
 # Technical Preferences
 
-<!-- Populated by /setup-engine. Updated as user makes decisions. -->
+<!-- Populated by /ags-setup-engine. Updated as user makes decisions. -->
 <!-- All agents reference for project standards and conventions. -->
 
 ## Engine & Language
 
-- **Engine**: [TO BE CONFIGURED — run /setup-engine]
+- **Engine**: [TO BE CONFIGURED — run /ags-setup-engine]
 - **Language**: [TO BE CONFIGURED]
 - **Rendering**: [TO BE CONFIGURED]
 - **Physics**: [TO BE CONFIGURED]
 
 ## Input & Platform
 
-<!-- Written by /setup-engine. Read by /ux-design, /ux-review, /test-setup, /team-ui, /dev-story -->
+<!-- Written by /ags-setup-engine. Read by /ux-design, /ux-review, /test-setup, /team-ui, /ags-dev-story -->
 <!-- to scope interaction specs, test helpers, implementation to correct input methods. -->
 
 - **Target Platforms**: [TO BE CONFIGURED — e.g., PC, Console, Mobile, Web]
@@ -57,15 +57,15 @@
 ## Architecture Decisions Log
 
 <!-- Quick reference linking to full ADRs in design/architecture/ -->
-- [No ADRs yet — use /architecture-decision to create one]
+- [No ADRs yet — use /ags-architecture-decision to create one]
 
 ## Engine Specialists
 
-<!-- Written by /setup-engine when engine configured. -->
-<!-- Read by /code-review, /architecture-decision, /architecture-review, team skills -->
+<!-- Written by /ags-setup-engine when engine configured. -->
+<!-- Read by /ags-code-review, /ags-architecture-decision, /ags-architecture-review, team skills -->
 <!-- to know which specialist to spawn for engine-specific validation. -->
 
-- **Primary**: [TO BE CONFIGURED — run /setup-engine]
+- **Primary**: [TO BE CONFIGURED — run /ags-setup-engine]
 - **Language/Code Specialist**: [TO BE CONFIGURED]
 - **Shader Specialist**: [TO BE CONFIGURED]
 - **UI Specialist**: [TO BE CONFIGURED]

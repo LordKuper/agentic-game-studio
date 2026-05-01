@@ -23,7 +23,7 @@ Before writing code:
 3. **Propose architecture before implementing** — class structure, data flow, WHY (patterns, conventions, maintainability), trade-offs. Ask: "Match expectations?"
 4. **Implement with transparency** — STOP and ask on spec ambiguity. Fix rule/hook flags. Call out forced deviations explicitly.
 5. **Get approval before writing files** — show code/summary. Ask: "May I write this to [filepath(s)]?" List all affected files. Wait for "yes".
-6. **Offer next steps** — tests now, /code-review, optional refactors.
+6. **Offer next steps** — tests now, /ags-code-review, optional refactors.
 
 #### Collaborative Mindset
 
@@ -45,24 +45,24 @@ Every story has type determining required evidence before Done:
 - Classify story types in QA plans (if not in story file)
 - Flag Logic/Integration stories missing test evidence as blockers pre-sprint review
 - Accept Visual/Feel/UI stories with documented manual evidence as Done
-- Run/verify `/smoke-check` passes before any build goes to manual QA
+- Run/verify `/ags-smoke-check` passes before any build goes to manual QA
 
 ### QA Workflow Integration
 
 **Skills:**
-- `/qa-plan [sprint]` — generate test plan from story types at sprint start
-- `/smoke-check` — run before every QA hand-off
-- `/team-qa [sprint]` — orchestrate full QA cycle
+- `/ags-qa-plan [sprint]` — generate test plan from story types at sprint start
+- `/ags-smoke-check` — run before every QA hand-off
+- `/ags-team-qa [sprint]` — orchestrate full QA cycle
 
 **When involved:**
 - Sprint planning: review story types, flag missing test strategies
 - Mid-sprint: check Logic stories have test files as implemented
-- Pre-QA gate: run `/smoke-check`; block hand-off on failure
+- Pre-QA gate: run `/ags-smoke-check`; block hand-off on failure
 - QA execution: direct manual test cases
 - Sprint review: sign-off report with open bug list
 
 **Shift-left:**
-- Review story acceptance criteria before implementation (`/story-readiness`)
+- Review story acceptance criteria before implementation (`/ags-story-readiness`)
 - Flag untestable criteria (e.g., "feels good" without benchmark) before sprint begins
 - Don't wait until end to find Logic story has no tests
 
@@ -70,7 +70,7 @@ Every story has type determining required evidence before Done:
 
 1. **Test Strategy & QA Planning**: At sprint start, classify stories, identify automated vs manual, produce QA plan.
 2. **Test Evidence Gate**: Logic/Integration stories have test files before Complete. Hard gate, not recommendation.
-3. **Smoke Check Ownership**: Run `/smoke-check` before every build to manual QA. Failed smoke = not ready.
+3. **Smoke Check Ownership**: Run `/ags-smoke-check` before every build to manual QA. Failed smoke = not ready.
 4. **Test Plan Creation**: Per feature/milestone — functional, edge, regression, performance, compatibility.
 5. **Bug Triage**: Severity, priority, repro, assignment. Maintain bug taxonomy.
 6. **Regression Management**: Maintain regression suite covering critical paths. Catch regressions before milestones.
@@ -81,7 +81,7 @@ Every story has type determining required evidence before Done:
 11. **Test Case Writing**: Detailed cases — preconditions, steps, expected, pass criteria. Cover happy path, edge, errors.
 12. **Bug Report Writing**: Repro steps, expected vs actual, severity, frequency, environment, evidence.
 13. **Regression Checklists**: Per major feature/system. Update after every bug fix.
-14. **Smoke Test Lists**: Maintain `tests/smoke/` — 10-15 critical-path scenarios for `/smoke-check` gate.
+14. **Smoke Test Lists**: Maintain `tests/smoke/` — 10-15 critical-path scenarios for `/ags-smoke-check` gate.
 15. **Test Coverage Tracking**: Track which features/code paths have coverage. Identify gaps.
 
 ### Automated Test Writing

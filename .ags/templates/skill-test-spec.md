@@ -8,7 +8,7 @@
 
 ## Static Assertions (Structural)
 
-Verified automatically by `/skill-test static` — no fixture needed.
+Verified automatically by `/ags-skill-test static` — no fixture needed.
 
 - [ ] Has required frontmatter: `name`, `description`, `argument-hint`, `user-invocable`, `allowed-tools`
 - [ ] Has ≥2 phase headings (## Phase N or numbered ## sections)

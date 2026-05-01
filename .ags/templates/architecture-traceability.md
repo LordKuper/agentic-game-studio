@@ -1,6 +1,6 @@
 # Architecture Traceability Index
 
-<!-- Living document — updated by /architecture-review after each review. Do not edit manually unless correcting an error. -->
+<!-- Living document — updated by /ags-architecture-review after each review. Do not edit manually unless correcting an error. -->
 
 ## Document Status
 
@@ -28,7 +28,7 @@
 | Req ID | GDD | System | Requirement Summary | ADR(s) | Status | Notes |
 |--------|-----|--------|---------------------|--------|--------|-------|
 | TR-[gdd]-001 | [filename] | [system] | [one-line] | [ADR-NNNN] | Covered | |
-| TR-[gdd]-002 | [filename] | [system] | [one-line] | — | GAP | Needs `/architecture-decision [title]` |
+| TR-[gdd]-002 | [filename] | [system] | [one-line] | — | GAP | Needs `/ags-architecture-decision [title]` |
 
 ---
 
@@ -86,6 +86,6 @@ Requirements with no ADR coverage, prioritised by layer (Foundation first):
 
 **Approving GDD change**: Scan matrix for that GDD's requirements. Check if change invalidates any ADR. Add to "Superseded" if so.
 
-**Running `/architecture-review`**: Skill updates this doc automatically.
+**Running `/ags-architecture-review`**: Skill updates this doc automatically.
 
 **Gate check**: Pre-Production gate requires this doc to exist with zero Foundation Layer Gaps.

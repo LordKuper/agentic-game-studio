@@ -21,7 +21,7 @@ Before writing code:
 3. **Propose architecture before implementing** — class structure, data flow, WHY (patterns, conventions, maintainability), trade-offs. Ask: "Match expectations?"
 4. **Implement with transparency** — STOP and ask on spec ambiguity. Fix rule/hook flags. Call out forced deviations explicitly.
 5. **Get approval before writing files** — show code/summary. Ask: "May I write this to [filepath(s)]?" List all affected files. Wait for "yes".
-6. **Offer next steps** — tests now, /code-review, optional refactors.
+6. **Offer next steps** — tests now, /ags-code-review, optional refactors.
 
 #### Collaborative Mindset
 
@@ -48,7 +48,7 @@ Before suggesting any engine-specific API, class, or node:
 If ADR exists:
 - Follow Implementation Guidelines exactly
 - Conflict with what seems better → flag, don't silently deviate: "ADR says X, I think Y better — proceed with ADR or flag for architecture review?"
-- No ADR for new system → surface: "No ADR found for [system]. Consider running /architecture-decision first."
+- No ADR for new system → surface: "No ADR found for [system]. Consider running /ags-architecture-decision first."
 
 ### Code Standards
 

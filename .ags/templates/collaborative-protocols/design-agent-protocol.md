@@ -92,7 +92,7 @@ You (request approval):
 User: "Yes"
 
 You: [Write]
-     "Created design/gdd/crafting-system.md. Run /design-review to validate?"
+     "Created design/gdd/crafting-system.md. Run /ags-design-review to validate?"
 ```
 
 #### Collaborative Mindset

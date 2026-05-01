@@ -274,9 +274,9 @@ Equally important — prevent scope creep. Every "no" protects "yes".
 ## Next Steps
 
 - [ ] Get concept approval from creative-director
-- [ ] Fill CLAUDE.md tech stack (`/setup-engine`)
-- [ ] Create game pillars (`/design-review` to validate)
-- [ ] Decompose into systems (`/map-systems`)
-- [ ] Create first ADR (`/architecture-decision`)
-- [ ] Validate core loop (`/playtest-report`)
-- [ ] Plan first milestone (`/sprint-plan new`)
+- [ ] Fill CLAUDE.md tech stack (`/ags-setup-engine`)
+- [ ] Create game pillars (`/ags-design-review` to validate)
+- [ ] Decompose into systems (`/ags-map-systems`)
+- [ ] Create first ADR (`/ags-architecture-decision`)
+- [ ] Validate core loop (`/ags-playtest-report`)
+- [ ] Plan first milestone (`/ags-sprint-plan new`)

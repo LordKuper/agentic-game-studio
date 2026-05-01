@@ -7,7 +7,7 @@
 > **Platform Targets**: [PC, PS5, Xbox Series X, Steam Deck...]
 > **Related GDDs**: [Every system exposing HUD info — `design/gdd/combat.md`, `progression.md`, `quests.md`]
 > **Accessibility Tier**: Basic | Standard | Comprehensive | Exemplary
-> **Style Reference**: [`design/gdd/art-bible.md § HUD Visual Language`]
+> **Style Reference**: [`design/gdd/ags-art-bible.md § HUD Visual Language`]
 
 > **Scope**: Overlays during active gameplay — health, ammo, minimap, quest, subtitles, damage numbers, toasts. Menus/pause/inventory/dialogs → `ux-spec.md`. Test: appears while player controls character → here.
 

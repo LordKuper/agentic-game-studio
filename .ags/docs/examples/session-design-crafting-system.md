@@ -229,9 +229,9 @@
 > ✅ Created `design/gdd/crafting-system.md`
 >
 > **Next Steps:**
-> 1. Run `/design-review design/gdd/crafting-system.md` to validate vs 8-section standard
+> 1. Run `/ags-design-review design/gdd/crafting-system.md` to validate vs 8-section standard
 > 2. Create data file structure in `assets/data/` for ingredients/recipes
-> 3. When implementing: `/team-combat` pattern but for crafting (game-designer → gameplay-programmer → ui-programmer → qa-lead)
+> 3. When implementing: `/ags-team-combat` pattern but for crafting (game-designer → gameplay-programmer → ui-programmer → qa-lead)
 >
 > Run design review now, or read it first?
 

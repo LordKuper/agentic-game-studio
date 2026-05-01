@@ -1,4 +1,4 @@
-# Example Session: /adopt — Brownfield Project Onboarding
+# Example Session: /ags-adopt — Brownfield Project Onboarding
 
 **Context:** Dev built game 3 months before discovering agent system. Has code, some design docs, rough notes — nothing in right format for skills.
 
@@ -17,14 +17,14 @@
 
 ---
 
-## Turn 1: User Invokes /adopt
+## Turn 1: User Invokes /ags-adopt
 
 **User:**
-> /adopt
+> /ags-adopt
 
 ## Turn 2: Agent Detects Project State
 
-**Agent (technical-director, via /adopt, context: fork):**
+**Agent (technical-director, via /ags-adopt, context: fork):**
 > Running brownfield audit...
 >
 > **Phase 1: Project State Detection**
@@ -61,9 +61,9 @@
 >
 > | Gap | Severity | Reason |
 > |-----|----------|--------|
-> | No systems index | BLOCKING | `/design-system`, `/create-stories`, `/gate-check` all need it |
+> | No systems index | BLOCKING | `/ags-design-system`, `/ags-create-stories`, `/ags-gate-check` all need it |
 > | GDD files not template format | HIGH | Skills can't ref TR-IDs from malformed GDDs |
-> | No architecture docs | HIGH | Can't run `/architecture-review` or `/create-control-manifest` |
+> | No architecture docs | HIGH | Can't run `/ags-architecture-review` or `/ags-create-control-manifest` |
 > | No production tracking | MEDIUM | Sprint/story skills won't work; not needed til production |
 > | `crafting-ideas.md` — pre-GDD | LOW | Useful as input; needs full authoring before blocks anything |
 
@@ -76,13 +76,13 @@
 >
 > | # | Step | Skill | Priority | Notes |
 > |---|------|-------|----------|-------|
-> | 1 | Create `design/gdd/systems-index.md` | `/map-systems` or `/adopt` inline | BLOCKING | Unblocks downstream skills |
-> | 2 | Retrofit `design/inventory.md` → GDD | `/design-system retrofit design/inventory.md` | HIGH | Adds 5 missing sections |
-> | 3 | Retrofit `design/combat-notes.md` → GDD | `/design-system retrofit design/combat-notes.md` | HIGH | Adds 6 missing sections |
-> | 4 | Convert `design/crafting-ideas.md` → full GDD | `/design-system crafting` (new authoring) | MEDIUM | Too informal to retrofit |
-> | 5 | Create architecture ADRs from code | `/reverse-document` + `/architecture-decision` | HIGH | Captures decisions in code |
-> | 6 | Create master architecture doc | `/create-architecture` | HIGH | After ADRs |
-> | 7 | Set up production tracking | `/sprint-plan new` | MEDIUM | After architecture |
+> | 1 | Create `design/gdd/systems-index.md` | `/ags-map-systems` or `/ags-adopt` inline | BLOCKING | Unblocks downstream skills |
+> | 2 | Retrofit `design/inventory.md` → GDD | `/ags-design-system retrofit design/inventory.md` | HIGH | Adds 5 missing sections |
+> | 3 | Retrofit `design/combat-notes.md` → GDD | `/ags-design-system retrofit design/combat-notes.md` | HIGH | Adds 6 missing sections |
+> | 4 | Convert `design/crafting-ideas.md` → full GDD | `/ags-design-system crafting` (new authoring) | MEDIUM | Too informal to retrofit |
+> | 5 | Create architecture ADRs from code | `/ags-reverse-document` + `/ags-architecture-decision` | HIGH | Captures decisions in code |
+> | 6 | Create master architecture doc | `/ags-create-architecture` | HIGH | After ADRs |
+> | 7 | Set up production tracking | `/ags-sprint-plan new` | MEDIUM | After architecture |
 >
 > **Important:** Step 1 first. Rest can parallel/reorder.
 >
@@ -98,7 +98,7 @@
 **Agent:**
 > BLOCKING gap: missing `design/gdd/systems-index.md`.
 >
-> I can create one now by reading code + design docs to infer systems. Faster than `/map-systems` from scratch — populated from what exists, you confirm/adjust.
+> I can create one now by reading code + design docs to infer systems. Faster than `/ags-map-systems` from scratch — populated from what exists, you confirm/adjust.
 >
 > Do that now?
 
@@ -158,18 +158,18 @@
 >
 > **BLOCKING gap resolved.** Skills now run:
 >
-> - ✅ `/design-system [name]` — guided GDD authoring
-> - ✅ `/design-system retrofit [path]` — fill gaps in existing docs
-> - ✅ `/gate-check` — has systems index to validate
-> - ✅ `/help` — shows correct phase workflow
+> - ✅ `/ags-design-system [name]` — guided GDD authoring
+> - ✅ `/ags-design-system retrofit [path]` — fill gaps in existing docs
+> - ✅ `/ags-gate-check` — has systems index to validate
+> - ✅ `/ags-help` — shows correct phase workflow
 >
 > **Recommended next steps (from plan):**
 >
-> 1. `/design-system retrofit design/inventory.md` — most complete existing doc, easiest win
-> 2. `/design-system retrofit design/combat-notes.md`
-> 3. `/design-system crafting` — author crafting GDD using ideas file as input
+> 1. `/ags-design-system retrofit design/inventory.md` — most complete existing doc, easiest win
+> 2. `/ags-design-system retrofit design/combat-notes.md`
+> 3. `/ags-design-system crafting` — author crafting GDD using ideas file as input
 >
-> After those 3: 5/7 systems with complete GDDs. Then `/review-all-gdds` for cross-system consistency before architecture work.
+> After those 3: 5/7 systems with complete GDDs. Then `/ags-review-all-gdds` for cross-system consistency before architecture work.
 
 ## Turn 8: User Confirms Plan
 
@@ -179,7 +179,7 @@
 **Agent:**
 > Run:
 > ```
-> /design-system retrofit design/inventory.md
+> /ags-design-system retrofit design/inventory.md
 > ```
 >
 > Skill detects existing Overview + Rules sections, shows missing sections, runs section cycle for gaps only. Existing content untouched.
@@ -188,10 +188,10 @@
 
 ## What This Demonstrates
 
-- **FORMAT audit, not existence audit**: `/adopt` checks internal structure vs skill expectations. File named `gdd.md` with no template sections = gap.
+- **FORMAT audit, not existence audit**: `/ags-adopt` checks internal structure vs skill expectations. File named `gdd.md` with no template sections = gap.
 - **Migration, not replacement**: existing content never overwritten. Plan fills gaps only.
 - **BLOCKING gaps surface first**: missing systems index identified BLOCKING because most skills depend on it.
 - **Inline urgent gap fix**: agent fixes immediately in same session, not just reports.
 - **Inferred from code**: systems index bootstrapped from codebase — brownfield code already contains answer.
-- **Retrofit vs new authoring**: `/design-system retrofit` for existing-but-incomplete; `/design-system` for net-new. Plan distinguishes per file.
-- **Context: fork**: `/adopt` runs in forked context, avoids polluting main session with large file reads.
+- **Retrofit vs new authoring**: `/ags-design-system retrofit` for existing-but-incomplete; `/ags-design-system` for net-new. Plan distinguishes per file.
+- **Context: fork**: `/ags-adopt` runs in forked context, avoids polluting main session with large file reads.

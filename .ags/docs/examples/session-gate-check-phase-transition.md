@@ -1,4 +1,4 @@
-# Example Session: /gate-check Phase Transition — Systems Design → Technical Setup
+# Example Session: /ags-gate-check Phase Transition — Systems Design → Technical Setup
 
 **Context:** Solo indie dev, end of week 5. Systems Design feels complete — 6 MVP GDDs, cross-review done, engine set. Wants to advance to Technical Setup.
 
@@ -7,7 +7,7 @@
 - `design/gdd/systems-index.md` — 6 MVP systems, all `Status: GDD Complete`
 - `design/gdd/` — 6 GDD files
 - `design/gdd/gdd-cross-review-2026-03-10.md` — verdict: CONCERNS (1 low-priority)
-- Engine configured (Unity 6000.0.30f1, `/setup-engine` complete)
+- Engine configured (Unity 6000.0.30f1, `/ags-setup-engine` complete)
 
 **Session Duration:** ~20 min
 **Turns:** 7
@@ -18,11 +18,11 @@
 ## Turn 1: User Initiates Gate Check
 
 **User:**
-> /gate-check
+> /ags-gate-check
 
 ## Turn 2: Agent Detects Phase, Runs Check
 
-**Agent (via /gate-check):**
+**Agent (via /ags-gate-check):**
 > Reading `.ags/project/stage.txt` — current phase: **systems-design**
 >
 > Running gate: **Systems Design → Technical Setup**
@@ -34,7 +34,7 @@
 > |----------|-------------|--------|
 > | `design/gdd/systems-index.md` | Exists, all MVP listed | ✅ |
 > | Per-system GDDs | All MVP have GDD | ✅ (6/6) |
-> | `/design-review` per GDD | Each reviewed | ✅ (6/6 found) |
+> | `/ags-design-review` per GDD | Each reviewed | ✅ (6/6 found) |
 > | Cross-GDD review | `design/gdd/gdd-cross-review-*.md` exists | ✅ |
 > | Cross-review verdict | PASS or CONCERNS (not FAIL) | ✅ CONCERNS |
 > | Engine configured | `.ags/project/stage.txt` or CLAUDE.md entry | ✅ Unity 6000.0.30f1 |
@@ -82,25 +82,25 @@
 >
 > **Required steps (in order):**
 >
-> 1. **`/create-architecture`** — Master architecture doc. System decomposition, data flow, layer boundaries, module responsibilities.
+> 1. **`/ags-create-architecture`** — Master architecture doc. System decomposition, data flow, layer boundaries, module responsibilities.
 >
-> 2. **`/architecture-decision` (one per significant choice)** — At minimum:
+> 2. **`/ags-architecture-decision` (one per significant choice)** — At minimum:
 >    - Rendering approach (2D camera, viewport, etc.)
 >    - Save/load strategy
 >    - Audio bus architecture
 >    - Item stack size authority (crafting vs inventory)
 >
-> 3. **`/architecture-review`** — Validates all ADRs for completeness, dep ordering, GDD traceability. Produces TR-registry.
+> 3. **`/ags-architecture-review`** — Validates all ADRs for completeness, dep ordering, GDD traceability. Produces TR-registry.
 >
-> 4. **`/create-control-manifest`** — Converts Accepted ADRs to flat programmer rules sheet. Impl agents consult during coding.
+> 4. **`/ags-create-control-manifest`** — Converts Accepted ADRs to flat programmer rules sheet. Impl agents consult during coding.
 >
-> 5. **`/gate-check`** — Technical Setup → Pre-Production. Requires: architecture doc, all ADRs Accepted, control manifest, dep ordering resolved.
+> 5. **`/ags-gate-check`** — Technical Setup → Pre-Production. Requires: architecture doc, all ADRs Accepted, control manifest, dep ordering resolved.
 >
 > **Optional but recommended:**
 > - `/tech-debt` scan if carrying spike code forward
-> - `/setup-engine` re-run if Unity 6000.0.30f1 API snapshots not fetched
+> - `/ags-setup-engine` re-run if Unity 6000.0.30f1 API snapshots not fetched
 >
-> **Tip:** Start with `/architecture-decision` for stack size conflict. Quick win, closes open question before ambiguity in 2 ADRs later.
+> **Tip:** Start with `/ags-architecture-decision` for stack size conflict. Quick win, closes open question before ambiguity in 2 ADRs later.
 
 ## Turn 5: User Asks About Cross-Review Concern
 
@@ -128,17 +128,17 @@
 >
 > Most studios go B (shared resource) once >2 systems touch item data. Either valid for solo project.
 >
-> Run `/architecture-decision` — guides ADR format including Dependencies section linking to 2 GDDs.
+> Run `/ags-architecture-decision` — guides ADR format including Dependencies section linking to 2 GDDs.
 
 ## Turn 7: User Wraps Up
 
 **User:**
-> Got it. I'll start with /architecture-decision for this.
+> Got it. I'll start with /ags-architecture-decision for this.
 
 **Agent:**
 > Good start. ADR documents decision, reasoning, GDD requirements addressed — months later, rationale preserved.
 >
-> Phase gate logged. Run `/help` during Technical Setup to see progress vs required checklist.
+> Phase gate logged. Run `/ags-help` during Technical Setup to see progress vs required checklist.
 
 ---
 
@@ -146,7 +146,7 @@
 
 - **Gate check is automated, not manual**: agent reads artifacts + checks them — user doesn't fill form
 - **CONCERNS ≠ FAIL**: LOW concern passes. FAIL would require resolution before advancing.
-- **Stage.txt is authority**: status line, `/help`, all skills read from `.ags/project/stage.txt` — updating changes what every subsequent skill sees
+- **Stage.txt is authority**: status line, `/ags-help`, all skills read from `.ags/project/stage.txt` — updating changes what every subsequent skill sees
 - **Next steps phase-specific**: agent gives ordered checklist for Technical Setup, not generic
 - **Surfaces carry-forward work**: stack size conflict was cross-review note; gate ensures it becomes concrete ADR, not lost
 - **One advance per gate**: user confirmed explicitly. Gate doesn't auto-advance; human confirmation required.

@@ -212,7 +212,7 @@
 >
 > **Next Steps - Your Choice:**
 > A) Write formal unit tests now (recommended - verification-driven)
-> B) Review code first via `/code-review Assets/Scripts/Gameplay/Combat/DamageCalculator.cs`
+> B) Review code first via `/ags-code-review Assets/Scripts/Gameplay/Combat/DamageCalculator.cs`
 > C) Skip tests, integrate into combat
 >
 > What?
