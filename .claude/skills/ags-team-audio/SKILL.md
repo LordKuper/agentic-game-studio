@@ -25,6 +25,18 @@ The user must approve before moving to the next step.
    - Read existing audio asset lists in `assets/audio/`
    - Read any existing sound design docs for this area
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/gdd/game-concept.md` | `/ags-brainstorm` | STOP. "No game concept. Run `/ags-brainstorm`." |
+| `design/sound-bible.md` (recommended) | manual / audio-director | WARN: orchestrator without sound bible — surface gap. |
+| Active epic | `/ags-create-epics` | WARN: ungrounded audio work. |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## How to Delegate
 
 Use the Task tool to spawn each team member as a subagent:

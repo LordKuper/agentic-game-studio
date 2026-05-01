@@ -6,6 +6,17 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 ---
 
+## Phase 0a: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/project/milestones/` with ≥1 milestone | manual or `t_milestone-definition.md` | STOP. "No milestones defined." |
+| `.ags/project/epics/index.md` | `/ags-create-epics` | STOP. "No epics. Run `/ags-create-epics`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Phase 0: Parse Arguments
 
 Extract the milestone name (`current` or a specific name) and resolve the review mode (once, store for all gate spawns this run):

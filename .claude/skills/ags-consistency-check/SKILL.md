@@ -3,7 +3,7 @@ name: ags-consistency-check
 description: "Scan all GDDs against the entity registry to detect cross-document inconsistencies: same entity with different stats, same item with different values, same formula with different variables. Grep-first approach — reads registry then targets only conflicting GDD sections rather than full document reads."
 argument-hint: "[full | since-last-review | entity:<name> | item:<name>]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, AskUserQuestion
 ---
 
 # Consistency Check
@@ -19,6 +19,17 @@ Detects cross-document inconsistencies by comparing GDDs against entity registry
 - On demand: `/ags-consistency-check entity:[name]` to check one entity specifically
 
 **Output:** Conflict report + optional registry corrections
+
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| ≥1 GDD under `design/gdd/*.md` | `/ags-design-system` | STOP. "No GDDs to check. Run `/ags-design-system [system]` first." |
+| `design/registry/entities.yaml` (optional) | manual | WARN: structural checks only. Limited coverage without registry. |
+
+If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
 
 ---
 

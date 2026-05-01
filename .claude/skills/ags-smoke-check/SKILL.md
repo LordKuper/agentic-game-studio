@@ -16,6 +16,18 @@ Rule: **build that fails smoke check does not go to QA.**
 
 ---
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `tests/` with framework | `/ags-test-setup` | STOP. "Test framework not set up. Run `/ags-test-setup` first." |
+| Test runner configured | `/ags-test-setup` | STOP. "Test runner not configured." |
+| `.ags/project/qa/` | this skill (auto-create) | Auto-create — not a STOP. |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Parse Arguments
 
 Args combinable: `/ags-smoke-check sprint --platform console`

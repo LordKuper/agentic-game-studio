@@ -3,7 +3,7 @@ name: ags-bug-triage
 description: "Read all open bugs in .ags/project/qa/bugs/, re-evaluate priority vs. severity, assign to sprints, surface systemic trends, and produce a triage report. Run at sprint start or when the bug count grows enough to need re-prioritization."
 argument-hint: "[sprint | full | trend]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 ---
 
 # Bug Triage
@@ -16,6 +16,17 @@ Processes open bug backlog into prioritised, sprint-assigned action list. Distin
 - Sprint start — assign open bugs to the new sprint or backlog
 - After `/ags-team-qa` completes and new bugs have been filed
 - When the bug count crosses 10+ open items
+
+---
+
+## 0. Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/project/bugs/` with ≥1 bug file | `/ags-bug-report` | STOP. "No bugs to triage. Run `/ags-bug-report` first." |
+| Active epic in `.ags/project/stage.md` | `/ags-create-epics` | WARN: cannot map bugs to active epic. |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

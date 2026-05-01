@@ -15,6 +15,17 @@ the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/project/stage.md` Phase = polish | `/ags-gate-check production` | STOP. "Not in polish phase. Run `/ags-gate-check production` after MVP epics done." |
+| ≥3 playtest reports under `.ags/project/playtests/` | `/ags-playtest-report` | STOP. "Need ≥3 playtests for polish team pass. Run `/ags-playtest-report`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Team Composition
 - **performance-analyst** — Profiling, optimization, memory analysis, frame budget
 - **engine-programmer** — Engine-level bottlenecks: rendering pipeline, memory, resource loading (invoke when performance-analyst identifies low-level root causes)

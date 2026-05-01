@@ -3,7 +3,7 @@ name: ags-regression-suite
 description: "Map test coverage to GDD critical paths, identify fixed bugs without regression tests, flag coverage drift from new features, and maintain tests/ags-regression-suite.md. Run after implementing a bug fix or before a release gate."
 argument-hint: "[update | audit | report]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit
+allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 ---
 
 # Regression Suite
@@ -21,6 +21,18 @@ critical paths and known failure points. This skill maintains that list.
 - After fixing a bug (confirm a regression test was written or identify gap)
 - Before a release gate (`/ags-gate-check polish` requires regression suite exists)
 - As part of sprint close to detect coverage drift
+
+---
+
+## 0. Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `tests/` directory | `/ags-test-setup` | STOP. "Test framework not set up. Run `/ags-test-setup` first." |
+| ≥1 GDD with critical paths | `/ags-design-system` | STOP. "No GDDs. Run `/ags-design-system [system]`." |
+| `tests/regression/` | this skill (auto-create) | Auto-create — not a STOP. |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

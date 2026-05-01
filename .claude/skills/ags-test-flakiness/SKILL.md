@@ -3,7 +3,7 @@ name: ags-test-flakiness
 description: "Detect non-deterministic (flaky) tests by reading CI run logs or test result history. Aggregates pass rates per test, identifies intermittent failures, recommends quarantine or fix, and maintains a flaky test registry. Best run during Polish phase or after multiple CI runs."
 argument-hint: "[ci-log-path | scan | registry]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, AskUserQuestion
 ---
 
 # Test Flakiness Detection
@@ -19,6 +19,17 @@ flaky tests, explains likely causes, recommends quarantine or fix.
 - Polish phase (tests have had many runs; statistical signal is reliable)
 - When developers start dismissing CI failures as "probably flaky"
 - After `/ags-regression-suite` identifies quarantined tests that need diagnosis
+
+---
+
+## 0. Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `tests/` directory with test runs | `/ags-test-setup` + dev | STOP. "No tests to analyze. Run `/ags-test-setup`." |
+| CI history (logs or test result files) | CI pipeline | WARN: flakiness inferred from local runs only — limited signal. |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

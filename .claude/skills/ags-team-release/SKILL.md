@@ -17,6 +17,17 @@ the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/project/stage.md` Phase = polish or release | `/ags-gate-check polish` | STOP. "Not ready for release. Run `/ags-gate-check polish`." |
+| `tests/` with passing suite | `/ags-test-setup` + dev | STOP. "Tests not configured." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Team Composition
 - **release-manager** — Release branch, versioning, changelog, deployment
 - **qa-lead** — Test sign-off, regression suite, release quality gate

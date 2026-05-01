@@ -3,7 +3,7 @@ name: ags-test-evidence-review
 description: "Quality review of test files and manual evidence documents. Goes beyond existence checks — evaluates assertion coverage, edge case handling, naming conventions, and evidence completeness. Produces ADEQUATE/INCOMPLETE/MISSING verdict per story. Run before QA sign-off or on demand."
 argument-hint: "[story-path | sprint | system-name]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 ---
 
 # Test Evidence Review
@@ -18,6 +18,18 @@ evidence doc may lack required sign-offs.
 - Before QA hand-off sign-off (`/ags-team-qa` Phase 5)
 - On any story where test quality is in question
 - As part of milestone review for Logic and Integration story quality audit
+
+---
+
+## 0. Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Story file path or active epic in `stage.md` | `/ags-create-stories` | STOP. "No story to review. Provide path or run `/ags-create-stories`." |
+| Story has implementation files | `/ags-dev-story` | STOP. "Story has no implementation. Run `/ags-dev-story` first." |
+| `tests/` with test files | `/ags-test-setup` + `/ags-dev-story` | WARN: flags low test coverage. |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

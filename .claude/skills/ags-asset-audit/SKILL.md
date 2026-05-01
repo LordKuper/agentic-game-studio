@@ -3,8 +3,20 @@ name: ags-asset-audit
 description: "Audits game assets for compliance with naming conventions, file size budgets, format standards, and pipeline requirements. Identifies orphaned assets, missing references, and standard violations."
 argument-hint: "[category|all]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep
+allowed-tools: Read, Glob, Grep, AskUserQuestion
 # Read-only diagnostic skill — no specialist agent delegation needed
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/art/ags-art-bible.md` | `/ags-art-bible` | STOP. "No art bible. Run `/ags-art-bible` first." |
+| `.ags/rules/technical-preferences.md` | `/ags-setup-engine` | STOP. "Naming conventions not configured. Run `/ags-setup-engine`." |
+| `assets/` directory exists | engine init | STOP. "No `assets/` directory found." |
+
+If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
+
 ---
 
 ## Phase 1: Read Standards

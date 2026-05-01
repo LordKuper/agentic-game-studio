@@ -4,7 +4,19 @@ description: "Structured performance profiling workflow. Identifies bottlenecks,
 argument-hint: "[system-name or 'full']"
 user-invocable: true
 agent: performance-analyst
-allowed-tools: Read, Glob, Grep, Bash
+allowed-tools: Read, Glob, Grep, Bash, AskUserQuestion
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/rules/technical-preferences.md` (perf budgets) | `/ags-setup-engine` | STOP. "Performance budgets not configured. Run `/ags-setup-engine`." |
+| Engine source code present | engine init | STOP. "No engine source — nothing to profile." |
+| `.ags/docs/engine-reference/[engine]/VERSION.md` | `/ags-setup-engine` | WARN: engine-specific guidance limited. |
+
+If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
+
 ---
 
 ## Phase 1: Determine Scope

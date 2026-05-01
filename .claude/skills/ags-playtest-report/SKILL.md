@@ -6,6 +6,18 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 ---
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/gdd/game-concept.md` | `/ags-brainstorm` | STOP. "No game concept. Run `/ags-brainstorm`." |
+| Playable build | dev work | WARN: report records observations only without playable session. |
+| `.ags/project/playtests/` | this skill (auto-create) | Auto-create — not a STOP. |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Phase 1: Parse Arguments
 
 Resolve the review mode (once, store for all gate spawns this run):

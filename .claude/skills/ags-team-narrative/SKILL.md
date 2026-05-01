@@ -15,6 +15,18 @@ the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/gdd/game-concept.md` | `/ags-brainstorm` | STOP. "No game concept. Run `/ags-brainstorm`." |
+| `design/narrative/` content | manual / narrative-director | WARN: orchestrator works on blank narrative slate. |
+| Active epic | `/ags-create-epics` | WARN: ungrounded narrative work. |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Team Composition
 - **narrative-director** — Story arcs, character design, dialogue strategy, narrative vision
 - **narrative-director** — Dialogue writing, lore entries, item descriptions, in-game text

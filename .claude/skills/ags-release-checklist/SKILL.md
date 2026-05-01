@@ -3,10 +3,22 @@ name: ags-release-checklist
 description: "Generates a comprehensive pre-release validation checklist covering build verification, certification requirements, store metadata, and launch readiness."
 argument-hint: "[platform: pc|console|mobile|all]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 ---
 
 > **Explicit invocation only**: This skill should only run when the user explicitly requests it with `/ags-release-checklist`. Do not auto-invoke based on context matching.
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/project/stage.md` (Phase = polish or release) | `/ags-gate-check polish` | STOP. "Not ready for release. Run `/ags-gate-check polish` first." |
+| `tests/` with passing suite | `/ags-test-setup` + dev | STOP. "Tests not configured. Run `/ags-test-setup`." |
+| `.ags/templates/release-checklist-template.md` | template | STOP. "Release checklist template missing — broken install." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
 
 ## Phase 1: Parse Arguments
 

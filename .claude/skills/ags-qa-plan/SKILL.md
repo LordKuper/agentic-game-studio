@@ -21,6 +21,18 @@ post-mortem, not a plan.
 
 ---
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Active `.ags/project/epics/[slug]/EPIC.md` | `/ags-create-epics` | STOP. "No active epic. Run `/ags-create-epics`." |
+| Stories under `epics/[slug]/stories/*.md` | `/ags-create-stories` | STOP. "No stories. Run `/ags-create-stories [slug]`." |
+| Target system GDD(s) | `/ags-design-system` | WARN: limited without GDD acceptance criteria. |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Phase 1: Parse Scope
 
 **Argument:** `$ARGUMENTS` (blank = ask user via AskUserQuestion)

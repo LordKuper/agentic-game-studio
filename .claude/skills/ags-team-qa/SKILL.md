@@ -14,6 +14,18 @@ the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Active `.ags/project/epics/[slug]/EPIC.md` | `/ags-create-epics` | STOP. "No active epic." |
+| Stories under epic | `/ags-create-stories` | STOP. "No stories. Run `/ags-create-stories [slug]`." |
+| `tests/` with framework | `/ags-test-setup` | STOP. "Test framework missing. Run `/ags-test-setup`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Team Composition
 
 - **qa-lead** — QA strategy, test plan generation, story classification, sign-off report

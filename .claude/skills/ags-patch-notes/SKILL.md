@@ -3,9 +3,21 @@ name: ags-patch-notes
 description: "Generate player-facing patch notes from git history, sprint data, and internal changelogs. Translates developer language into clear, engaging player communication."
 argument-hint: "[version] [--style brief|detailed|full]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash
+allowed-tools: Read, Glob, Grep, Write, Bash, AskUserQuestion
 model: haiku
 agent: producer
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Git repository with ≥1 commit | dev work | STOP. "No git history." |
+| `.ags/templates/patch-notes-template.md` | template | STOP. "Patch notes template missing." |
+| Closed epic(s) in `.ags/project/epics/index.md` | `/ags-create-epics` + `/ags-gate-check epic-done` | WARN: notes grouped by commits only, not epic outcomes. |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
 ---
 
 ## Phase 1: Parse Arguments

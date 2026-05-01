@@ -3,7 +3,19 @@ name: ags-tech-debt
 description: "Track, categorize, and prioritize technical debt across the codebase. Scans for debt indicators, maintains a debt register, and recommends repayment scheduling."
 argument-hint: "[scan|add|prioritize|report]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Engine source code present | engine init | STOP. "No engine source — nothing to scan." |
+| `docs/tech-debt-register.md` | this skill (`scan` mode) | If missing in `add`/`prioritize`/`report` modes: STOP. "Register missing. Run `/ags-tech-debt scan` to bootstrap." |
+| `.ags/project/stubs.md` (optional) | `/ags-stub-track`, `/ags-epic-contracts` | WARN: stub debt category empty if absent. |
+
+If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
+
 ---
 
 ## Phase 1: Parse Subcommand

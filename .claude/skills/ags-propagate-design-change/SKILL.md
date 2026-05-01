@@ -16,6 +16,18 @@ ADR, compares ADR assumptions against current GDD, guides user through resolutio
 
 ---
 
+## 0. Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Changed GDD path argument | user | STOP. "Usage: `/ags-propagate-design-change <path-to-changed-gdd>`." |
+| `design/architecture/architecture.md` | `/ags-create-architecture` | STOP. "No architecture doc. Run `/ags-create-architecture`." |
+| `.ags/project/epics/index.md` | `/ags-create-epics` | WARN: cannot map change to epics. |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## 1. Validate Argument
 
 A GDD path argument is **required**. If missing, fail with:

@@ -3,7 +3,18 @@ name: ags-estimate
 description: "Estimates task effort by analyzing complexity, dependencies, historical velocity, and risk factors. Produces a structured estimate with confidence levels."
 argument-hint: "[task-description]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep
+allowed-tools: Read, Glob, Grep, AskUserQuestion
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Task description (argument) | user | STOP. "Usage: `/ags-estimate <task-description>` or path to story file." |
+| `.ags/project/epics/` for velocity baseline | `/ags-create-epics` | WARN: estimate without historical baseline is rougher. |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
 ---
 
 ## Phase 1: Understand the Task

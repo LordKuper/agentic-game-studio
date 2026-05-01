@@ -16,6 +16,17 @@ the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Active `.ags/project/epics/[slug]/EPIC.md` covering combat | `/ags-create-epics` | STOP. "No active combat epic. Run `/ags-create-epics`." |
+| `design/gdd/combat.md` (or equivalent) | `/ags-design-system` | STOP. "No combat GDD. Run `/ags-design-system combat`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Team Composition
 - **game-designer** — Design the mechanic, define formulas and edge cases
 - **gameplay-programmer** — Implement the core gameplay code

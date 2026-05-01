@@ -3,10 +3,21 @@ name: ags-launch-checklist
 description: "Complete launch readiness validation covering every department: code, content, store, marketing, community, infrastructure, legal, and go/no-go sign-offs."
 argument-hint: "[launch-date or 'dry-run']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 ---
 
 > **Explicit invocation only**: This skill should only run when the user explicitly requests it with `/ags-launch-checklist`. Do not auto-invoke based on context matching.
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/project/stage.md` (Phase = release) | `/ags-gate-check release` | STOP. "Not in release phase. Run `/ags-gate-check release` first." |
+| Release checklist artifact | `/ags-release-checklist` | STOP. "Run `/ags-release-checklist` first to gate release-readiness." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
 
 ## Phase 1: Parse Arguments
 

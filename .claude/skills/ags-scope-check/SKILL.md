@@ -3,7 +3,7 @@ name: ags-scope-check
 description: "Analyze a feature or sprint for scope creep by comparing current scope against the original plan. Flags additions, quantifies bloat, and recommends cuts. Use when user says 'any scope creep', 'scope review', 'are we staying in scope'."
 argument-hint: "[feature-name or sprint-N]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash
+allowed-tools: Read, Glob, Grep, Bash, AskUserQuestion
 model: haiku
 ---
 
@@ -15,6 +15,17 @@ Compares original planned scope against current state to detect, quantify, and t
 scope creep.
 
 **Argument:** `$ARGUMENTS[0]` — feature name, sprint number, or milestone name.
+
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Epic-slug argument or active epic in `stage.md` | user / `/ags-create-epics` | STOP. "No target epic. Provide [epic-slug] or run `/ags-create-epics`." |
+| `.ags/project/epics/[slug]/EPIC.md` | `/ags-create-epics` | STOP. "Epic not found. Run `/ags-create-epics`." |
+
+If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
 
 ---
 

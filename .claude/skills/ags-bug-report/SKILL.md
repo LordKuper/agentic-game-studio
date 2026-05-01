@@ -3,7 +3,18 @@ name: ags-bug-report
 description: "Creates a structured bug report from a description, or analyzes code to identify potential bugs. Ensures every bug report has full reproduction steps, severity assessment, and context."
 argument-hint: "[description] | analyze [path-to-file]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/project/bugs/` directory | this skill (auto-create) | Auto-create — not a STOP. |
+| `CLAUDE.md` | template | STOP. "Project not initialized. Run `/ags-start`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
 ---
 
 ## Phase 1: Parse Arguments

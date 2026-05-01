@@ -3,7 +3,7 @@ name: ags-skill-test
 description: "Validate skill files for structural compliance and behavioral correctness. Three modes: static (linter), spec (behavioral), audit (coverage report)."
 argument-hint: "static [skill-name | all] | spec [skill-name] | category [skill-name | all] | audit"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 ---
 
 # Skill Test
@@ -18,6 +18,16 @@ Validates `.claude/skills/*/SKILL.md` for structural compliance + behavioral cor
 | `spec` | `/ags-skill-test spec [name]` | Behavioral verifier — evaluates assertions in test spec | Medium (~5k/skill) |
 | `category` | `/ags-skill-test category [name\|all]` | Category rubric — checks skill against category-specific metrics | Low (~2k/skill) |
 | `audit` | `/ags-skill-test audit` | Coverage report — skills, agent specs, last test dates | Low (~3k total) |
+
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Target skill argument or `.claude/skills/` directory | user / template | STOP. "No target skill. Usage: `/ags-skill-test <skill-name>` or `--all`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

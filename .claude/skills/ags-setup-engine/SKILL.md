@@ -8,6 +8,17 @@ allowed-tools: Read, Glob, Grep, Write, Edit, WebSearch, WebFetch, Task, AskUser
 
 When this skill is invoked:
 
+## 0. Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/templates/t_engine.md` | template | STOP. "Engine template missing — broken install." |
+| `CLAUDE.md` | template | STOP. "Project not initialized. Run `/ags-start`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## 1. Parse Arguments
 
 The studio is Unity-only. The skill supports the following modes:

@@ -3,7 +3,7 @@ name: ags-test-setup
 description: "Scaffold the test framework and CI/CD pipeline for the project's engine. Creates the tests/ directory structure, engine-specific test runner configuration, and GitHub Actions workflow. Run once during Technical Setup phase before the first sprint begins."
 argument-hint: "[force]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash, Write
+allowed-tools: Read, Glob, Grep, Bash, Write, AskUserQuestion
 ---
 
 # Test Setup
@@ -15,6 +15,16 @@ Run once during Technical Setup, before any implementation. Framework at sprint
 start: 30 minutes. Framework at sprint four: 3 sprints.
 
 **Output:** `tests/` directory structure + `.github/workflows/tests.yml`
+
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/rules/technical-preferences.md` (engine pinned) | `/ags-setup-engine` | STOP. "Engine not configured. Run `/ags-setup-engine`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

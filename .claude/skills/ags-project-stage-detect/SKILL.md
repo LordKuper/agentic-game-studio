@@ -3,7 +3,7 @@ name: ags-project-stage-detect
 description: "Automatically analyze project state, detect stage, identify gaps, and recommend next steps based on existing artifacts. Use when user asks 'where are we in development', 'what stage are we in', 'full project audit'."
 argument-hint: "[optional: role filter like 'programmer' or 'designer']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash, Write
+allowed-tools: Read, Glob, Grep, Bash, Write, AskUserQuestion
 model: haiku
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
@@ -13,6 +13,16 @@ model: haiku
 Scans project to determine current development stage, artifact completeness,
 and gaps. Useful for: starting with existing project, onboarding, pre-milestone
 check, or "where are we?"
+
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/rules/workflow-catalog.yaml` | template | STOP. "Workflow catalog missing — broken install." |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

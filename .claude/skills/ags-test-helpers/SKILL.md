@@ -3,7 +3,7 @@ name: ags-test-helpers
 description: "Generate engine-specific test helper libraries for the project's test suite. Reads existing test patterns and produces tests/helpers/ with assertion utilities, factory functions, and mock objects tailored to the project's systems. Reduces boilerplate in new test files."
 argument-hint: "[system-name | all | scaffold]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 ---
 
 # Test Helpers
@@ -18,6 +18,17 @@ more assertions.
 - After `/test-setup` scaffolds the framework (first time)
 - When multiple test files repeat the same setup boilerplate
 - When starting to write tests for a new system
+
+---
+
+## 0. Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `tests/` directory | `/ags-test-setup` | STOP. "Test framework not set up. Run `/ags-test-setup` first." |
+| `.ags/rules/technical-preferences.md` | `/ags-setup-engine` | STOP. "Engine not configured." |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

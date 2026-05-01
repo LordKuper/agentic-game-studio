@@ -3,8 +3,19 @@ name: ags-ux-review
 description: "Validates a UX spec, HUD design, or interaction pattern library for completeness, accessibility compliance, GDD alignment, and implementation readiness. Produces APPROVED / NEEDS REVISION / MAJOR REVISION NEEDED verdict with specific gaps."
 argument-hint: "[file-path or 'all' or 'hud' or 'patterns']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep
+allowed-tools: Read, Glob, Grep, AskUserQuestion
 agent: ux-designer
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Target UX spec under `design/ux/*.md` | `/ux-design` | STOP. "No UX spec found. Run `/ux-design [screen]` first." |
+| `design/accessibility-requirements.md` | foundation phase | STOP. "Accessibility tier not committed. Run `/ags-gate-check foundation`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
 ---
 
 ## Overview

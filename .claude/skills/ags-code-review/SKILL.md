@@ -3,8 +3,21 @@ name: ags-code-review
 description: "Performs an architectural and quality code review on a specified file or set of files. Checks for coding standard compliance, architectural pattern adherence, SOLID principles, testability, and performance concerns."
 argument-hint: "[path-to-file-or-directory]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash, Task
+allowed-tools: Read, Glob, Grep, Bash, Task, AskUserQuestion
 agent: lead-programmer
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Target file/directory argument | user | STOP. "No target. Usage: `/ags-code-review path/to/file.cs`." |
+| Target file exists and is readable | — | STOP. "Path `[X]` not found." |
+| `CLAUDE.md` (project standards) | template | STOP. "Project not initialized. Run `/ags-start`." |
+| `design/architecture/control-manifest.md` (recommended) | `/ags-create-control-manifest` | WARN: review proceeds without rules sheet. Suggest `/ags-create-control-manifest seed`. |
+
+If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
+
 ---
 
 ## Phase 1: Load Target Files

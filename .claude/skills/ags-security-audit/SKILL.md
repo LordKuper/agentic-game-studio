@@ -3,7 +3,7 @@ name: ags-security-audit
 description: "Audit the game for security vulnerabilities: save tampering, cheat vectors, network exploits, data exposure, and input validation gaps. Produces a prioritised security report with remediation guidance. Run before any public release or multiplayer launch."
 argument-hint: "[full | network | save | input | quick]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash, Write, Task
+allowed-tools: Read, Glob, Grep, Bash, Write, Task, AskUserQuestion
 agent: lead-programmer
 ---
 
@@ -21,6 +21,17 @@ prioritised remediation plan.
 - When a security-related bug is reported
 
 **Output:** `.ags/project/security/security-audit-[date].md`
+
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Engine source code | engine init | STOP. "No engine source — nothing to audit." |
+| `CLAUDE.md` (project context) | template | STOP. "Project not initialized." |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

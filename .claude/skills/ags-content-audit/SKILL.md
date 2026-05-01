@@ -3,7 +3,7 @@ name: ags-content-audit
 description: "Audit GDD-specified content counts against implemented content. Identifies what's planned vs built."
 argument-hint: "[system-name | --summary | (no arg = full audit)]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 agent: producer
 ---
 
@@ -13,6 +13,18 @@ Parse the argument:
 - No argument → full audit across all systems
 - `[system-name]` → audit that single system only
 - `--summary` → summary table only, no file write
+
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/gdd/systems-index.md` | `/ags-map-systems` | STOP. "No systems map. Run `/ags-map-systems`." |
+| ≥1 GDD under `design/gdd/*.md` | `/ags-design-system` | STOP. "No GDDs. Run `/ags-design-system [system]`." |
+| Engine source root | engine init | WARN: planned counts only, no built counts. |
+
+If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
 
 ---
 

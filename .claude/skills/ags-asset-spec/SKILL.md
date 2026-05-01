@@ -17,6 +17,17 @@ If no argument is provided, check whether `design/assets/asset-manifest.md` exis
 
 ---
 
+## Phase 0a: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/art/ags-art-bible.md` | `/ags-art-bible` | STOP. "No art bible. Run `/ags-art-bible` first." |
+| Target system/level/character GDD | `/ags-design-system` | STOP. "No GDD for target. Run `/ags-design-system [name]` first." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Phase 0: Parse Arguments
 
 Extract:

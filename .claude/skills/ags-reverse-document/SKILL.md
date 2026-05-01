@@ -3,7 +3,7 @@ name: ags-reverse-document
 description: "Generate design or architecture documents from existing implementation. Works backwards from code to create missing planning docs."
 argument-hint: "<type> <path> (e.g., 'design Assets/Scripts/Gameplay/combat' or 'architecture Assets/Scripts/core')"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, AskUserQuestion
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
 
@@ -12,6 +12,17 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Bash
 Analyzes existing implementation (code, systems) and generates design or
 architecture documentation. Use when: built feature without design doc,
 inherited undocumented codebase, or need to document "why" behind existing code.
+
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Engine source code present | engine init | STOP. "No engine source — nothing to reverse-document." |
+| Target source path argument | user | STOP. "Usage: `/ags-reverse-document <path>` or `--all`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

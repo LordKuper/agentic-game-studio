@@ -3,11 +3,22 @@ name: ags-changelog
 description: "Auto-generates a changelog from git commits, sprint data, and design documents. Produces both internal and player-facing versions."
 argument-hint: "[version|sprint-number]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash, Write
+allowed-tools: Read, Glob, Grep, Bash, Write, AskUserQuestion
 context: |
   !git log --oneline -30 2>/dev/null
   !git tag --list --sort=-v:refname 2>/dev/null | head -5
 model: haiku
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Git repository with ≥1 commit | `git init` + dev work | STOP. "No git history. Changelog needs commits." |
+| `.ags/project/epics/index.md` | `/ags-create-epics` | WARN: changelog grouped by commits only, not epics. |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
 ---
 
 ## Phase 1: Parse Arguments

@@ -3,7 +3,7 @@ name: ags-soak-test
 description: "Generate a soak test protocol for extended play sessions. Defines what to observe, measure, and log during long play sessions to surface slow leaks, fatigue effects, and edge cases that only appear after sustained play. Primarily used in Polish and Release phases."
 argument-hint: "[duration: 30m | 1h | 2h | 4h] [focus: memory | stability | balance | all]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write
+allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 ---
 
 # Soak Test
@@ -24,6 +24,18 @@ Soak/endurance test = extended play session with observation goals. Unlike smoke
 - Polish phase — before `/ags-gate-check release`
 - After fixing memory/stability issue (regression soak)
 - When extended play has not been formally tracked
+
+---
+
+## 0. Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/rules/technical-preferences.md` | `/ags-setup-engine` | STOP. "Performance budgets not configured. Run `/ags-setup-engine`." |
+| Playable build | dev work | STOP. "Soak test requires playable build." |
+| `design/gdd/game-concept.md` | `/ags-brainstorm` | WARN: protocol generic without concept context. |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

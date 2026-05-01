@@ -3,13 +3,25 @@ name: ags-skill-improve
 description: "Improve a skill using a test-fix-retest loop. Runs static checks, proposes targeted fixes, rewrites the skill, re-tests, and keeps or reverts based on score change."
 argument-hint: "[skill-name]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Bash
+allowed-tools: Read, Glob, Grep, Write, Bash, AskUserQuestion
 ---
 
 # Skill Improve
 
 Runs an improvement loop on a single skill:
 test → fix → retest → keep or revert.
+
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Target skill file argument | user | STOP. "No target. Usage: `/ags-skill-improve <skill-name>`." |
+| Target `.claude/skills/[name]/SKILL.md` exists | template | STOP. "Skill not found." |
+| `/ags-skill-test` available | template | STOP. "Test runner missing. Reinstall template." |
+
+If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 

@@ -3,8 +3,20 @@ name: ags-balance-check
 description: "Analyzes game balance data files, formulas, and configuration to identify outliers, broken progressions, degenerate strategies, and economy imbalances. Use after modifying any balance-related data or design. Use when user says 'balance report', 'check game balance', 'run a balance check'."
 argument-hint: "[system-name|path-to-data-file]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep
+allowed-tools: Read, Glob, Grep, AskUserQuestion
 agent: systems-designer
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/gdd/systems-index.md` | `/ags-map-systems` | STOP. "No systems map. Run `/ags-map-systems` first." |
+| Target system GDD `design/gdd/[system].md` | `/ags-design-system` | STOP. "GDD missing. Run `/ags-design-system [system]`." |
+| Balance data files for target system | manual / data pipeline | WARN: formulas-only analysis. Add data under `assets/data/` for richer report. |
+
+If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
+
 ---
 
 ## Phase 1: Identify Balance Domain

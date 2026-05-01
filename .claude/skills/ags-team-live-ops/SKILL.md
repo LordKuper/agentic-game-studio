@@ -16,6 +16,17 @@ the user with the subagent's proposals as selectable options. Write the agent's
 full analysis in conversation, then capture the decision with concise labels.
 The user must approve before moving to the next phase.
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Released build (post-launch) | release pipeline | STOP. "Live-ops requires a released build. Run `/ags-launch-checklist`." |
+| `design/gdd/game-concept.md` | `/ags-brainstorm` | STOP. "No game concept." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Team Composition
 - **game-designer** — Season structure, event cadence, retention mechanics, battle pass
 - **systems-designer** — Live economy balance, store rotation, currency pricing, pity timers

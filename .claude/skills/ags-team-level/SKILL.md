@@ -23,6 +23,18 @@ The user must approve before moving to the next step.
    - Read relevant narrative docs in `design/narrative/`
    - Read world-building docs for the area's region/faction
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/gdd/game-concept.md` | `/ags-brainstorm` | STOP. "No game concept. Run `/ags-brainstorm`." |
+| `design/art/ags-art-bible.md` | `/ags-art-bible` | STOP. "No art bible." |
+| Core systems GDDs (combat/movement) | `/ags-design-system` | STOP. "Core systems not designed. Run `/ags-design-system [system]`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## How to Delegate
 
 Use the Task tool to spawn each team member as a subagent:

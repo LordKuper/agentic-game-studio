@@ -3,10 +3,22 @@ name: ags-hotfix
 description: "Emergency fix workflow that bypasses normal sprint processes with a full audit trail. Creates hotfix branch, tracks approvals, and ensures the fix is backported correctly."
 argument-hint: "[bug-id or description]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task
+allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 ---
 
 > **Explicit invocation only**: Run only on `/ags-hotfix`. No auto-invoke.
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Git repository with main branch | dev work | STOP. "No git repo." |
+| Bug report describing the issue | `/ags-bug-report` | STOP. "No bug report. Run `/ags-bug-report` first to log the issue." |
+| Released build to patch (release tag or branch) | release pipeline | WARN: hotfix without released build is just a normal fix — consider `/ags-dev-story`. |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
 
 ## Phase 1: Assess Severity
 

@@ -9,6 +9,18 @@ agent: ux-designer
 
 When this skill is invoked:
 
+## 0. Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/art/ags-art-bible.md` | `/ags-art-bible` | STOP. "No art bible. Run `/ags-art-bible` first." |
+| `design/accessibility-requirements.md` | foundation phase | STOP. "Accessibility tier not committed. Run `/ags-gate-check foundation`." |
+| `.ags/rules/technical-preferences.md` (input method, platform) | `/ags-setup-engine` | STOP. "Engine not configured. Run `/ags-setup-engine`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## 1. Parse Arguments & Determine Mode
 
 Three authoring modes exist based on the argument:

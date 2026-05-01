@@ -28,6 +28,18 @@ rollback plan exists before anything ships. Mini-sprint — not hotfix, not full
 
 ---
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/project/stage.md` (Phase = release) | `/ags-gate-check release` | STOP. "Day-one patch only valid in release phase." |
+| Released build / golden master tag | release pipeline | STOP. "No released build identified." |
+| `.ags/project/bugs/` with reported post-launch issues | `/ags-bug-report` | STOP. "No post-launch bugs to patch. Confirm intent or run `/ags-bug-report`." |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Phase 1: Load Release Context
 
 Read:

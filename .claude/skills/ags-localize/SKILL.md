@@ -29,6 +29,17 @@ If no subcommand is provided, output usage and stop. Verdict: **FAIL** — missi
 
 ---
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Engine source code | engine init | STOP. "No engine source — nothing to scan for strings." |
+| `.ags/rules/technical-preferences.md` (locale list) | `/ags-setup-engine` | WARN: localize uses defaults if locale list missing. |
+
+If STOP triggers, exit verdict **BLOCKED**.
+
+---
+
 ## Phase 2A: Scan Mode
 
 Search `Assets/Scripts/` for hardcoded user-facing strings:

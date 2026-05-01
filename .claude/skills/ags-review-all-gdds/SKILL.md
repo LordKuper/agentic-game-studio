@@ -36,6 +36,18 @@ impossible to do per-GDD in isolation:
 
 ---
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/gdd/systems-index.md` | `/ags-map-systems` | STOP. "No systems map. Run `/ags-map-systems` first." |
+| ≥2 GDDs under `design/gdd/*.md` | `/ags-design-system` per system | STOP. "Need ≥2 system GDDs for cross-review. Run `/ags-design-system [system]` for more systems first." |
+| `design/gdd/game-concept.md` | `/ags-brainstorm` | STOP. "No game concept. Run `/ags-brainstorm` first." |
+
+If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
+
+---
+
 ## Phase 1: Load Everything
 
 ### Phase 1a — L0: Summary Scan (fast, low tokens)
