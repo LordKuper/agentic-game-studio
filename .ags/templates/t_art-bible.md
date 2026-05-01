@@ -16,12 +16,26 @@
 | --------- | ------ | ----------------- |
 | [Name] | [Game/Film/Art] | [Specific quality] |
 
+## Design Tokens (DESIGN.md)
+
+> **Authoritative tokens** (color hex, typography, spacing, radii, components) live in `design/art/DESIGN.md` per the [google-labs-code DESIGN.md spec](https://github.com/google-labs-code/design.md). This art bible references tokens by name; numeric values are NOT duplicated here.
+>
+> Lint gate: `npx @google/design.md lint design/art/DESIGN.md` MUST pass (errors=0) before this art bible is approved.
+
+- Token file: `design/art/DESIGN.md`
+- Last lint: [date / errors / warnings]
+
 ## Color Palette
 
+> Rationale only. Token names + reasoning. Hex values live in DESIGN.md `colors:`.
+
 ### Primary Palette
-| Name | Hex | Usage |
-| ---- | --- | ----- |
-| [Color Name] | #XXXXXX | [Where + when] |
+| Token | Role | Usage |
+| ----- | ---- | ----- |
+| `{colors.primary}` | [Role] | [Where + when] |
+| `{colors.secondary}` | [Role] | [Where + when] |
+| `{colors.tertiary}` | [Role] | [Where + when] |
+| `{colors.neutral}` | [Role] | [Where + when] |
 
 ### Emotional Color Mapping
 | Game State | Dominant Colors | Mood |
@@ -52,7 +66,15 @@
 [Tilesets, modularity, lighting, atmospheric effects, scale]
 
 ## UI Art Standards
-[Button styles, typography, icon style, menu layout, HUD density]
+
+> All token values (color, typography, spacing, radii, component styles) live in `design/art/DESIGN.md`. This section captures **rationale and visual language** — button styles, icon style, menu layout, HUD density — that explain *why* DESIGN.md tokens are shaped as they are.
+
+- Button family rationale: references `{components.button-primary}`, `{components.button-secondary}`, `{components.button-destructive}`
+- Typography rationale: references `{typography.h1}`, `{typography.body-md}`, `{typography.label-caps}`
+- Spacing rhythm rationale: references `{spacing.sm}`, `{spacing.md}`, `{spacing.lg}`
+- Radii / shape language: references `{rounded.sm}`, `{rounded.md}`
+- Iconography style: [stroke weight, fill rules, grid] — NOT in DESIGN.md scope; document here.
+- HUD density principle: [from `design/gdd/hud-design.md` § HUD Philosophy]
 
 ## VFX Standards
 [Particle style, screen effects, impact feedback, color coding]

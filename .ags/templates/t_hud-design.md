@@ -8,6 +8,7 @@
 > **Related GDDs**: [Every system exposing HUD info — `design/gdd/combat.md`, `progression.md`, `quests.md`]
 > **Accessibility Tier**: Basic | Standard | Comprehensive | Exemplary
 > **Style Reference**: [`design/gdd/ags-art-bible.md § HUD Visual Language`]
+> **Design Tokens**: `design/art/DESIGN.md` (DESIGN.md spec) — all visual values (color, typography, spacing, radii, component styles) referenced as `{colors.x}` / `{typography.y}` / `{spacing.z}` / `{components.w}`. No raw hex / px / pt values in this doc.
 
 > **Scope**: Overlays during active gameplay — health, ammo, minimap, quest, subtitles, damage numbers, toasts. Menus/pause/inventory/dialogs → `ux-spec.md`. Test: appears while player controls character → here.
 

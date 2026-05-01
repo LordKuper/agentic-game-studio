@@ -52,6 +52,12 @@ If the file does not exist, this is a fresh authoring session — proceed normal
 
 Read `.ags/rules/technical-preferences.md` if it exists — extract performance budgets and engine for asset standard constraints.
 
+Read `.ags/rules/design-system.md` — DESIGN.md (https://github.com/google-labs-code/design.md) is the canonical token format. Token-bearing sections of the art bible (Color Palette, UI Visual Language, anything with hex / typography / spacing values) reference `design/art/DESIGN.md` rather than duplicating values.
+
+Glob `design/art/DESIGN.md`:
+- If exists — read it, extract token names, present summary to user.
+- If absent — flag: a DESIGN.md companion file MUST be authored alongside the bible. Co-author it during Sections 2 (Color Palette) and 6 (UI Visual Language). After authoring, run `npx @google/design.md lint design/art/DESIGN.md` and report errors=0 before declaring those sections complete.
+
 ---
 
 ## Phase 1: Framing

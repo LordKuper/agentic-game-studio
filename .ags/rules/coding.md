@@ -26,6 +26,7 @@ Rules for writing and editing code. All code in English.
 - Gameplay values (balance, tuning, content) live in external config files.
 - Never hardcode gameplay values in code.
 - Mods and designers tweak data without code changes.
+- **UI visual values** (color, typography, spacing, radii, components) live in `design/art/DESIGN.md` per the DESIGN.md spec — see `.ags/rules/design-system.md`. UI code binds to tokens; never hardcode hex / px / pt literals.
 
 ## 5. Engine API reference
 

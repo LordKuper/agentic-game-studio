@@ -27,6 +27,9 @@ See `.ags/rules/collaboration.md`.
 ## Coding Rules
 @.ags/rules/coding.md
 
+## Design System
+@.ags/rules/design-system.md
+
 ## Agent Coordination
 @.ags/rules/coordination.md
 

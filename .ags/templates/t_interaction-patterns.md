@@ -7,7 +7,8 @@
 > **Engine**: Unity [version]
 > **UI Framework**: Unity UI Toolkit (preferred) or uGUI
 > **Related Documents**:
-> - `docs/ags-art-bible.md` — visual standards
+> - `design/art/DESIGN.md` — design tokens (DESIGN.md spec). All visual values referenced as `{colors.x}` / `{typography.y}` / `{spacing.z}` / `{components.w}`. No raw hex / px / pt in pattern specs.
+> - `docs/ags-art-bible.md` — visual rationale
 > - `design/accessibility-requirements.md` — accessibility commitments
 > - `docs/ux/ux-spec-[screen].md` — screen specs that reference patterns
 

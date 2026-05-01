@@ -14,6 +14,7 @@ When this skill is invoked:
 | Artifact | Created by | If missing |
 |---|---|---|
 | `design/art/ags-art-bible.md` | `/ags-art-bible` | STOP. "No art bible. Run `/ags-art-bible` first." |
+| `design/art/DESIGN.md` (DESIGN.md spec) | `/ags-art-bible` | STOP. "No design tokens file. Author `design/art/DESIGN.md` per .ags/rules/design-system.md before specing UI." |
 | `design/accessibility-requirements.md` | foundation phase | STOP. "Accessibility tier not committed. Run `/ags-gate-check foundation`." |
 | `.ags/rules/technical-preferences.md` (input method, platform) | `/ags-setup-engine` | STOP. "Engine not configured. Run `/ags-setup-engine`." |
 

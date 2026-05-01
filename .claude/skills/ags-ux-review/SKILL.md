@@ -13,6 +13,7 @@ agent: ux-designer
 |---|---|---|
 | Target UX spec under `design/ux/*.md` | `/ux-design` | STOP. "No UX spec found. Run `/ux-design [screen]` first." |
 | `design/accessibility-requirements.md` | foundation phase | STOP. "Accessibility tier not committed. Run `/ags-gate-check foundation`." |
+| `design/art/DESIGN.md` (DESIGN.md spec; lint must pass) | `/ags-art-bible` | STOP. "No DESIGN.md tokens. Author per .ags/rules/design-system.md and lint with `npx @google/design.md lint`." |
 
 If STOP triggers, exit verdict **BLOCKED**.
 

@@ -7,6 +7,7 @@
 > **Platform Target**: [PC | Console | Mobile | All]
 > **Related GDDs**: [GDD sections — e.g., `design/gdd/inventory.md § UI Requirements`]
 > **Related ADRs**: [e.g., `ADR-0012: UI Framework Selection`]
+> **Design Tokens**: `design/art/DESIGN.md` (DESIGN.md spec) — colors, typography, spacing, radii, component styles referenced as `{colors.x}` / `{typography.y}` / `{spacing.z}` / `{components.w}`. No raw hex / px / pt values in this spec.
 > **Related UX Specs**: [Sibling/parent screens]
 > **Accessibility Tier**: Basic | Standard | Comprehensive | Exemplary
 
