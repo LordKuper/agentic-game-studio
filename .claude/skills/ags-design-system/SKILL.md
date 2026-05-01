@@ -8,6 +8,26 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion, TodoWrite
 
 When this skill is invoked:
 
+## 0. Prerequisites
+
+Verify required artifacts before starting. STOP on first missing item with redirect.
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/gdd/game-concept.md` (no `{{...}}`) | `/ags-brainstorm` | STOP. "No game concept. Run `/ags-brainstorm` first." |
+| `design/gdd/systems-index.md` | `/ags-map-systems` | STOP. "No systems map. Run `/ags-map-systems` first — design needs a system catalog." |
+
+For **revise mode** additionally:
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Existing `design/gdd/[system].md` for the system being revised | prior `/ags-design-system` run | STOP. "Cannot revise — no existing GDD for [system]. Use new mode instead." |
+| Active `EPIC.md` listing the system with `mode=revise` | `/ags-create-epics` | STOP. "Revise mode requires an active epic with `mode=revise` for this system." |
+
+If any STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
+
+---
+
 ## 1. Parse Arguments & Validate
 
 Resolve the review mode (once, store for all gate spawns this run):
@@ -29,9 +49,18 @@ A system name or retrofit path is **required**. If missing:
    > Or to fill gaps in an existing GDD: `/ags-design-system retrofit design/gdd/[system-name].md`
    > No systems index found. Run `/ags-map-systems` first to map your systems and get the design order."
 
-**Detect retrofit mode:**
-If the argument starts with `retrofit` or the argument is a file path to an
-existing `.md` file in `design/gdd/`, enter **retrofit mode**:
+**Detect mode:**
+
+- **revise mode** — argument starts with `revise` (e.g. `/ags-design-system revise [system-name]`) or active epic in `.ags/project/stage.md` lists this system with `mode=revise` in `EPIC.md`. Existing GDD is extended with new sections or modified sections per epic scope. Diff and impact captured in `EPIC.md` Existing System Changes.
+- **retrofit mode** — argument starts with `retrofit` or the argument is a file path to an existing `.md` file in `design/gdd/`. Used to fill placeholder sections in an old/incomplete GDD (not tied to an epic).
+- **new mode** (default) — author a fresh GDD for a system that has no doc yet.
+
+For revise mode, additionally:
+1. Read `EPIC.md` Existing System Changes section for change scope.
+2. Treat affected GDD sections as the only sections to walk through.
+3. After writing, append diff summary to `EPIC.md` and a decision-log entry.
+
+For retrofit mode:
 
 1. Read the existing GDD file.
 2. Identify which of the 8 required sections are present (scan for section headings).

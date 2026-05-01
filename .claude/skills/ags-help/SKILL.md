@@ -3,9 +3,9 @@ name: ags-help
 description: "Analyzes what is done and the users query and offers advice on what to do next. Use if user says what should I do next or what do I do now or I'm stuck or I don't know what to do"
 argument-hint: "[optional: what you just finished, e.g. 'finished design-review' or 'stuck on ADRs']"
 user-invocable: true
-allowed-tools: Read, Glob, Grep
+allowed-tools: Read, Glob, Grep, AskUserQuestion
 context: |
-  !echo "=== Live Project State ===" && echo "Stage: $(cat .ags/project/stage.txt 2>/dev/null | tr -d '[:space:]' || echo 'not set')" && echo "Latest sprint: $(ls -t .ags/project/sprints/*.md 2>/dev/null | head -1 || echo 'none')" && echo "Session state: $(head -5 .ags/project/state.md 2>/dev/null || echo 'none')"
+  !echo "=== Live Project State ===" && echo "Stage:" && head -10 .ags/project/stage.md 2>/dev/null || echo 'not set' && echo "Epics index:" && head -5 .ags/project/epics/index.md 2>/dev/null || echo 'no epics yet' && echo "Session state:" && head -5 .ags/project/state.md 2>/dev/null || echo 'none'
 model: haiku
 ---
 
@@ -14,6 +14,17 @@ model: haiku
 Read-only — reports findings, writes nothing.
 
 Lightweight orientation. For full gap analysis, use `/ags-project-stage-detect`.
+
+---
+
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/rules/workflow-catalog.yaml` | shipped with template | STOP. "Workflow catalog missing — broken install. Reinstall template." |
+| `.ags/project/state.md` | /ags-start | "No active session. Run /ags-start to bootstrap." Then continue with degraded output (catalog-only). |
+
+`stage.md`, `epics/index.md`, `EPIC.md`, `stubs.md` are optional — absence simply means earlier phase. Do not block.
 
 ---
 
@@ -45,20 +56,13 @@ Show only if at least one uncataloged skill exists. Limit to 10 most relevant fo
 
 In order:
 
-1. **Read `.ags/project/stage.txt`** — if exists, authoritative. Map to catalog phase key:
-   - "Concept" → `concept`
-   - "Systems Design" → `systems-design`
-   - "Technical Setup" → `technical-setup`
-   - "Pre-Production" → `pre-production`
-   - "Production" → `production`
-   - "Polish" → `polish`
-   - "Release" → `release`
+1. **Read `.ags/project/stage.md`** — if exists, authoritative. Parse the metadata table for `Phase` row. Accepted values: `concept`, `foundation`, `production`, `polish`, `release`. Also extract `Active Epic` value.
 
-2. **If stage.txt missing**, infer from artifacts (most-advanced wins):
-   - `Assets/Scripts/` 10+ files → `production`
-   - `.ags/project/stories/*.md` → `pre-production`
-   - `design/architecture/adr-*.md` → `technical-setup`
-   - `design/gdd/systems-index.md` → `systems-design`
+2. **If `stage.md` missing**, infer from artifacts (most-advanced wins):
+   - `.ags/project/epics/*/EPIC.md` with Status `done` → `production` (or `polish` if all MVP epics done — needs manual confirmation)
+   - `.ags/project/epics/index.md` exists → `production`
+   - `design/architecture/architecture.md` exists → `foundation`
+   - `design/gdd/systems-index.md` → `concept` (late)
    - `design/gdd/game-concept.md` → `concept`
    - Nothing → `concept`
 
@@ -92,16 +96,21 @@ If step has `artifact.note` (no glob): mark **MANUAL** — ask user.
 
 If step has no `artifact`: mark **UNKNOWN** — not trackable (e.g. repeatable work).
 
-### Special case: production phase — read `sprint-status.yaml`
+### Special case: production phase — read `epics/index.md` and active `EPIC.md`
 
-When phase is `production`, check `.ags/project/ags-sprint-status.yaml` before glob-based story checks. If exists, read directly:
+When phase is `production`, check `.ags/project/epics/index.md` before glob-based story checks. Parse the table:
 
-- `status: in-progress` → "currently active"
-- `status: ready-for-dev` → "next up"
-- `status: done` → complete count
-- `status: blocked` → blocker with `blocker` field
+- Rows with Status `done` → completed epics
+- Rows with Status `implementing` / `playtesting` → in progress
+- Rows with Status `planned` / `designing` → upcoming
 
-YAML authoritative. Skip glob check for `implement` and `story-done` steps.
+Then read the **active epic** from `stage.md` Active Epic field. Open `.ags/project/epics/[slug]/EPIC.md` and surface:
+
+- Acceptance Criteria checked count
+- Open stubs introduced by this epic (cross-ref `.ags/project/stubs.md`)
+- Stories status from `stories/` folder
+
+Index + active EPIC are authoritative for production progress. Skip glob check for `implement` and `story-done` catalog steps.
 
 ### Special case: `repeatable: true` (non-production)
 

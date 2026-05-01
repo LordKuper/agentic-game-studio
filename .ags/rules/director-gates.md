@@ -418,25 +418,28 @@ Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, pr
 
 ---
 
-### PR-SPRINT — Sprint Feasibility Review
+### PR-EPIC-DONE — Epic Closure Review
 
-**Trigger**: Before finalising sprint plan (`/ags-sprint-plan`), and after any mid-sprint scope change
+**Trigger**: At `/ags-gate-check epic-done` — closes a single epic before advancing to the next iteration. Spawned in `lean` mode (only PR director); in `full` mode CD + TD + AD also spawn via PHASE-GATE patterns.
 
 **Context to pass**:
-- Proposed sprint story list (titles, estimates, dependencies)
-- Team capacity (hours available)
-- Current sprint backlog debt (if any)
-- Milestone constraints
+- Path to closing `EPIC.md`
+- Acceptance Criteria check counts (checked / total)
+- Story status counts under `epics/[slug]/stories/`
+- Stubs introduced by this epic vs Closed/Migrated counts (from `.ags/project/stubs.md`)
+- Bugs filed against this epic with severities
+- Linked playtest reports
+- Retrospective filled (yes/no)
 
 **Prompt**:
-> "Review this sprint plan for feasibility. Is the story load realistic for the
-> available capacity? Are stories correctly ordered by dependency? Are there hidden
-> dependencies between stories that could block the sprint mid-way? Are any stories
-> underestimated given their technical complexity? Return REALISTIC (plan is
-> achievable), CONCERNS [specific risks], or UNREALISTIC [sprint must be
-> descoped — identify which stories to defer]."
+> "Review this epic for production-ready closure. Is the playable slice complete
+> end-to-end? Are all stubs introduced by this epic resolved (closed in code, or
+> explicitly migrated with approval)? Are open bugs at S3+ acceptable to defer, or
+> do they block close? Was the retrospective meaningful — did it capture surprises
+> and follow-ups? Return READY (epic closes cleanly), CONCERNS [specific items to
+> address but epic may close], or NOT READY [hard blockers — close blocked]."
 
-**Verdicts**: REALISTIC / CONCERNS / UNREALISTIC
+**Verdicts**: READY / CONCERNS / NOT READY
 
 ---
 
@@ -462,28 +465,27 @@ Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, pr
 
 ---
 
-### PR-EPIC — Epic Structure Feasibility Review
+### PR-EPIC — Epic Plan Feasibility Review
 
-**Trigger**: After epics defined by `/ags-create-epics`, before stories broken out — validates epic structure producible before `/ags-create-stories` invoked
+**Trigger**: After `/ags-create-epics` defines a vertical-slice epic, before contracts/design/stories invoked. Validates epic scope and rationale.
 
 **Context to pass**:
-- Epic definition file paths (all epics just created)
-- Epic index path (`.ags/project/epics/index.md`)
-- Milestone timeline and target dates
-- Team capacity (solo / small team / size)
-- Layer being epiced (Foundation / Core / Feature / etc.)
+- Path to new `EPIC.md`
+- Systems in scope with modes (new / revise / stub)
+- Rationale (user-provided)
+- Open Stubs count from prior epics (.ags/project/stubs.md)
+- Existing epic count (from `epics/index.md`)
+- Milestone timeline if relevant
 
 **Prompt**:
-> "Review this epic structure for production feasibility before story breakdown
-> begins. Are the epic boundaries scoped appropriately — could each epic realistically
-> complete before a milestone deadline? Are epics correctly ordered by system
-> dependency — does any epic require another epic's output before it can start?
-> Are any epics underscoped (too small, should merge) or overscoped (too large,
-> should split into 2-3 focused epics)? Are the Foundation-layer epics scoped to
-> allow Core-layer epics to begin at the start of the next sprint after Foundation
-> completes? Return REALISTIC (epic structure is producible), CONCERNS [specific
-> structural adjustments before stories are written], or UNREALISTIC [epics must
-> be split, merged, or reordered — story breakdown cannot begin until resolved]."
+> "Review this epic for vertical-slice feasibility. Is the system count appropriate
+> (1-3 systems)? Are mode assignments (new / revise / stub) realistic given existing
+> stubs and dependencies? Could this epic produce a playable slice end-to-end, or
+> does it depend on systems that are not yet stubbed? Is the rationale specific and
+> tied to a concrete risk burned down or playable state produced? Are any prior
+> stubs introduced 3+ epics ago left open without migration? Return REALISTIC,
+> CONCERNS [specific structural adjustments], or UNREALISTIC [epic must be split,
+> merged, or rescoped before contracts/design begins]."
 
 **Verdicts**: REALISTIC / CONCERNS / UNREALISTIC
 
@@ -640,7 +642,7 @@ Invoked by orchestration skills and senior skills when domain specialist's feasi
 
 ### QL-STORY-READY — QA Lead Story Readiness Check
 
-**Trigger**: Before story accepted into sprint — invoked by `/ags-create-stories`, `/ags-story-readiness`, `/ags-sprint-plan` during story selection
+**Trigger**: Before story accepted into sprint — invoked by `/ags-create-stories`, `/ags-story-readiness`, `/ags-create-epics` during story selection
 
 **Context to pass**:
 - Story file path

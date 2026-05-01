@@ -196,7 +196,7 @@ End with: "Run `/ags-content-audit` without `--summary` to write the full report
 After audit, recommend highest-value follow-up actions:
 
 - System `NOT STARTED` + MVP-tagged → `/ags-design-system [name]` to add missing content counts before implementation.
-- Total gap >50% → `/ags-sprint-plan` to allocate content work across sprints.
+- Total gap >50% → `/ags-create-epics` to allocate content work across sprints.
 - Backlog stories needed → `/ags-create-stories [epic-slug]` for each HIGH PRIORITY gap.
 - `--summary` used → `/ags-content-audit` (no flag) to write full report to `docs/`.
 

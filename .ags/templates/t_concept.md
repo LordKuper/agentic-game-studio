@@ -279,4 +279,4 @@ Equally important — prevent scope creep. Every "no" protects "yes".
 - [ ] Decompose into systems (`/ags-map-systems`)
 - [ ] Create first ADR (`/ags-architecture-decision`)
 - [ ] Validate core loop (`/ags-playtest-report`)
-- [ ] Plan first milestone (`/ags-sprint-plan new`)
+- [ ] Plan first milestone (`/ags-create-epics new`)

@@ -21,7 +21,7 @@ See `.ags/rules/director-gates.md` for the full check pattern.
 
 Read the milestone definition from `.ags/project/milestones/`. If the argument is `current`, use the most recently modified milestone file.
 
-Read all sprint reports for sprints within this milestone from `.ags/project/sprints/`.
+Read all sprint reports for sprints within this milestone from `.ags/project/epics/`.
 
 ---
 
@@ -136,4 +136,4 @@ If no, stop here. Verdict: **BLOCKED** — user declined write.
 ## Phase 5: Next Steps
 
 - Run `/ags-gate-check` for a formal phase gate verdict if this milestone marks a development phase boundary.
-- Run `/ags-sprint-plan` to adjust the next sprint based on the scope recommendations above.
+- Run `/ags-create-epics` to adjust the next sprint based on the scope recommendations above.

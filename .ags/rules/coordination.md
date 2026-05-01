@@ -154,17 +154,16 @@ When orchestrating multiple independent agents:
 
 ## Workflow Patterns
 
-### New Feature
-creative-director (vision check) → game-designer (spec) → producer (schedule) → lead-programmer (architecture) → specialist (implementation) → technical-artist + narrative-director + audio-director (as needed) → qa-lead (test) → lead-programmer (review) → producer (close).
+### Epic Cycle (vertical slice)
+producer (epic-plan from systems-index, `/ags-create-epics`) → game-designer (GDD sections for in-scope systems) + lead-programmer (ADR for epic) → specialist (impl + stubs marked `// TODO(epic-[id])`) → qa-lead (playtest, bug triage) → directors (lean gate `/ags-gate-check epic-done`) → producer (close in `epics/index.md`, append to `decisions-log.md`, retro via `/ags-epic-retro`).
+
+Loop: next epic until feature-complete → polish phase.
 
 ### Bug Fix
 qa-lead (report + triage) → producer (assign) → lead-programmer (root cause) → specialist (fix) → lead-programmer (review) → qa-lead (verify + regression).
 
 ### Balance Adjustment
 producer (identify) → game-designer (evaluate vs intent) → systems-designer (model) → game-designer (approve) → data update → qa-lead (regression) → producer (monitor).
-
-### Sprint Cycle
-producer (plan) → all agents execute → producer (daily status) → qa-lead + lead-programmer (continuous review) → producer (retro + next plan).
 
 ### Milestone Checkpoint
 producer (review) → directors (creative/technical/quality reviews) → producer (facilitate go/no-go) → directors (scope decisions) → producer (document).
@@ -187,3 +186,4 @@ producer (declare RC) → release-manager (cut branch + checklist) → qa-lead (
 - **Shadow decisions**: agreements without written record
 - **Monolithic tasks**: assigning >3-day work without breakdown
 - **Assumption-based implementation**: guessing instead of asking spec owner
+- **Stub debt accumulation**: closing an epic with open stubs without migration entry — gate blocks close

@@ -34,11 +34,11 @@ Always provide full context in each agent's prompt (story file paths, QA plan pa
 Before doing anything else, gather the full scope:
 
 1. Detect the current sprint or feature scope from the argument:
-   - If argument is a sprint identifier (e.g., `sprint-03`): read all story files in `.ags/project/sprints/[sprint]/`
+   - If argument is a sprint identifier (e.g., `sprint-03`): read all story files in `.ags/project/epics/[sprint]/`
    - If argument is `feature: [system-name]`: glob story files tagged for that system
-   - If no argument: read `.ags/project/state.md` and `.ags/project/ags-sprint-status.yaml` (if present) to infer the active sprint
+   - If no argument: read `.ags/project/state.md` and `.ags/project/epics/index.md` (if present) to infer the active sprint
 
-2. Read `.ags/project/stage.txt` to confirm the current project phase.
+2. Read `.ags/project/stage.md` to confirm the current project phase.
 
 3. Count stories found and report to the user:
    > "QA cycle starting for [sprint/feature]. Found [N] stories. Current stage: [stage]. Ready to begin QA strategy?"

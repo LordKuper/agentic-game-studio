@@ -280,14 +280,14 @@ Use `AskUserQuestion` to close with context-aware next steps:
 
 Check:
 - Are there other epics in `.ags/project/epics/` without stories yet? List them.
-- Is this the last epic? If so, include `/ags-sprint-plan` as an option.
+- Is this the last epic? If so, include `/ags-create-epics` as an option.
 
 Widget:
 - Prompt: "[N] stories written to `.ags/project/epics/[epic-slug]/`. What next?"
 - Options (include all that apply):
   - `[A] Start implementing — run /ags-story-readiness [first-story-path]` (Recommended)
   - `[B] Create stories for [next-epic-slug] — run /ags-create-stories [slug]` (only if other epics have no stories yet)
-  - `[C] Plan the sprint — run /ags-sprint-plan` (only if all epics have stories)
+  - `[C] Plan the sprint — run /ags-create-epics` (only if all epics have stories)
   - `[D] Stop here for this session`
 
 Note in output: "Work through stories in order — each story's `Depends on:` field tells you what must be DONE before you can start it."

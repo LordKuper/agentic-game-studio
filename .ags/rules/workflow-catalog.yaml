@@ -1,31 +1,37 @@
-﻿# Workflow Catalog
+# Workflow Catalog
 # Used by /ags-help to determine where a user is and what comes next.
 #
 # Artifact checks:
-#   glob: file glob pattern вЂ” complete if в‰Ґ1 file matches (or min_count)
+#   glob: file glob pattern — complete if ≥1 file matches (or min_count)
 #   pattern: text pattern that must appear in the file (checked after glob)
 #   min_count: minimum matching files required (default: 1)
 #   note: human-readable fallback when completion can't be auto-detected
 #
-# required: true в†’ blocks progression to next phase (shown as REQUIRED)
-# required: false в†’ optional enhancement (shown as OPTIONAL)
-# repeatable: true в†’ runs multiple times (one per system, story, etc.)
+# required: true → blocks progression to next phase (shown as REQUIRED)
+# required: false → optional enhancement (shown as OPTIONAL)
+# repeatable: true → runs multiple times (one per system, story, epic, etc.)
 #
-# Phase gates (/ags-gate-check): verdicts are ADVISORY вЂ” they guide the decision
+# Phase gates (/ags-gate-check): verdicts are ADVISORY — they guide the decision
 # but never hard-block advancement. The user always decides whether to proceed.
+#
+# Iteration model: epic = vertical slice. An epic may:
+#  - introduce 1-3 NEW systems (mode: new)
+#  - REVISE existing systems (mode: revise) — extend, refactor, rewire
+#  - STUB neighbor systems (mode: stub) — interface only, deferred impl
+# Production phase loops `per_epic_steps` until feature-complete.
 
 phases:
 
   concept:
     label: "Concept"
-    description: "Develop your game idea into a documented concept"
-    next_phase: systems-design
+    description: "Game idea, pillars, art direction, systems map"
+    next_phase: foundation
     steps:
       - id: brainstorm
         name: "Brainstorm"
         command: /ags-brainstorm
         required: false
-        description: "Explore the game concept using MDA, verb-first, and player psychology frameworks"
+        description: "Explore game concept using MDA, verb-first, player psychology frameworks"
 
       - id: engine-setup
         name: "Engine Setup"
@@ -34,7 +40,7 @@ phases:
         artifact:
           glob: ".ags/rules/technical-preferences.md"
           pattern: "Engine: [^[]"
-        description: "Configure engine, pin version, set naming conventions and performance budgets"
+        description: "Configure engine, pin version, naming conventions, perf budgets"
 
       - id: game-concept
         name: "Game Concept Document"
@@ -42,13 +48,13 @@ phases:
         required: true
         artifact:
           glob: "design/gdd/game-concept.md"
-        description: "Formalize concept with pillars, MDA analysis, and scope tiers"
+        description: "Formalize concept with pillars, MDA, scope tiers"
 
       - id: design-review-concept
         name: "Concept Review"
         command: /ags-design-review
         required: false
-        description: "Validate the game concept (recommended before proceeding)"
+        description: "Validate game concept (recommended before proceeding)"
 
       - id: art-bible
         name: "Art Bible"
@@ -56,7 +62,7 @@ phases:
         required: true
         artifact:
           glob: "design/art/ags-art-bible.md"
-        description: "Author the visual identity specification (9 sections). Uses the Visual Identity Anchor produced by /ags-brainstorm. Run after game concept is formed, before systems design."
+        description: "Visual identity specification (9 sections). Uses Visual Identity Anchor from /ags-brainstorm"
 
       - id: map-systems
         name: "Systems Map"
@@ -64,139 +70,41 @@ phases:
         required: true
         artifact:
           glob: "design/gdd/systems-index.md"
-        description: "Decompose concept into systems with dependency ordering and priority tiers"
+        description: "Decompose concept into systems with dependency ordering and priority tiers. Drives epic planning."
 
-  systems-design:
-    label: "Systems Design"
-    description: "Author a GDD for each system in the systems index"
-    next_phase: technical-setup
+      - id: gate-concept-to-foundation
+        name: "Gate: Concept → Foundation"
+        command: /ags-gate-check
+        required: true
+        description: "Phase gate validating concept completeness before foundation work"
+
+  foundation:
+    label: "Foundation"
+    description: "Minimum architecture skeleton, accessibility commitment, programmer rules, test scaffold — everything needed to start the first epic"
+    next_phase: production
     steps:
-      - id: design-system
-        name: "System GDDs"
-        command: /ags-design-system
-        required: true
-        repeatable: true
-        artifact:
-          note: "Check design/gdd/systems-index.md вЂ” each MVP system needs Status: Approved"
-        description: "Author per-system GDDs (guided, section-by-section). Run once per system."
-
-      - id: design-review
-        name: "Per-System Design Review"
-        command: /ags-design-review
-        required: true
-        repeatable: true
-        description: "Validate each GDD (8 required sections, no MAJOR REVISION verdict). Run per system."
-
-      - id: review-all-gdds
-        name: "Cross-GDD Review"
-        command: /ags-review-all-gdds
-        required: true
-        artifact:
-          glob: "design/gdd/gdd-cross-review-*.md"
-        description: "Holistic consistency check + design theory review across all GDDs simultaneously"
-
-      - id: consistency-check
-        name: "Consistency Check"
-        command: /ags-consistency-check
-        required: false
-        repeatable: true
-        description: "Scan all GDDs for contradictions, undefined references, and mechanic conflicts. Run after /ags-review-all-gdds, and again any time a GDD is added or revised mid-project."
-
-  technical-setup:
-    label: "Technical Setup"
-    description: "Architecture decisions, visual identity specification, accessibility foundations, engine validation"
-    next_phase: pre-production
-    steps:
-      - id: create-architecture
-        name: "Architecture Document"
+      - id: architecture-skeleton
+        name: "Architecture Skeleton"
         command: /ags-create-architecture
         required: true
         artifact:
           glob: "design/architecture/architecture.md"
-        description: "Author the master architecture document covering all systems"
-
-      - id: architecture-decision
-        name: "Architecture Decisions (ADRs)"
-        command: /ags-architecture-decision
-        required: true
-        repeatable: true
-        artifact:
-          glob: "design/architecture/adr-*.md"
-          min_count: 3
-        description: "Document key technical decisions as ADRs. Minimum 3 Foundation-layer ADRs required."
-
-      - id: architecture-review
-        name: "Architecture Review"
-        command: /ags-architecture-review
-        required: true
-        artifact:
-          glob: "design/architecture/architecture-review-*.md"
-        description: "Validate completeness, dependency ordering, engine compatibility"
-
-      - id: control-manifest
-        name: "Control Manifest"
-        command: /ags-create-control-manifest
-        required: true
-        artifact:
-          glob: "design/architecture/control-manifest.md"
-        description: "Flat programmer rules sheet generated from all Accepted ADRs"
+        description: "Master architecture skeleton — top-level layers, module boundaries, tech stack. ADRs accumulate per epic in production."
 
       - id: accessibility-doc
         name: "Accessibility Requirements"
         required: true
         artifact:
           glob: "design/accessibility-requirements.md"
-        description: "Commit accessibility tier (Basic/Standard/Comprehensive/Exemplary) and feature matrix. UX specs (Phase 4) reference this tier."
+        description: "Commit accessibility tier (Basic / Standard / Comprehensive / Exemplary) and feature matrix. Referenced by every epic with UX work."
 
-  pre-production:
-    label: "Pre-Production"
-    description: "UX specs, asset specs, define stories, validate fun"
-    next_phase: production
-    steps:
-      - id: asset-spec
-        name: "Asset Specs"
-        command: /ags-asset-spec
-        required: false
-        repeatable: true
-        artifact:
-          glob: "design/assets/asset-manifest.md"
-        description: "Generate per-asset visual specifications and AI generation prompts from approved GDDs and level docs. Run once per system/level/character."
-
-      - id: ux-design
-        name: "UX Specs (key screens)"
-        command: /ux-design
+      - id: control-manifest-seed
+        name: "Control Manifest (seed)"
+        command: /ags-create-control-manifest
         required: true
-        repeatable: true
         artifact:
-          glob: "design/ux/*.md"
-          min_count: 1
-        description: "Author UX specs for main menu, core gameplay HUD, and interaction patterns. Reads input method and platform from technical-preferences.md."
-
-      - id: ux-review
-        name: "UX Review"
-        command: /ux-review
-        required: true
-        description: "Validate all key screen UX specs for GDD alignment and accessibility tier compliance. Run before creating epics."
-
-      - id: create-epics
-        name: "Create Epics"
-        command: /ags-create-epics
-        required: true
-        repeatable: true
-        artifact:
-          glob: ".ags/project/epics/*/EPIC.md"
-          min_count: 1
-        description: "Translate GDDs + ADRs into epics вЂ” one per architectural module. Run per layer: /ags-create-epics layer: foundation, then /ags-create-epics layer: core"
-
-      - id: create-stories
-        name: "Create Stories"
-        command: /ags-create-stories
-        required: true
-        repeatable: true
-        artifact:
-          glob: ".ags/project/epics/**/*.md"
-          min_count: 2
-        description: "Break each epic into implementable story files. Run per epic: /ags-create-stories [epic-slug]"
+          glob: "design/architecture/control-manifest.md"
+        description: "Flat programmer rules sheet — initial seed. Refreshed periodically in production as ADRs accumulate."
 
       - id: test-setup
         name: "Test Framework Setup"
@@ -204,111 +112,203 @@ phases:
         required: false
         artifact:
           note: "Check tests/ directory for engine-specific test framework scaffold"
-        description: "Scaffold the test framework and CI pipeline once before the first sprint. Leads to /test-helpers for fixture generation, /ags-qa-plan per epic, and /ags-smoke-check per sprint."
+        description: "Scaffold test framework + CI once before first epic"
 
-      - id: sprint-plan
-        name: "First Sprint Plan"
-        command: /ags-sprint-plan
+      - id: gate-foundation-to-production
+        name: "Gate: Foundation → Production"
+        command: /ags-gate-check
         required: true
-        artifact:
-          glob: ".ags/project/sprints/sprint-*.md"
-          min_count: 1
-        description: "Plan the first sprint with prioritized stories from epics"
-
-      - id: vertical-slice
-        name: "Vertical Slice (playtested)"
-        command: /ags-playtest-report
-        required: true
-        artifact:
-          glob: ".ags/project/playtests/*.md"
-          min_count: 1
-        description: "Document vertical slice playtest sessions using /ags-playtest-report. Run at least once here (в‰Ґ1 session required before Production; в‰Ґ3 required before Polish). Each session should cover one complete run-through of the core loop."
+        description: "Phase gate validating readiness to start epics"
 
   production:
     label: "Production"
-    description: "Sprint-based feature development вЂ” pick, implement, close stories"
+    description: "Epic-driven vertical slices. Each epic = 1-3 systems (new / revise / stub) designed and implemented together. Loop until feature-complete."
     next_phase: polish
-    steps:
-      - id: sprint-plan
-        name: "Sprint Plan"
-        command: /ags-sprint-plan
+    per_epic_steps:
+      - id: epic-plan
+        name: "Plan Epic (vertical slice)"
+        command: /ags-create-epics
         required: true
         repeatable: true
         artifact:
-          glob: ".ags/project/sprints/sprint-*.md"
-        description: "Plan the current sprint with prioritized, ready stories"
+          glob: ".ags/project/epics/*/EPIC.md"
+          min_count: 1
+        description: "Define one epic: 1-3 systems in scope (new / revise / stub modes), rationale, contracts, acceptance"
 
-      - id: story-readiness
-        name: "Story Readiness Check"
-        command: /ags-story-readiness
+      - id: design-systems
+        name: "Design In-Scope Systems"
+        command: /ags-design-system
+        required: true
+        repeatable: true
+        artifact:
+          glob: "design/gdd/*.md"
+        description: "Author or extend GDD sections for systems in this epic. For `revise` mode, document changes and impact in EPIC.md Existing System Changes."
+
+      - id: design-review
+        name: "Design Review (epic scope)"
+        command: /ags-design-review
         required: false
-        description: "Validate a story is implementation-ready before a developer picks it up"
+        repeatable: true
+        description: "Validate GDD additions/changes for this epic"
+
+      - id: epic-arch
+        name: "Architecture Decisions for Epic"
+        command: /ags-architecture-decision
+        required: true
+        repeatable: true
+        artifact:
+          glob: "design/architecture/adr-*.md"
+        description: "Add ADRs for this epic's architectural choices. Skeleton from foundation grows here. Required for revise epics that change architecture."
+
+      - id: contracts
+        name: "Stub Contracts"
+        command: /ags-epic-contracts
+        required: true
+        repeatable: true
+        description: "Lock minimal API for stub neighbors. Stable interfaces, recorded in EPIC.md Contracts section."
+
+      - id: ux-design
+        name: "UX Specs (epic scope)"
+        command: /ux-design
+        required: false
+        repeatable: true
+        artifact:
+          glob: "design/ux/*.md"
+        description: "UX specs for screens introduced or changed by this epic. Required if epic has UI/UX work."
+
+      - id: ux-review
+        name: "UX Review (epic scope)"
+        command: /ux-review
+        required: false
+        repeatable: true
+        description: "Validate UX specs against accessibility tier and GDD. Required if /ux-design ran for this epic."
+
+      - id: stories
+        name: "Create Stories for Epic"
+        command: /ags-create-stories
+        required: true
+        repeatable: true
+        artifact:
+          glob: ".ags/project/epics/*/stories/*.md"
+        description: "Break epic into implementable stories"
 
       - id: implement
         name: "Implement Stories"
         command: /ags-dev-story
         required: true
         repeatable: true
+        description: "Pick next ready story; implement with stubs marked `// TODO(epic-[id]):`"
+
+      - id: stub-track
+        name: "Track Stubs"
+        command: /ags-stub-track
+        required: true
+        repeatable: true
         artifact:
-          note: "Check src/ for active code and .ags/project/epics/**/*.md for In Progress stories"
-        description: "Pick the next ready story and implement it with /ags-dev-story [story-path]. Routes to the correct programmer agent."
+          glob: ".ags/project/stubs.md"
+        description: "Sync stubs.md with code markers introduced/closed during epic"
 
       - id: code-review
         name: "Code Review"
         command: /ags-code-review
         required: false
         repeatable: true
-        description: "Architectural code review after each story implementation. Run after /ags-dev-story, before /ags-story-done."
+        description: "Architectural code review per story before story-done"
 
       - id: story-done
         name: "Story Done Review"
         command: /ags-story-done
         required: true
         repeatable: true
-        description: "Verify all acceptance criteria, check GDD/ADR deviations, close the story"
+        description: "Verify acceptance criteria, GDD/ADR deviations, close story"
 
       - id: qa-plan
-        name: "QA Plan"
+        name: "QA Plan (epic)"
         command: /ags-qa-plan
         required: false
         repeatable: true
-        description: "Generate a QA test plan per epic or sprint. Run /ags-qa-plan [epic-slug]. Produces test cases for /ags-smoke-check, /ags-regression-suite, and /test-evidence-review."
+        description: "Generate test plan for the epic"
 
       - id: bug-report
         name: "Bug Report / Triage"
         command: /ags-bug-report
         required: false
         repeatable: true
-        description: "Log and prioritize bugs found during implementation. /ags-bug-report creates a structured report; /ags-bug-triage prioritizes the open backlog."
+        description: "Log and prioritize bugs found during epic"
 
-      - id: retrospective
-        name: "Sprint Retrospective"
-        command: /ags-retrospective
-        required: false
+      - id: playtest
+        name: "Epic Playtest"
+        command: /ags-playtest-report
+        required: true
         repeatable: true
-        description: "Post-sprint review to capture what worked and what to change. Run at the end of each sprint, before planning the next."
-
-      - id: team-feature
-        name: "Team Orchestration (optional)"
-        required: false
-        repeatable: true
-        description: "Coordinate multiple agents on a complex feature. Use: /ags-team-combat, /ags-team-narrative, /team-ui, /ags-team-audio, /ags-team-level, /ags-team-live-ops, /ags-team-qa. Run when a feature spans multiple agent domains."
+        artifact:
+          glob: ".ags/project/playtests/*.md"
+        description: "Playtest the playable slice produced by this epic"
 
       - id: scope-check
         name: "Scope Check"
         command: /ags-scope-check
         required: false
         repeatable: true
-        artifact:
-          glob: ".ags/project/sprints/sprint-*.md"
-          note: "Run when stories are added mid-sprint, or before sprint retrospectives"
-        description: "Detect scope creep by comparing current sprint scope to original epic scope. Run (a) when stories are added mid-sprint, or (b) before sprint retrospectives."
+        description: "Detect scope creep within an epic vs original definition"
 
-      - id: sprint-status
-        name: "Sprint Status"
-        command: /ags-sprint-status
+      - id: consistency-check
+        name: "Cross-GDD Consistency"
+        command: /ags-consistency-check
+        required: true
+        repeatable: true
+        description: "Scan all GDDs for contradictions, undefined references introduced by this epic"
+
+      - id: cross-gdd-review
+        name: "Cross-GDD Review (holistic)"
+        command: /ags-review-all-gdds
+        required: true
+        repeatable: true
+        artifact:
+          glob: "design/gdd/gdd-cross-review-*.md"
+        description: "Holistic consistency + design theory review across all GDDs after this epic's GDD changes"
+
+      - id: architecture-review
+        name: "Architecture Review"
+        command: /ags-architecture-review
+        required: true
+        repeatable: true
+        artifact:
+          glob: "design/architecture/architecture-review-*.md"
+        description: "Validate cumulative architecture coherence including this epic's ADRs"
+
+      - id: control-manifest-refresh
+        name: "Control Manifest Refresh"
+        command: /ags-create-control-manifest
         required: false
-        description: "Quick 30-line snapshot of sprint progress without a full report"
+        repeatable: true
+        description: "Regenerate control manifest after several epics have added ADRs. Recommended every 3-5 epics."
+
+      - id: team-feature
+        name: "Team Orchestration (optional)"
+        required: false
+        repeatable: true
+        description: "Coordinate multiple agents on a complex epic. Use: /ags-team-combat, /ags-team-narrative, /team-ui, /ags-team-audio, /ags-team-level, /ags-team-live-ops, /ags-team-qa"
+
+      - id: epic-retro
+        name: "Epic Retrospective"
+        command: /ags-epic-retro
+        required: true
+        repeatable: true
+        description: "Capture what worked, what to change. Append to EPIC.md and decisions-log.md"
+
+      - id: epic-gate
+        name: "Gate: Epic Done"
+        command: /ags-gate-check
+        required: true
+        repeatable: true
+        description: "Lean gate per epic: verify acceptance, stubs closed/migrated. Close in epics/index.md."
+
+      - id: gate-production-to-polish
+        name: "Gate: Production → Polish"
+        command: /ags-gate-check
+        required: true
+        description: "Phase gate after all MVP epics done. Run once at end of production loop."
 
   polish:
     label: "Polish"
@@ -325,16 +325,16 @@ phases:
         name: "Balance Check"
         command: /ags-balance-check
         required: false
-        description: "Analyze game balance formulas and data for outliers and broken progressions"
+        description: "Analyze game balance formulas and data"
 
       - id: asset-audit
         name: "Asset Audit"
         command: /ags-asset-audit
         required: false
-        description: "Verify naming conventions, file format standards, and size budgets"
+        description: "Verify naming, formats, size budgets"
 
       - id: playtest-polish
-        name: "Playtest Sessions (Г—3)"
+        name: "Playtest Sessions (×3)"
         command: /ags-playtest-report
         required: true
         artifact:
@@ -346,33 +346,39 @@ phases:
         name: "Polish Team Pass"
         command: /ags-team-polish
         required: true
-        description: "Coordinated polish pass across performance, audio, visual, and UX"
+        description: "Coordinated polish pass across performance, audio, visual, UX"
+
+      - id: gate-polish-to-release
+        name: "Gate: Polish → Release"
+        command: /ags-gate-check
+        required: true
+        description: "Phase gate to release"
 
   release:
     label: "Release"
-    description: "Launch preparation, certification, and ship"
+    description: "Launch preparation, certification, ship"
     next_phase: null
     steps:
       - id: release-checklist
         name: "Release Checklist"
         command: /ags-release-checklist
         required: true
-        description: "Pre-release validation across all departments: code, content, store, legal"
+        description: "Pre-release validation: code, content, store, legal"
 
       - id: patch-notes
         name: "Patch Notes"
         command: /ags-patch-notes
         required: false
-        description: "Generate player-facing patch notes from git history and sprint data"
+        description: "Player-facing patch notes from git history and epic data"
 
       - id: changelog
         name: "Changelog"
         command: /ags-changelog
         required: false
-        description: "Auto-generate internal changelog from commits, sprints, and design docs"
+        description: "Auto-generate internal changelog"
 
       - id: launch-checklist
         name: "Launch Checklist"
         command: /ags-launch-checklist
         required: true
-        description: "Final launch readiness вЂ” last gate before shipping to players"
+        description: "Final launch readiness — last gate before shipping"

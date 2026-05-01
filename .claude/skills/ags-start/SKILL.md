@@ -1,6 +1,6 @@
 ---
 name: ags-start
-description: "Entry point for every Agentic Game Studio session. On first run — guided onboarding (user-interaction, engine, concept, review mode). On returning runs — checks `.ags/project/state.md` and offers to continue or reset. Single active session per project: starting a new task overwrites `state.md`. Run on first session, when engine not configured, when no game concept exists, when starting a new working session, or on explicit /ags-start invocation."
+description: "Entry point for every Agentic Game Studio session. First run — guided onboarding (user-interaction, engine, concept, review mode, state.md). Returning run on any phase — surfaces project context (phase, active epic, open stubs, latest decision) and resumes from where work stopped. RESUME branch handles cloned repos where state.md is gone but stage.md / epics survive. Run on first session, on missing engine/concept/state.md, on new task, or on explicit /ags-start invocation."
 argument-hint: "[no arguments]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Task
@@ -11,10 +11,15 @@ metadata:
 
 # Agentic Game Studio — Session Entry Point
 
-Entry point for every working session:
+Entry point for every working session. Two modes:
 
-- **First run** — guided onboarding (user-interaction, engine, concept, review mode), then create empty `state.md`.
-- **Returning run** — read `.ags/project/state.md`. Unfinished work present → offer continue or reset (overwrite). Absent → fresh skeleton.
+- **First run (greenfield)** — guided onboarding: user-interaction → engine → concept skeleton → review mode → fresh `state.md`. Phases 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9.
+- **Returning run** — three sub-paths based on what is on disk:
+  - **CONTINUE** — `state.md` has unfinished work → resume in-place (after user confirms).
+  - **RESUME** — `state.md` absent or clean, but project mid-flight (`stage.md` or `epics/index.md` populated) → pre-fill new `state.md` with active-epic / current-phase task, surface project context, hand off.
+  - **NEW SESSION** — `state.md` absent or clean, no mid-flight signals → fresh skeleton, hand off.
+
+All non-BLOCKED exits run **Phase 9** for a phase-aware next-step suggestion.
 
 One active session at a time. No slugs, no archive, no pointer files. New task overwrites `.ags/project/state.md`. History in git.
 
@@ -30,19 +35,23 @@ Direct-write files (no extra "May I write?"):
 
 ## Phase 1: Silent state detection
 
-No output. Gather context.
+No output. Gather context. Each check produces a boolean signal that drives routing in Phase 2.5.
 
-Check:
+`ags-start` is designed to **handle missing artifacts itself** rather than redirect — it bootstraps user-interaction (Phase 2), engine (Phase 5), concept (Phase 7), review-mode (Phase 6), state.md (Phase 8). No STOP-with-redirect pattern. If a returning user has none of these, the skill walks the full onboarding.
 
-- **User-interaction configured?** Read `.ags/project/p_user-interaction.md`. `{{...}}` placeholders → not configured.
-- **Engine configured?** `design/gdd/engine.md` exists, no `{{...}}`.
-- **Concept exists?** `design/gdd/game-concept.md` exists, no `{{pitch}}`.
-- **State present?** Read `.ags/project/state.md`. Note current task, count of `- [ ]`, files in progress, open questions.
-- **Source code?** Glob `assets/scripts/**/*.{cs,gd,cpp,h,rs,py,js,ts}`.
-- **Design docs?** Markdown under `design/gdd/` or other `design/`.
-- **Production artifacts?** `.ags/project/sprints/`, `.ags/project/milestones/`.
+Verify each:
 
-Store internally. Use Phase 4 to validate user self-assessment. Do NOT show unprompted.
+- **User-interaction configured?** Read `.ags/project/p_user-interaction.md`. Flag `not configured` if `{{...}}` placeholders remain or file absent.
+- **Engine configured?** Flag `not configured` if `design/gdd/engine.md` missing or contains `{{...}}`.
+- **Concept exists?** Flag `not configured` if `design/gdd/game-concept.md` missing or contains `{{pitch}}`.
+- **state.md status?** Read `.ags/project/state.md`. Record: file absent | clean (all sections empty) | unfinished (current task non-empty, or any `- [ ]`, or files in progress, or open questions).
+- **Phase + active epic?** Read `.ags/project/stage.md`. Record Phase value and Active Epic value, or null.
+- **Mid-flight signals?** Flag `mid-flight` if `stage.md` Phase filled OR `epics/index.md` has any rows.
+- **Source code?** Glob `assets/scripts/**/*.{cs,gd,cpp,h,rs,py,js,ts}` and engine source root. Record file count.
+- **Design docs?** Glob `design/**/*.md`. Record count.
+- **Production artifacts?** Note presence of `epics/index.md`, active `EPIC.md`, `stubs.md`, `decisions-log.md`, `milestones/`.
+
+Store all signals internally. Do NOT show unprompted.
 
 ---
 
@@ -61,19 +70,37 @@ No placeholders → skip to Phase 2.5.
 
 ## Phase 2.5: Returning state check
 
-Read `.ags/project/state.md`. Unfinished signals:
+Three signals decide routing:
 
-- `## Current task` non-empty AND not `(none)` / `Done`
-- Any `- [ ]` items
-- `## Files in progress` lists any file
-- `## Open questions` lists any question
+1. **state.md present + unfinished** — `## Current task` non-empty AND not `(none)` / `Done`, OR any `- [ ]`, OR `## Files in progress`/`## Open questions` non-empty.
+2. **Project mid-flight** — `.ags/project/stage.md` exists with `Phase` filled, OR `.ags/project/epics/index.md` exists with at least one row.
+3. **Onboarding artifacts** — engine + concept configured.
 
-### No state.md OR all sections clean
+### Phase 2.6: Surface project context (always run if signal 2 true)
 
-- Engine + concept configured → write fresh `state.md` skeleton, hand off. Skip Phases 3–9. Verdict: **NEW SESSION**.
-- Onboarding incomplete → Phase 3.
+Before any routing, if signal 2 is true, print one compact block to user (no questions yet):
 
-### state.md has unfinished work
+```
+## Project Context
+
+Phase: [from stage.md] | Active Epic: [from stage.md or —]
+Epics: [done count] done, [in-progress count] in progress, [planned count] planned
+Open stubs: [count from stubs.md, or 0]
+Last decision: [most recent entry header from decisions-log.md, truncated]
+```
+
+This is the resume hook — user sees where the project actually is before the skill asks anything.
+
+### Routing matrix
+
+| state.md | mid-flight (signal 2) | onboarding done | Action |
+|---|---|---|---|
+| unfinished | any | any | **ASK** Continue / Reset / Show details |
+| absent or clean | yes | yes | **RESUME**: write fresh state.md skeleton with `## Current task: resume [active epic or current phase]`, jump to Phase 9 |
+| absent or clean | no | yes | **NEW SESSION**: write fresh state.md skeleton, jump to Phase 9 |
+| absent or clean | any | no | **ONBOARDING**: continue to Phase 3 |
+
+### ASK branch (state.md unfinished)
 
 `AskUserQuestion`:
 
@@ -83,11 +110,19 @@ Read `.ags/project/state.md`. Unfinished signals:
   - `Reset` — overwrite `state.md` fresh, new task.
   - `Show details` — print full `state.md`, re-ask.
 
-### Routing
+Routing on choice:
 
-- **Continue** — "Resuming active state from `.ags/project/state.md`." Skip Phases 3–9. Verdict: **CONTINUE**.
-- **Reset** — write fresh skeleton. "State reset. New session active." Skip Phases 3–9. Verdict: **NEW SESSION**.
-- **Show details** — print, re-ask.
+- **Continue** — "Resuming active state from `.ags/project/state.md`." Jump to Phase 9. Verdict: **CONTINUE**.
+- **Reset** — write fresh skeleton. "State reset. New session active." Jump to Phase 9. Verdict: **NEW SESSION**.
+- **Show details** — print full `state.md`, re-ask.
+
+### RESUME branch (mid-flight, state.md absent)
+
+Common case: user cloned repo, gitignored `state.md` is gone, but `stage.md` + `epics/index.md` survive (or were tracked in git).
+
+1. Write fresh `state.md` skeleton (Phase 8 format) with `## Current task` pre-filled as `Resume [Active Epic id or current Phase work]`.
+2. Jump to Phase 9.
+3. Verdict: **RESUME** — user oriented to active epic / current phase, state.md live.
 
 ---
 
@@ -114,9 +149,8 @@ Wait for selection.
 2. Delegate `creative-director` via Task: ideation (vision, genre, audience, hook).
 3. Show path:
    - **Concept**: creative-director → game-designer (concept doc) → engine pick (Phase 5)
-   - **Design**: game-designer (GDD skeleton) → systems-designer → narrative-director / art-director / audio-director
-   - **Architecture**: technical-director → lead-programmer → engine specialist
-   - **Production**: producer (sprints) → specialists pick stories
+   - **Foundation**: technical-director → lead-programmer → architecture skeleton + accessibility tier + control manifest seed
+   - **Production**: producer (epic plan via `/ags-create-epics` — vertical slice of 1-3 systems) → game-designer + lead-programmer (GDD + ADR for epic) → specialists (impl with stubs marked `// TODO(epic-[id]):`) → `/ags-epic-retro` + `/ags-gate-check epic-done` → loop next epic
 
 ### B) Vague idea
 
@@ -217,13 +251,20 @@ Direct consequence — no approval.
 
 ## Phase 9: Hand off
 
-One short line:
+**Always runs** for any non-BLOCKED exit (NEW SESSION, CONTINUE, RESUME, onboarding-complete). Tailored line based on `stage.md`:
 
-> "Onboarding complete. State live at `.ags/project/state.md`. Proceed with the next task."
+- No `stage.md` / Concept phase: "Onboarding complete. State live at `.ags/project/state.md`. Continue concept work or run `/ags-gate-check foundation` when concept artifacts ready."
+- Foundation phase: "State live. Run `/ags-create-architecture`, `/ags-create-control-manifest`, `/ags-gate-check production` to advance."
+- Production phase, no active epic: "State live. Run `/ags-create-epics` to plan next vertical slice."
+- Production phase, active epic in progress: "State live. Active epic: `[id]`. Continue stories, run `/ags-stub-track scan` to reconcile stubs, or `/ags-gate-check epic-done` when ready to close."
+- Polish phase: "State live. Run `/ags-perf-profile`, `/ags-balance-check`, or `/ags-asset-audit`. `/ags-gate-check release` to advance."
+- Release phase: "State live. Run `/ags-release-checklist` or `/ags-launch-checklist`."
+
+For RESUME and CONTINUE branches, **prepend** the Phase 2.6 Project Context block before the hand-off line so the user immediately sees where they are.
 
 No re-explanation. No encouragement. No auto-invocation.
 
-Verdict: **COMPLETE** — user oriented, `state.md` live.
+Verdict per branch: **COMPLETE** (onboarding) | **CONTINUE** (resumed in-progress task) | **RESUME** (mid-flight, state.md was absent) | **NEW SESSION** (state.md was clean or reset).
 
 ---
 
@@ -233,8 +274,11 @@ Verdict: **COMPLETE** — user oriented, `state.md` live.
 - **User picks A but source code exists**: surface findings — "I see code in `assets/scripts/`. Mean D?"
 - **No option fits**: let user describe. Adapt.
 - **User-interaction file partially filled**: ask only missing fields. Do not overwrite answered.
-- **state.md missing but engine + concept set**: write fresh skeleton, **NEW SESSION**.
+- **state.md missing, engine + concept set, no stage.md**: fresh skeleton → **NEW SESSION** → Phase 9.
+- **state.md missing but stage.md or epics/index.md exists**: **RESUME** branch (Phase 2.5) — pre-fill state.md current task, surface project context, Phase 9.
 - **state.md malformed**: show contents, offer Continue / Reset / Edit.
+- **stage.md exists but no epics/index.md**: surface phase from stage.md anyway. Phase 9 hand-off picks foundation/concept guidance.
+- **Multiple `EPIC.md` files have Status=implementing**: name each in context block; let user pick which to resume.
 
 ---
 

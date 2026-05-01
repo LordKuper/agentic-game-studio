@@ -16,6 +16,20 @@ deviations explicitly, prompts code review, updates story file to Complete.
 
 ---
 
+## Phase 0: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/project/stage.md` (Phase = production) | `/ags-gate-check production` | STOP. "Not in production phase." |
+| Active `.ags/project/epics/[slug]/EPIC.md` | `/ags-create-epics` | STOP. "No active epic. Run `/ags-create-epics` first." |
+| Story file (resolved in Phase 1) | `/ags-create-stories` | STOP. "Story not found. Run `/ags-create-stories [epic-slug]` to break epic into stories." |
+| Story Status field readable | manual or prior `/ags-dev-story` | If Status is `Not Started` (no implementation): WARN — closing without implementation is unusual. Use `AskUserQuestion`: `Continue (mark Done with note)` / `Cancel (run /ags-dev-story first)`. |
+| Story Status implies readiness | `/ags-story-readiness` | If Status is `Blocked`: redirect to `/ags-story-readiness` to resolve blockers. |
+
+If any STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
+
+---
+
 ## Phase 1: Find the Story
 
 Resolve the review mode (once, store for all gate spawns this run):
@@ -31,7 +45,7 @@ read that file directly.
 **If no argument is provided:**
 
 1. Check `.ags/project/state.md` for the currently active story.
-2. If not found there, read the most recent file in `.ags/project/sprints/` and
+2. If not found there, read the most recent file in `.ags/project/epics/` and
    look for stories marked IN PROGRESS.
 3. If multiple in-progress stories are found, use `AskUserQuestion`:
    - "Which story are we completing?"
@@ -339,7 +353,7 @@ If yes, edit the story file:
 3. If advisory deviations exist, ask: "Should I log these as tech debt in
    `docs/tech-debt-register.md`?"
 
-4. **Update `.ags/project/ags-sprint-status.yaml`** (if it exists):
+4. **Update `.ags/project/epics/index.md`** (if it exists):
    - Find the entry matching this story's file path or ID
    - Set `status: done` and `completed: [today's date]`
    - Update the top-level `updated` field
@@ -365,7 +379,7 @@ Confirm in conversation: "Session state updated."
 
 After completion, help the developer keep momentum:
 
-1. Read the current sprint plan from `.ags/project/sprints/`.
+1. Read the current sprint plan from `.ags/project/epics/`.
 2. Find stories that are:
    - Status: READY or NOT STARTED
    - Not blocked by other incomplete stories

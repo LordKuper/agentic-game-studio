@@ -17,11 +17,14 @@ Single file holds entire active session:
 2. If missing — prompt user to run `/ags-start`.
 
 ### Project-level state files
-Persist across overwrites of `state.md`:
+Persist across overwrites of `state.md`. All Markdown:
 
-- `.ags/project/stage.txt` — current dev phase (concept, systems-design, technical-setup, …)
+- `.ags/project/stage.md` — current dev phase (concept, production, polish, release) + active epic ID + transition history
 - `.ags/project/review-mode.md` — director-gate intensity (full / lean / solo)
-- `.ags/project/ags-sprint-status.yaml` — current sprint snapshot
+- `.ags/project/stubs.md` — TODO stub registry across epics
+- `.ags/project/decisions-log.md` — append-only decisions chronology
+- `.ags/project/epics/index.md` — registry of all epics with status
+- `.ags/project/epics/[slug]/EPIC.md` — active or recent epic (vertical slice definition)
 
 ### Incremental File Writing
 For multi-section docs (design docs, architecture docs, lore entries):
@@ -49,7 +52,7 @@ On compact, preserve in summary:
 - Path of active state file (`.ags/project/state.md`)
 - Files modified this session and purpose
 - Architectural decisions and rationale
-- Active sprint tasks and status
+- Active epic ID, scoped systems, story status, open stubs
 - Agent invocations and outcomes (success/failure/blocked)
 - Test results (pass/fail counts, specific failures)
 - Unresolved blockers or questions awaiting user input
@@ -61,8 +64,10 @@ On compact, preserve in summary:
 ## Recovery After Session Crash
 If session dies or new conversation continues work:
 1. `session-start.sh` hook prints preview of `.ags/project/state.md` automatically.
-2. Read `.ags/project/state.md` for full context.
-3. Read partially-completed file(s) listed in state.
-4. Continue from next incomplete section or task.
+2. Read `.ags/project/state.md` for full session context.
+3. Read `.ags/project/stage.md` for phase + active epic.
+4. Read active `.ags/project/epics/[slug]/EPIC.md` for epic state, stories, contracts, stubs.
+5. Read `.ags/project/stubs.md` if open stubs are relevant.
+6. Continue from next incomplete section, story, or task.
 
 If `state.md` missing, run `/ags-start` to bootstrap.

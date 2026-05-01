@@ -1,6 +1,6 @@
 ﻿---
 name: ags-create-architecture
-description: "Guided, section-by-section authoring of the master architecture document for the game. Reads all GDDs, the systems index, existing ADRs, and the engine reference library to produce a complete architecture blueprint before any code is written. Engine-version-aware: flags knowledge gaps and validates decisions against the pinned engine version."
+description: "Author the master architecture document. Run as skeleton in Foundation phase (top-level layers, module boundaries, tech stack — no detailed ADRs yet); refresh in Production as ADRs accumulate per epic. Engine-version-aware: flags knowledge gaps and validates decisions against the pinned engine version."
 argument-hint: "[focus-area: full | layers | data-flow | api-boundaries | adr-audit] [--review full|lean|solo]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash, AskUserQuestion, Task
@@ -9,7 +9,11 @@ agent: technical-director
 
 # Create Architecture
 
-Produces `design/architecture/architecture.md` — master architecture document translating approved GDDs into a technical blueprint. Must exist before sprint planning.
+Produces `design/architecture/architecture.md` — master architecture document translating approved GDDs into a technical blueprint.
+
+**When to run:**
+- **Foundation phase** — create skeleton: top-level layers, module boundaries, tech stack, foundation responsibilities. ADRs are not required yet.
+- **Production phase** — refresh after several epics have added ADRs (recommended every 3-5 epics or after a major `revise` epic). Update the document to reflect cumulative architectural state.
 
 **Distinct from `/ags-architecture-decision`**: ADRs record individual decisions. This skill creates the whole-system blueprint that gives ADRs context.
 
@@ -29,9 +33,22 @@ See `.ags/rules/director-gates.md` for the full check pattern.
 
 ---
 
-## Phase 0: Load All Context
+## Phase 0: Prerequisites + Load All Context
 
-Before anything else, load the full project context in this order:
+### 0p. Prerequisites (verify before any read)
+
+STOP on first missing item with redirect.
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/docs/engine-reference/[engine]/VERSION.md` | `/ags-setup-engine` | STOP. "Engine reference missing. Run `/ags-setup-engine` first." |
+| `design/gdd/game-concept.md` (no `{{...}}`) | `/ags-brainstorm` | STOP. "No game concept. Run `/ags-brainstorm` first." |
+| `design/gdd/systems-index.md` | `/ags-map-systems` | STOP. "No systems map. Run `/ags-map-systems` first — architecture skeleton needs the system catalog." |
+| `.ags/rules/technical-preferences.md` (Engine: filled, no `[CHOOSE]`) | `/ags-setup-engine` | STOP. "Technical preferences not configured. Run `/ags-setup-engine`." |
+
+If any STOP triggers, exit with verdict **BLOCKED — missing prerequisite** and surface the redirect.
+
+Once all prerequisites pass, proceed to load full context:
 
 ### 0a. Engine Context (Critical)
 
@@ -370,8 +387,7 @@ Ask: "May I update the Document Status section in `design/architecture/architect
 After writing the document, provide a clear handoff:
 
 1. **Run these ADRs next** (from Phase 6, prioritised): list the top 3
-2. **Gate check**: "The master architecture document is complete. Run `/ags-gate-check
-   pre-production` when all required ADRs are also written."
+2. **Gate check**: "Architecture document updated. Run `/ags-gate-check production` after foundation skeleton is complete to advance to Production. ADRs accumulate per epic — re-run this skill periodically to refresh."
 3. **Update session state**: Write a summary to `.ags/project/state.md`
 
 ---
@@ -392,6 +408,6 @@ Never make binding architectural decision without user input. If unsure, present
 
 ## Recommended Next Steps
 
-- `/ags-architecture-decision [title]` for each required ADR from Phase 6 — Foundation first
-- `/ags-create-control-manifest` once required ADRs written
-- `/ags-gate-check pre-production` when all required ADRs written and architecture signed off
+- `/ags-create-control-manifest` for the seed manifest (Foundation phase) — does not require ADRs yet
+- `/ags-gate-check production` once Foundation artifacts complete (skeleton, accessibility tier, control manifest seed, test framework)
+- In Production: ADRs are added per epic via `/ags-architecture-decision` inside `/ags-create-epics` flow — no upfront ADR list required

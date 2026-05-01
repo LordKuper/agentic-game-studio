@@ -144,5 +144,5 @@ Verdict: **BLOCKED** — release halted; go/no-go was NO or a hard blocker is un
 ## Next Steps
 
 - Monitor post-release dashboards for 48 hours.
-- Run `/ags-retrospective` if significant issues occurred during the release.
-- Update `.ags/project/stage.txt` to `Live` after successful deployment.
+- Run `/ags-epic-retro` if significant issues occurred during the release.
+- Update `.ags/project/stage.md` to `Live` after successful deployment.

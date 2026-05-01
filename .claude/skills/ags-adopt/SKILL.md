@@ -23,7 +23,7 @@ GDDs/ADRs/stories may exist but format-sensitive skills fail silently if interna
 - `gdds` — GDD format only
 - `adrs` — ADR format only
 - `stories` — story format only
-- `infra` — infrastructure gaps (registry, manifest, sprint-status, stage.txt)
+- `infra` — infrastructure gaps (registry, manifest, epics/index.md, stage.md, stubs.md, decisions-log.md)
 
 ---
 
@@ -32,7 +32,7 @@ GDDs/ADRs/stories may exist but format-sensitive skills fail silently if interna
 Emit one line: `"Scanning project artifacts..."`. Read silently.
 
 ### Existence check
-- `.ags/project/stage.txt` — read if present (authoritative phase)
+- `.ags/project/stage.md` — read if present (authoritative phase)
 - `design/gdd/game-concept.md`
 - `design/gdd/systems-index.md`
 - Count GDDs: `design/gdd/*.md` (excl. game-concept, systems-index)
@@ -42,7 +42,7 @@ Emit one line: `"Scanning project artifacts..."`. Read silently.
 - `.ags/docs/engine-reference/` — present?
 - Glob `docs/adoption-plan-*.md` — note most recent prior plan
 
-### Infer phase (if no stage.txt)
+### Infer phase (if no stage.md)
 Same heuristic as `/ags-project-stage-detect`:
 - 10+ source files in `Assets/Scripts/` → Production
 - Stories in `.ags/project/epics/` → Pre-Production
@@ -122,8 +122,8 @@ Per story:
 | TR registry | `design/architecture/tr-registry.yaml` | HIGH — no stable requirement IDs |
 | Control manifest | `design/architecture/control-manifest.md` | HIGH — no layer rules for stories |
 | Manifest version stamp | manifest header `Manifest Version:` | MEDIUM — staleness blind |
-| Sprint status | `.ags/project/ags-sprint-status.yaml` | MEDIUM — `/ags-sprint-status` falls back to markdown |
-| Stage file | `.ags/project/stage.txt` | MEDIUM — phase auto-detect unreliable |
+| Sprint status | `.ags/project/epics/index.md` | MEDIUM — `/ags-help` falls back to markdown |
+| Stage file | `.ags/project/stage.md` | MEDIUM — phase auto-detect unreliable |
 | Engine reference | `.ags/docs/engine-reference/[engine]/VERSION.md` | HIGH — ADR engine checks blind |
 | Architecture traceability | `design/architecture/architecture-traceability.md` | MEDIUM — no persistent matrix |
 
@@ -145,7 +145,7 @@ Four severity tiers:
 
 **HIGH** — stories missing safety checks; infra bootstrap fails. Examples: ADRs missing Engine Compatibility, GDDs missing Acceptance Criteria, tr-registry.yaml missing.
 
-**MEDIUM** — quality/tracking degradation, not broken. Examples: GDDs missing Tuning/Formulas, stories missing TR-IDs, sprint-status.yaml missing.
+**MEDIUM** — quality/tracking degradation, not broken. Examples: GDDs missing Tuning/Formulas, stories missing TR-IDs, `.ags/project/epics/index.md` missing.
 
 **LOW** — nice-to-have. Examples: stories missing Manifest Version, GDDs missing Open Questions.
 
@@ -178,8 +178,8 @@ Per gap entry:
 1. Fix ADR formats first (registry depends on ADR Status)
 2. Run `/ags-architecture-review` → bootstraps `tr-registry.yaml`
 3. Run `/ags-create-control-manifest` → manifest with version stamp
-4. Run `/ags-sprint-plan update` → creates `sprint-status.yaml`
-5. Run `/ags-gate-check [phase]` → writes `stage.txt`
+4. Run `/ags-create-epics` → creates `.ags/project/epics/index.md` and first epic
+5. Run `/ags-gate-check [phase]` → writes `stage.md`
 
 **Existing stories** — note explicitly:
 > "Existing stories continue to work with all template skills — new format checks auto-pass when fields absent. They won't get TR-ID staleness tracking or manifest version checks until regenerated. Intentional: do not regenerate stories in progress."
@@ -265,14 +265,14 @@ Run `/ags-create-control-manifest`
 - [ ] design/architecture/control-manifest.md created
 
 ### 3c. Create sprint tracking file
-Run `/ags-sprint-plan update`
+Run `/ags-create-epics update`
 **Time**: 5 min
-- [ ] .ags/project/ags-sprint-status.yaml created
+- [ ] .ags/project/epics/index.md created
 
 ### 3d. Set authoritative project stage
 Run `/ags-gate-check [current-phase]`
 **Time**: 5 min
-- [ ] .ags/project/stage.txt written
+- [ ] .ags/project/stage.md written
 
 ---
 

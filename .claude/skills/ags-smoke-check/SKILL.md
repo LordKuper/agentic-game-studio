@@ -83,7 +83,7 @@ Parse runner output:
 
 Story list priority:
 1. QA plan from Phase 1 (Test Summary table)
-2. Current sprint plan from `.ags/project/sprints/` (most recent)
+2. Current sprint plan from `.ags/project/epics/` (most recent)
 3. `quick` arg → skip phase. Note: "Coverage scan skipped — run `/ags-smoke-check sprint` for full analysis."
 
 For each story:

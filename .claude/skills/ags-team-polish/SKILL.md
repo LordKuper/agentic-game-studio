@@ -120,5 +120,5 @@ A summary report covering: performance before/after metrics, visual polish chang
 ## Next Steps
 
 - If READY FOR RELEASE: run `/ags-release-checklist` for the final pre-release validation.
-- If NEEDS MORE WORK: schedule remaining issues in `/ags-sprint-plan update` and re-run `/ags-team-polish` after fixes.
+- If NEEDS MORE WORK: schedule remaining issues in `/ags-create-epics update` and re-run `/ags-team-polish` after fixes.
 - Run `/ags-gate-check` for a formal phase gate verdict before handing off to release.

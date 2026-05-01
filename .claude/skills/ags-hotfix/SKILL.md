@@ -151,4 +151,4 @@ After deploy, run `/ags-bug-report verify [BUG-ID]` to confirm fix resolved issu
 VERIFIED FIXED → `/ags-bug-report close [BUG-ID]`.
 STILL PRESENT → hotfix failed; re-open, assess rollback, escalate.
 
-Schedule post-incident review within 48 hours: `/ags-retrospective hotfix`.
+Schedule post-incident review within 48 hours: `/ags-epic-retro hotfix`.

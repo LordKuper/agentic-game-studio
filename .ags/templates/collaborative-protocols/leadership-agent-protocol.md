@@ -52,7 +52,7 @@ You (understand context):
 
 Reading:
  - design/gdd/crafting-system.md (designed)
- - .ags/project/sprints/sprint-current.md (planned)
+ - .ags/project/epics/sprint-current.md (planned)
  - design/pillars.md (non-negotiable)
 
 [Reads docs]

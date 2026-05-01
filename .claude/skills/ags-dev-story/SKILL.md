@@ -25,6 +25,21 @@ Bridges planning and code. Reads story file, assembles full context, routes to c
 
 ---
 
+## Phase 0: Prerequisites
+
+Verify required artifacts before any work. STOP on first missing item with redirect.
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/project/stage.md` (Phase = production) | `/ags-gate-check production` | STOP. "Not in production phase. Run `/ags-gate-check production` to advance." |
+| Active `.ags/project/epics/[slug]/EPIC.md` | `/ags-create-epics` | STOP. "No active epic. Run `/ags-create-epics` first." |
+| At least one story file under `.ags/project/epics/[slug]/stories/` | `/ags-create-stories` | STOP. "No stories in active epic. Run `/ags-create-stories [slug]` first." |
+| `design/architecture/control-manifest.md` | `/ags-create-control-manifest` | STOP. "Control manifest missing. Run `/ags-create-control-manifest seed`." |
+
+If any STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
+
+---
+
 ## Phase 1: Find the Story
 
 **If a path is provided**: read that file directly.

@@ -43,15 +43,17 @@
 | `/ags-architecture-review` | Validate all ADRs for completeness, dependency ordering, GDD coverage |
 | `/ags-create-control-manifest` | Generate flat programmer rules sheet from accepted ADRs |
 
-## Stories & Sprints
+## Epics & Stories
 
 | Command | Purpose |
 |---------|---------|
-| `/ags-create-epics` | Translate GDDs + ADRs into epics — one per architectural module |
+| `/ags-create-epics` | Create one vertical-slice epic (1-3 systems, modes new/revise/stub); writes EPIC.md, updates epics/index.md and stage.md |
+| `/ags-epic-contracts` | Lock minimal API for stub-mode systems in active epic; pre-registers stubs |
 | `/ags-create-stories` | Break single epic into implementable story files |
 | `/ags-dev-story` | Read story and implement — routes to correct programmer agent |
-| `/ags-sprint-plan` | Generate or update sprint plan; initialize sprint-status.yaml |
-| `/ags-sprint-status` | Fast 30-line sprint snapshot (reads sprint-status.yaml) |
+| `/ags-stub-track` | Sync `.ags/project/stubs.md` with `// TODO(epic-...)` markers in code |
+| `/ags-epic-retro` | Run epic retrospective; appends to EPIC.md and decisions-log.md |
+| `/ags-help` | Read stage.md + epics/index.md + active EPIC.md for current state snapshot |
 | `/ags-story-readiness` | Validate story implementation-ready before pickup (READY/NEEDS WORK/BLOCKED) |
 | `/ags-story-done` | 8-phase completion review after implementation; updates story file, surfaces next |
 | `/ags-estimate` | Structured effort estimate with complexity, dependencies, risk |
@@ -89,7 +91,7 @@
 | Command | Purpose |
 |---------|---------|
 | `/ags-milestone-review` | Review milestone progress, generate status report |
-| `/ags-retrospective` | Run structured sprint or milestone retrospective |
+| `/ags-epic-retro` | Run structured sprint or milestone retrospective |
 | `/ags-bug-report` | Create structured bug report |
 | `/ags-bug-triage` | Read all open bugs, re-evaluate priority vs severity, assign owner and label |
 | `/ags-reverse-document` | Generate design or architecture docs from existing implementation |

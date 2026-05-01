@@ -8,6 +8,22 @@ allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 
 On invoke:
 
+## Prerequisites
+
+Verify required artifacts before starting. STOP on first missing item with redirect.
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `.ags/docs/engine-reference/[engine]/VERSION.md` | `/ags-setup-engine` | STOP. "Engine reference missing. Run `/ags-setup-engine` first." |
+| `design/gdd/game-concept.md` (no `{{...}}`) | `/ags-brainstorm` | STOP. "No game concept. Run `/ags-brainstorm` first." |
+| `design/gdd/systems-index.md` | `/ags-map-systems` | STOP. "No systems map. Run `/ags-map-systems` first." |
+| At least one `design/gdd/[system].md` (Approved or Designed status) | `/ags-design-system` | STOP. "No system GDDs yet. Run `/ags-design-system [system-name]` for at least one system." |
+| `design/architecture/architecture.md` | `/ags-create-architecture` | STOP. "No architecture skeleton. Run `/ags-create-architecture` (Foundation phase)." |
+
+If any STOP triggers, exit with verdict **BLOCKED — missing prerequisite** and surface the redirect.
+
+---
+
 ## 0. Parse Arguments — Detect Retrofit Mode
 
 Resolve review mode (once, store for all gate spawns this run):

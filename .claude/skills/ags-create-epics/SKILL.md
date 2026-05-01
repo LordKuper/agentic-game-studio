@@ -1,221 +1,256 @@
-﻿---
+---
 name: ags-create-epics
-description: "Translate approved GDDs + architecture into epics — one epic per architectural module. Defines scope, governing ADRs, engine risk, and untraced requirements. Does NOT break into stories — run /ags-create-stories [epic-slug] after each epic is created."
-argument-hint: "[system-name | layer: foundation|core|feature|presentation | all] [--review full|lean|solo]"
+description: "Create one vertical-slice epic covering 1-3 systems (modes: new / revise / stub). Writes EPIC.md from t_epic.md, updates epics/index.md, sets active epic in stage.md."
+argument-hint: "[name] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
-agent: technical-director
+allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
+agent: producer
 ---
 
-# Create Epics
+# Create Epic (Vertical Slice)
 
-Named, bounded work body mapping to one architectural module. Defines **what** to build and **who owns it architecturally**. Does not prescribe implementation steps — that is stories' job.
+Epic = 1-3 systems designed and implemented together with TODO stubs for unscoped neighbors. Each system is in mode:
 
-**Run once per layer** as you approach it. Don't create Feature layer epics until Core is nearly complete — design will have changed.
+- `new` — implemented for the first time
+- `revise` — existing system extended, refactored, or rewired
+- `stub` — interface only, real impl deferred to a future epic
 
-**Output:** `.ags/project/epics/[epic-slug]/EPIC.md` + `.ags/project/epics/index.md`
+**Output:** `.ags/project/epics/[slug]/EPIC.md`, updated `.ags/project/epics/index.md`, updated `.ags/project/stage.md`, append to `.ags/project/decisions-log.md`.
 
-**Next step after each epic:** `/ags-create-stories [epic-slug]`
+**Next step after epic creation:** `/ags-epic-contracts [slug]` (if stubs), then `/ags-design-system`, `/ags-architecture-decision`, `/ags-create-stories [slug]`.
 
-**When to run:** After `/ags-create-control-manifest` and `/ags-architecture-review` pass.
+---
+
+## 0. Prerequisites
+
+Verify required artifacts exist with meaningful content. STOP on first missing item with redirect.
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| `design/gdd/game-concept.md` (no `{{...}}` placeholders) | `/ags-brainstorm` | STOP. "No game concept. Run `/ags-brainstorm` first." |
+| `design/gdd/systems-index.md` | `/ags-map-systems` | STOP. "No systems map. Run `/ags-map-systems` first — epics need a system catalog." |
+| `design/architecture/architecture.md` | `/ags-create-architecture` | STOP. "Architecture skeleton missing. Run `/ags-create-architecture` (Foundation phase)." |
+| `design/architecture/control-manifest.md` | `/ags-create-control-manifest seed` | STOP. "Control manifest missing. Run `/ags-create-control-manifest seed`." |
+| `design/accessibility-requirements.md` | `/ags-gate-check foundation` flow or manual | STOP. "Accessibility tier not committed. Run `/ags-gate-check foundation` to bootstrap." |
+| `.ags/project/stage.md` Phase = `production` | `/ags-gate-check production` | WARN (not STOP). Use `AskUserQuestion` to confirm continue: phases other than production are unusual for epic creation. |
+
+If any STOP triggers, exit with verdict **BLOCKED — missing prerequisite** and surface the redirect command. Do not write anything.
 
 ---
 
 ## 1. Parse Arguments
 
-Resolve the review mode (once, store for all gate spawns this run):
-1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `.ags/project/review-mode.md` → use that value
-3. Else → default to `lean`
+- `[name]` — optional slug hint. If omitted, derive slug from first `new` system or ask user.
+- `--review [full|lean|solo]` — override review mode for this run.
 
-See `.ags/rules/director-gates.md` for the full check pattern.
-
-**Modes:**
-- `/ags-create-epics all` — process all systems in layer order
-- `/ags-create-epics layer: foundation` — Foundation layer only
-- `/ags-create-epics layer: core` — Core layer only
-- `/ags-create-epics layer: feature` — Feature layer only
-- `/ags-create-epics layer: presentation` — Presentation layer only
-- `/ags-create-epics [system-name]` — one specific system
-- No argument — ask: "Which layer or system would you like to create epics for?"
+Resolve review mode:
+1. `--review` arg → use it
+2. Else read `.ags/project/review-mode.md`
+3. Else default `lean`
 
 ---
 
-## 2. Load Inputs
+## 2. Phase Check
 
-### Step 2a — Summary scan (fast)
+Read `.ags/project/stage.md`. If phase is not `production`, warn:
 
-Grep all GDDs for their `## Summary` sections before reading anything fully:
+> "Current phase is [X]. Epic creation is intended for production phase. Continue anyway?"
 
-```
-Grep pattern="## Summary" glob="design/gdd/*.md" output_mode="content" -A 5
-```
-
-For `layer:` or `[system-name]` modes: filter to only in-scope GDDs based on
-the Summary quick-reference. Skip full-reading anything out of scope.
-
-### Step 2b — Full document load (in-scope systems only)
-
-Using the Step 2a grep results, identify which systems are in scope. Read full documents **only for in-scope systems** — do not read GDDs or ADRs for out-of-scope systems or layers.
-
-Read for in-scope systems:
-
-- `design/gdd/systems-index.md` — authoritative system list, layers, priority
-- In-scope GDDs only (Approved or Designed status, filtered by Step 2a results)
-- `design/architecture/architecture.md` — module ownership and API boundaries
-- Accepted ADRs **whose domains cover in-scope systems only** — read the "GDD Requirements Addressed", "Decision", and "Engine Compatibility" sections; skip ADRs for unrelated domains
-- `design/architecture/control-manifest.md` — manifest version date from header
-- `design/architecture/tr-registry.yaml` — for tracing requirements to ADR coverage
-- `.ags/docs/engine-reference/[engine]/VERSION.md` — engine name, version, risk levels
-
-Report: "Loaded [N] GDDs, [M] ADRs, engine: [name + version]."
+If user declines, stop. Verdict: **BLOCKED — wrong phase**.
 
 ---
 
-## 3. Processing Order
+## 3. Load Context
 
-Process in dependency-safe layer order:
-1. **Foundation** (no dependencies)
-2. **Core** (depends on Foundation)
-3. **Feature** (depends on Core)
-4. **Presentation** (depends on Feature + Core)
+Read in parallel:
 
-Within each layer, use the order from `systems-index.md`.
+- `design/gdd/systems-index.md` — available systems with status and dependencies
+- `.ags/project/epics/index.md` — existing epics (compute next ID = max + 1; create file if missing)
+- `.ags/project/stubs.md` — Open Stubs (candidates for closure in revise/new epic)
+- `.ags/rules/technical-preferences.md` — engine context
 
----
-
-## 4. Define Each Epic
-
-For each system, map it to an architectural module from `architecture.md`.
-
-Check ADR coverage against the TR registry:
-- **Traced requirements**: TR-IDs that have an Accepted ADR covering them
-- **Untraced requirements**: TR-IDs with no ADR — warn before proceeding
-
-Present to user before writing anything:
-
-```
-## Epic: [System Name]
-
-**Layer**: [Foundation / Core / Feature / Presentation]
-**GDD**: design/gdd/[filename].md
-**Architecture Module**: [module name from architecture.md]
-**Governing ADRs**: [ADR-NNNN, ADR-MMMM]
-**Engine Risk**: [LOW / MEDIUM / HIGH — highest risk among governing ADRs]
-**GDD Requirements Covered by ADRs**: [N / total]
-**Untraced Requirements**: [list TR-IDs with no ADR, or "None"]
-```
-
-If there are untraced requirements:
-> "⚠️ [N] requirements in [system] have no ADR. The epic can be created, but
-> stories for these requirements will be marked Blocked until ADRs exist.
-> Run `/ags-architecture-decision` first, or proceed with placeholders."
-
-Ask: "Shall I create Epic: [name]?"
-Options: "Yes, create it", "Skip", "Pause — I need to write ADRs first"
+Report: "Available systems: [N]. Existing epics: [M]. Open stubs: [K]."
 
 ---
 
-## 4b. Producer Epic Structure Gate
+## 4. Suggest Scope Candidates
 
-**Review mode check** — apply before spawning PR-EPIC:
-- `solo` → skip. Note: "PR-EPIC skipped — Solo mode." Proceed to Step 5 (write epic files).
-- `lean` → skip (not a PHASE-GATE). Note: "PR-EPIC skipped — Lean mode." Proceed to Step 5 (write epic files).
-- `full` → spawn as normal.
+Generate 2-3 epic candidates, each with 1-3 systems, mode assignment, and rationale. Sources for candidates:
 
-After all epics for the current layer are defined (Step 4 completed for all in-scope systems), and before writing any files, spawn `producer` via Task using gate **PR-EPIC** (`.ags/rules/director-gates.md`).
+- **Next-in-dependency-order** — first systems-index entry not yet covered by `new` mode in any past epic.
+- **Stub-closure** — systems in `Open Stubs` whose owner-epic is TBD or matches next slot.
+- **Revise** — systems flagged in any prior epic's Retrospective as needing rework.
 
-Pass: the full epic structure summary (all epics, their scope summaries, governing ADR counts), the layer being processed, milestone timeline and team capacity.
+Present candidates as numbered list:
 
-Present the producer's assessment. If UNREALISTIC, offer to revise epic boundaries (split overscoped or merge underscoped epics) before writing. If CONCERNS, surface them and let the user decide. Do not write epic files until the producer gate resolves.
+```
+1. epic-[NNN]-[slug-A]
+   Systems: [system-a:new, system-b:stub]
+   Rationale: [one sentence]
+
+2. epic-[NNN]-[slug-B]
+   Systems: [system-c:revise, system-d:new]
+   Rationale: [one sentence]
+```
+
+Ask: "Pick a candidate, or describe your own."
 
 ---
 
-## 5. Write Epic Files
+## 5. User Defines Epic
 
-After approval, ask: "May I write the epic file to `.ags/project/epics/[epic-slug]/EPIC.md`?"
+If user picks a candidate, confirm and proceed. If user describes own epic, ask:
 
-After user confirms, write:
+1. Which 1-3 systems are in scope? (validate against systems-index)
+2. Mode per system? (new / revise / stub)
+3. One-sentence epic name + rationale (2-3 sentences why now, what risk it burns down, what playable state it produces)
 
-### `.ags/project/epics/[epic-slug]/EPIC.md`
+---
 
-```markdown
-# Epic: [System Name]
+## 6. Validate
 
-> **Layer**: [Foundation / Core / Feature / Presentation]
-> **GDD**: design/gdd/[filename].md
-> **Architecture Module**: [module name]
-> **Status**: Ready
-> **Stories**: Not yet created — run `/ags-create-stories [epic-slug]`
+Per system in scope:
 
-## Overview
+- **`new`** — verify system not already implemented (not in any past EPIC.md as `new` with Status=done).
+- **`revise`** — read GDD; warn user about consumer systems likely affected. Ask user to list affected consumers in Existing System Changes.
+- **`stub`** — verify system exists in systems-index. If not, fail with reason.
 
-[1 paragraph describing what this epic implements, derived from the GDD Overview
-and the architecture module's stated responsibilities]
+If validation fails, surface to user and let them adjust.
 
-## Governing ADRs
+---
 
-| ADR | Decision Summary | Engine Risk |
-|-----|-----------------|-------------|
-| ADR-NNNN: [title] | [1-line summary] | LOW/MEDIUM/HIGH |
+## 7. Compute IDs
 
-## GDD Requirements
+- **Epic ID**: `epic-[NNN]-[slug]`. NNN = max existing + 1, zero-padded to 3 digits.
+- **Slug**: from `[name]` arg, or derived from first `new` system, or user-confirmed.
+- **Created**: today (YYYY-MM-DD).
 
-| TR-ID | Requirement | ADR Coverage |
-|-------|-------------|--------------|
-| TR-[system]-001 | [requirement text from registry] | ADR-NNNN ✅ |
-| TR-[system]-002 | [requirement text] | ❌ No ADR |
+Confirm IDs with user before writing.
 
-## Definition of Done
+---
 
-This epic is complete when:
-- All stories are implemented, reviewed, and closed via `/ags-story-done`
-- All acceptance criteria from `design/gdd/[filename].md` are verified
-- All Logic and Integration stories have passing test files in `tests/`
-- All Visual/Feel and UI stories have evidence docs with sign-off in `.ags/project/qa/evidence/`
+## 8. Producer Gate (PR-EPIC)
 
-## Next Step
+Apply review mode:
+- `solo` → skip. Note: "PR-EPIC skipped — Solo mode."
+- `lean` → skip. Note: "PR-EPIC skipped — Lean mode."
+- `full` → spawn `producer` via Task with gate **PR-EPIC** (`.ags/rules/director-gates.md`).
 
-Run `/ags-create-stories [epic-slug]` to break this epic into implementable stories.
-```
+Pass: epic name, systems with modes, rationale, current epic count, open stubs count.
 
-### Update `.ags/project/epics/index.md`
+If verdict is CONCERNS or NOT READY, surface and let user decide whether to revise or proceed.
 
-Create or update the master index:
+---
+
+## 9. Approval
+
+Ask: "May I write:
+- `.ags/project/epics/[slug]/EPIC.md` (from `.ags/templates/t_epic.md`)
+- `.ags/project/epics/[slug]/stories/` (empty folder)
+- update `.ags/project/epics/index.md`
+- set active epic in `.ags/project/stage.md`
+- append entry to `.ags/project/decisions-log.md`?"
+
+If declined, stop. Verdict: **BLOCKED — user declined write**.
+
+---
+
+## 10. Write Files
+
+### 10a. EPIC.md
+
+Read `.ags/templates/t_epic.md`. Write to `.ags/project/epics/[slug]/EPIC.md` with substitutions:
+
+- Title: `# Epic: [name]`
+- Metadata: ID, Status=`planned`, Created=today, Closed=—
+- Rationale: user-provided
+- Systems in Scope: filled table with mode per system, GDD links
+- Existing System Changes: filled if any `revise`; otherwise leave placeholder
+- Other sections remain as template placeholders (filled by downstream skills)
+
+### 10b. Stories folder
+
+Create `.ags/project/epics/[slug]/stories/` (write a single `.gitkeep` empty file to ensure directory exists).
+
+### 10c. epics/index.md
+
+If file does not exist, create with header:
 
 ```markdown
 # Epics Index
 
-Last Updated: [date]
-Engine: [name + version]
+Registry of all epics. Status values: planned, designing, implementing, playtesting, done, rolled-back.
 
-| Epic | Layer | System | GDD | Stories | Status |
-|------|-------|--------|-----|---------|--------|
-| [name] | Foundation | [system] | [file] | Not yet created | Ready |
+| ID | Name | Systems | Modes | Status | Created | Closed |
+|----|------|---------|-------|--------|---------|--------|
+
+## Backlog
+
+[Follow-up epic candidates surfaced by retros. One line each.]
 ```
 
+Append row for new epic to the table.
+
+### 10d. stage.md
+
+If file does not exist, create with skeleton:
+
+```markdown
+# Stage
+
+| Field | Value |
+|-------|-------|
+| Phase | production |
+| Active Epic | epic-[NNN]-[slug] |
+| Updated | YYYY-MM-DD HH:MM |
+
+## Transition History
+
+| Date | Phase | Active Epic | Note |
+|------|-------|-------------|------|
+| YYYY-MM-DD HH:MM | production | epic-[NNN]-[slug] | Created |
+```
+
+If exists, edit: update Active Epic, Updated; append row to Transition History.
+
+### 10e. decisions-log.md
+
+If file does not exist, copy from `.ags/templates/t_decisions-log.md` first.
+
+Append entry:
+
+```
+## [YYYY-MM-DD HH:MM] — Create epic-[NNN]-[slug]
+
+**Type**: scope
+**Context**: New vertical slice planned.
+**Decision**: Epic [name] covers [system list with modes].
+**Rationale**: [user-provided rationale, condensed]
+**Refs**: .ags/project/epics/[slug]/EPIC.md
+**Decided by**: human
+```
+
+Verdict: **COMPLETE — epic created**.
+
 ---
 
-## 6. Gate-Check Reminder
+## 11. Next Steps
 
-After writing all epics for the requested scope:
+Suggest in order:
 
-- **Foundation + Core complete**: These are required for the Pre-Production →
-  Production gate. Run `/ags-gate-check production` to check readiness.
-- **Reminder**: Epics define scope. Stories define implementation steps. Run
-  `/ags-create-stories [epic-slug]` for each epic before developers can pick up work.
+1. `/ags-epic-contracts [slug]` — required if any system is `stub` mode. Locks contracts and pre-registers stubs.
+2. `/ags-design-system` — author or extend GDD sections for `new` and `revise` systems.
+3. `/ags-architecture-decision` — add ADRs for this epic's architectural choices (required for `revise` epics that change architecture).
+4. `/ux-design` — only if epic has UI/UX work.
+5. `/ags-create-stories [slug]` — break epic into implementable stories once design + ADRs are stable.
 
 ---
 
-## Collaborative Protocol
+## Rules
 
-1. **One epic at a time** — present each definition before asking to create
-2. **Warn on gaps** — flag untraced requirements before proceeding
-3. **Ask before writing** — per-epic approval before any file write
-4. **No invention** — all content from GDDs, ADRs, architecture docs
-5. **Never create stories** — stops at epic level
-
-After all requested epics are processed:
-
-- **Verdict: COMPLETE** — [N] epic(s) written. Run `/ags-create-stories [epic-slug]` per epic.
-- **Verdict: BLOCKED** — user declined all epics, or no eligible systems found.
+- One epic per skill invocation.
+- 1-3 systems per epic. More = scope too big, split into multiple epics.
+- All-`new`, all-`revise`, all-`stub`, or any mix is allowed.
+- Epic name + rationale come from the user — skill never invents them.
+- File writes are atomic per phase: EPIC.md + index.md + stage.md + decisions-log.md all written or none.
+- `epics/index.md` is the source of truth for epic count and status. `stage.md` points at the active one.

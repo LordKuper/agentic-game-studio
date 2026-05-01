@@ -423,7 +423,7 @@ Next Steps:
 2. [If from /ags-brainstorm] Run /ags-map-systems to decompose your concept into individual systems
 3. [If from /ags-brainstorm] Run /ags-design-system to author per-system GDDs (guided, section-by-section)
 4. [If fresh start] Run /ags-brainstorm to discover your game concept
-5. Create your first milestone: /ags-sprint-plan new
+5. Create your first milestone: /ags-create-epics new
 ```
 
 ---

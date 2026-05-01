@@ -51,7 +51,7 @@ Analyze project structure and content:
 
 ### 2. Classify Project Stage
 
-Based on scanned artifacts, determine stage. Check `.ags/project/stage.txt` first —
+Based on scanned artifacts, determine stage. Check `.ags/project/stage.md` first —
 if it exists, use its value (explicit override from `/ags-gate-check`). Otherwise,
 auto-detect using these heuristics (check from most-advanced backward):
 
@@ -166,7 +166,7 @@ After generating the report, suggest relevant next steps:
 - **Concept exists but no systems index?** → `/ags-map-systems` to decompose into systems
 - **Missing design docs?** → `/ags-reverse-document design Assets/Scripts/[system]`
 - **Missing architecture docs?** → `/ags-architecture-decision` or `/ags-reverse-document architecture`
-- **No sprint plan?** → `/ags-sprint-plan`
+- **No sprint plan?** → `/ags-create-epics`
 - **Approaching milestone?** → `/ags-milestone-review`
 
 ---

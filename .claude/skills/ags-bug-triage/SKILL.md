@@ -48,7 +48,7 @@ Stop and report. Do not proceed if no bugs exist.
 
 ### Step 2b — Load sprint context
 
-Read the most recently modified file in `.ags/project/sprints/` to understand:
+Read the most recently modified file in `.ags/project/epics/` to understand:
 - Current sprint number / name
 - Stories in scope (for assignment target)
 - Sprint capacity constraints (if noted)
@@ -219,7 +219,7 @@ Write only after approval.
 
 After writing:
 - If any S1 bugs are unassigned: "S1 bugs must be assigned before the sprint
-  can be considered healthy. Run `/ags-sprint-status` to see current capacity."
+  can be considered healthy. Run `/ags-help` to see current capacity."
 - If regression bugs exist: "Regressions found — consider re-opening the
   affected stories in sprint tracking and running `/ags-smoke-check` to re-gate."
 - If no P1 bugs exist: "No P1 bugs — build is in good shape for QA hand-off." Verdict: **COMPLETE** — triage report written.

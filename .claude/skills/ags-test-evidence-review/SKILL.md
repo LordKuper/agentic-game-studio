@@ -38,7 +38,7 @@ Based on the argument:
 **Single story**: Read the story file directly. Extract: Story Type, Test
 Evidence section, story slug, system name.
 
-**Sprint**: Read the most recently modified file in `.ags/project/sprints/`.
+**Sprint**: Read the most recently modified file in `.ags/project/epics/`.
 Extract the list of story file paths from the sprint plan. Read each story file.
 
 **System**: Glob `.ags/project/epics/[system-name]/story-*.md`. Read each.

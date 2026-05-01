@@ -23,7 +23,7 @@ scope creep.
 Locate the baseline scope document for the given argument:
 
 - **Feature name** → read `design/gdd/[feature].md` or matching file in `design/`
-- **Sprint number** (e.g., `sprint-3`) → read `.ags/project/sprints/sprint-03.md` or similar
+- **Sprint number** (e.g., `sprint-3`) → read `.ags/project/epics/sprint-03.md` or similar
 - **Milestone** → read `.ags/project/milestones/[name].md`
 
 If the document is not found, report the missing file and stop. Do not proceed without
@@ -112,8 +112,8 @@ Net change: [+X%] — [On Track / Minor Creep / Significant Creep / Out of Contr
 After presenting the report, offer concrete follow-up:
 
 - **PASS** → no action required. Suggest re-running before next milestone.
-- **CONCERNS** → offer to identify the 2–3 additions with best cut ratio. Reference `/ags-sprint-plan update` to formally re-scope.
-- **FAIL** → recommend escalating to producer. Reference `/ags-sprint-plan update` for re-planning or `/ags-estimate` to re-baseline timeline.
+- **CONCERNS** → offer to identify the 2–3 additions with best cut ratio. Reference `/ags-create-epics update` to formally re-scope.
+- **FAIL** → recommend escalating to producer. Reference `/ags-create-epics update` for re-planning or `/ags-estimate` to re-baseline timeline.
 
 Always end with:
 > "Run `/ags-scope-check [name]` again after cuts are made to verify the verdict improves."

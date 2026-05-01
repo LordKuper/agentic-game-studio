@@ -297,7 +297,7 @@ If yes, generate the document using the template at `.ags/templates/t_concept.md
    8. `/ags-architecture-decision (×N)` — one ADR per decision in Required ADR list
    9. `/ags-gate-check` — phase gate before committing to production
    10. `/ags-playtest-report` — validate core hypothesis once vertical slice playable
-   11. `/ags-sprint-plan new` — plan first sprint if validated
+   11. `/ags-create-epics new` — plan first sprint if validated
 
 7. **Output a summary** with the chosen concept's elevator pitch, pillars,
    primary player type, engine recommendation, biggest risk, and file path.

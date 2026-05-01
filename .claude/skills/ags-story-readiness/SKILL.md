@@ -39,7 +39,7 @@ See `.ags/rules/director-gates.md` for the full check pattern and mode definitio
 
 - **Specific path** (e.g., `/ags-story-readiness .ags/project/epics/combat/story-001-basic-attack.md`):
   validate that single story file.
-- **`sprint`**: read the current sprint plan from `.ags/project/sprints/` (most
+- **`sprint`**: read the current sprint plan from `.ags/project/epics/` (most
   recent file), extract every story path it references, validate each one.
 - **`all`**: glob `.ags/project/epics/**/*.md`, exclude `EPIC.md` index files,
   validate every story file found.
@@ -107,8 +107,9 @@ items pass or are explicitly marked N/A with a stated reason.
   - If `Status: Accepted` → pass.
   - If `Status: Proposed` → **BLOCKED**: the ADR may change before it is accepted,
     and the story's implementation guidance could be wrong.
-    Fix: `BLOCKED: ADR-NNNN is Proposed — wait for acceptance before implementing.`
+    Fix: `BLOCKED: ADR-NNNN is Proposed. Run /ags-architecture-decision to advance it to Accepted, then re-run /ags-story-readiness.`
   - If the ADR file does not exist → **BLOCKED**: referenced ADR is missing.
+    Fix: `BLOCKED: ADR-NNNN missing. Run /ags-architecture-decision to author it.`
   - Auto-pass if story has an explicit "No ADR applies" N/A note.
 - [ ] **TR-ID is valid and active**: If the story contains a `TR-[system]-NNN`
   reference, look it up in the TR registry loaded in Section 2.
@@ -116,8 +117,8 @@ items pass or are explicitly marked N/A with a stated reason.
   - If the ID exists and `status: deprecated` or `status: superseded-by: ...` →
     NEEDS WORK: the requirement was removed or replaced.
     Fix: update the story to reference the current requirement ID or remove if no longer applicable.
-  - If the ID does not exist in the registry → NEEDS WORK: ID was not registered
-    (story may predate registry, or registry needs an `/ags-architecture-review` run).
+  - If the ID does not exist in the registry → NEEDS WORK: ID was not registered.
+    Fix: run `/ags-architecture-review` to refresh the TR registry, then re-run this readiness check.
   - Auto-pass if the story has no TR-ID reference OR if the registry does not exist.
 - [ ] **Manifest version is current**: If the story has a `Manifest Version:` date
   in its header AND `design/architecture/control-manifest.md` exists:
@@ -260,7 +261,7 @@ add a prominent warning at the top of the output:
 ```
 WARNING: [N] Must Have stories are not implementation-ready.
 [List them with their primary gap or blocker.]
-Resolve these before the sprint begins or replan with `/ags-sprint-plan update`.
+Resolve these before the sprint begins or replan with `/ags-create-epics update`.
 ```
 
 ---
@@ -295,7 +296,7 @@ in conversation. Do not use Write or Edit tools — the user (or
 
 After completing a single-story readiness check (not `all` or `sprint` scope):
 
-1. Read the current sprint file from `.ags/project/sprints/` (most recent).
+1. Read the current sprint file from `.ags/project/epics/` (most recent).
 2. Find stories that are:
    - Status: READY or NOT STARTED
    - Not the story just checked

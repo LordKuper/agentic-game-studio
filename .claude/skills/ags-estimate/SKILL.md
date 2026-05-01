@@ -23,7 +23,7 @@ Identify files/modules to change:
 - Assess complexity (size, dependency count, cyclomatic)
 - Identify integration points
 - Check existing test coverage
-- Read past sprint data from `.ags/project/sprints/` for similar tasks and historical velocity
+- Read past sprint data from `.ags/project/epics/` for similar tasks and historical velocity
 
 ---
 
@@ -121,7 +121,7 @@ Read-only — no files written. Verdict: **COMPLETE** — estimate generated.
 
 - Confidence Low → recommend time-boxed spike before commit.
 - Task > 10 days → break into smaller stories via `/ags-create-stories`.
-- To schedule: run `/ags-sprint-plan update`.
+- To schedule: run `/ags-create-epics update`.
 
 ### Guidelines
 

@@ -1,195 +1,115 @@
 ---
 name: ags-gate-check
-description: "Validate readiness to advance between development phases. Produces a PASS/CONCERNS/FAIL verdict with specific blockers and required artifacts. Use when user says 'are we ready to move to X', 'can we advance to production', 'check if we can start the next phase', 'pass the gate'."
-argument-hint: "[target-phase: systems-design | technical-setup | pre-production | production | polish | release] [--review full|lean|solo]"
+description: "Validate readiness to advance between development phases or to close an epic. Produces PASS / CONCERNS / FAIL verdict with blockers and required artifacts. Use when user says 'are we ready to move to X', 'close this epic', 'pass the gate'."
+argument-hint: "[target: foundation | production | polish | release | epic-done] [--review full|lean|solo]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Bash, Write, Task, AskUserQuestion
+allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task, AskUserQuestion
 model: opus
 ---
 
-# Phase Gate Validation
+# Gate Validation
 
-Validates readiness to advance to next development phase. Checks artifacts, quality, blockers.
+Validates readiness to advance phase **or** close an epic. Checks artifacts, quality, blockers, stub debt.
 
 **Distinct from `/ags-project-stage-detect`**: that's diagnostic ("where are we?"). This is prescriptive ("are we ready?" with formal verdict).
 
-## Production Stages (7)
+## Phases (5)
 
-1. **Concept** — Brainstorming, game concept document
-2. **Systems Design** — Mapping systems, GDDs
-3. **Technical Setup** — Engine config, architecture decisions
-4. **Pre-Production** — Prototyping, vertical slice validation
-5. **Production** — Feature dev (Epic/Feature/Task tracking active)
-6. **Polish** — Performance, playtesting, bug fixing
-7. **Release** — Launch prep, certification
+1. **Concept** — game idea, pillars, art bible, systems map
+2. **Foundation** — architecture skeleton, accessibility tier, control manifest seed, test framework
+3. **Production** — epic-driven vertical slices, looped until feature-complete
+4. **Polish** — performance, balance, playtests, bug fixing
+5. **Release** — launch prep, certification, ship
 
-**On gate pass**, write new stage name to `.ags/project/stage.txt` (single line, e.g. `Production`). Updates status line.
+Plus a **per-epic gate** within Production: `epic-done`.
+
+**On gate pass**, update `.ags/project/stage.md` (Phase, Active Epic, Transition History).
 
 ---
 
 ## 1. Parse Arguments
 
-**Target phase:** `$ARGUMENTS[0]` (blank = auto-detect current, validate next transition)
+**Target:** `$ARGUMENTS[0]`. Accepted values: `foundation`, `production`, `polish`, `release`, `epic-done`. Blank = auto-detect from `stage.md`.
 
 Resolve review mode (once, store for all gate spawns):
 1. `--review [full|lean|solo]` passed → use that
 2. Else read `.ags/project/review-mode.md` → use value
 3. Else → default `lean`
 
-In `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE) skipped — gate-check becomes artifact-existence checks only. In `lean` mode, all four directors still run (phase gates are purpose of lean mode).
+In `solo` mode, all director spawns skipped — gate becomes artifact-existence checks only. In `lean` mode, phase gates spawn full director panel; `epic-done` spawns PR only. In `full` mode, all gates spawn full panel.
 
-- **With argument**: `/ags-gate-check production` — validate that phase
-- **No argument**: Auto-detect using `/ags-project-stage-detect` heuristics, **confirm with user before running**:
-
-  Use `AskUserQuestion`:
-  - Prompt: "Detected stage: **[current stage]**. Running gate for [Current] → [Next] transition. Is this correct?"
-  - Options:
-    - `[A] Yes — run this gate`
-    - `[B] No — pick a different gate` (if selected, second widget listing all gate options: Concept → Systems Design, Systems Design → Technical Setup, Technical Setup → Pre-Production, Pre-Production → Production, Production → Polish, Polish → Release)
-  
+- **With argument**: `/ags-gate-check production` — validate that transition.
+- **No argument**: read `.ags/project/stage.md` for current phase + active epic. Confirm with user via `AskUserQuestion`:
+  - Prompt: "Detected phase: **[current]**, active epic: **[id or —]**. Run gate for [Current → Next] or [epic-done]?"
+  - Options: `[A] Phase gate [Current → Next]`, `[B] Epic-done for [active epic]`, `[C] Pick a different gate`
   Do not skip confirmation when no argument provided.
 
 ---
 
-## 2. Phase Gate Definitions
+## 2. Gate Definitions
 
-### Gate: Concept → Systems Design
+### Gate: Concept → Foundation
 
 **Required Artifacts:**
 - [ ] `design/gdd/game-concept.md` exists, has content
 - [ ] Game pillars defined (in concept doc or `design/gdd/game-pillars.md`)
-- [ ] Visual Identity Anchor section in `design/gdd/game-concept.md` (from brainstorm Phase 4 art-director output)
+- [ ] Visual Identity Anchor section in `design/gdd/game-concept.md`
+- [ ] `design/art/ags-art-bible.md` exists (Sections 1-4 minimum)
+- [ ] `design/gdd/systems-index.md` with at least MVP systems
 
 **Quality Checks:**
-- [ ] Game concept reviewed (`/ags-design-review` verdict not MAJOR REVISION NEEDED)
-- [ ] Core loop described, understood
+- [ ] Game concept reviewed (`/ags-design-review` verdict not MAJOR REVISION)
+- [ ] Core loop described
 - [ ] Target audience identified
-- [ ] Visual Identity Anchor: one-line visual rule + at least 2 supporting principles
+- [ ] Visual Identity Anchor: one-line visual rule + ≥2 supporting principles
+- [ ] Systems index has dependency ordering and priority tiers
 
 ---
 
-### Gate: Systems Design → Technical Setup
+### Gate: Foundation → Production
 
 **Required Artifacts:**
-- [ ] Systems index at `design/gdd/systems-index.md` with at least MVP systems
-- [ ] All MVP-tier GDDs in `design/gdd/` individually pass `/ags-design-review`
-- [ ] Cross-GDD review report in `design/gdd/` (from `/ags-review-all-gdds`)
-
-**Quality Checks:**
-- [ ] All MVP GDDs pass design review (8 required sections, no MAJOR REVISION NEEDED)
-- [ ] `/ags-review-all-gdds` verdict not FAIL
-- [ ] All cross-GDD consistency issues resolved or explicitly accepted
-- [ ] System dependencies mapped, bidirectionally consistent
-- [ ] MVP priority tier defined
-- [ ] No stale GDD references flagged
-
----
-
-### Gate: Technical Setup → Pre-Production
-
-**Required Artifacts:**
-- [ ] Engine chosen (CLAUDE.md Technology Stack not `[CHOOSE]`)
-- [ ] Technical preferences configured (`.ags/rules/technical-preferences.md` populated)
-- [ ] Art bible at `design/art/ags-art-bible.md` with Sections 1–4 (Visual Identity Foundation)
-- [ ] At least 3 ADRs in `design/architecture/` covering Foundation systems (scene management, event architecture, save/load)
-- [ ] Engine reference docs in `.ags/docs/engine-reference/[engine]/`
-- [ ] Test framework: `tests/unit/` and `tests/integration/` exist
-- [ ] CI/CD test workflow at `.github/workflows/tests.yml` (or equivalent)
-- [ ] At least one example test file confirms framework functional
-- [ ] Master architecture doc at `design/architecture/architecture.md`
-- [ ] Architecture traceability index at `design/architecture/architecture-traceability.md`
-- [ ] `/ags-architecture-review` run (review report in `design/architecture/`)
+- [ ] Engine chosen (`.ags/rules/technical-preferences.md` populated, `Engine:` filled)
+- [ ] `design/architecture/architecture.md` (skeleton — top-level layers, module boundaries, tech stack)
 - [ ] `design/accessibility-requirements.md` with accessibility tier committed
-- [ ] `design/ux/interaction-patterns.md` exists (pattern library initialized)
+- [ ] `design/architecture/control-manifest.md` (seed from `/ags-create-control-manifest`)
+- [ ] `.ags/docs/engine-reference/[engine]/VERSION.md` exists
+- [ ] Test framework: `tests/unit/`, `tests/integration/`, CI workflow file
+- [ ] At least one example test confirms framework functional
 
 **Quality Checks:**
-- [ ] ADRs cover core systems (rendering, input, state management)
+- [ ] Architecture skeleton names module boundaries (no `[TBD]` for Foundation layer)
 - [ ] Technical preferences have naming conventions, performance budgets
-- [ ] Accessibility tier defined ("Basic" acceptable — undefined not)
-- [ ] At least one screen's UX spec started
-- [ ] All ADRs have **Engine Compatibility section** with engine version stamped
-- [ ] All ADRs have **GDD Requirements Addressed section** with explicit GDD linkage
-- [ ] No ADR references APIs in `.ags/docs/engine-reference/[engine]/deprecated-apis.md`
-- [ ] All HIGH RISK engine domains (per VERSION.md) addressed in architecture or flagged as open
-- [ ] Architecture traceability matrix has **zero Foundation layer gaps**
+- [ ] Accessibility tier defined (Basic acceptable — undefined not)
+- [ ] Engine compatibility check passes for skeleton (no deprecated APIs in `architecture.md`)
 
-**ADR Circular Dependency Check**: For all ADRs in `design/architecture/`, read each ADR's "ADR Dependencies" / "Depends On" section. Build dependency graph (ADR-A → ADR-B = A depends on B). Cycle detected (e.g. A→B→A, or A→B→C→A):
-- Flag as **FAIL**: "Circular ADR dependency: [ADR-X] → [ADR-Y] → [ADR-X]. Neither can reach Accepted while cycle exists. Remove one 'Depends On' edge."
-
-**Engine Validation** (read `.ags/docs/engine-reference/[engine]/VERSION.md` first):
-- [ ] ADRs touching post-cutoff engine APIs flagged with Knowledge Risk: HIGH/MEDIUM
-- [ ] `/ags-architecture-review` engine audit shows no deprecated API usage
-- [ ] All ADRs agree on same engine version
-
----
-
-### Gate: Pre-Production → Production
-
-**Required Artifacts:**
-- [ ] First sprint plan in `.ags/project/sprints/`
-- [ ] Art bible complete (all 9 sections), AD-ART-BIBLE sign-off recorded in `design/art/ags-art-bible.md`
-- [ ] Character visual profiles for key characters in narrative docs
-- [ ] All MVP-tier GDDs from systems index complete
-- [ ] Master architecture doc at `design/architecture/architecture.md`
-- [ ] At least 3 ADRs covering Foundation-layer decisions in `design/architecture/`
-- [ ] Control manifest at `design/architecture/control-manifest.md` (from `/ags-create-control-manifest` from Accepted ADRs)
-- [ ] Epics in `.ags/project/epics/` with Foundation and Core layer epics (use `/ags-create-epics layer: foundation` and `/ags-create-epics layer: core`, then `/ags-create-stories [epic-slug]`)
-- [ ] Vertical Slice build exists, playable (not just scope-defined)
-- [ ] Vertical Slice playtested, at least 3 sessions (internal OK)
-- [ ] Vertical Slice playtest report in `.ags/project/playtests/` or equivalent
-- [ ] UX specs for key screens: main menu, core gameplay HUD (in `design/ux/`), pause menu
-- [ ] HUD design doc at `design/ux/hud.md` (if game has HUD)
-- [ ] All key screen UX specs passed `/ux-review` (APPROVED or NEEDS REVISION accepted)
-
-**Quality Checks:**
-- [ ] **Core loop fun validated** — playtest data confirms central mechanic enjoyable, not just functional. Check Vertical Slice playtest report.
-- [ ] UX specs cover all UI Requirements sections from MVP GDDs
-- [ ] Interaction pattern library documents patterns used in key screens
-- [ ] Accessibility tier from `design/accessibility-requirements.md` addressed in all key screen UX specs
-- [ ] Sprint plan references real story file paths from `.ags/project/epics/` (stories must embed GDD req ID + ADR reference)
-- [ ] **Vertical Slice COMPLETE**, not just scoped — full core loop end-to-end. At least one [start → challenge → resolution] cycle works.
-- [ ] Architecture doc has no unresolved open questions in Foundation/Core layers
-- [ ] All ADRs have Engine Compatibility sections stamped
-- [ ] All ADRs have ADR Dependencies sections (even "None")
-- [ ] Manual validation: GDDs + architecture + epics coherent (run `/ags-review-all-gdds` and `/ags-architecture-review` if not recent)
-- [ ] **Core fantasy delivered** — at least one playtester independently described experience matching Player Fantasy section of core system GDDs (unprompted).
-
-**Vertical Slice Validation** (FAIL if any item NO):
-- [ ] Human played core loop without developer guidance
-- [ ] Game communicates what to do within first 2 minutes
-- [ ] No critical "fun blocker" bugs in Vertical Slice
-- [ ] Core mechanic feels good (subjective — ask user)
-
-> **Note**: Any Vertical Slice Validation FAIL → verdict auto-FAIL regardless of other checks. Advancing without validated Vertical Slice is #1 cause of production failure (per GDC postmortem data, 155 projects).
+> Foundation does NOT require ADRs to exist yet. ADRs accumulate per epic in Production.
 
 ---
 
 ### Gate: Production → Polish
 
 **Required Artifacts:**
-- [ ] `Assets/Scripts/` has active code organized into subsystems
-- [ ] All core mechanics from GDD implemented (cross-ref `design/gdd/` with `Assets/Scripts/`)
-- [ ] Main gameplay path playable end-to-end
-- [ ] Test files in `tests/unit/` and `tests/integration/` covering Logic and Integration stories
-- [ ] All Logic stories from sprint have unit test files in `tests/unit/`
-- [ ] Smoke check run with PASS or PASS WITH WARNINGS — report in `.ags/project/qa/`
-- [ ] QA plan in `.ags/project/qa/` (from `/ags-qa-plan`) covering this sprint or final production sprint
-- [ ] QA sign-off in `.ags/project/qa/` (from `/ags-team-qa`) APPROVED or APPROVED WITH CONDITIONS
-- [ ] At least 3 distinct playtest sessions in `.ags/project/playtests/`
-- [ ] Playtest reports cover: new player experience, mid-game systems, difficulty curve
-- [ ] Fun hypothesis from Game Concept explicitly validated or revised
+- [ ] All MVP epics in `.ags/project/epics/index.md` have Status=done
+- [ ] Each MVP epic's `EPIC.md` has `epic-done` gate verdict READY (or CONCERNS with override)
+- [ ] `.ags/project/stubs.md` has no Open Stubs that affect MVP gameplay (Open OK only if explicitly Migrated to a Polish-phase task with approval)
+- [ ] At least 3 distinct playtest reports across epics in `.ags/project/playtests/`
+- [ ] Smoke check report with PASS or PASS WITH WARNINGS in `.ags/project/qa/`
+- [ ] All MVP-tier GDDs from systems-index complete (Approved status)
+- [ ] Master `architecture.md` has cumulative ADR coverage (no Foundation/Core layer gaps)
+- [ ] Cumulative architecture-review report exists for latest epic batch
 
 **Quality Checks:**
-- [ ] Tests passing (run via Bash)
-- [ ] No critical/blocker bugs
-- [ ] Core loop plays as designed (vs GDD acceptance criteria)
+- [ ] Core loop plays end-to-end without developer guidance
+- [ ] Core loop fun validated — playtest data confirms
+- [ ] Tests passing (run via Bash if test runner configured)
+- [ ] No critical/blocker bugs open
 - [ ] Performance within budget (technical-preferences.md targets)
-- [ ] Playtest findings reviewed, critical fun issues addressed (not just documented)
-- [ ] No "confusion loops" — no point where >50% playtesters got stuck without knowing why
+- [ ] All `revise`-mode epics' impact resolved (no broken consumers)
+- [ ] Cross-GDD consistency clean (latest `/ags-review-all-gdds` verdict not FAIL)
+- [ ] Accessibility tier compliance verified
+- [ ] No "confusion loops" — no point >50% playtesters got stuck
 - [ ] Difficulty curve matches `design/difficulty-curve.md` (if exists)
-- [ ] All implemented screens have UX specs (no "designed in-code" screens)
-- [ ] Interaction pattern library up-to-date with all implemented patterns
-- [ ] Accessibility compliance verified vs committed tier in `design/accessibility-requirements.md`
 
 ---
 
@@ -197,15 +117,15 @@ In `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD
 
 **Required Artifacts:**
 - [ ] All features from milestone plan implemented
-- [ ] Content complete (all levels, assets, dialogue from design docs exist)
-- [ ] Localization strings externalized (no hardcoded player-facing text in `Assets/Scripts/`)
-- [ ] QA test plan exists (`/ags-qa-plan` output in `.ags/project/qa/`)
-- [ ] QA sign-off (`/ags-team-qa` output — APPROVED or APPROVED WITH CONDITIONS)
-- [ ] All Must Have story test evidence present (Logic/Integration: tests pass; Visual/Feel/UI: sign-off docs in `.ags/project/qa/evidence/`)
+- [ ] Content complete (levels, assets, dialogue per design docs)
+- [ ] Localization strings externalized (no hardcoded player-facing text in source)
+- [ ] QA test plan exists (`.ags/project/qa/`)
+- [ ] QA sign-off APPROVED or APPROVED WITH CONDITIONS (`/ags-team-qa` output)
+- [ ] All Must-Have story test evidence present
 - [ ] Smoke check passes cleanly (PASS) on release candidate build
-- [ ] No test regressions from previous sprint (test suite passes fully)
+- [ ] No test regressions — full test suite passes
 - [ ] Balance data reviewed (`/ags-balance-check` run)
-- [ ] Release checklist completed (`/ags-release-checklist` or `/ags-launch-checklist`)
+- [ ] Release checklist completed
 - [ ] Store metadata prepared (if applicable)
 - [ ] Changelog / patch notes drafted
 
@@ -221,41 +141,65 @@ In `solo` mode, director spawns (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD
 
 ---
 
-## 3. Run the Gate Check
+### Gate: epic-done (per-epic, lean)
 
-**Before artifact checks**, read `docs/consistency-failures.md` if exists. Extract entries whose Domain matches target phase. Carry as context — recurring conflict patterns warrant increased scrutiny on those checks.
+Closes a single epic. Run once per epic, before declaring it done.
+
+**Resolve epic**: read `.ags/project/stage.md` for active epic, or ask user.
+
+**Required Artifacts:**
+- [ ] `EPIC.md` Acceptance Criteria — all items checked
+- [ ] All stories under `.ags/project/epics/[slug]/stories/` have Status=Done
+- [ ] `EPIC.md` Retrospective section filled (run `/ags-epic-retro` if missing)
+- [ ] At least one playtest report linked under `.ags/project/playtests/epic-[slug]-*.md`
+- [ ] `.ags/project/stubs.md` reconciled by latest `/ags-stub-track` scan
+
+**Quality Checks:**
+- [ ] All stubs introduced by this epic are Closed in `stubs.md`, **OR** moved to Migrated table with explicit approval entry
+- [ ] No new S1/S2 bugs open against this epic in `.ags/project/bugs/`
+- [ ] Code reviewed (story-done verdicts not BLOCKED)
+- [ ] GDD/ADR deviations documented in EPIC.md or new ADR
+- [ ] Cross-GDD consistency check ran for this epic's GDD changes (`/ags-consistency-check`)
+- [ ] Architecture review ran covering this epic's ADRs (`/ags-architecture-review`)
+
+**Stub Block Rule:** if any STUB introduced by this epic remains in `stubs.md` Open Stubs **without** a Migrated entry, gate is **FAIL** until resolved by `/ags-stub-track close|migrate`.
+
+---
+
+## 3. Run the Gate Check
 
 For each item in target gate:
 
 ### Artifact Checks
-- Glob and Read to verify files exist, have meaningful content
-- Verify real content, not just template header
-- For code: verify directory structure, file counts
-
-**Systems Design → Technical Setup gate — cross-GDD review check**:
-Glob `design/gdd/gdd-cross-review-*.md` to find `/ags-review-all-gdds` report. No match → mark "cross-GDD review report exists" **FAIL**, surface prominently: "No `/ags-review-all-gdds` report found in `design/gdd/`. Run `/ags-review-all-gdds` before advancing."
-File found → read it, check verdict line: FAIL means cross-GDD consistency check failed, must resolve before advancing.
+- Glob and Read to verify files exist with meaningful content (not just template header).
+- For code: verify directory structure and file counts.
 
 ### Quality Checks
-- Test checks: run test suite via Bash if test runner configured
-- Design review checks: Read GDD, check 8 required sections
-- Performance checks: Read technical-preferences.md, compare against profiling data in `tests/performance/` or recent `/ags-perf-profile` output
-- Localization checks: Grep hardcoded strings in `Assets/Scripts/`
+- Run test suite via Bash if test runner configured.
+- Read GDD, check 8 required sections.
+- Compare performance data against `technical-preferences.md`.
+- Grep hardcoded strings in engine source root.
 
 ### Cross-Reference Checks
-- Compare `design/gdd/` vs `Assets/Scripts/` implementations
-- Every system in architecture docs has corresponding code
-- Sprint plans reference real work items
+- Compare `design/gdd/` vs implementation in engine source root.
+- Every system in architecture has corresponding code (production phase).
+- Every Open Stub has owner-epic field set.
+
+### Stub Reconciliation (epic-done only)
+- Read `.ags/project/stubs.md`.
+- Filter stubs where `Introduced (epic) = [closing epic id]`.
+- Verify each is in Closed Stubs or Migrated Stubs.
+- Any remaining in Open Stubs → block gate.
 
 ---
 
 ## 4. Collaborative Assessment
 
-For unverifiable items, **ask user**:
+For unverifiable items, ask user:
 
 - "I can't verify core loop plays well. Has it been playtested?"
-- "No playtest report found. Has informal testing been done?"
-- "Performance profiling data unavailable. Want to run `/ags-perf-profile`?"
+- "Performance profiling data unavailable. Run `/ags-perf-profile`?"
+- "Is the migrated stub STUB-NNN approved by you?"
 
 **Never assume PASS for unverifiable.** Mark MANUAL CHECK NEEDED.
 
@@ -263,18 +207,23 @@ For unverifiable items, **ask user**:
 
 ## 4b. Director Panel Assessment
 
-Before final verdict, spawn all four directors as **parallel subagents** via Task using parallel gate protocol from `.ags/rules/director-gates.md`. Issue all four Task calls simultaneously — do not wait between.
+Apply review mode:
 
-**Spawn in parallel:**
+- `solo` → skip director panel entirely. Gate verdict from artifact + quality checks only.
+- `lean` + phase gate → spawn full panel (CD + TD + PR + AD).
+- `lean` + `epic-done` → spawn `producer` only (gate **PR-EPIC-DONE** in `.ags/rules/director-gates.md`). Other directors skipped.
+- `full` → spawn full panel for any gate.
 
-1. **`creative-director`** — gate **CD-PHASE-GATE** (`.ags/rules/director-gates.md`)
-2. **`technical-director`** — gate **TD-PHASE-GATE** (`.ags/rules/director-gates.md`)
-3. **`producer`** — gate **PR-PHASE-GATE** (`.ags/rules/director-gates.md`)
-4. **`art-director`** — gate **AD-PHASE-GATE** (`.ags/rules/director-gates.md`)
+Spawn parallel via Task using gate names:
 
-Pass each: target phase name, artifacts present list, context fields per gate definition.
+1. **`creative-director`** — gate **CD-PHASE-GATE**
+2. **`technical-director`** — gate **TD-PHASE-GATE**
+3. **`producer`** — gate **PR-PHASE-GATE** (or **PR-EPIC-DONE** for epic-done)
+4. **`art-director`** — gate **AD-PHASE-GATE**
 
-**Collect all four, present Director Panel summary:**
+Pass each: target gate name, artifacts present list, context fields.
+
+Collect all responses, present Director Panel summary:
 
 ```
 ## Director Panel Assessment
@@ -295,39 +244,42 @@ Art Director:       [READY / CONCERNS / NOT READY]
 **Apply to verdict:**
 - Any director NOT READY → minimum FAIL (user may override with explicit acknowledgement)
 - Any director CONCERNS → minimum CONCERNS
-- All four READY → eligible for PASS (still subject to Section 3 checks)
+- All READY → eligible for PASS (still subject to artifact + quality checks)
 
 ---
 
 ## 5. Output the Verdict
 
 ```
-## Gate Check: [Current Phase] → [Target Phase]
+## Gate Check: [Target gate name]
 
 **Date**: [date]
 **Checked by**: gate-check skill
+**Review mode**: [full | lean | solo]
 
 ### Required Artifacts: [X/Y present]
-- [x] design/gdd/game-concept.md — exists, 2.4KB
-- [ ] design/architecture/ — MISSING (no ADRs found)
-- [x] .ags/project/sprints/ — exists, 1 sprint plan
+- [x] design/architecture/architecture.md — exists, 5.2KB
+- [ ] tests/unit/ — MISSING
 
 ### Quality Checks: [X/Y passing]
-- [x] GDD has 8/8 required sections
+- [x] Engine compat clean
 - [ ] Tests — FAILED (3 failures in tests/unit/)
 - [?] Core loop playtested — MANUAL CHECK NEEDED
 
+### Stubs (epic-done only)
+- Open: [N] (must be 0 or all Migrated)
+- Closed by this epic: [N]
+- Migrated: [N]
+
 ### Blockers
-1. **No Architecture Decision Records** — Run `/ags-architecture-decision` to create one covering core system architecture before production.
-2. **3 test failures** — Fix failing tests in tests/unit/ before advancing.
+1. **[blocker]** — [how to resolve]
 
 ### Recommendations
-- [Priority actions to resolve blockers]
-- [Optional improvements that aren't blocking]
+- [Priority actions]
 
 ### Verdict: [PASS / CONCERNS / FAIL]
 - **PASS**: All required artifacts present, all quality checks passing
-- **CONCERNS**: Minor gaps exist but addressable in next phase
+- **CONCERNS**: Minor gaps exist but addressable in next phase or epic
 - **FAIL**: Critical blockers must be resolved before advancing
 ```
 
@@ -335,7 +287,7 @@ Art Director:       [READY / CONCERNS / NOT READY]
 
 ## 5a. Chain-of-Verification
 
-After draft verdict in Phase 5, challenge before finalising.
+After draft verdict, challenge before finalising.
 
 **Step 1 — Generate 5 challenge questions** to disprove verdict:
 
@@ -343,7 +295,7 @@ For **PASS** draft:
 - "Which quality checks did I verify by reading a file vs. inferring?"
 - "Are there MANUAL CHECK NEEDED items I marked PASS without user confirmation?"
 - "Did I confirm all listed artifacts have real content, not empty headers?"
-- "Could any blocker I dismissed as minor actually prevent the phase from succeeding?"
+- "Could any blocker I dismissed as minor actually prevent the phase or epic from succeeding?"
 - "Which single check am I least confident in, why?"
 
 For **CONCERNS** draft:
@@ -372,86 +324,124 @@ For **FAIL** draft:
 
 ---
 
-## 6. Update Stage on PASS
+## 6. Update stage.md and epic state on PASS
 
 Verdict **PASS** + user confirms advance:
 
-1. Write new stage name to `.ags/project/stage.txt` (single line, no trailing newline)
-2. Updates status line for all future sessions
+### 6a. Phase gate (foundation / production / polish / release)
 
-Example: passing "Pre-Production → Production":
-```bash
-echo -n "Production" > .ags/project/stage.txt
+Read `.ags/project/stage.md`. If missing, create from skeleton:
+
+```markdown
+# Stage
+
+| Field | Value |
+|-------|-------|
+| Phase | [new phase] |
+| Active Epic | — |
+| Updated | [now] |
+
+## Transition History
+
+| Date | Phase | Active Epic | Note |
+|------|-------|-------------|------|
+| [now] | [new phase] | — | Phase gate passed |
 ```
 
-**Always ask before writing**: "Gate passed. May I update `.ags/project/stage.txt` to 'Production'?"
+If exists, Edit:
+- Update `Phase` to new phase.
+- Set `Active Epic` to `—` for `production`-entry (next `/ags-create-epics` sets it), or unchanged for other transitions.
+- Update `Updated` to now.
+- Append row to Transition History.
+
+Ask: "Gate passed. May I update `.ags/project/stage.md` to phase `[new phase]`?"
+
+### 6b. epic-done gate
+
+Read `.ags/project/epics/[slug]/EPIC.md`. Ask: "Gate passed. May I:
+- Update `EPIC.md` Status → `done`, Closed → today, fill Gate Verdict table
+- Update `.ags/project/epics/index.md` row → Status=done, Closed=today
+- Update `.ags/project/stage.md` → clear Active Epic (`—`), append Transition History row
+- Append entry to `.ags/project/decisions-log.md`?"
+
+If approved, Edit each file accordingly.
+
+Phase remains `production` after epic close — user runs `/ags-create-epics` to start next, or `/ags-gate-check production` when MVP epics complete.
 
 ---
 
 ## 7. Closing Next-Step Widget
 
-After verdict + any stage.txt update, close with `AskUserQuestion`.
+After verdict + any state update, close with `AskUserQuestion`.
 
 **Tailor options to gate:**
 
-For **systems-design PASS**:
+For **Concept → Foundation PASS**:
 ```
-Gate passed. What would you like to do next?
-[A] Run /ags-create-architecture — produce master architecture blueprint and ADR work plan (recommended next step)
-[B] Design more GDDs first — return when all MVP systems complete
+Gate passed. What next?
+[A] Run /ags-create-architecture — produce architecture skeleton (required for foundation)
+[B] Continue concept work
 [C] Stop here for this session
 ```
 
-> **Note for systems-design PASS**: `/ags-create-architecture` is required next step before writing any ADRs. Produces master architecture doc + prioritized ADR list. Running `/ags-architecture-decision` without this means writing ADRs without blueprint — skip at own risk.
-
-For **technical-setup PASS**:
+For **Foundation → Production PASS**:
 ```
-Gate passed. What would you like to do next?
-[A] Start Pre-Production — begin prototyping Vertical Slice
-[B] Write more ADRs first — run /ags-architecture-decision [next-system]
+Gate passed. What next?
+[A] Run /ags-create-epics — plan first vertical-slice epic (recommended)
+[B] Refine foundation artifacts
 [C] Stop here for this session
 ```
 
-For all other gates, two most logical next steps + "Stop here".
+For **epic-done PASS**:
+```
+Epic closed. What next?
+[A] Run /ags-create-epics — plan next epic
+[B] Run /ags-gate-check production — check if MVP epics done, advance to polish
+[C] Stop here for this session
+```
+
+For **Production → Polish PASS**:
+```
+Gate passed. What next?
+[A] Run /ags-perf-profile — start polish work with performance baseline
+[B] Run /ags-balance-check
+[C] Stop here for this session
+```
+
+For **Polish → Release PASS**:
+```
+Gate passed. What next?
+[A] Run /ags-release-checklist
+[B] Run /ags-launch-checklist
+[C] Stop here for this session
+```
 
 ---
 
 ## 8. Follow-Up Actions
 
-Suggest specific next steps based on verdict:
+Suggest specific next steps based on missing artifacts:
 
-- **No art bible?** → `/ags-art-bible` to create visual identity spec
-- **Art bible exists but no asset specs?** → `/ags-asset-spec system:[name]` to generate per-asset visual specs and prompts from approved GDDs
 - **No game concept?** → `/ags-brainstorm`
-- **No systems index?** → `/ags-map-systems` to decompose concept
-- **Missing design docs?** → `/ags-reverse-document` or delegate to `game-designer`
-- **No UX specs?** → `/ux-design [screen name]` or `/team-ui [feature]` for full pipeline
-- **UX specs not reviewed?** → `/ux-review [file]` or `/ux-review all`
-- **No accessibility requirements doc?** → `AskUserQuestion` to offer creating now:
-  - Prompt: "Gate requires `design/accessibility-requirements.md`. Shall I create it from template?"
-  - Options: `Create it now — I'll choose accessibility tier`, `I'll create it myself`, `Skip for now`
-  - If "Create it now": second `AskUserQuestion` for tier:
-    - Prompt: "Which accessibility tier fits this project?"
-    - Options: `Basic — remapping + subtitles only (lowest effort)`, `Standard — Basic + colorblind modes + scalable UI`, `Comprehensive — Standard + motor accessibility + full settings menu`, `Exemplary — Comprehensive + external audit + full customization`
-  - Then write `design/accessibility-requirements.md` from `.ags/templates/accessibility-requirements.md`, fill chosen tier. Confirm: "May I write `design/accessibility-requirements.md`?"
-- **No interaction pattern library?** → `/ux-design patterns`
-- **GDDs not cross-reviewed?** → `/ags-review-all-gdds` (run after all MVP GDDs individually approved)
-- **Cross-GDD consistency issues?** → fix flagged GDDs, re-run `/ags-review-all-gdds`
+- **No art bible?** → `/ags-art-bible`
+- **No systems index?** → `/ags-map-systems`
+- **No architecture skeleton?** → `/ags-create-architecture`
+- **No accessibility doc?** → offer to create from `.ags/templates/accessibility-requirements.md` with tier choice via `AskUserQuestion`
+- **No control manifest?** → `/ags-create-control-manifest`
 - **No test framework?** → `/test-setup`
-- **No QA plan for current sprint?** → `/ags-qa-plan sprint` before implementation
-- **Missing ADRs?** → `/ags-architecture-decision`
-- **No master architecture doc?** → `/ags-create-architecture`
-- **ADRs missing engine compatibility sections?** → Re-run `/ags-architecture-decision` or manually add Engine Compatibility sections
-- **Missing control manifest?** → `/ags-create-control-manifest` (requires Accepted ADRs)
-- **Missing epics?** → `/ags-create-epics layer: foundation` then `/ags-create-epics layer: core` (requires control manifest)
-- **Missing stories for epic?** → `/ags-create-stories [epic-slug]` (after each epic created)
-- **Stories not implementation-ready?** → `/ags-story-readiness` to validate before devs pick up
+- **No epic to start?** → `/ags-create-epics`
+- **Active epic has stub-mode systems but no contracts?** → `/ags-epic-contracts [slug]`
+- **Stubs out of sync with code?** → `/ags-stub-track scan`
+- **Epic has Open Stubs blocking close?** → `/ags-stub-track close [STUB-ID] [story-ref]` or `/ags-stub-track migrate [STUB-ID] [new-owner-epic] [reason]`
+- **Epic missing retro?** → `/ags-epic-retro [slug]`
+- **GDDs not cross-reviewed for this epic?** → `/ags-review-all-gdds`
+- **Cross-GDD consistency issues?** → `/ags-consistency-check`
+- **Architecture coherence unknown?** → `/ags-architecture-review`
+- **No QA plan?** → `/ags-qa-plan`
 - **Tests failing?** → delegate to `lead-programmer` or `qa-lead`
 - **No playtest data?** → `/ags-playtest-report`
-- **Less than 3 playtest sessions?** → Run more, use `/ags-playtest-report` to structure findings
-- **No Difficulty Curve doc?** → Consider creating at `design/difficulty-curve.md` before polish
-- **No player journey document?** → create `design/player-journey.md` from template
-- **Need quick sprint check?** → `/ags-sprint-status` for progress snapshot
+- **<3 playtests for polish?** → run more, structure findings via `/ags-playtest-report`
+- **No difficulty curve?** → consider `design/difficulty-curve.md`
 - **Performance unknown?** → `/ags-perf-profile`
 - **Not localized?** → `/ags-localize`
 - **Ready for release?** → `/ags-launch-checklist`
@@ -460,12 +450,10 @@ Suggest specific next steps based on verdict:
 
 ## Collaborative Protocol
 
-Follows collaborative design principle:
-
-1. **Scan first**: Check all artifacts and quality gates
-2. **Ask about unknowns**: Don't assume PASS for unverifiable
-3. **Present findings**: Show full checklist with status
-4. **User decides**: Verdict is recommendation — user makes final call
-5. **Get approval**: "May I write this gate check report to .ags/project/gate-checks/?"
+1. **Scan first** — check all artifacts and quality gates
+2. **Ask about unknowns** — don't assume PASS for unverifiable
+3. **Present findings** — show full checklist with status
+4. **User decides** — verdict is recommendation; user makes final call
+5. **Get approval** — "May I write this gate check report and update stage.md?"
 
 **Never** block user from advancing — verdict is advisory. Document risks, let user decide.

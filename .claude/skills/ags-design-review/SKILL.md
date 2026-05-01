@@ -6,6 +6,19 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 ---
 
+## Phase 0a: Prerequisites
+
+| Artifact | Created by | If missing |
+|---|---|---|
+| Target document path (argument) | `/ags-brainstorm`, `/ags-design-system`, `/ags-create-architecture` etc. | STOP. "No target document path provided. Usage: `/ags-design-review path/to/doc.md`." |
+| Target document file exists | depends on doc type | STOP. "Document `[path]` not found. Run the skill that creates it (e.g. `/ags-design-system [system]` for GDDs, `/ags-brainstorm` for game-concept)." |
+
+**Dependency check (during Phase 1)**: If the target document references other GDDs/ADRs in its Dependencies section and those files do not exist (broken references), flag them and surface redirect: "Run `/ags-design-system [missing-system]` to create the dependency, or update the Dependencies section."
+
+If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
+
+---
+
 ## Phase 0: Parse Arguments
 
 Extract `--depth [full|lean|solo]` if present. Default is `full` when no flag is given.

@@ -27,8 +27,8 @@ post-mortem, not a plan.
 
 Determine scope from the argument:
 
-- **`sprint`** — read the most recent file in `.ags/project/sprints/`, extract
-  every story file path referenced. If `.ags/project/ags-sprint-status.yaml` exists,
+- **`sprint`** — read the most recent file in `.ags/project/epics/`, extract
+  every story file path referenced. If `.ags/project/epics/index.md` exists,
   use it as the primary story list and fall back to the sprint plan for story
   metadata.
 - **`feature: [system-name]`** — glob `.ags/project/epics/*/story-*.md`, filter

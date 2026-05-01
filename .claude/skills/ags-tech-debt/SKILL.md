@@ -23,13 +23,15 @@ If no subcommand is provided, output usage and stop. Verdict: **FAIL** — missi
 
 Search the codebase for debt indicators:
 
-- `TODO` comments (count and categorize)
+- `TODO` comments (count and categorize) — **except** `TODO(epic-...)` markers, which are tracked separately by `/ags-stub-track` in `.ags/project/stubs.md` (do not double-count)
 - `FIXME` comments (these are bugs disguised as debt)
 - `HACK` comments (workarounds that need proper solutions)
 - `@deprecated` markers
 - Duplicated code blocks (similar patterns in multiple files)
 - Files over 500 lines (potential god objects)
 - Functions over 50 lines (potential complexity)
+
+Also read `.ags/project/stubs.md` Open Stubs table. Stubs whose Owner Epic is `TBD` or whose introducing epic was closed >3 epics ago without resolution → flag as **stub debt** category.
 
 Categorize each finding:
 
@@ -70,7 +72,7 @@ Read the debt register at `docs/tech-debt-register.md`.
 
 Score each item by: `(impact_if_unfixed × frequency_of_encounter) / fix_effort`
 
-Re-sort the register by priority score and recommend which items to include in the next sprint.
+Re-sort the register by priority score and recommend which items to include in the next epic.
 
 Present the re-prioritized register to the user.
 
@@ -91,7 +93,7 @@ Read the debt register. Generate summary statistics:
 - Items added vs resolved since last report
 - Trending direction (growing / stable / shrinking)
 
-Flag any items that have been in the register for more than 3 sprints.
+Flag any items that have been in the register for more than 3 epics.
 
 Output the report to the user. This mode is read-only — no files are written. Verdict: **COMPLETE** — debt report generated.
 
@@ -99,8 +101,8 @@ Output the report to the user. This mode is read-only — no files are written. 
 
 ## Phase 3: Next Steps
 
-- Run `/ags-sprint-plan` to schedule high-priority debt items into the next sprint.
-- Run `/tech-debt report` at the start of each sprint to track debt trends over time.
+- Run `/ags-create-epics` to schedule high-priority debt items into the next epic.
+- Run `/tech-debt report` at the start of each epic to track debt trends over time.
 
 ### Debt Register Format
 
@@ -117,5 +119,5 @@ Total items: [N] | Estimated total effort: [T-shirt sizes summed]
 ### Rules
 - Tech debt is not inherently bad — it is a tool. The register tracks conscious decisions.
 - Every debt entry must explain WHY it was accepted (deadline, spike, missing info)
-- "Scan" should run at least once per sprint to catch new debt
-- Items older than 3 sprints without action should either be fixed or consciously accepted with a documented reason
+- "Scan" should run at least once per epic to catch new debt
+- Items older than 3 epics without action should either be fixed or consciously accepted with a documented reason

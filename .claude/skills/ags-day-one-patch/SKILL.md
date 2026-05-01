@@ -31,13 +31,13 @@ rollback plan exists before anything ships. Mini-sprint — not hotfix, not full
 ## Phase 1: Load Release Context
 
 Read:
-- `.ags/project/stage.txt` — confirm project is in Release stage
+- `.ags/project/stage.md` — confirm project is in Release stage
 - The most recent file in `.ags/project/gate-checks/` — read the release gate verdict
 - `.ags/project/qa/bugs/*.md` — load all bugs with Status: Open or Fixed — Pending Verification
-- `.ags/project/sprints/` most recent — understand what shipped
+- `.ags/project/epics/` most recent — understand what shipped
 - `.ags/project/security/security-audit-*.md` most recent — check for any open security items
 
-If `.ags/project/stage.txt` is not `Release` or `Polish`:
+If `.ags/project/stage.md` is not `Release` or `Polish`:
 > "Day-one patch prep is for Release-stage projects. Current stage: [stage]. This skill is not appropriate until you are approaching launch."
 
 ---
@@ -202,7 +202,7 @@ After the patch record is written:
 1. Run `/ags-patch-notes` to generate the player-facing version of the patch notes
 2. Run `/ags-bug-report verify [BUG-ID]` for each fixed bug after the patch is live
 3. Run `/ags-bug-report close [BUG-ID]` for each verified fix
-4. Schedule a post-launch review 48–72 hours after launch using `/ags-retrospective launch`
+4. Schedule a post-launch review 48–72 hours after launch using `/ags-epic-retro launch`
 
 **If any S1 bugs remain open after the patch:**
 > "⚠️ S1 bugs remain open and were not patched. These are accepted risks. Document them in the rollback plan trigger conditions — if they occur at scale, rollback may be preferable to a follow-up patch."

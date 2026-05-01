@@ -141,5 +141,5 @@ Verdict: **COMPLETE** — season plan produced and handed off for production.
 ## Next Steps
 
 - Run `/ags-design-review` on the season design document for consistency validation.
-- Run `/ags-sprint-plan` to schedule content creation work for the season.
+- Run `/ags-create-epics` to schedule content creation work for the season.
 - Run `/team-release` when the season content is ready to deploy.

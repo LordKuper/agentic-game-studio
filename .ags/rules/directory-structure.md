@@ -12,13 +12,17 @@
 ├── .ags/                              # Studio workflow: rules, templates, project state
 │   ├── docs/                          # Technical docs, version-pinned engine API snapshots, examples
 │   ├── project/                       # Project-state working dir (gitignored except patterns below)
-│   │   ├── state.md                   # Active session state (single file, overwritten on new task)
-│   │   ├── stage.txt                  # Current development phase
+│   │   ├── state.md                   # Active session (overwritten on new task)
+│   │   ├── stage.md                   # Current dev phase + active epic + transition history
 │   │   ├── review-mode.md             # Director-gate intensity (full / lean / solo)
-│   │   ├── sprint-status.yaml         # Sprint snapshot
-│   │   ├── sprints/                   # Sprint plans
-│   │   ├── epics/                     # Epic definitions and story files
-│   │   ├── milestones/                # Milestone definitions
+│   │   ├── stubs.md                   # TODO stub registry (from t_stubs.md)
+│   │   ├── decisions-log.md           # Append-only decisions chronology (from t_decisions-log.md)
+│   │   ├── epics/                     # Epics (vertical slices) + stories
+│   │   │   ├── index.md               # Registry of all epics
+│   │   │   └── [slug]/
+│   │   │       ├── EPIC.md            # Epic definition (from t_epic.md)
+│   │   │       └── stories/           # Story files for this epic
+│   │   ├── milestones/                # Milestone definitions (groups of epics)
 │   │   ├── playtests/                 # Playtest reports
 │   │   ├── bugs/                      # Bug reports
 │   │   ├── qa/                        # QA plans
@@ -43,5 +47,6 @@
 
 - **Production code**: engine source root (e.g. `Assets/` for Unity). Tests in `tests/` regardless of engine.
 - **Active session**: single file `.ags/project/state.md` holds entire working session. One active session at a time. New task overwrites it. History in git.
-- **Project state files** (`stage.txt`, `review-mode.md`, `sprint-status.yaml`) live under `.ags/project/`. Persist across `state.md` overwrites.
-- **`.ags/project/`** mostly working state — keep gitignored unless project explicitly tracks sprint/epic history in git.
+- **Project-level state files** (`stage.md`, `review-mode.md`, `stubs.md`, `decisions-log.md`, `epics/index.md`) live under `.ags/project/`. Persist across `state.md` overwrites.
+- **All state files in Markdown** — no `.txt`, `.yaml`. Resume work on any stage by reading the relevant `.md`.
+- **`.ags/project/`** mostly working state — keep gitignored unless project explicitly tracks epic/decision history in git.

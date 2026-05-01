@@ -92,5 +92,5 @@ If yes, write the file, creating the directory if needed.
 Verdict: **COMPLETE** — onboarding document generated.
 
 - Share the onboarding doc with the new contributor before their first session.
-- Run `/ags-sprint-status` to show the new contributor current progress.
+- Run `/ags-help` to show the new contributor current progress.
 - Run `/ags-help` if the contributor needs guidance on what to work on next.

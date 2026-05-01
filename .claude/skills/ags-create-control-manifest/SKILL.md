@@ -1,7 +1,7 @@
 ﻿---
 name: ags-create-control-manifest
-description: "After architecture is complete, produces a flat actionable rules sheet for programmers — what you must do, what you must never do, per system and per layer. Extracted from all Accepted ADRs, technical preferences, and engine reference docs. More immediately actionable than ADRs (which explain why)."
-argument-hint: "[update — regenerate from current ADRs]"
+description: "Produce a flat actionable rules sheet for programmers — what you must do, what you must never do, per system and per layer. Two modes: SEED (Foundation phase, derived from architecture skeleton + technical preferences + engine reference) and REFRESH (Production phase, regenerated from accumulated Accepted ADRs)."
+argument-hint: "[seed | refresh]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task
 agent: technical-director
@@ -10,14 +10,20 @@ agent: technical-director
 # Create Control Manifest
 
 Flat, actionable rules sheet for programmers. Answers "what do I do?" and
-"what must I never do?" — organized by architectural layer, extracted from
-Accepted ADRs, technical preferences, and engine reference docs. ADRs explain
-*why*; manifest tells you *what*.
+"what must I never do?" — organized by architectural layer.
 
 **Output:** `design/architecture/control-manifest.md`
 
-**When to run:** After `/ags-architecture-review` passes and ADRs are in Accepted
-status. Re-run whenever new ADRs are accepted or existing ADRs are revised.
+**Modes:**
+
+- **SEED (`seed` arg or first run)** — Foundation phase. Derive minimal rules from architecture skeleton, technical preferences, and engine reference docs. ADRs not required. Produces a usable starting manifest before any epics.
+- **REFRESH (`refresh` arg or subsequent runs)** — Production phase. Regenerate from accumulated Accepted ADRs plus original seed inputs. Run after several epics have added ADRs (recommended every 3-5 epics).
+
+If no argument and `design/architecture/control-manifest.md` does not exist → SEED. If exists → REFRESH.
+
+**When to run:**
+- Foundation: SEED mode after `/ags-create-architecture` skeleton is approved.
+- Production: REFRESH mode after `/ags-architecture-review` periodically, or after a `revise` epic that changed architectural rules.
 
 ---
 

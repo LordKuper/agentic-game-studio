@@ -89,7 +89,18 @@ Write code patchable by Harmony or equivalent:
 - **Naming** — files `[system]_[feature]_test.[ext]`; functions `test_[scenario]_[expected]`.
 - **Static state isolation** — any test mutating global static state (composition root, log handler, etc.) MUST save/restore in `[SetUp]`/`[TearDown]` to prevent cross-test leakage.
 
-## 11. Commits
+## 11. TODO stubs (epic workflow)
+
+Vertical-slice epics may stub neighbor systems instead of implementing them all at once.
+
+- Stub = interface + `NotImplementedException` or sane default.
+- Code marker required: `// TODO(epic-[id]): [reason]`.
+- Every stub registered in `.ags/project/stubs.md` (Open Stubs table).
+- Owner-epic field in registry names the future epic that closes the stub.
+- Gate `/ags-gate-check epic-done` blocks epic close if stubs introduced by the closing epic remain Open and have no Migration entry.
+- Stub interfaces are stable; changes require ADR or new epic.
+
+## 12. Commits
 
 - Reference relevant story ID or design doc in commit message.
 - Prefer new commits over amending.

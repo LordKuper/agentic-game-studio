@@ -31,7 +31,7 @@ Ask: "What department would handle this in a real studio?"
 | Write combat code | `gameplay-programmer` |
 | Create a shader | `technical-artist` |
 | Write dialogue | `narrative-director` |
-| Plan the next sprint | `producer` |
+| Plan the next epic | `producer` |
 | Review code quality | `lead-programmer` |
 | Write test cases | `qa-lead` |
 | Design a level | `game-designer` |
@@ -56,28 +56,29 @@ Ask: "What department would handle this in a real studio?"
 | Command | What it does |
 |---------|-------------|
 | `/ags-start` | First-time onboarding — asks where you are, routes to right workflow |
-| `/ags-help` | Context-aware "what next?" — reads current phase and artifacts |
-| `/ags-project-stage-detect` | Analyze project state, detect stage, identify gaps |
+| `/ags-help` | Context-aware "what next?" — reads stage.md + epics/index.md + active EPIC.md |
+| `/ags-project-stage-detect` | Analyze project state, detect phase, identify gaps |
 | `/ags-setup-engine` | Configure engine + version, populate reference docs |
 | `/ags-adopt` | Brownfield audit and migration plan for existing projects |
 | `/ags-brainstorm` | Guided game concept ideation from scratch |
-| `/ags-map-systems` | Decompose concept into systems, map dependencies, guide per-system GDDs |
-| `/ags-design-system` | Section-by-section GDD authoring for single game system |
+| `/ags-map-systems` | Decompose concept into systems, map dependencies, drive epic planning |
+| `/ags-design-system` | Section-by-section GDD authoring (modes: new / revise / retrofit) |
 | `/ags-review-all-gdds` | Cross-GDD consistency and game design theory review |
 | `/ags-art-bible` | Author art bible: visual identity, palettes, art pipeline standards |
 | `/ags-asset-spec` | Author per-asset specs: requirements, source files, references |
 | `/ags-propagate-design-change` | Find ADRs and stories affected by GDD change |
 | `/ux-design` | Author UX specs (screen/flow, HUD, interaction patterns) |
 | `/ux-review` | Validate UX specs for accessibility and GDD alignment |
-| `/ags-create-architecture` | Master architecture document for game |
-| `/ags-architecture-decision` | Create ADR |
-| `/ags-architecture-review` | Validate all ADRs, dependency ordering, GDD traceability |
-| `/ags-create-control-manifest` | Flat programmer rules sheet from Accepted ADRs |
-| `/ags-create-epics` | Translate GDDs + ADRs into epics (one per architectural module) |
+| `/ags-create-architecture` | Master architecture document — skeleton in Foundation, refresh in Production |
+| `/ags-architecture-decision` | Create ADR (per epic in Production) |
+| `/ags-architecture-review` | Validate cumulative architecture coherence |
+| `/ags-create-control-manifest` | Programmer rules sheet — SEED (Foundation) or REFRESH (Production) modes |
+| `/ags-create-epics` | Plan one vertical-slice epic (1-3 systems, modes new / revise / stub) |
+| `/ags-epic-contracts` | Lock minimal API for stub-mode systems in active epic |
 | `/ags-create-stories` | Break single epic into implementable story files |
 | `/ags-dev-story` | Read story and implement — routes to correct programmer agent |
-| `/ags-sprint-plan` | Create or update sprint plans |
-| `/ags-sprint-status` | Quick 30-line sprint snapshot |
+| `/ags-stub-track` | Sync `stubs.md` with `// TODO(epic-...)` markers in code (scan / close / migrate) |
+| `/ags-epic-retro` | Run epic retrospective; appends to EPIC.md and decisions-log.md |
 | `/ags-story-readiness` | Validate story implementation-ready before pickup |
 | `/ags-story-done` | End-of-story completion review — verifies acceptance criteria |
 | `/ags-estimate` | Produce structured effort estimates |
@@ -87,14 +88,13 @@ Ask: "What department would handle this in a real studio?"
 | `/ags-balance-check` | Analyze game balance data |
 | `/ags-asset-audit` | Audit assets for compliance |
 | `/ags-content-audit` | GDD-specified content vs implemented — find gaps |
-| `/ags-scope-check` | Detect scope creep against plan |
+| `/ags-scope-check` | Detect scope creep against epic plan |
 | `/ags-perf-profile` | Performance profiling and bottleneck ID |
-| `/tech-debt` | Scan, track, prioritize tech debt |
-| `/ags-gate-check` | Validate phase readiness (PASS/CONCERNS/FAIL) |
-| `/ags-consistency-check` | Scan all GDDs for cross-document inconsistencies (conflicting stats, names, rules) |
+| `/tech-debt` | Scan, track, prioritize tech debt; reads `stubs.md` for stub debt |
+| `/ags-gate-check` | Validate phase or epic-done readiness (PASS / CONCERNS / FAIL) |
+| `/ags-consistency-check` | Scan all GDDs for cross-document inconsistencies |
 | `/ags-reverse-document` | Generate design/architecture docs from existing code |
 | `/ags-milestone-review` | Review milestone progress |
-| `/ags-retrospective` | Run sprint/milestone retrospective |
 | `/ags-bug-report` | Structured bug report creation |
 | `/ags-playtest-report` | Create or analyze playtest feedback |
 | `/ags-onboard` | Generate onboarding docs for a role |
@@ -102,7 +102,7 @@ Ask: "What department would handle this in a real studio?"
 | `/ags-launch-checklist` | Complete launch readiness validation |
 | `/ags-changelog` | Generate changelog from git history |
 | `/ags-patch-notes` | Generate player-facing patch notes |
-| `/ags-day-one-patch` | Plan and prepare day-one / launch patch (scope, risk, ship gate) |
+| `/ags-day-one-patch` | Plan and prepare day-one / launch patch |
 | `/ags-hotfix` | Emergency fix with audit trail |
 | `/ags-localize` | Localization scan, extract, validate |
 | `/ags-team-combat` | Orchestrate full combat team pipeline |
@@ -114,30 +114,35 @@ Ask: "What department would handle this in a real studio?"
 | `/ags-team-level` | Orchestrate full level creation pipeline |
 | `/ags-team-live-ops` | Orchestrate live-ops team for seasons, events, post-launch content |
 | `/ags-team-qa` | Orchestrate full QA team cycle — test plan, test cases, smoke check, sign-off |
-| `/ags-qa-plan` | Generate QA test plan for sprint or feature |
-| `/ags-bug-triage` | Re-prioritize open bugs, assign to sprints, surface systemic trends |
-| `/ags-smoke-check` | Critical path smoke test gate before QA hand-off (PASS/FAIL) |
+| `/ags-qa-plan` | Generate QA test plan for an epic |
+| `/ags-bug-triage` | Re-prioritize open bugs, surface systemic trends |
+| `/ags-smoke-check` | Critical path smoke test gate before QA hand-off |
 | `/ags-soak-test` | Soak test protocol for extended play sessions |
-| `/ags-regression-suite` | Map coverage to GDD critical paths, flag gaps, maintain regression suite |
-| `/test-setup` | Scaffold test framework + CI pipeline for project's engine (run once) |
+| `/ags-regression-suite` | Map coverage to GDD critical paths, flag gaps |
+| `/test-setup` | Scaffold test framework + CI pipeline (run once) |
 | `/test-helpers` | Generate engine-specific test helper libraries and factories |
-| `/test-flakiness` | Detect flaky tests from CI history, flag for quarantine or fix |
-| `/test-evidence-review` | Quality review of test files and manual evidence — ADEQUATE/INCOMPLETE/MISSING |
-| `/ags-skill-test` | Validate skill files for compliance and correctness (static / spec / audit) |
+| `/test-flakiness` | Detect flaky tests from CI history |
+| `/test-evidence-review` | Quality review of test files and manual evidence |
+| `/ags-skill-test` | Validate skill files for compliance and correctness |
 | `/ags-skill-improve` | Improve skill via test-fix-retest loop |
 
 ### 4. Use Templates for New Documents
 
 Templates in `.ags/templates/`:
 
+- `t_concept.md` — initial game concept (MDA, SDT, Flow, Bartle)
+- `t_engine.md` — engine selection
+- `t_user-interaction.md` — user collaboration preferences (filled by /ags-start)
+- `t_epic.md` — vertical-slice epic (1-3 systems, modes new / revise / stub)
+- `t_stubs.md` — TODO stubs registry
+- `t_decisions-log.md` — append-only decisions chronology
 - `game-design-document.md` — for new mechanics and systems
 - `architecture-decision-record.md` — for technical decisions
 - `architecture-traceability.md` — maps GDD requirements to ADRs to story IDs
 - `risk-register-entry.md` — for new risks
 - `narrative-character-sheet.md` — for new characters
 - `test-plan.md` — for feature test plans
-- `sprint-plan.md` — for sprint planning
-- `milestone-definition.md` — for new milestones
+- `milestone-definition.md` — for new milestones (groups of epics)
 - `level-design-document.md` — for new levels
 - `game-pillars.md` — for core design pillars
 - `art-bible.md` — for visual style reference
@@ -148,12 +153,10 @@ Templates in `.ags/templates/`:
 - `changelog-template.md` — for player-facing patch notes
 - `release-notes.md` — for player-facing release notes
 - `incident-response.md` — for live incident response playbooks
-- `game-concept.md` — for initial game concepts (MDA, SDT, Flow, Bartle)
 - `pitch-document.md` — for pitching game to stakeholders
 - `economy-model.md` — for virtual economy design (sink/faucet model)
 - `faction-design.md` — for faction identity, lore, gameplay role
 - `systems-index.md` — for systems decomposition and dependency mapping
-- `project-stage-report.md` — for project stage detection output
 - `design-doc-from-implementation.md` — for reverse-documenting code into GDDs
 - `architecture-doc-from-code.md` — for reverse-documenting code into architecture docs
 - `ux-spec.md` — for per-screen UX specs (layout zones, states, events)
@@ -167,7 +170,7 @@ Templates in `.ags/templates/`:
 Also in `.ags/templates/collaborative-protocols/` (used by agents, not edited directly):
 
 - `design-agent-protocol.md` — question-options-draft-approval cycle for design agents
-- `implementation-agent-protocol.md` — story pickup through /ags-story-done cycle for programming agents
+- `implementation-agent-protocol.md` — story pickup through `/ags-story-done` cycle for programming agents
 - `leadership-agent-protocol.md` — cross-department delegation and escalation for director-tier agents
 
 ### 5. Follow the Coordination Rules
@@ -176,7 +179,7 @@ Also in `.ags/templates/collaborative-protocols/` (used by agents, not edited di
 2. Conflicts escalate up
 3. Cross-department work coordinated by `producer`
 4. Agents do not modify files outside domain without delegation
-5. All decisions documented
+5. All decisions documented (in `decisions-log.md`, ADRs, EPIC.md retros)
 
 ## First Steps for a New Project
 
@@ -186,42 +189,39 @@ If you know what you need, jump to relevant path:
 
 ### Path A: "I have no idea what to build"
 
-1. **Run `/ags-start`** (or `/ags-brainstorm open`) — guided creative exploration: what excites you, what you've played, your constraints
-   - Generates 3 concepts, helps pick one, defines core loop and pillars
-   - Produces a game concept document
-2. **Set up engine** — Run `/ags-setup-engine [version]` (studio is Unity-only)
-   - Configures CLAUDE.md, detects knowledge gaps, populates reference docs
-   - Creates `.ags/rules/technical-preferences.md` with naming, perf budgets, Unity defaults
-   - If Unity version newer than LLM cutoff, fetches current docs from web so agents suggest correct APIs
-3. **Validate concept** — Run `/ags-design-review design/gdd/game-concept.md`
-4. **Decompose into systems** — Run `/ags-map-systems` to map all systems and dependencies
-5. **Design each system** — Run `/ags-design-system [system-name]` (or `/ags-map-systems next`) to write GDDs in dependency order
-6. **Plan first sprint** — Run `/ags-sprint-plan new`
-7. **Playtest** — Run `/ags-playtest-report` once vertical slice is playable
-8. Start building
+1. **Run `/ags-start`** (or `/ags-brainstorm open`) — guided creative exploration. Generates 3 concepts, helps pick one, defines core loop and pillars. Produces `design/gdd/game-concept.md`.
+2. **Set up engine** — `/ags-setup-engine [version]` (studio is Unity-only).
+3. **Validate concept** — `/ags-design-review design/gdd/game-concept.md`.
+4. **Decompose into systems** — `/ags-map-systems`.
+5. **Author art bible** — `/ags-art-bible`.
+6. **Phase gate** — `/ags-gate-check foundation` (when concept artifacts complete).
+7. **Foundation** — `/ags-create-architecture` (skeleton), `/ags-create-control-manifest` (seed), commit accessibility tier, `/test-setup`.
+8. **Phase gate** — `/ags-gate-check production`.
+9. **Plan first epic** — `/ags-create-epics`. Pick 1-3 systems with modes new / revise / stub.
+10. **Implement loop**: `/ags-epic-contracts` → `/ags-design-system` → `/ags-architecture-decision` → `/ags-create-stories` → `/ags-dev-story` → `/ags-stub-track` → `/ags-playtest-report` → `/ags-epic-retro` → `/ags-gate-check epic-done` → next epic.
 
 ### Path B: "I know what I want to build"
 
 If you have game concept and engine choice:
 
-1. **Set up engine** — Run `/ags-setup-engine [version]` (e.g., `/ags-setup-engine 6000.0.30f1`) — pins Unity, creates technical preferences
-2. **Write Game Pillars** — delegate to `creative-director`
-3. **Decompose into systems** — Run `/ags-map-systems` to enumerate systems and dependencies
-4. **Design each system** — Run `/ags-design-system [system-name]` for GDDs in dependency order
-5. **Create initial ADR** — Run `/ags-architecture-decision`
-6. **Create first milestone** in `.ags/project/milestones/`
-7. **Plan first sprint** — Run `/ags-sprint-plan new`
-8. Start building
+1. **Set up engine** — `/ags-setup-engine [version]`.
+2. **Write Game Pillars** — delegate to `creative-director`.
+3. **Decompose into systems** — `/ags-map-systems`.
+4. **Author art bible** — `/ags-art-bible`.
+5. **Phase gate** — `/ags-gate-check foundation`.
+6. **Foundation artifacts** — `/ags-create-architecture` skeleton, `/ags-create-control-manifest seed`, accessibility tier, `/test-setup`.
+7. **Phase gate** — `/ags-gate-check production`.
+8. **Plan first epic** — `/ags-create-epics`. Loop epics until feature-complete.
 
 ### Path C: "I have an existing project"
 
 If you have design docs or code:
 
-1. **Run `/ags-start`** (or `/ags-project-stage-detect`) — analyzes what exists, identifies gaps, recommends steps
-2. **Run `/ags-adopt`** if you have existing GDDs, ADRs, or stories — audits format compliance and builds numbered migration plan to fill gaps without overwriting your work
-3. **Configure engine if needed** — Run `/ags-setup-engine` if not yet configured
-4. **Validate phase readiness** — Run `/ags-gate-check` to see where you stand
-5. **Plan next sprint** — Run `/ags-sprint-plan new`
+1. **Run `/ags-start`** (or `/ags-project-stage-detect`) — analyzes what exists, identifies gaps, recommends steps.
+2. **Run `/ags-adopt`** if you have existing GDDs, ADRs, or stories — audits format compliance and builds numbered migration plan.
+3. **Configure engine if needed** — `/ags-setup-engine`.
+4. **Validate phase readiness** — `/ags-gate-check` to see where you stand.
+5. **Plan next epic** — `/ags-create-epics` once in production phase.
 
 ## File Structure Reference
 
@@ -232,24 +232,32 @@ CLAUDE.md                          -- Master config (read first)
 .claude/
   settings.json                    -- Claude Code hooks and project settings
   agents/                          -- 21 agent definitions
-  skills/                          -- 70 slash-command skill definitions
+  skills/                          -- Slash-command skill definitions
   hooks/                           -- Hook scripts (.sh) wired by settings.json
   hooks-reference/                 -- Hook reference docs
 .ags/
   rules/                           -- Project rules (this file lives here)
     technical-preferences.md       -- Project standards (populated by /ags-setup-engine)
-    coding.md                      -- Coding standards
-    coordination.md                -- Agent coordination rules
+    coding.md                      -- Coding standards (incl. TODO-stub rules)
+    coordination.md                -- Agent coordination rules (incl. epic cycle)
     context-management.md          -- Context budgets and compaction
     directory-structure.md         -- Canonical directory layout
-    workflow-catalog.yaml          -- 7-phase pipeline definition (read by /ags-help)
+    workflow-catalog.yaml          -- 5-phase pipeline (concept / foundation / production / polish / release)
     setup-requirements.md          -- System prerequisites
     settings-local-template.md     -- Personal settings.local.json guide
     director-gates.md              -- Director gate prompt catalog
     review-workflow.md             -- Sign-off matrix
-  templates/                       -- Document templates
-  docs/                            -- Engine reference snapshots, examples
-  project/                         -- Working state (sessions, sprints, epics, etc.)
+  templates/                       -- Document templates (t_*.md and others)
+  docs/                            -- Engine reference snapshots
+  project/                         -- Working state
+    state.md                       -- Active session
+    stage.md                       -- Phase + active epic + history
+    epics/                         -- Vertical-slice epics + stories
+      index.md                     -- Registry of all epics
+      [slug]/EPIC.md               -- Epic definition
+      [slug]/stories/              -- Story files for epic
+    stubs.md                       -- TODO stub registry
+    decisions-log.md               -- Append-only decisions chronology
 design/                            -- Game design documents (gdd, architecture, art, ux, narrative)
 tests/                             -- Test code
 <engine project root>              -- Engine source root, e.g. Assets/ for Unity
