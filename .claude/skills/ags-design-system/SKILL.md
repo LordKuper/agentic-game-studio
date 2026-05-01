@@ -243,7 +243,7 @@ Use `AskUserQuestion`:
 Once the user confirms, **immediately** create the GDD file with empty section
 headers. This ensures incremental writes have a target.
 
-Use the template structure from `.ags/templates/game-design-document.md`:
+Use the template structure from `.ags/templates/t_gdd.md`:
 
 ```markdown
 # [System Name]

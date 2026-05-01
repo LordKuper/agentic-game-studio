@@ -136,36 +136,36 @@ Templates in `.ags/templates/`:
 - `t_epic.md` — vertical-slice epic (1-3 systems, modes new / revise / stub)
 - `t_stubs.md` — TODO stubs registry
 - `t_decisions-log.md` — append-only decisions chronology
-- `game-design-document.md` — for new mechanics and systems
-- `architecture-decision-record.md` — for technical decisions
-- `architecture-traceability.md` — maps GDD requirements to ADRs to story IDs
-- `risk-register-entry.md` — for new risks
-- `narrative-character-sheet.md` — for new characters
-- `test-plan.md` — for feature test plans
-- `milestone-definition.md` — for new milestones (groups of epics)
-- `level-design-document.md` — for new levels
-- `game-pillars.md` — for core design pillars
-- `art-bible.md` — for visual style reference
-- `technical-design-document.md` — for per-system technical designs
-- `post-mortem.md` — for project/milestone retrospectives
-- `sound-bible.md` — for audio style reference
-- `release-checklist-template.md` — for platform release checklists
-- `changelog-template.md` — for player-facing patch notes
-- `release-notes.md` — for player-facing release notes
-- `incident-response.md` — for live incident response playbooks
-- `pitch-document.md` — for pitching game to stakeholders
-- `economy-model.md` — for virtual economy design (sink/faucet model)
-- `faction-design.md` — for faction identity, lore, gameplay role
-- `systems-index.md` — for systems decomposition and dependency mapping
-- `design-doc-from-implementation.md` — for reverse-documenting code into GDDs
-- `architecture-doc-from-code.md` — for reverse-documenting code into architecture docs
-- `ux-spec.md` — for per-screen UX specs (layout zones, states, events)
-- `hud-design.md` — for whole-game HUD philosophy, zones, element specs
-- `accessibility-requirements.md` — for project-wide accessibility tier and feature matrix
-- `interaction-pattern-library.md` — for standard UI controls and game-specific patterns
-- `player-journey.md` — for 6-phase emotional arc and retention hooks by time scale
-- `difficulty-curve.md` — for difficulty axes, onboarding ramp, cross-system interactions
-- `test-evidence.md` — template for recording manual test evidence (screenshots, walkthrough notes)
+- `t_gdd.md` — for new mechanics and systems
+- `t_adr.md` — for technical decisions
+- `t_architecture-traceability.md` — maps GDD requirements to ADRs to story IDs
+- `t_risk-register.md` — for new risks
+- `t_character-sheet.md` — for new characters
+- `t_test-plan.md` — for feature test plans
+- `t_milestone.md` — for new milestones (groups of epics)
+- `t_level-design.md` — for new levels
+- `t_game-pillars.md` — for core design pillars
+- `t_art-bible.md` — for visual style reference
+- `t_tech-design.md` — for per-system technical designs
+- `t_post-mortem.md` — for project/milestone retrospectives
+- `t_sound-bible.md` — for audio style reference
+- `t_release-checklist.md` — for platform release checklists
+- `t_patch-notes.md` — for player-facing patch notes
+- `t_release-notes.md` — for player-facing release notes
+- `t_incident-response.md` — for live incident response playbooks
+- `t_pitch.md` — for pitching game to stakeholders
+- `t_economy-model.md` — for virtual economy design (sink/faucet model)
+- `t_faction-design.md` — for faction identity, lore, gameplay role
+- `t_systems-index.md` — for systems decomposition and dependency mapping
+- `t_design-from-implementation.md` — for reverse-documenting code into GDDs
+- `t_architecture-from-code.md` — for reverse-documenting code into architecture docs
+- `t_ux-spec.md` — for per-screen UX specs (layout zones, states, events)
+- `t_hud-design.md` — for whole-game HUD philosophy, zones, element specs
+- `t_accessibility-requirements.md` — for project-wide accessibility tier and feature matrix
+- `t_interaction-patterns.md` — for standard UI controls and game-specific patterns
+- `t_player-journey.md` — for 6-phase emotional arc and retention hooks by time scale
+- `t_difficulty-curve.md` — for difficulty axes, onboarding ramp, cross-system interactions
+- `t_test-evidence.md` — template for recording manual test evidence (screenshots, walkthrough notes)
 
 Also in `.ags/templates/collaborative-protocols/` (used by agents, not edited directly):
 

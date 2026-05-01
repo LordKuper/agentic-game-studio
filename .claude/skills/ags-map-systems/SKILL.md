@@ -216,7 +216,7 @@ This is the order the team should write GDDs in.
 
 ### Step 5a: Draft the Document
 
-Using the template at `.ags/templates/systems-index.md`, populate the
+Using the template at `.ags/templates/t_systems-index.md`, populate the
 systems index with all data from Phases 2-4:
 - Fill the enumeration table
 - Fill the dependency map

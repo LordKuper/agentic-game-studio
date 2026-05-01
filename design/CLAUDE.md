@@ -4,7 +4,7 @@ Rules for `design/`. Two subdirs: `architecture/` (technical), `gdd/` (game desi
 
 ## Architecture (`design/architecture/`)
 
-ADR template: `.ags/templates/architecture-decision-record.md`
+ADR template: `.ags/templates/t_adr.md`
 
 **Required sections:** Title, Status, Context, Decision, Consequences, ADR Dependencies, Engine Compatibility, GDD Requirements Addressed.
 

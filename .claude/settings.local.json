@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(mv architecture-decision-record.md t_adr.md)",
+      "Bash(mv architecture-doc-from-code.md t_architecture-from-code.md)",
+      "Bash(mv architecture-traceability.md t_architecture-traceability.md)",
+      "Bash(mv accessibility-requirements.md t_accessibility-requirements.md)",
+      "Bash(mv art-bible.md t_art-bible.md)",
+      "Bash(xargs basename *)"
+    ]
+  }
+}

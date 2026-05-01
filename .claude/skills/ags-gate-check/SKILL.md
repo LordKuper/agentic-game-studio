@@ -426,7 +426,7 @@ Suggest specific next steps based on missing artifacts:
 - **No art bible?** → `/ags-art-bible`
 - **No systems index?** → `/ags-map-systems`
 - **No architecture skeleton?** → `/ags-create-architecture`
-- **No accessibility doc?** → offer to create from `.ags/templates/accessibility-requirements.md` with tier choice via `AskUserQuestion`
+- **No accessibility doc?** → offer to create from `.ags/templates/t_accessibility-requirements.md` with tier choice via `AskUserQuestion`
 - **No control manifest?** → `/ags-create-control-manifest`
 - **No test framework?** → `/test-setup`
 - **No epic to start?** → `/ags-create-epics`

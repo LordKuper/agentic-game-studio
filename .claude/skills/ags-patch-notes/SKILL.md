@@ -13,7 +13,7 @@ agent: producer
 | Artifact | Created by | If missing |
 |---|---|---|
 | Git repository with ≥1 commit | dev work | STOP. "No git history." |
-| `.ags/templates/patch-notes-template.md` | template | STOP. "Patch notes template missing." |
+| `.ags/templates/t_patch-notes.md` | template | STOP. "Patch notes template missing." |
 | Closed epic(s) in `.ags/project/epics/index.md` | `/ags-create-epics` + `/ags-gate-check epic-done` | WARN: notes grouped by commits only, not epic outcomes. |
 
 If STOP triggers, exit verdict **BLOCKED**.
@@ -64,7 +64,7 @@ Verdict: **BLOCKED** — stop here without generating notes.
 
 **Template detection** — check whether a patch notes template exists:
 
-1. Glob for `docs/patch-notes-template.md` and `.ags/templates/patch-notes-template.md`.
+1. Glob for `docs/patch-notes-template.md` and `.ags/templates/t_patch-notes.md`.
 2. If found at either location, read it and use it as the output structure for Phase 4
    instead of the built-in style templates (Brief / Detailed / Full). Fill in the
    template's sections with the categorized data.

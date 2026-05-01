@@ -189,7 +189,7 @@ Regular cadence (weekly/bi-weekly during active dev). Topics: upcoming features,
 - **Provide ETA**: update if changes
 - **Post-mortem**: explain what happened and prevention
 - **Compensate fairly**: if players lost progress, offer compensation
-- Template: `.ags/templates/incident-response.md`
+- Template: `.ags/templates/t_incident-response.md`
 - Log: `.ags/project/community/crisis-log.md`
 
 #### Tone and Voice

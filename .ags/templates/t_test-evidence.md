@@ -73,6 +73,6 @@ All three required before story COMPLETE via `/ags-story-done`. Visual/Feel need
 
 ---
 
-*Template: `.ags/templates/test-evidence.md`*
+*Template: `.ags/templates/t_test-evidence.md`*
 *Used for: Visual/Feel + UI story evidence records*
 *Location: `.ags/project/qa/evidence/[story-slug]-evidence.md`*

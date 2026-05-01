@@ -180,12 +180,11 @@ Tune behaviour by editing the rule files — they are loaded automatically:
 |------|----------|
 | [CLAUDE.md](CLAUDE.md) | Top-level project config and rule includes |
 | [.ags/rules/user-interaction.md](.ags/rules/user-interaction.md) | Tone, verbosity, language |
-| [.ags/rules/collaboration.md](.ags/rules/collaboration.md) | Approval protocol, file-write rules |
+| [.ags/rules/context-management.md](.ags/rules/context-management.md) | State files, compaction strategy |
 | [.ags/rules/coding.md](.ags/rules/coding.md) | Engineering principles, tests, stubs, performance |
 | [.ags/rules/coordination.md](.ags/rules/coordination.md) | Agent hierarchy, delegation, escalation |
-| [.ags/rules/context-management.md](.ags/rules/context-management.md) | State files, compaction strategy |
 | [.ags/rules/directory-structure.md](.ags/rules/directory-structure.md) | Repo layout |
-| [.ags/templates/](.ags/templates/) | Document templates used by skills |
+| [.ags/templates/](.ags/templates/) | Document templates (all follow t_* naming) |
 | [.claude/skills/](.claude/skills/) | Slash-command skills |
 
 ## Credits

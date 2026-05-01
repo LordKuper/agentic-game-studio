@@ -116,8 +116,8 @@ Based on type, use appropriate template:
 
 | Type | Template | Output Path |
 |------|----------|-------------|
-| `design` | `.ags/templates/design-doc-from-implementation.md` | `design/gdd/[system-name].md` |
-| `architecture` | `.ags/templates/architecture-doc-from-code.md` | `design/architecture/[decision-name].md` |
+| `design` | `.ags/templates/t_design-from-implementation.md` | `design/gdd/[system-name].md` |
+| `architecture` | `.ags/templates/t_architecture-from-code.md` | `design/architecture/[decision-name].md` |
 
 **Draft structure**:
 - Capture **what exists** (mechanics, patterns, implementation)

@@ -14,7 +14,7 @@ allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 |---|---|---|
 | `.ags/project/stage.md` (Phase = polish or release) | `/ags-gate-check polish` | STOP. "Not ready for release. Run `/ags-gate-check polish` first." |
 | `tests/` with passing suite | `/ags-test-setup` + dev | STOP. "Tests not configured. Run `/ags-test-setup`." |
-| `.ags/templates/release-checklist-template.md` | template | STOP. "Release checklist template missing — broken install." |
+| `.ags/templates/t_release-checklist.md` | template | STOP. "Release checklist template missing — broken install." |
 
 If STOP triggers, exit verdict **BLOCKED**.
 
