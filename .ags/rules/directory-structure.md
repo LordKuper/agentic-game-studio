@@ -27,6 +27,7 @@
 │   │   ├── bugs/                      # Bug reports
 │   │   ├── qa/                        # QA plans
 │   │   ├── risks/                     # Risk register entries
+│   │   ├── reviews/                   # External-review reports (Codex). One file per target+type, append-iteration. `.tmp/` subdir gitignored.
 │   │   └── release/                   # Release-readiness artifacts
 │   ├── rules/                         # Agent rules (this file lives here)
 │   └── templates/                     # Document templates
@@ -50,3 +51,4 @@
 - **Project-level state files** (`stage.md`, `review-mode.md`, `stubs.md`, `decisions-log.md`, `epics/index.md`) live under `.ags/project/`. Persist across `state.md` overwrites.
 - **All state files in Markdown** — no `.txt`, `.yaml`. Resume work on any stage by reading the relevant `.md`.
 - **`.ags/project/`** mostly working state — keep gitignored unless project explicitly tracks epic/decision history in git.
+- **External reviews** (`.ags/project/reviews/`) — one file per `[YYYY-MM-DD]-[type]-[slug]`. Iterations append as new `## Iteration N` sections; never overwrite. `.ags/project/reviews/.tmp/` holds raw Codex prompts/output, gitignored.

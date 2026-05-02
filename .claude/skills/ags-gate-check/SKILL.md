@@ -248,6 +248,25 @@ Art Director:       [READY / CONCERNS / NOT READY]
 
 ---
 
+## 4c. External Review (Codex) — epic-done and release gates only
+
+For target gate `epic-done` or `release` (skip for other gates):
+
+1. Verify `codex` is on PATH via Bash (`command -v codex`). Missing → record CONCERN "external-review skipped: codex CLI not installed", do NOT block gate.
+2. Invoke `/ags-external-review` in embedded mode:
+   - `epic-done` → `type=epic`, `target=[active epic slug]`
+   - `release` → `type=security`, `target=[release branch or version tag]`
+3. Pass `--embedded` flag so the sub-skill returns a structured verdict line and skips its own user dialog.
+4. Read the returned verdict line:
+   - `EXTERNAL-REVIEW: BLOCK ...` → this gate is **FAIL**. Record blocker "external review BLOCK — see [report-path]". Tell user to fix and re-run gate (which will re-invoke the review at iteration N+1).
+   - `EXTERNAL-REVIEW: CONCERNS ...` → this gate downgraded to minimum CONCERNS. Surface report path; user decides accept/fix.
+   - `EXTERNAL-REVIEW: PASS ...` → no effect on verdict.
+5. Reference the report path in the gate output's `Required Artifacts` list.
+
+In `solo` review mode, external review still runs (it is independent of director-panel intensity).
+
+---
+
 ## 5. Output the Verdict
 
 ```

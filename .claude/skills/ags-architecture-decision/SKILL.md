@@ -354,6 +354,19 @@ developers reading the GDD from implementing the wrong interface.
 
 No inconsistencies: skip silently.
 
+4.8. **External Review (Codex)** — Before write approval, run external Codex review on the drafted ADR:
+
+   - Verify `codex` on PATH via Bash. Missing → record CONCERN, skip; do not block.
+   - Persist draft to a temp path under `.ags/project/reviews/.tmp/adr-[NNNN]-draft.md` so the sub-skill can read it.
+   - Invoke `/ags-external-review adr [draft-path] --embedded`.
+   - Read returned verdict line:
+     - `EXTERNAL-REVIEW: BLOCK ...` → STOP. Surface report path + blockers. User fixes the draft, then re-run THIS skill (which re-invokes the review at the next iteration).
+     - `EXTERNAL-REVIEW: CONCERNS ...` → surface report path. Ask user via `AskUserQuestion`: accept and proceed, or address findings before write.
+     - `EXTERNAL-REVIEW: PASS ...` → proceed silently.
+   - Reference final report path in the ADR's `Related Decisions` section.
+
+---
+
 5. **Write approval** — `AskUserQuestion`:
 
 GDD sync issues found:

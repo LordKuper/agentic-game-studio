@@ -296,6 +296,21 @@ but don't yet. Group by priority:
 
 ---
 
+## Phase 6.5: External Review (Codex)
+
+Before the write-approval step, run external Codex review on the assembled architecture draft (treat the architecture doc as an ADR-shaped artefact for review purposes):
+
+- Verify `codex` on PATH via Bash. Missing → record CONCERN, skip; do not block.
+- Persist the draft to `.ags/project/reviews/.tmp/architecture-draft.md`.
+- Invoke `/ags-external-review adr [draft-path] --embedded` (the `adr` prompt template covers architectural soundness, GDD alignment, engine-version risk, and consistency — applicable here too).
+- Read returned verdict line:
+  - `EXTERNAL-REVIEW: BLOCK ...` → STOP. Surface report path + blockers. User revises sections, re-run THIS skill (review re-runs at next iteration).
+  - `EXTERNAL-REVIEW: CONCERNS ...` → surface report path. `AskUserQuestion`: accept and proceed, or revise.
+  - `EXTERNAL-REVIEW: PASS ...` → proceed silently.
+- Reference final report path in the architecture document's `Document Status` section under a new line `External Review: [path]`.
+
+---
+
 ## Phase 7: Write the Master Architecture Document
 
 Once all sections are approved, write the complete document to
