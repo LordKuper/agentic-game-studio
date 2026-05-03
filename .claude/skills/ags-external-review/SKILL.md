@@ -1,7 +1,7 @@
 ---
 name: ags-external-review
-description: "Run external Codex CLI review on a target artifact (ADR, epic, code diff, GDD, security). Claude re-classifies findings by severity; high+ blocks workflow until fixed and re-reviewed. Reports written to .ags/project/reviews/."
-argument-hint: "[type: adr|epic|code|gdd|security|custom] [target-path or identifier] [--iteration N]"
+description: "Run external Codex CLI review on a target artifact (ADR, epic, code diff, GDD, concept, art-bible, design-system, ux, systems-index, control-manifest, story, contracts, qa-plan, asset-spec, localize, release-checklist, security). Claude re-classifies findings by severity; high+ blocks workflow until fixed and re-reviewed. Reports written to .ags/project/reviews/."
+argument-hint: "[type: adr|epic|code|gdd|concept|art-bible|design-system|ux|systems-index|control-manifest|story|contracts|qa-plan|asset-spec|localize|release-checklist|security|custom] [target-path or identifier] [--iteration N]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion
 ---
@@ -21,7 +21,7 @@ Independent second opinion via the `codex` CLI. Used standalone or embedded in g
 | Check | If missing |
 |---|---|
 | `codex` binary on PATH (run `command -v codex` via Bash) | STOP. "Codex CLI not found on PATH. Install Codex CLI before running external review." |
-| Type argument is one of `adr|epic|code|gdd|security|custom` | STOP. "Invalid type. Usage: `/ags-external-review adr design/architecture/adr-0001-event-system.md`." |
+| Type argument is one of `adr|epic|code|gdd|concept|art-bible|design-system|ux|systems-index|control-manifest|story|contracts|qa-plan|asset-spec|localize|release-checklist|security|custom` | STOP. "Invalid type. Usage: `/ags-external-review adr design/architecture/adr-0001-event-system.md`." |
 | Target path/identifier provided (or resolvable from context for `epic`) | STOP. "No target. Provide path or identifier." |
 | Target file/dir exists (where applicable) | STOP. "Target `[X]` not found." |
 | Prompt template `.ags/templates/external-review/t_prompt-[type].md` exists (skip for `custom`) | STOP. "Prompt template missing for type `[type]`." |
@@ -47,6 +47,18 @@ Determine **report path**:
 - `epic` → epic slug from `.ags/project/stage.md` Active Epic, or `$2`
 - `code` → branch name or PR number, fallback to short hash of target path
 - `gdd` → GDD basename without `.md`
+- `concept` → `game-concept` (single artifact)
+- `art-bible` → `art-bible` (single artifact)
+- `design-system` → DESIGN.md basename without `.md` (e.g. `DESIGN`, `DESIGN-marketing`)
+- `ux` → UX doc basename without `.md` (e.g. `hud`, `inventory-flow`)
+- `systems-index` → `systems-index` (single artifact)
+- `control-manifest` → `control-manifest` (single artifact)
+- `story` → story basename without `.md` (e.g. `story-001-spawn-enemy`), prefix with epic slug if available: `[epic-slug]--[story]`
+- `contracts` → `[epic-slug]-contracts`
+- `qa-plan` → QA plan basename without `.md`
+- `asset-spec` → asset-spec basename without `.md`
+- `localize` → `localize` or locale-bundle basename
+- `release-checklist` → `release-[version]` or checklist basename
 - `security` → `release-[version]` or `security-[short-hash]`
 - `custom` → user-supplied via `AskUserQuestion`
 
@@ -61,8 +73,27 @@ Read `.ags/templates/external-review/t_prompt-[type].md`. Substitute placeholder
 - `{{TARGET}}` — target path or identifier
 - `{{TARGET_CONTENT}}` — full content of target file(s) (Read; for dirs Glob + Read each, cap at 50 files; for `code` use `git diff` against base branch)
 - `{{PROJECT_CONTEXT}}` — short summary built from: `CLAUDE.md` summary line, `.ags/project/stage.md` (phase + active epic), engine + version from `.ags/rules/technical-preferences.md`
-- `{{RELATED_DOCS}}` — type-specific context (e.g. for `adr`: linked GDDs from "GDD Requirements Addressed" table; for `epic`: EPIC.md + stories list; for `gdd`: registry entries)
+- `{{RELATED_DOCS}}` — type-specific context. Per type:
+  - `adr` → linked GDDs from "GDD Requirements Addressed" table; existing ADRs in same domain; relevant `docs/registry/architecture.yaml` stances.
+  - `epic` → EPIC.md + stories list + epic contracts + linked ADRs.
+  - `gdd` → game-concept.md summary, related GDDs cited in Dependencies, registry entries for shared entities.
+  - `concept` → pillars file (if separate), narrative direction notes, reference titles.
+  - `art-bible` → game-concept Visual Identity Anchor, DESIGN.md token summary, pinned engine renderer.
+  - `design-system` → art bible UI Visual Language section, lint output (run `npx @google/design.md lint` and capture), pinned engine UI framework.
+  - `ux` → game-concept, control-manifest, DESIGN.md tokens summary, accessibility tier from `design/accessibility-requirements.md`, related GDDs.
+  - `systems-index` → game-concept, pillars, milestone scope from producer plan, prior systems-index versions if any.
+  - `control-manifest` → game-concept, target platforms, accessibility tier, engine input system, related UX specs.
+  - `story` → parent EPIC.md, cited ADRs, cited GDDs, contracts, prior stories in same epic, `.ags/project/stubs.md` rows touched.
+  - `contracts` → EPIC.md, related ADRs, `.ags/project/stubs.md`, owner-epics, registry stances.
+  - `qa-plan` → game-concept, in-scope GDDs / ADRs, target platforms, accessibility tier, recent bug history from `.ags/project/bugs/`.
+  - `asset-spec` → art bible, DESIGN.md tokens, pinned engine renderer, technical-preferences budgets, related GDDs.
+  - `localize` → target locale list, font fallback config, UI specs, accessibility tier, dialogue / writing samples.
+  - `release-checklist` → target platforms with cert profiles, QA sign-off status, build pipeline, store metadata, prior changelog/patch-notes.
+  - `code` → diff context (base branch), changed files list.
+  - `security` → release branch / version tag, threat-model notes, dependency manifest.
+  - `custom` → user-supplied via `AskUserQuestion`.
 - `{{ITERATION}}` — iteration number; for N>1 also embed previous iteration's findings + user's fix notes
+- `{{PRIOR_FINDINGS}}` — for N>1, the previous iteration's re-classified findings table; empty for N=1
 
 For `custom`, ask user for prompt body and target context inline via `AskUserQuestion`.
 
