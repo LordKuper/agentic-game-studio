@@ -272,6 +272,46 @@ Present the assessment to the user. If UNREALISTIC, offer to adjust the MVP defi
 
    Seed of the art bible — captures the core visual decision before it's forgotten.
 
+### 4a. Internal Review Loop
+
+Before write approval, run a final consolidated internal review on the assembled concept draft. Spawn `creative-director` (gate **CD-PILLARS**), `art-director` (gate **AD-CONCEPT-VISUAL**), `technical-director` (gate **TD-FEASIBILITY**), `producer` (gate **PR-SCOPE**) in parallel via Task. Pass the full drafted document.
+
+Apply review mode:
+- `solo` → skip the loop; proceed directly to 4b.
+- `lean` / `full` → spawn the panel.
+
+**Loop exit condition.** Single iteration in which every spawned director returns READY (no critical/high/medium findings). No iteration cap. Non-clean → consolidate findings, ask user to revise the relevant sections, re-spawn the same panel.
+
+Record iteration count.
+
+### 4b. External Review Gate (user confirm)
+
+After the internal loop is CLEAN (or skipped in `solo`), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review before writing the game concept?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: persist draft to `.ags/project/reviews/.tmp/game-concept-draft.md` and invoke `/ags-external-review concept [draft-path] --embedded`. Handle returned verdict line:
+  - `EXTERNAL-REVIEW: BLOCK` → STOP. Surface report path + blockers. User revises, re-run skill.
+  - `EXTERNAL-REVIEW: CONCERNS` → surface report path. `AskUserQuestion`: accept and proceed, or revise.
+  - `EXTERNAL-REVIEW: PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: concept
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
+
+---
+
 5. Use `AskUserQuestion` for write approval:
 - Prompt: "Game concept is ready. May I write it to `design/gdd/game-concept.md`?"
 - Options: `[A] Yes — write it` / `[B] Not yet — revise a section first`

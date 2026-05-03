@@ -224,28 +224,57 @@ systems index with all data from Phases 2-4:
 - Fill the high-risk systems
 - Fill progress tracker (all systems "Not Started" initially, unless GDDs already exist)
 
-### Step 5b: Approval
+### Step 5b: Internal Review Loop
+
+Before write approval, run a consolidated internal review on the drafted systems index. Spawn `technical-director` (gate **TD-SYSTEM-BOUNDARY**), `producer` (gate **PR-SCOPE**), and `creative-director` (gate **CD-SYSTEMS**) in parallel via Task. Pass: drafted systems index, game pillars and core fantasy.
+
+**Review mode check** — apply for the loop:
+- `solo` → skip the loop entirely. Proceed to Step 5c.
+- `lean` / `full` → spawn the panel.
+
+**Loop exit condition.** Single iteration where all spawned reviewers return clean (no critical/high/medium findings). Non-clean → user revises affected sections of the draft, re-spawn the same panel. No iteration cap.
+
+Record iteration count and per-reviewer final verdicts.
+
+### Step 5c: External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on the systems index?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: persist draft to `.ags/project/reviews/.tmp/systems-index-draft.md`. Invoke `/ags-external-review systems-index [draft-path] --embedded`. Handle verdict line:
+  - `BLOCK` → STOP. Surface report path + blockers. User revises, re-run.
+  - `CONCERNS` → surface report path. `AskUserQuestion`: accept, or revise.
+  - `PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: systems-index
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
+
+### Step 5d: Approval
 
 Present a summary of the document:
 - Total systems count by category
 - MVP system count
 - First 3 systems in the design order
 - Any high-risk items
+- Internal review iterations: [N]
+- External review: [report path | skipped — see decisions-log.md | not run]
 
 Ask: "May I write the systems index to `design/gdd/systems-index.md`?"
 
-Wait for approval. Write the file only after "yes."
-
-**Review mode check** — apply before spawning CD-SYSTEMS:
-- `solo` → skip. Note: "CD-SYSTEMS skipped — Solo mode." Proceed to Phase 7 next steps.
-- `lean` → skip (not a PHASE-GATE). Note: "CD-SYSTEMS skipped — Lean mode." Proceed to Phase 7 next steps.
-- `full` → spawn as normal.
-
-**After the systems index is written, spawn `creative-director` via Task using gate CD-SYSTEMS (`.ags/rules/director-gates.md`).**
-
-Pass: systems index path, game pillars and core fantasy (from `design/gdd/game-concept.md`), MVP priority tier system list.
-
-Present the assessment. If REJECT, revise the system set with the user before GDD authoring begins. If CONCERNS, record them in the systems index as a `> **Creative Director Note**` at the top of the relevant tier section.
+Wait for approval. Write the file only after "yes." Record review provenance lines in the document header.
 
 ### Step 5c: Update Session State
 

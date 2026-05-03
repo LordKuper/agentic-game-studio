@@ -129,16 +129,44 @@ Confirm IDs with user before writing.
 
 ---
 
-## 8. Producer Gate (PR-EPIC)
+## 8. Internal Review Loop (Producer Gate PR-EPIC)
 
 Apply review mode:
-- `solo` → skip. Note: "PR-EPIC skipped — Solo mode."
-- `lean` → skip. Note: "PR-EPIC skipped — Lean mode."
-- `full` → spawn `producer` via Task with gate **PR-EPIC** (`.ags/rules/director-gates.md`).
+- `solo` → skip the loop entirely. Proceed to Phase 8b.
+- `lean` → skip the loop. Proceed to Phase 8b.
+- `full` → spawn `producer` via Task with gate **PR-EPIC** (`.ags/rules/director-gates.md`) in a loop.
 
 Pass: epic name, systems with modes, rationale, current epic count, open stubs count.
 
-If verdict is CONCERNS or NOT READY, surface and let user decide whether to revise or proceed.
+**Loop exit condition.** Single iteration where the producer returns clean (no critical/high/medium findings; READY). Non-clean → user revises epic scope/rationale/systems-in-scope, re-spawn PR-EPIC. No iteration cap.
+
+Record iteration count.
+
+## 8b. External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on the epic plan before writing files?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: persist epic plan summary to `.ags/project/reviews/.tmp/epic-[slug]-draft.md`. Invoke `/ags-external-review epic [draft-path] --embedded`. Handle verdict line:
+  - `BLOCK` → STOP. Surface report path + blockers. User revises, re-run skill.
+  - `CONCERNS` → surface report path. `AskUserQuestion`: accept, or revise.
+  - `PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: epic [slug]
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
 
 ---
 

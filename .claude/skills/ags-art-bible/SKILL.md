@@ -190,19 +190,51 @@ Write the approved section to file.
 
 ---
 
-## Phase 5: Art Director Sign-Off
+## Phase 5: Internal Review Loop (Art Director Sign-Off)
 
 **Review mode check** — apply before spawning AD-ART-BIBLE:
-- `solo` → skip. Note: "AD-ART-BIBLE skipped — Solo mode." Proceed to Phase 6.
-- `lean` → skip (not a PHASE-GATE). Note: "AD-ART-BIBLE skipped — Lean mode." Proceed to Phase 6.
-- `full` → spawn as normal.
+- `solo` → skip the loop. Note: "AD-ART-BIBLE skipped — Solo mode." Proceed to Phase 5b.
+- `lean` → skip the loop (not a PHASE-GATE). Note: "AD-ART-BIBLE skipped — Lean mode." Proceed to Phase 5b.
+- `full` → spawn the loop.
 
 After all sections are complete (or the scoped set from Phase 1 is complete), spawn `creative-director` via Task using gate **AD-ART-BIBLE** (`.ags/rules/director-gates.md`).
 
 Pass: art bible file path, game pillars, visual identity anchor.
 
-Handle verdict per standard rules in `director-gates.md`. Record the verdict in the art bible's status header:
-`> **Art Director Sign-Off (AD-ART-BIBLE)**: APPROVED [date] / CONCERNS (accepted) [date] / REVISED [date]`
+**Loop exit condition.** Single iteration where the reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected sections (re-write to file as in Collaborative Protocol), re-spawn the same gate. No iteration cap.
+
+Record iteration count and final verdict in the art bible's status header:
+`> **Art Director Sign-Off (AD-ART-BIBLE)**: APPROVED [date] / CONCERNS (accepted) [date] / REVISED [date] | Iterations: [N]`
+
+---
+
+## Phase 5b: External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on the art bible?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: invoke `/ags-external-review art-bible [art-bible-path] --embedded`. Handle verdict line:
+  - `BLOCK` → STOP. Surface report path + blockers. User revises affected sections, re-run skill.
+  - `CONCERNS` → surface report path. `AskUserQuestion`: accept and proceed, or revise.
+  - `PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+  Record `External Review: [report-path]` in the art bible's status header.
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: art-bible
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+  Record `External Review: skipped — see decisions-log.md` in the art bible's status header.
+- **[C]**: halt skill.
 
 ---
 

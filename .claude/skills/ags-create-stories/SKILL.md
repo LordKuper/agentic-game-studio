@@ -96,18 +96,20 @@ For each story, determine:
 
 ---
 
-## 4b. QA Lead Story Readiness Gate
+## 4b. Internal Review Loop (QA Lead Story Readiness)
 
-**Review mode check** — apply before spawning QL-STORY-READY:
-- `solo` → skip. Note: "QL-STORY-READY skipped — Solo mode." Proceed to Step 5 (present stories for review).
-- `lean` → skip (not a PHASE-GATE). Note: "QL-STORY-READY skipped — Lean mode." Proceed to Step 5 (present stories for review).
-- `full` → spawn as normal.
+**Review mode check** — apply for the loop:
+- `solo` → skip the loop. Note: "QL-STORY-READY skipped — Solo mode." Proceed to Step 4c.
+- `lean` → skip the loop. Note: "QL-STORY-READY skipped — Lean mode." Proceed to Step 4c.
+- `full` → spawn the loop.
 
 After decomposing all stories (Step 4 complete) but before presenting them for write approval, spawn `qa-lead` via Task using gate **QL-STORY-READY** (`.ags/rules/director-gates.md`).
 
 Pass: the full story list with acceptance criteria, story types, and TR-IDs; the epic's GDD acceptance criteria for reference.
 
-Present the QA lead's assessment. For each story flagged as GAPS or INADEQUATE, revise the acceptance criteria before proceeding — stories with untestable criteria cannot be implemented correctly. Once all stories reach ADEQUATE, proceed.
+**Loop exit condition.** Single iteration where every story reaches ADEQUATE (no GAPS / INADEQUATE / critical / high / medium findings). Non-clean → user revises affected stories' acceptance criteria, re-spawn QL-STORY-READY. No iteration cap.
+
+Record iteration count.
 
 **After ADEQUATE**: for every Logic and Integration story, ask the qa-lead to produce concrete test case specifications — one per acceptance criterion — in this format:
 
@@ -128,6 +130,34 @@ Manual check: [criterion text]
 ```
 
 These test case specs are embedded directly into each story's `## QA Test Cases` section. The developer implements against these cases. The programmer does not write tests from scratch — QA has already defined what "done" looks like.
+
+---
+
+## 4c. External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on the story set before writing files?
+[A] Yes — run /ags-external-review on each story
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: persist each draft story to `.ags/project/reviews/.tmp/[epic-slug]--story-[NNN]-draft.md`. For each story, invoke `/ags-external-review story [draft-path] --embedded`. Aggregate verdicts:
+  - any `BLOCK` → STOP. Surface report paths + blockers. User revises affected stories, re-run skill.
+  - any `CONCERNS` → surface report paths. `AskUserQuestion`: accept all and proceed, or revise.
+  - all `PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: stories [epic-slug] ([N] stories)
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
 
 ---
 

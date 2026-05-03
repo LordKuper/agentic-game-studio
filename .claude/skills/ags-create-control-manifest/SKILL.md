@@ -122,12 +122,12 @@ Ask: "Does this look complete? Any rules to add or remove before I write the man
 
 ---
 
-## 4b. Director Gate — Technical Review
+## 4b. Internal Review Loop — Technical Review
 
-**Review mode check** — apply before spawning TD-MANIFEST:
-- `solo` → skip. Note: "TD-MANIFEST skipped — Solo mode." Proceed to Phase 5.
-- `lean` → skip. Note: "TD-MANIFEST skipped — Lean mode." Proceed to Phase 5.
-- `full` → spawn as normal.
+**Review mode check** — apply for the loop:
+- `solo` → skip the loop. Note: "TD-MANIFEST skipped — Solo mode." Proceed to Phase 4c.
+- `lean` → skip the loop. Note: "TD-MANIFEST skipped — Lean mode." Proceed to Phase 4c.
+- `full` → spawn the loop.
 
 Spawn `technical-director` via Task using gate **TD-MANIFEST** (`.ags/rules/director-gates.md`).
 
@@ -139,10 +139,35 @@ The technical-director reviews whether:
 - No rules were added that lack a source ADR or preference document
 - Performance guardrails are consistent with the ADR constraints
 
-Apply the verdict:
-- **APPROVE** → proceed to Phase 5
-- **CONCERNS** → surface via `AskUserQuestion` with options: `Revise flagged rules` / `Accept and proceed` / `Discuss further`
-- **REJECT** → do not write the manifest; fix the flagged rules and re-present the summary
+**Loop exit condition.** Single iteration where the reviewer returns clean (no critical/high/medium findings). Non-clean → user revises flagged rules / re-extracts from ADRs, re-spawn TD-MANIFEST. No iteration cap.
+
+Record iteration count.
+
+## 4c. External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on the control manifest before writing?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: persist preview to `.ags/project/reviews/.tmp/control-manifest-draft.md`. Invoke `/ags-external-review control-manifest [draft-path] --embedded`. Handle verdict line:
+  - `BLOCK` → STOP. Surface report path + blockers. User revises, re-run skill.
+  - `CONCERNS` → surface report path. `AskUserQuestion`: accept, or revise.
+  - `PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: control-manifest
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
 
 ---
 

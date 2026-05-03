@@ -874,6 +874,48 @@ Present the check results:
 
 ---
 
+## 5x. Internal Review Loop
+
+Before handoff, run an internal review loop on the completed UX spec. Spawn `ux-designer` (self-review) and `art-director` (gate **AD-UX-VISUAL** if defined; otherwise pass spec for visual-language adherence) in parallel via Task. Pass: spec file path, DESIGN.md tokens, accessibility tier, related GDDs.
+
+**Review mode check**:
+- `solo` → skip the loop entirely; proceed to 5y.
+- `lean` / `full` → spawn the panel.
+
+**Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected sections (re-write to file as in Collaborative Protocol), re-spawn the panel. No iteration cap.
+
+Record iteration count.
+
+## 5y. External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on this UX spec?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: invoke `/ags-external-review ux [spec-path] --embedded`. Handle verdict line:
+  - `BLOCK` → STOP. Surface report path + blockers. User revises, re-run.
+  - `CONCERNS` → surface report path. `AskUserQuestion`: accept, or revise.
+  - `PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: ux [spec-name]
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
+
+> Note: this complements the existing `/ux-review` referenced in step 6b. The Codex external review here is a quick independent check before handoff; `/ux-review` remains the deeper validation pass.
+
+---
+
 ## 6. Handoff
 
 When all sections are approved and written:

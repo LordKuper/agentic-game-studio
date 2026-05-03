@@ -681,19 +681,53 @@ the source of truth). Verify:
 - Dependencies are listed with interfaces
 - Acceptance criteria are testable
 
-### 5a-bis: Creative Director Pillar Review
+### 5a-bis: Internal Review Loop (Creative Director Pillar Review)
 
 **Review mode check** — apply before spawning CD-GDD-ALIGN:
-- `solo` → skip. Note: "CD-GDD-ALIGN skipped — Solo mode." Proceed to Step 5b.
-- `lean` → skip (not a PHASE-GATE). Note: "CD-GDD-ALIGN skipped — Lean mode." Proceed to Step 5b.
-- `full` → spawn as normal.
+- `solo` → skip the loop. Note: "CD-GDD-ALIGN skipped — Solo mode." Proceed to Step 5a-ext.
+- `lean` → skip the loop (not a PHASE-GATE). Note: "CD-GDD-ALIGN skipped — Lean mode." Proceed to Step 5a-ext.
+- `full` → spawn the loop.
 
 Before finalizing the GDD, spawn `creative-director` via Task using gate **CD-GDD-ALIGN** (`.ags/rules/director-gates.md`).
 
 Pass: completed GDD file path, game pillars (from `design/gdd/game-concept.md` or `design/gdd/game-pillars.md`), MDA aesthetics target.
 
-Handle verdict per the standard rules in `director-gates.md`. After resolution, record the verdict in the GDD Status header:
-`> **Creative Director Review (CD-GDD-ALIGN)**: APPROVED [date] / CONCERNS (accepted) [date] / REVISED [date]`
+**Loop exit condition.** Single iteration where the reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected sections, re-spawn CD-GDD-ALIGN. No iteration cap.
+
+Record iteration count and final verdict in the GDD Status header:
+`> **Creative Director Review (CD-GDD-ALIGN)**: APPROVED [date] / CONCERNS (accepted) [date] / REVISED [date] | Iterations: [N]`
+
+---
+
+### 5a-ext: External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on this GDD?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: invoke `/ags-external-review gdd [gdd-path] --embedded`. Handle returned verdict line:
+  - `BLOCK` → STOP. Surface report path + blockers. User revises affected sections, re-run skill.
+  - `CONCERNS` → surface report path. `AskUserQuestion`: accept and proceed, or revise.
+  - `PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+  Record `External Review: [report-path]` in the GDD Status header.
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: gdd [system-name]
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+  Record `External Review: skipped — see decisions-log.md` in the GDD Status header.
+- **[C]**: halt skill.
+
+> The external review here is the Codex CLI run, complementary to the standalone `/ags-design-review` referenced in Step 5c. The Codex review is part of this skill's flow; `/ags-design-review` remains a separate-session validation as before.
 
 ---
 
