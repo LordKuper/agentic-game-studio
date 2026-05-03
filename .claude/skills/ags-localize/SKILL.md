@@ -40,6 +40,38 @@ If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 
+## Phase 1: Review Policy (applies to every write-producing mode)
+
+For every mode below that produces a writable artifact (extracted strings bundle, translator brief, cultural review, VO scripts, RTL report, freeze snapshot, QA verdict report), apply this loop **before** the mode's `May I write...` prompt:
+
+1. **Internal Review Loop** (skip in `solo` mode):
+   - Spawn `narrative-director` (and `producer` for scope / cert questions) via Task to review the drafted artifact against locale list, accessibility tier, cert constraints, and writing samples.
+   - **Loop exit condition:** single iteration with no critical/high/medium findings. Non-clean → user revises → re-spawn. No iteration cap. Record iteration count.
+
+2. **External Review Gate** (`AskUserQuestion`):
+
+   ```
+   Internal review CLEAN ([N] iterations). Run external Codex review on the [artifact] before writing?
+   [A] Yes — run /ags-external-review
+   [B] Skip external (record reason in decisions-log.md)
+   [C] Stop — review further
+   ```
+
+   - **[A]**: invoke `/ags-external-review localize [draft-path] --embedded`. Handle BLOCK/CONCERNS/PASS as in other skills. Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+   - **[B]**: append to `.ags/project/decisions-log.md`:
+     ```
+     ## [YYYY-MM-DD HH:MM] — External review skipped: localize [mode/locale]
+
+     **Type**: process
+     **Reason**: [user-supplied reason or "user declined"]
+     **Decided by**: user
+     ```
+   - **[C]**: halt skill.
+
+This policy is invoked once per artifact generated — re-applied per mode invocation, not per string row.
+
+---
+
 ## Phase 2A: Scan Mode
 
 Search `Assets/Scripts/` for hardcoded user-facing strings:

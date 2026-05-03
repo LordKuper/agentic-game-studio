@@ -161,6 +161,44 @@ If [C]: ask what direction to change. Re-spawn the relevant agent with the updat
 
 ---
 
+## Phase 4b: Internal Review Loop
+
+Apply review mode:
+- `solo` → skip the loop. Proceed to Phase 4c.
+- `lean` / `full` → spawn `art-director` and `technical-artist` via Task to review the assembled spec set against art bible, DESIGN.md tokens, engine renderer constraints, and budget.
+
+**Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected specs, re-spawn reviewers. No iteration cap.
+
+Record iteration count.
+
+## Phase 4c: External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on the asset specs before writing?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: persist drafted spec set to `.ags/project/reviews/.tmp/asset-spec-[target-name]-draft.md`. Invoke `/ags-external-review asset-spec [draft-path] --embedded`. Handle verdict line:
+  - `BLOCK` → STOP. Surface report path + blockers. User revises, re-run.
+  - `CONCERNS` → surface report path. `AskUserQuestion`: accept, or revise.
+  - `PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: asset-spec [target-name]
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
+
+---
+
 ## Phase 5: Write Spec File
 
 After approval, ask: "May I write the spec to `design/assets/specs/[target-name]-assets.md`?"

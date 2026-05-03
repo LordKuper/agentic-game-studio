@@ -64,11 +64,49 @@ Present draft contracts to the user as a structured block per stub system.
 ## Phase 5: User Review and Edits
 
 Use `AskUserQuestion` with prompt "Any edits to interfaces, defaults, or owner-epic assignments?" and options:
-- `Approve as drafted` — proceed to write
+- `Approve as drafted` — proceed to internal review
 - `Edit interfaces` — user describes changes free-form, redraft
 - `Cancel` — stop with verdict BLOCKED
 
 Apply edits, redraft, present again. Loop until user approves.
+
+---
+
+## Phase 5b: Internal Review Loop
+
+Apply review mode:
+- `solo` → skip the loop. Proceed to Phase 5c.
+- `lean` / `full` → spawn `lead-programmer` (and optionally `technical-director`) via Task to review the drafted contracts against existing ADRs, registry stances, and stubs.md.
+
+**Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected interfaces / defaults, re-spawn the reviewers. No iteration cap.
+
+Record iteration count.
+
+## Phase 5c: External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on the contracts before writing?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: persist contracts draft to `.ags/project/reviews/.tmp/[epic-slug]-contracts-draft.md`. Invoke `/ags-external-review contracts [draft-path] --embedded`. Handle verdict line:
+  - `BLOCK` → STOP. Surface report path + blockers. User revises, re-run.
+  - `CONCERNS` → surface report path. `AskUserQuestion`: accept, or revise.
+  - `PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: contracts [epic-slug]
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
 
 ---
 

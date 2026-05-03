@@ -233,6 +233,44 @@ test entry should reflect the real requirements of these specific stories.
 
 ---
 
+## Phase 4b: Internal Review Loop
+
+Apply review mode:
+- `solo` → skip the loop. Proceed to Phase 4c.
+- `lean` / `full` → spawn `qa-lead` (self-review) and `producer` via Task to review the drafted plan against project pillars, milestone scope, accessibility tier, and recent bug history.
+
+**Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected sections of the plan, re-spawn reviewers. No iteration cap.
+
+Record iteration count.
+
+## Phase 4c: External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on the QA plan before writing?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: persist plan to `.ags/project/reviews/.tmp/qa-plan-[sprint-slug]-draft.md`. Invoke `/ags-external-review qa-plan [draft-path] --embedded`. Handle verdict line:
+  - `BLOCK` → STOP. Surface report path + blockers. User revises, re-run.
+  - `CONCERNS` → surface report path. `AskUserQuestion`: accept, or revise.
+  - `PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: qa-plan [sprint-slug]
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
+
+---
+
 ## Phase 5: Write Output
 
 Show the complete plan in conversation (or a summary if the plan is very long),

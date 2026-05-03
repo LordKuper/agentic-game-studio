@@ -268,6 +268,46 @@ Ready for: `/ags-code-review [file1] [file2]` then `/ags-story-done [story-path]
 
 ---
 
+## Phase 6b: Internal Review Loop (Code Review)
+
+Apply review mode:
+- `solo` → skip the loop. Proceed to Phase 6c.
+- `lean` / `full` → spawn `lead-programmer` via Task to perform code review on the changeset (files + test). Pass: changed file paths, story acceptance criteria, ADR references, project coding rules.
+
+**Loop exit condition.** Single iteration where the reviewer returns clean (no critical/high/medium findings; ACs covered; tests pass on a quick mental walkthrough or by `Bash` test runner if configured). Non-clean → user (or further programmer agents) revises code, re-spawn lead-programmer review. No iteration cap.
+
+Record iteration count.
+
+## Phase 6c: External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on the changeset before story-done?
+[A] Yes — run /ags-external-review code
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: invoke `/ags-external-review code [branch-or-files] --embedded`. Handle verdict line:
+  - `BLOCK` → STOP. Surface report path + blockers. User revises code, re-run.
+  - `CONCERNS` → surface report path. `AskUserQuestion`: accept and proceed, or revise.
+  - `PASS` → proceed silently.
+  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: code [story-slug]
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
+
+> The standalone `/ags-code-review` and `/security-review` remain available as separate-session validations after this skill completes.
+
+---
+
 ## Phase 7: Update Session State
 
 Silently append to `.ags/project/state.md`:

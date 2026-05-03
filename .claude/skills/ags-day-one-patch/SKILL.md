@@ -203,6 +203,38 @@ See: `.ags/project/releases/rollback-plan-[version].md`
 [list player-facing changes in plain language]
 ```
 
+### Internal Review Loop
+
+Apply review mode:
+- `solo` → skip the loop. Proceed to External Review Gate below.
+- `lean` / `full` → spawn `release-manager` and `qa-lead` via Task to review the patch record (scope, fixes, rollback plan, QA sign-off, approvals) against the release context.
+
+**Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected sections, re-spawn reviewers. No iteration cap. Record iteration count.
+
+### External Review Gate (user confirm)
+
+`AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on the day-one patch record before writing?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: persist patch record to `.ags/project/reviews/.tmp/day-one-patch-[version]-draft.md`. Invoke `/ags-external-review release-checklist [draft-path] --embedded` (release-checklist prompt covers patch / cert / rollback concerns). Handle BLOCK/CONCERNS/PASS.
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: day-one-patch [version]
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
+
+---
+
 Ask: "May I write this patch record to `.ags/project/releases/day-one-patch-[version].md`?"
 
 ---

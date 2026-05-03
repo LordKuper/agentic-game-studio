@@ -177,6 +177,40 @@ resolution and estimated time to address them.]
 
 ---
 
+## Phase 4b: Internal Review Loop
+
+Apply review mode:
+- `solo` → skip the loop. Proceed to Phase 4c.
+- `lean` / `full` → spawn `release-manager` and `qa-lead` via Task to review the drafted release checklist against target platforms, cert profiles, QA sign-off status, build pipeline, and store metadata.
+
+**Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected items, re-spawn reviewers. No iteration cap.
+
+Record iteration count.
+
+## Phase 4c: External Review Gate (user confirm)
+
+After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review on the release checklist before writing?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — review further
+```
+
+- **[A]**: persist draft to `.ags/project/reviews/.tmp/release-checklist-[version]-draft.md`. Invoke `/ags-external-review release-checklist [draft-path] --embedded`. Handle BLOCK/CONCERNS/PASS as in other skills.
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: release-checklist [version]
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+- **[C]**: halt skill.
+
+---
+
 ## Phase 5: Save Checklist
 
 Present the checklist to the user with: total checklist items, number of known blockers (FIXME/HACK counts, known bugs).
