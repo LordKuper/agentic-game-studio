@@ -205,11 +205,11 @@ For unverifiable items, ask user:
 
 ---
 
-## 4b. Director Panel Assessment
+## 4b. Director Panel Assessment (Internal Review Loop)
 
 Apply review mode:
 
-- `solo` → skip director panel entirely. Gate verdict from artifact + quality checks only.
+- `solo` → skip director panel entirely. Gate verdict from artifact + quality checks only. No internal-review loop runs.
 - `lean` + phase gate → spawn full panel (CD + TD + PR + AD).
 - `lean` + `epic-done` → spawn `producer` only (gate **PR-EPIC-DONE** in `.ags/rules/director-gates.md`). Other directors skipped.
 - `full` → spawn full panel for any gate.
@@ -226,7 +226,7 @@ Pass each: target gate name, artifacts present list, context fields.
 Collect all responses, present Director Panel summary:
 
 ```
-## Director Panel Assessment
+## Director Panel Assessment (Iteration [N])
 
 Creative Director:  [READY / CONCERNS / NOT READY]
   [feedback]
@@ -241,29 +241,56 @@ Art Director:       [READY / CONCERNS / NOT READY]
   [feedback]
 ```
 
-**Apply to verdict:**
-- Any director NOT READY → minimum FAIL (user may override with explicit acknowledgement)
-- Any director CONCERNS → minimum CONCERNS
-- All READY → eligible for PASS (still subject to artifact + quality checks)
+### Loop semantics
+
+This panel runs as an internal-review loop. Iterate until a single iteration in which **every** spawned director returns READY.
+
+- Any director NOT READY or CONCERNS → present consolidated findings to user, ask to address blockers (fix artifacts, run missing skills, update GDDs/ADRs as appropriate), then re-spawn the same panel for the next iteration. No iteration cap.
+- All READY → exit loop, proceed to 4c.
+
+User may override with explicit acknowledgement (`AskUserQuestion`: "Force-exit loop and accept current verdicts?") — this is recorded in the gate output as `Internal review override: [reason]`.
+
+Record iteration count and per-director final verdicts for the gate report.
 
 ---
 
-## 4c. External Review (Codex) — epic-done and release gates only
+## 4c. External Review Gate (user confirm) — epic-done and release gates only
 
-For target gate `epic-done` or `release` (skip for other gates):
+For target gate `epic-done` or `release` (skip for other gates), after the Director Panel internal-review loop returns all READY (or after override), ask user via `AskUserQuestion`:
 
-1. Verify `codex` is on PATH via Bash (`command -v codex`). Missing → record CONCERN "external-review skipped: codex CLI not installed", do NOT block gate.
+```
+Internal review CLEAN ([N] iterations). Run external Codex review for this gate?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop — do not finalise verdict yet
+```
+
+- **[A]**: proceed to 4c.1 (External Review).
+- **[B]**: append to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: [epic-done | release] [target]
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+  Then proceed to step 5 (Verdict). Note in gate report: `External Review: skipped — see decisions-log.md`.
+- **[C]**: halt skill.
+
+In `solo` review mode the loop is skipped, but this user-confirm gate still runs before any external review.
+
+### 4c.1. External Review (Codex) — only on user [A]
+
+1. Verify `codex` is on PATH via Bash (`command -v codex`). Missing → surface; ask user [B-style skip with reason] or [C-style halt]. Do not silently bypass.
 2. Invoke `/ags-external-review` in embedded mode:
    - `epic-done` → `type=epic`, `target=[active epic slug]`
    - `release` → `type=security`, `target=[release branch or version tag]`
 3. Pass `--embedded` flag so the sub-skill returns a structured verdict line and skips its own user dialog.
 4. Read the returned verdict line:
-   - `EXTERNAL-REVIEW: BLOCK ...` → this gate is **FAIL**. Record blocker "external review BLOCK — see [report-path]". Tell user to fix and re-run gate (which will re-invoke the review at iteration N+1).
+   - `EXTERNAL-REVIEW: BLOCK ...` → this gate is **FAIL**. Record blocker "external review BLOCK — see [report-path]". Tell user to fix and re-run gate (which will re-run internal loop + external review at iteration N+1).
    - `EXTERNAL-REVIEW: CONCERNS ...` → this gate downgraded to minimum CONCERNS. Surface report path; user decides accept/fix.
    - `EXTERNAL-REVIEW: PASS ...` → no effect on verdict.
 5. Reference the report path in the gate output's `Required Artifacts` list.
-
-In `solo` review mode, external review still runs (it is independent of director-panel intensity).
 
 ---
 

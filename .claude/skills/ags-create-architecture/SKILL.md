@@ -296,15 +296,57 @@ but don't yet. Group by priority:
 
 ---
 
-## Phase 6.5: External Review (Codex)
+## Phase 6.5: Internal Review Loop
 
-Before the write-approval step, run external Codex review on the assembled architecture draft (treat the architecture doc as an ADR-shaped artefact for review purposes):
+Before the external-review gate, run an internal review loop. Reviewers: technical-director (self-review via gate **TD-ARCHITECTURE**) + lead-programmer (gate **LP-FEASIBILITY**). Each iteration: spawn both via Task in parallel, collect verdicts and findings.
 
-- Verify `codex` on PATH via Bash. Missing → record CONCERN, skip; do not block.
+**Review mode check** for LP-FEASIBILITY:
+- `solo` → spawn neither; loop runs only TD self-review.
+- `lean` → skip LP-FEASIBILITY (not PHASE-GATE). Loop runs only TD self-review.
+- `full` → spawn both.
+
+**Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical, no high, no medium findings; low allowed). No iteration cap.
+
+**On non-clean iteration**: surface aggregated findings (TD + LP, source-tagged) → user revises the relevant sections of the draft → re-spawn the same reviewers. The draft updates incrementally — write each user-approved section to the skeleton file as before; loop only re-reviews changed sections plus their dependents.
+
+Record iteration count and final verdict per reviewer for the Document Status section.
+
+---
+
+## Phase 6.6: External Review Gate (user confirm)
+
+After internal loop CLEAN, ask user via `AskUserQuestion`:
+
+```
+Internal review CLEAN ([N] iterations). Run external Codex review before writing the master architecture document?
+[A] Yes — run /ags-external-review
+[B] Skip external (record reason in decisions-log.md)
+[C] Stop here — review further
+```
+
+- **[A]**: proceed to Phase 6.7 (External Review).
+- **[B]**: append entry to `.ags/project/decisions-log.md`:
+  ```
+  ## [YYYY-MM-DD HH:MM] — External review skipped: architecture
+
+  **Type**: process
+  **Reason**: [user-supplied reason or "user declined"]
+  **Decided by**: user
+  ```
+  Then proceed to Phase 7 (Write). Note in Document Status: `External Review: skipped — see decisions-log.md`.
+- **[C]**: halt skill.
+
+---
+
+## Phase 6.7: External Review (Codex) — only on user [A]
+
+Run external Codex review on the assembled architecture draft (treat the architecture doc as an ADR-shaped artefact for review purposes):
+
+- Verify `codex` on PATH via Bash. Missing → surface, ask user to skip [B-style log] or abort [C-style halt]; do not silently bypass.
 - Persist the draft to `.ags/project/reviews/.tmp/architecture-draft.md`.
 - Invoke `/ags-external-review adr [draft-path] --embedded` (the `adr` prompt template covers architectural soundness, GDD alignment, engine-version risk, and consistency — applicable here too).
 - Read returned verdict line:
-  - `EXTERNAL-REVIEW: BLOCK ...` → STOP. Surface report path + blockers. User revises sections, re-run THIS skill (review re-runs at next iteration).
+  - `EXTERNAL-REVIEW: BLOCK ...` → STOP. Surface report path + blockers. User revises sections, re-run THIS skill (internal loop + external review re-run at next iteration).
   - `EXTERNAL-REVIEW: CONCERNS ...` → surface report path. `AskUserQuestion`: accept and proceed, or revise.
   - `EXTERNAL-REVIEW: PASS ...` → proceed silently.
 - Reference final report path in the architecture document's `Document Status` section under a new line `External Review: [path]`.
@@ -361,36 +403,16 @@ derived from the game concept, GDDs, and technical preferences]
 
 ---
 
-## Phase 7b: Technical Director Sign-Off + Lead Programmer Feasibility Review
+## Phase 7b: Record Sign-Off in Document Status
 
-After writing the master architecture document, perform an explicit sign-off before handoff.
+The substantive TD self-review and LP feasibility review have already run in Phase 6.5 (Internal Review Loop). This phase records their outcome.
 
-**Step 1 — Technical Director self-review** (this skill runs as technical-director):
-
-Apply gate **TD-ARCHITECTURE** (`.ags/rules/director-gates.md`) as a self-review. Check all four criteria from that gate definition against the completed document.
-
-**Review mode check** — apply before spawning LP-FEASIBILITY:
-- `solo` → skip. Note: "LP-FEASIBILITY skipped — Solo mode." Proceed to Phase 8 handoff.
-- `lean` → skip (not a PHASE-GATE). Note: "LP-FEASIBILITY skipped — Lean mode." Proceed to Phase 8 handoff.
-- `full` → spawn as normal.
-
-**Step 2 — Spawn `lead-programmer` via Task using gate LP-FEASIBILITY (`.ags/rules/director-gates.md`):**
-
-Pass: architecture document path, technical requirements baseline summary, ADR list.
-
-**Step 3 — Present both assessments to the user:**
-
-Show the Technical Director assessment and Lead Programmer verdict side by side.
-
-Use `AskUserQuestion` — "Technical Director and Lead Programmer have reviewed the architecture. How would you like to proceed?"
-Options: `Accept — proceed to handoff` / `Revise flagged items first` / `Discuss specific concerns`
-
-**Step 4 — Record sign-off in the architecture document:**
-
-Update the Document Status section:
+Update the Document Status section of the written architecture document:
 ```
 - Technical Director Sign-Off: [date] — APPROVED / APPROVED WITH CONDITIONS
-- Lead Programmer Feasibility: FEASIBLE / CONCERNS ACCEPTED / REVISED
+- Lead Programmer Feasibility: FEASIBLE / CONCERNS ACCEPTED / REVISED / SKIPPED ([review-mode])
+- Internal Review Iterations: [N]
+- External Review: [report path | skipped — see decisions-log.md | not run]
 ```
 
 Ask: "May I update the Document Status section in `design/architecture/architecture.md` with the sign-off?"
