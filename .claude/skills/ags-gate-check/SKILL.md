@@ -254,43 +254,19 @@ Record iteration count and per-director final verdicts for the gate report.
 
 ---
 
-## 4c. External Review Gate (user confirm) — epic-done and release gates only
+## Combined Review Loop (parallel external Codex)
 
-For target gate `epic-done` or `release` (skip for other gates), after the Director Panel internal-review loop returns all READY (or after override), ask user via `AskUserQuestion`:
+Per `.ags/rules/review-workflow.md`. The internal review section above runs **in parallel** with external Codex inside one loop. Each iteration:
 
-```
-Internal review CLEAN ([N] iterations). Run external Codex review for this gate?
-[A] Yes — run /ags-external-review
-[B] Skip external (record reason in decisions-log.md)
-[C] Stop — do not finalise verdict yet
-```
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/[type]-[slug]-iter[N]-draft.md`.
+3. **Spawn in one message, in parallel** (multiple Task calls + one Bash invocation):
+   - All internal reviewer Tasks listed above.
+   - `/ags-external-review [type] [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (`producer` by default; skill-designated lead where the skill specifies one) merges findings from internal + external, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
 
-- **[A]**: proceed to 4c.1 (External Review).
-- **[B]**: append to `.ags/project/decisions-log.md`:
-  ```
-  ## [YYYY-MM-DD HH:MM] — External review skipped: [epic-done | release] [target]
-
-  **Type**: process
-  **Reason**: [user-supplied reason or "user declined"]
-  **Decided by**: user
-  ```
-  Then proceed to step 5 (Verdict). Note in gate report: `External Review: skipped — see decisions-log.md`.
-- **[C]**: halt skill.
-
-In `solo` review mode the loop is skipped, but this user-confirm gate still runs before any external review.
-
-### 4c.1. External Review (Codex) — only on user [A]
-
-1. Verify `codex` is on PATH via Bash (`command -v codex`). Missing → surface; ask user [B-style skip with reason] or [C-style halt]. Do not silently bypass.
-2. Invoke `/ags-external-review` in embedded mode:
-   - `epic-done` → `type=epic`, `target=[active epic slug]`
-   - `release` → `type=security`, `target=[release branch or version tag]`
-3. Pass `--embedded` flag so the sub-skill returns a structured verdict line and skips its own user dialog.
-4. Read the returned verdict line:
-   - `EXTERNAL-REVIEW: BLOCK ...` → this gate is **FAIL**. Record blocker "external review BLOCK — see [report-path]". Tell user to fix and re-run gate (which will re-run internal loop + external review at iteration N+1).
-   - `EXTERNAL-REVIEW: CONCERNS ...` → this gate downgraded to minimum CONCERNS. Surface report path; user decides accept/fix.
-   - `EXTERNAL-REVIEW: PASS ...` → no effect on verdict.
-5. Reference the report path in the gate output's `Required Artifacts` list.
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count for the decisions-log entry written at skill completion.
 
 ---
 

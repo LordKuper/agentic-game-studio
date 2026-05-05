@@ -196,42 +196,19 @@ See: `.ags/project/releases/rollback-plan-[version].md`
 
 ---
 
-## Player-Facing Patch Notes
+## Combined Review Loop (parallel external Codex)
 
-[Draft for producer to review before publishing]
+Per `.ags/rules/review-workflow.md`. The internal review section above runs **in parallel** with external Codex inside one loop. Each iteration:
 
-[list player-facing changes in plain language]
-```
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/[type]-[slug]-iter[N]-draft.md`.
+3. **Spawn in one message, in parallel** (multiple Task calls + one Bash invocation):
+   - All internal reviewer Tasks listed above.
+   - `/ags-external-review [type] [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (`producer` by default; skill-designated lead where the skill specifies one) merges findings from internal + external, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
 
-### Internal Review Loop
-
-Apply review mode:
-- `solo` → skip the loop. Proceed to External Review Gate below.
-- `lean` / `full` → spawn `release-manager` and `qa-lead` via Task to review the patch record (scope, fixes, rollback plan, QA sign-off, approvals) against the release context.
-
-**Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected sections, re-spawn reviewers. No iteration cap. Record iteration count.
-
-### External Review Gate (user confirm)
-
-`AskUserQuestion`:
-
-```
-Internal review CLEAN ([N] iterations). Run external Codex review on the day-one patch record before writing?
-[A] Yes — run /ags-external-review
-[B] Skip external (record reason in decisions-log.md)
-[C] Stop — review further
-```
-
-- **[A]**: persist patch record to `.ags/project/reviews/.tmp/day-one-patch-[version]-draft.md`. Invoke `/ags-external-review release-checklist [draft-path] --embedded` (release-checklist prompt covers patch / cert / rollback concerns). Handle BLOCK/CONCERNS/PASS.
-- **[B]**: append to `.ags/project/decisions-log.md`:
-  ```
-  ## [YYYY-MM-DD HH:MM] — External review skipped: day-one-patch [version]
-
-  **Type**: process
-  **Reason**: [user-supplied reason or "user declined"]
-  **Decided by**: user
-  ```
-- **[C]**: halt skill.
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count for the decisions-log entry written at skill completion.
 
 ---
 

@@ -40,35 +40,23 @@ If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 
-## Phase 1: Review Policy (applies to every write-producing mode)
+## Phase 1: Combined Review Loop (applies to every write-producing mode)
 
-For every mode below that produces a writable artifact (extracted strings bundle, translator brief, cultural review, VO scripts, RTL report, freeze snapshot, QA verdict report), apply this loop **before** the mode's `May I write...` prompt:
+Per `.ags/rules/review-workflow.md`. For every mode below that produces a writable artifact (extracted strings bundle, translator brief, cultural review, VO scripts, RTL report, freeze snapshot, QA verdict report), apply this loop **before** the mode's `May I write...` prompt. Aggregator: `narrative-director` (skill-designated lead).
 
-1. **Internal Review Loop** (skip in `solo` mode):
-   - Spawn `narrative-director` (and `producer` for scope / cert questions) via Task to review the drafted artifact against locale list, accessibility tier, cert constraints, and writing samples.
-   - **Loop exit condition:** single iteration with no critical/high/medium findings. Non-clean → user revises → re-spawn. No iteration cap. Record iteration count.
+Skip in `solo` mode.
 
-2. **External Review Gate** (`AskUserQuestion`):
+**Each iteration N (start N=1):**
 
-   ```
-   Internal review CLEAN ([N] iterations). Run external Codex review on the [artifact] before writing?
-   [A] Yes — run /ags-external-review
-   [B] Skip external (record reason in decisions-log.md)
-   [C] Stop — review further
-   ```
+1. Resolve severity floor: N≤2 → `low`; N=3..4 → `high`; N≥5 → `critical`.
+2. Persist current artifact draft to `.ags/project/reviews/.tmp/localize-[mode]-iter[N]-draft.md`.
+3. **Spawn in parallel** (single message, multiple Task calls + Bash):
+   - `narrative-director` (and `producer` for scope / cert questions) via Task to review the drafted artifact against locale list, accessibility tier, cert constraints, writing samples. Pass iteration N + severity floor.
+   - `/ags-external-review localize [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]`. Codex unavailable → returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (`narrative-director`) merges findings, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to `May I write...`. Non-empty → surface kept findings, user revises, N++, repeat.
 
-   - **[A]**: invoke `/ags-external-review localize [draft-path] --embedded`. Handle BLOCK/CONCERNS/PASS as in other skills. Codex CLI missing → ask user to skip [B-style] or abort [C-style].
-   - **[B]**: append to `.ags/project/decisions-log.md`:
-     ```
-     ## [YYYY-MM-DD HH:MM] — External review skipped: localize [mode/locale]
-
-     **Type**: process
-     **Reason**: [user-supplied reason or "user declined"]
-     **Decided by**: user
-     ```
-   - **[C]**: halt skill.
-
-This policy is invoked once per artifact generated — re-applied per mode invocation, not per string row.
+No iteration cap. No user-confirm gate before external — runs every iteration automatically. This policy is invoked once per artifact generated — re-applied per mode invocation, not per string row.
 
 ---
 

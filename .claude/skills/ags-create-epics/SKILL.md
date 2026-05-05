@@ -129,44 +129,26 @@ Confirm IDs with user before writing.
 
 ---
 
-## 8. Internal Review Loop (Producer Gate PR-EPIC)
+## 8. Combined Review Loop (Producer Gate PR-EPIC + External Codex, parallel)
+
+Canonical contract: `.ags/rules/review-workflow.md`. Aggregator: `producer`.
 
 Apply review mode:
-- `solo` → skip the loop entirely. Proceed to Phase 8b.
-- `lean` → skip the loop. Proceed to Phase 8b.
-- `full` → spawn `producer` via Task with gate **PR-EPIC** (`.ags/rules/director-gates.md`) in a loop.
+- `solo` → skip the loop entirely. Proceed to Phase 9.
+- `lean` → skip the internal director gate; still run external Codex parallel iteration (it has no review-mode gating). Proceed to Phase 9.
+- `full` → run combined loop below.
 
-Pass: epic name, systems with modes, rationale, current epic count, open stubs count.
+**Each iteration N (start N=1):**
 
-**Loop exit condition.** Single iteration where the producer returns clean (no critical/high/medium findings; READY). Non-clean → user revises epic scope/rationale/systems-in-scope, re-spawn PR-EPIC. No iteration cap.
+1. Resolve severity floor: N≤2 → `low`; N=3..4 → `high`; N≥5 → `critical`.
+2. Persist epic plan summary to `.ags/project/reviews/.tmp/epic-[slug]-iter[N]-draft.md`.
+3. Spawn in parallel (single message, multiple Task calls):
+   - `producer` via Task with gate **PR-EPIC** (`.ags/rules/director-gates.md`). Pass: epic name, systems with modes, rationale, current epic count, open stubs count, iteration N, severity floor.
+   - `/ags-external-review epic [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]`. Codex unavailable → returns `skipped: codex-unavailable`; producer aggregator logs skip in decisions-log and continues with internal pool only.
+4. **Aggregator (producer)** collects findings from both reviewers; drops nitpicks + below-floor per `.ags/rules/review-workflow.md`.
+5. **Loop exit**: filtered set is empty → proceed to Phase 9. Non-empty → surface aggregated kept findings to user, user revises epic scope/rationale/systems-in-scope, N++, repeat.
 
-Record iteration count.
-
-## 8b. External Review Gate (user confirm)
-
-After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
-
-```
-Internal review CLEAN ([N] iterations). Run external Codex review on the epic plan before writing files?
-[A] Yes — run /ags-external-review
-[B] Skip external (record reason in decisions-log.md)
-[C] Stop — review further
-```
-
-- **[A]**: persist epic plan summary to `.ags/project/reviews/.tmp/epic-[slug]-draft.md`. Invoke `/ags-external-review epic [draft-path] --embedded`. Handle verdict line:
-  - `BLOCK` → STOP. Surface report path + blockers. User revises, re-run skill.
-  - `CONCERNS` → surface report path. `AskUserQuestion`: accept, or revise.
-  - `PASS` → proceed silently.
-  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
-- **[B]**: append to `.ags/project/decisions-log.md`:
-  ```
-  ## [YYYY-MM-DD HH:MM] — External review skipped: epic [slug]
-
-  **Type**: process
-  **Reason**: [user-supplied reason or "user declined"]
-  **Decided by**: user
-  ```
-- **[C]**: halt skill.
+No iteration cap. Record final iteration count for the decisions-log entry.
 
 ---
 

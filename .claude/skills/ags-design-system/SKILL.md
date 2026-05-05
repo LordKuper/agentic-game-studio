@@ -667,67 +667,19 @@ fully resolved. Each question should have an owner and target resolution date.
 
 ---
 
-## 5. Post-Design Validation
+## Combined Review Loop (parallel external Codex)
 
-After all sections are written:
+Per `.ags/rules/review-workflow.md`. The internal review section above runs **in parallel** with external Codex inside one loop. Each iteration:
 
-### 5a: Self-Check
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/[type]-[slug]-iter[N]-draft.md`.
+3. **Spawn in one message, in parallel** (multiple Task calls + one Bash invocation):
+   - All internal reviewer Tasks listed above.
+   - `/ags-external-review [type] [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (`producer` by default; skill-designated lead where the skill specifies one) merges findings from internal + external, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
 
-Read back the complete GDD from file (not from conversation memory — the file is
-the source of truth). Verify:
-- All 8 required sections have real content (not placeholders)
-- Formulas reference defined variables
-- Edge cases have resolutions
-- Dependencies are listed with interfaces
-- Acceptance criteria are testable
-
-### 5a-bis: Internal Review Loop (Creative Director Pillar Review)
-
-**Review mode check** — apply before spawning CD-GDD-ALIGN:
-- `solo` → skip the loop. Note: "CD-GDD-ALIGN skipped — Solo mode." Proceed to Step 5a-ext.
-- `lean` → skip the loop (not a PHASE-GATE). Note: "CD-GDD-ALIGN skipped — Lean mode." Proceed to Step 5a-ext.
-- `full` → spawn the loop.
-
-Before finalizing the GDD, spawn `creative-director` via Task using gate **CD-GDD-ALIGN** (`.ags/rules/director-gates.md`).
-
-Pass: completed GDD file path, game pillars (from `design/gdd/game-concept.md` or `design/gdd/game-pillars.md`), MDA aesthetics target.
-
-**Loop exit condition.** Single iteration where the reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected sections, re-spawn CD-GDD-ALIGN. No iteration cap.
-
-Record iteration count and final verdict in the GDD Status header:
-`> **Creative Director Review (CD-GDD-ALIGN)**: APPROVED [date] / CONCERNS (accepted) [date] / REVISED [date] | Iterations: [N]`
-
----
-
-### 5a-ext: External Review Gate (user confirm)
-
-After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
-
-```
-Internal review CLEAN ([N] iterations). Run external Codex review on this GDD?
-[A] Yes — run /ags-external-review
-[B] Skip external (record reason in decisions-log.md)
-[C] Stop — review further
-```
-
-- **[A]**: invoke `/ags-external-review gdd [gdd-path] --embedded`. Handle returned verdict line:
-  - `BLOCK` → STOP. Surface report path + blockers. User revises affected sections, re-run skill.
-  - `CONCERNS` → surface report path. `AskUserQuestion`: accept and proceed, or revise.
-  - `PASS` → proceed silently.
-  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
-  Record `External Review: [report-path]` in the GDD Status header.
-- **[B]**: append to `.ags/project/decisions-log.md`:
-  ```
-  ## [YYYY-MM-DD HH:MM] — External review skipped: gdd [system-name]
-
-  **Type**: process
-  **Reason**: [user-supplied reason or "user declined"]
-  **Decided by**: user
-  ```
-  Record `External Review: skipped — see decisions-log.md` in the GDD Status header.
-- **[C]**: halt skill.
-
-> The external review here is the Codex CLI run, complementary to the standalone `/ags-design-review` referenced in Step 5c. The Codex review is part of this skill's flow; `/ags-design-review` remains a separate-session validation as before.
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count for the decisions-log entry written at skill completion.
 
 ---
 

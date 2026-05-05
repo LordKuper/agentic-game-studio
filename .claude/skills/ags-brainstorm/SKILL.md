@@ -288,27 +288,19 @@ Record iteration count.
 
 After the internal loop is CLEAN (or skipped in `solo`), ask via `AskUserQuestion`:
 
-```
-Internal review CLEAN ([N] iterations). Run external Codex review before writing the game concept?
-[A] Yes — run /ags-external-review
-[B] Skip external (record reason in decisions-log.md)
-[C] Stop — review further
-```
+## Combined Review Loop (parallel external Codex)
 
-- **[A]**: persist draft to `.ags/project/reviews/.tmp/game-concept-draft.md` and invoke `/ags-external-review concept [draft-path] --embedded`. Handle returned verdict line:
-  - `EXTERNAL-REVIEW: BLOCK` → STOP. Surface report path + blockers. User revises, re-run skill.
-  - `EXTERNAL-REVIEW: CONCERNS` → surface report path. `AskUserQuestion`: accept and proceed, or revise.
-  - `EXTERNAL-REVIEW: PASS` → proceed silently.
-  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
-- **[B]**: append to `.ags/project/decisions-log.md`:
-  ```
-  ## [YYYY-MM-DD HH:MM] — External review skipped: concept
+Per `.ags/rules/review-workflow.md`. The internal review section above runs **in parallel** with external Codex inside one loop. Each iteration:
 
-  **Type**: process
-  **Reason**: [user-supplied reason or "user declined"]
-  **Decided by**: user
-  ```
-- **[C]**: halt skill.
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/[type]-[slug]-iter[N]-draft.md`.
+3. **Spawn in one message, in parallel** (multiple Task calls + one Bash invocation):
+   - All internal reviewer Tasks listed above.
+   - `/ags-external-review [type] [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (`producer` by default; skill-designated lead where the skill specifies one) merges findings from internal + external, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count for the decisions-log entry written at skill completion.
 
 ---
 

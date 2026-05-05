@@ -313,43 +313,23 @@ Record iteration count and final verdict per reviewer for the Document Status se
 
 ---
 
-## Phase 6.6: External Review Gate (user confirm)
+## Combined Review Loop (parallel external Codex)
 
-After internal loop CLEAN, ask user via `AskUserQuestion`:
+Per `.ags/rules/review-workflow.md`. The internal review section above runs **in parallel** with external Codex inside one loop. Each iteration:
 
-```
-Internal review CLEAN ([N] iterations). Run external Codex review before writing the master architecture document?
-[A] Yes — run /ags-external-review
-[B] Skip external (record reason in decisions-log.md)
-[C] Stop here — review further
-```
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/[type]-[slug]-iter[N]-draft.md`.
+3. **Spawn in one message, in parallel** (multiple Task calls + one Bash invocation):
+   - All internal reviewer Tasks listed above.
+   - `/ags-external-review [type] [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (`producer` by default; skill-designated lead where the skill specifies one) merges findings from internal + external, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
 
-- **[A]**: proceed to Phase 6.7 (External Review).
-- **[B]**: append entry to `.ags/project/decisions-log.md`:
-  ```
-  ## [YYYY-MM-DD HH:MM] — External review skipped: architecture
-
-  **Type**: process
-  **Reason**: [user-supplied reason or "user declined"]
-  **Decided by**: user
-  ```
-  Then proceed to Phase 7 (Write). Note in Document Status: `External Review: skipped — see decisions-log.md`.
-- **[C]**: halt skill.
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count for the decisions-log entry written at skill completion.
 
 ---
 
-## Phase 6.7: External Review (Codex) — only on user [A]
-
-Run external Codex review on the assembled architecture draft (treat the architecture doc as an ADR-shaped artefact for review purposes):
-
-- Verify `codex` on PATH via Bash. Missing → surface, ask user to skip [B-style log] or abort [C-style halt]; do not silently bypass.
-- Persist the draft to `.ags/project/reviews/.tmp/architecture-draft.md`.
-- Invoke `/ags-external-review adr [draft-path] --embedded` (the `adr` prompt template covers architectural soundness, GDD alignment, engine-version risk, and consistency — applicable here too).
-- Read returned verdict line:
-  - `EXTERNAL-REVIEW: BLOCK ...` → STOP. Surface report path + blockers. User revises sections, re-run THIS skill (internal loop + external review re-run at next iteration).
-  - `EXTERNAL-REVIEW: CONCERNS ...` → surface report path. `AskUserQuestion`: accept and proceed, or revise.
-  - `EXTERNAL-REVIEW: PASS ...` → proceed silently.
-- Reference final report path in the architecture document's `Document Status` section under a new line `External Review: [path]`.
+**Note**: external Codex review is now embedded in the Combined Review Loop above (parallel with internal reviewers). The architecture draft is reviewed each iteration via `/ags-external-review adr [draft-path] --embedded-parallel` — the `adr` prompt template covers architectural soundness, GDD alignment, engine-version risk, and consistency. Reference the final report path in `Document Status` → `External Review: [path]`.
 
 ---
 

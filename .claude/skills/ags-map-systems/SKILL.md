@@ -212,80 +212,19 @@ This is the order the team should write GDDs in.
 
 ---
 
-## Phase 5: Create Systems Index (Write)
+## Combined Review Loop (parallel external Codex)
 
-### Step 5a: Draft the Document
+Per `.ags/rules/review-workflow.md`. The internal review section above runs **in parallel** with external Codex inside one loop. Each iteration:
 
-Using the template at `.ags/templates/t_systems-index.md`, populate the
-systems index with all data from Phases 2-4:
-- Fill the enumeration table
-- Fill the dependency map
-- Fill the recommended design order
-- Fill the high-risk systems
-- Fill progress tracker (all systems "Not Started" initially, unless GDDs already exist)
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/[type]-[slug]-iter[N]-draft.md`.
+3. **Spawn in one message, in parallel** (multiple Task calls + one Bash invocation):
+   - All internal reviewer Tasks listed above.
+   - `/ags-external-review [type] [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (`producer` by default; skill-designated lead where the skill specifies one) merges findings from internal + external, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
 
-### Step 5b: Internal Review Loop
-
-Before write approval, run a consolidated internal review on the drafted systems index. Spawn `technical-director` (gate **TD-SYSTEM-BOUNDARY**), `producer` (gate **PR-SCOPE**), and `creative-director` (gate **CD-SYSTEMS**) in parallel via Task. Pass: drafted systems index, game pillars and core fantasy.
-
-**Review mode check** — apply for the loop:
-- `solo` → skip the loop entirely. Proceed to Step 5c.
-- `lean` / `full` → spawn the panel.
-
-**Loop exit condition.** Single iteration where all spawned reviewers return clean (no critical/high/medium findings). Non-clean → user revises affected sections of the draft, re-spawn the same panel. No iteration cap.
-
-Record iteration count and per-reviewer final verdicts.
-
-### Step 5c: External Review Gate (user confirm)
-
-After internal loop CLEAN (or skipped), ask via `AskUserQuestion`:
-
-```
-Internal review CLEAN ([N] iterations). Run external Codex review on the systems index?
-[A] Yes — run /ags-external-review
-[B] Skip external (record reason in decisions-log.md)
-[C] Stop — review further
-```
-
-- **[A]**: persist draft to `.ags/project/reviews/.tmp/systems-index-draft.md`. Invoke `/ags-external-review systems-index [draft-path] --embedded`. Handle verdict line:
-  - `BLOCK` → STOP. Surface report path + blockers. User revises, re-run.
-  - `CONCERNS` → surface report path. `AskUserQuestion`: accept, or revise.
-  - `PASS` → proceed silently.
-  - Codex CLI missing → ask user to skip [B-style] or abort [C-style].
-- **[B]**: append to `.ags/project/decisions-log.md`:
-  ```
-  ## [YYYY-MM-DD HH:MM] — External review skipped: systems-index
-
-  **Type**: process
-  **Reason**: [user-supplied reason or "user declined"]
-  **Decided by**: user
-  ```
-- **[C]**: halt skill.
-
-### Step 5d: Approval
-
-Present a summary of the document:
-- Total systems count by category
-- MVP system count
-- First 3 systems in the design order
-- Any high-risk items
-- Internal review iterations: [N]
-- External review: [report path | skipped — see decisions-log.md | not run]
-
-Ask: "May I write the systems index to `design/gdd/systems-index.md`?"
-
-Wait for approval. Write the file only after "yes." Record review provenance lines in the document header.
-
-### Step 5c: Update Session State
-
-After writing, create `.ags/project/state.md` if it does not exist, then update it with:
-- Task: Systems decomposition
-- Status: Systems index created
-- File: design/gdd/systems-index.md
-- Next: Design individual system GDDs
-
-**Verdict: COMPLETE** — systems index written to `design/gdd/systems-index.md`.
-If the user declined: **Verdict: BLOCKED** — user did not approve the write.
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count for the decisions-log entry written at skill completion.
 
 ---
 

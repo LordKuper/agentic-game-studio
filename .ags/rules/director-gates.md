@@ -101,6 +101,18 @@ All gates return one of three verdicts. Skills must handle all three:
 
 ---
 
+## Reviewer Guidance (mandatory in every gate prompt)
+
+Every gate prompt — internal director gate AND external Codex prompt — MUST include this block verbatim. Skills that spawn a gate paste this immediately before the gate-specific question:
+
+> **Report only substantive findings. No nitpicks.** Skip wording polish, alternative phrasing, opinion-only style notes, redundant comments, formatting micro-fixes where the existing form is valid, "could also do X" alternatives without showing the current approach is wrong. A finding is substantive only if it cites a concrete defect, project rule, ADR, GDD, registered architectural stance, security CWE, accessibility WCAG criterion, performance budget, or engine API contract.
+>
+> **Iteration {{ITERATION}} severity floor: {{SEVERITY_FLOOR}}.** Iterations 1-2: report critical / high / medium / low. Iterations 3-4: report critical / high only. Iterations 5+: report critical only. Omit findings below the floor — the aggregator drops them anyway.
+
+Severity definitions: see `.ags/rules/review-workflow.md` § Nitpick. Aggregator (skill-designated) collects findings from internal + external reviewers in parallel, drops nitpicks + below-floor, surfaces the rest.
+
+---
+
 ## Recording Gate Outcomes
 
 After gate resolves, record verdict in document's status header:

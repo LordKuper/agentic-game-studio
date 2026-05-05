@@ -316,83 +316,19 @@ to implement it.]
 ## Validation Criteria
 [How will we know this decision was correct? What metrics or tests?]
 
-## Related Decisions
-- [Links to related ADRs]
-- [Links to related design documents]
-```
+## Combined Review Loop (parallel external Codex)
 
-### Internal Review Loop (4.5 → 4.6)
+Per `.ags/rules/review-workflow.md`. The internal review section above runs **in parallel** with external Codex inside one loop. Each iteration:
 
-Loop steps 4.5 + 4.6. Exit on a single iteration where **all** spawned reviewers return clean (no critical, no high, no medium findings; low allowed). No iteration cap. Each iteration: surface findings → user revises draft → re-spawn the same reviewers.
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/[type]-[slug]-iter[N]-draft.md`.
+3. **Spawn in one message, in parallel** (multiple Task calls + one Bash invocation):
+   - All internal reviewer Tasks listed above.
+   - `/ags-external-review [type] [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (`producer` by default; skill-designated lead where the skill specifies one) merges findings from internal + external, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
 
-4.5. **Engine Specialist Validation** — Before saving, spawn **primary engine specialist** via Task to validate drafted ADR:
-   - Read `.ags/rules/technical-preferences.md` `Engine Specialists` for primary specialist
-   - No engine configured (`[TO BE CONFIGURED]`) → skip
-   - Spawn `subagent_type: [primary specialist]` with: ADR's Engine Compatibility, Decision, Key Interfaces, engine reference docs path. Ask:
-     1. Confirm approach idiomatic for pinned version
-     2. Flag deprecated/post-cutoff APIs or patterns
-     3. Identify engine-specific risks/gotchas not in draft
-   - **Blocking issue** (wrong API, deprecated, version incompat) — count as critical/high finding, stays in loop.
-   - **Minor notes** (low) — incorporate into Risks subsection; do not block loop exit.
-
-**Review mode check** before TD-ADR:
-- `solo` → skip. Note: "TD-ADR skipped — Solo mode."
-- `lean` → skip (not PHASE-GATE). Note: "TD-ADR skipped — Lean mode."
-- `full` → spawn.
-
-4.6. **Technical Director Strategic Review** — After specialist validation (still within the same loop iteration), spawn `technical-director` via Task using gate **TD-ADR** (`.ags/rules/director-gates.md`):
-   - Pass: ADR file path (or draft), engine version, domain, existing ADRs in same domain
-   - TD validates architectural coherence (consistent with whole system?) — distinct from specialist's API check
-   - CONCERNS or REJECT — count as finding, loop continues.
-
-**Loop exit condition.** When this iteration's specialist + TD (where applicable) return zero critical/high/medium findings, exit loop and proceed to 4.7. Otherwise: present aggregated findings, ask user to revise, re-run 4.5 → 4.6.
-
-Record iteration count for the External Review Gate report.
-
-4.7. **GDD Sync Check** — Before write approval, scan all GDDs referenced in "GDD Requirements Addressed" for naming inconsistencies with ADR's Key Interfaces and Decision (renamed signals, methods, types). If found, surface as **prominent warning** before write approval:
-
-```
-⚠️ GDD SYNC REQUIRED
-[gdd-filename].md uses names this ADR has renamed:
-  [old_name] → [new_name_from_adr]
-  [old_name_2] → [new_name_2_from_adr]
-The GDD must be updated before or alongside writing this ADR to prevent
-developers reading the GDD from implementing the wrong interface.
-```
-
-No inconsistencies: skip silently.
-
-4.8. **External Review Gate (user confirm)** — After internal loop CLEAN and GDD sync resolved, ask user via `AskUserQuestion`:
-
-```
-Internal review CLEAN ([N] iterations). Run external Codex review before writing the ADR?
-[A] Yes — run /ags-external-review
-[B] Skip external (record reason in decisions-log.md)
-[C] Stop here — review further
-```
-
-- **[A]**: proceed to 4.8a (External Review).
-- **[B]**: append entry to `.ags/project/decisions-log.md`:
-  ```
-  ## [YYYY-MM-DD HH:MM] — External review skipped: adr [adr-NNNN-slug]
-
-  **Type**: process
-  **Reason**: [user-supplied reason or "user declined"]
-  **Decided by**: user
-  ```
-  Then proceed to step 5 (Write approval). Note in the ADR's `Related Decisions` section: `External Review: skipped — see decisions-log.md`.
-- **[C]**: halt skill. User resumes by re-running it.
-
-4.8a. **External Review (Codex)** — only on user [A]:
-
-   - Verify `codex` on PATH via Bash. Missing → record CONCERN in the gate report, ask user whether to skip [B-style log] or abort [C-style halt]; do not silently bypass.
-   - Persist draft to a temp path under `.ags/project/reviews/.tmp/adr-[NNNN]-draft.md` so the sub-skill can read it.
-   - Invoke `/ags-external-review adr [draft-path] --embedded`.
-   - Read returned verdict line:
-     - `EXTERNAL-REVIEW: BLOCK ...` → STOP. Surface report path + blockers. User fixes the draft, then re-run THIS skill (which re-runs the internal loop, gate, and external review at the next iteration).
-     - `EXTERNAL-REVIEW: CONCERNS ...` → surface report path. Ask user via `AskUserQuestion`: accept and proceed, or address findings before write.
-     - `EXTERNAL-REVIEW: PASS ...` → proceed silently.
-   - Reference final report path in the ADR's `Related Decisions` section.
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count for the decisions-log entry written at skill completion.
 
 ---
 

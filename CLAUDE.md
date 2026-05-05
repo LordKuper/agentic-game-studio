@@ -11,7 +11,7 @@
 - Concise, clear, unambiguous.
 - Use template from `.ags/templates` matching doc type. No template fits — propose structure, get user approval, then create.
 - **Drafting language**: discuss + iterate document content with user in their chat language (from `p_user-interaction.md`). On approval of the section/document, **translate to English at write time** — file on disk is always English. See `.ags/rules/user-interaction.md` § Document drafting flow.
-- **Review pipeline** for any document-producing skill: existing internal review (department lead / specialist / director gate) wraps in a **loop** until a single iteration passes with zero critical / high / medium findings — then a user-confirm `AskUserQuestion` gate offers external Codex review (`[A] run /ags-external-review` / `[B] skip + log reason in decisions-log.md` / `[C] stop`). Internal loop has no iteration cap. External review runs only on explicit `[A]`. Skill-specific phase numbering varies; every generator skill embeds this contract.
+- **Review pipeline** for any document-producing skill: internal reviewers (department lead / specialist / director gate) and external Codex run **in parallel** every iteration as one combined review pool. Aggregator (producer or skill-designated lead) drops nitpicks and applies an **iteration severity floor**: iterations 1-2 keep all severities; iterations 3-4 keep only critical + high; iterations 5+ keep only critical. Loop exits on first iteration whose filtered set is empty. No iteration cap. Codex unavailable → auto-skip + log to `decisions-log.md`, no user prompt. Canonical contract: `.ags/rules/review-workflow.md`.
 
 ## Context Management
 @.ags/rules/context-management.md
