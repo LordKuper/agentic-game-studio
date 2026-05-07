@@ -23,7 +23,7 @@ If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
 
 Extract `--depth [full|lean|solo]` if present. Default is `full` when no flag is given.
 
-**Note**: `--depth` controls the *analysis depth* of this skill (how many specialist agents are spawned). It is independent of the global review mode in `.ags/project/review-mode.md`, which controls director gate spawning. These are two different concepts — `--depth` is about how thoroughly *this* skill analyses the document.
+**Note**: `--depth` controls the *analysis depth* of this skill (how many specialist agents are spawned). It is about how thoroughly *this* skill analyses the document.
 
 - **`full`**: Complete review — all phases + specialist agent delegation (Phase 3b)
 - **`lean`**: All phases, no specialist agents — faster, single-session analysis
@@ -84,7 +84,7 @@ Evaluate against the Design Document Standard checklist:
 **This phase is MANDATORY in full mode.** Do not skip it.
 
 **Before spawning any agents**, print this notice:
-> "Full review: spawning specialist agents in parallel. This typically takes 8–15 minutes. Use `--review lean` for faster single-session analysis."
+> "Full review: spawning specialist agents in parallel. This typically takes 8–15 minutes. Use `--depth lean` for faster single-session analysis."
 
 ### Step 1 — Identify all domains the GDD touches
 

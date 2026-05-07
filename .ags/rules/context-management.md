@@ -20,7 +20,6 @@ Single file holds entire active session:
 Persist across overwrites of `state.md`. All Markdown:
 
 - `.ags/project/stage.md` — current dev phase (concept, production, polish, release) + active epic ID + transition history
-- `.ags/project/review-mode.md` — director-gate intensity (full / lean / solo)
 - `.ags/project/stubs.md` — TODO stub registry across epics
 - `.ags/project/decisions-log.md` — append-only decisions chronology
 - `.ags/project/epics/index.md` — registry of all epics with status

@@ -1,7 +1,7 @@
 ﻿---
 name: ags-create-stories
 description: "Break a single epic into implementable story files. Reads the epic, its GDD, governing ADRs, and control manifest. Each story embeds its GDD requirement TR-ID, ADR guidance, acceptance criteria, story type, and test evidence path. Run after /ags-create-epics for each epic."
-argument-hint: "[epic-slug | epic-path] [--review full|lean|solo]"
+argument-hint: "[epic-slug | epic-path]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 agent: lead-programmer
@@ -21,12 +21,6 @@ Single implementable behaviour — small enough for one focused session, self-co
 ---
 
 ## 1. Parse Argument
-
-Extract `--review [full|lean|solo]` if present and store as the review mode
-override for this run. If not provided, read `.ags/project/review-mode.md`
-(default `full` if missing). This resolved mode applies to all gate spawns
-in this skill — apply the check pattern from `.ags/rules/director-gates.md`
-before every gate invocation.
 
 - `/ags-create-stories [epic-slug]` — e.g. `/ags-create-stories combat`
 - `/ags-create-stories .ags/project/epics/combat/EPIC.md` — full path also accepted
@@ -97,11 +91,6 @@ For each story, determine:
 ---
 
 ## 4b. Internal Review Loop (QA Lead Story Readiness)
-
-**Review mode check** — apply for the loop:
-- `solo` → skip the loop. Note: "QL-STORY-READY skipped — Solo mode." Proceed to Step 4c.
-- `lean` → skip the loop. Note: "QL-STORY-READY skipped — Lean mode." Proceed to Step 4c.
-- `full` → spawn the loop.
 
 After decomposing all stories (Step 4 complete) but before presenting them for write approval, spawn `qa-lead` via Task using gate **QL-STORY-READY** (`.ags/rules/director-gates.md`).
 

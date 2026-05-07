@@ -1,7 +1,7 @@
 ﻿---
 name: ags-milestone-review
 description: "Generates a comprehensive milestone progress review including feature completeness, quality metrics, risk assessment, and go/no-go recommendation. Use at milestone checkpoints or when evaluating readiness for a milestone deadline."
-argument-hint: "[milestone-name|current] [--review full|lean|solo]"
+argument-hint: "[milestone-name|current]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 ---
@@ -19,12 +19,7 @@ If STOP triggers, exit verdict **BLOCKED**.
 
 ## Phase 0: Parse Arguments
 
-Extract the milestone name (`current` or a specific name) and resolve the review mode (once, store for all gate spawns this run):
-1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `.ags/project/review-mode.md` → use that value
-3. Else → default to `lean`
-
-See `.ags/rules/director-gates.md` for the full check pattern.
+Extract the milestone name (`current` or a specific name).
 
 ---
 
@@ -118,11 +113,6 @@ Read all sprint reports for sprints within this milestone from `.ags/project/epi
 ---
 
 ## Phase 3b: Producer Risk Assessment
-
-**Review mode check** — apply before spawning PR-MILESTONE:
-- `solo` → skip. Note: "PR-MILESTONE skipped — Solo mode." Present the Go/No-Go section without a producer verdict.
-- `lean` → skip (not a PHASE-GATE). Note: "PR-MILESTONE skipped — Lean mode." Present the Go/No-Go section without a producer verdict.
-- `full` → spawn as normal.
 
 Before generating the Go/No-Go recommendation, spawn `producer` via Task using gate **PR-MILESTONE** (`.ags/rules/director-gates.md`).
 

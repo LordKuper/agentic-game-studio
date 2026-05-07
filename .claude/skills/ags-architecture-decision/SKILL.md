@@ -1,7 +1,7 @@
 ---
 name: ags-architecture-decision
 description: "Creates an Architecture Decision Record (ADR) documenting a significant technical decision, its context, alternatives considered, and consequences. Every major technical choice should have an ADR."
-argument-hint: "[title] [--review full|lean|solo]"
+argument-hint: "[title]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 ---
@@ -25,13 +25,6 @@ If any STOP triggers, exit with verdict **BLOCKED — missing prerequisite** and
 ---
 
 ## 0. Parse Arguments — Detect Retrofit Mode
-
-Resolve review mode (once, store for all gate spawns this run):
-1. `--review [full|lean|solo]` passed → use that
-2. Else read `.ags/project/review-mode.md` → use that
-3. Else → default `lean`
-
-See `.ags/rules/director-gates.md`.
 
 **If argument starts with `retrofit` + file path** (e.g., `/ags-architecture-decision retrofit design/architecture/adr-0001-event-system.md`):
 

@@ -1,7 +1,7 @@
 ﻿---
 name: ags-brainstorm
 description: "Guided game concept ideation — from zero idea to a structured game concept document. Uses professional studio ideation techniques, player psychology frameworks, and structured creative exploration."
-argument-hint: "[genre or theme hint, or 'open'] [--review full|lean|solo]"
+argument-hint: "[genre or theme hint, or 'open']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, WebSearch, Task, AskUserQuestion
 ---
@@ -10,12 +10,7 @@ When this skill is invoked:
 
 1. **Parse the argument** for an optional genre/theme hint (e.g., `roguelike`,
    `space survival`, `cozy farming`). If `open` or no argument, start from
-   scratch. Also resolve the review mode (once, store for all gate spawns this run):
-   1. If `--review [full|lean|solo]` was passed → use that
-   2. Else read `.ags/project/review-mode.md` → use that value
-   3. Else → default to `lean`
-
-   See `.ags/rules/director-gates.md` for the full check pattern.
+   scratch.
 
 2. **Check for existing concept work**:
    - Read `design/gdd/game-concept.md` if it exists (resume, don't restart)
@@ -188,11 +183,6 @@ If the user selects B, C, or D, make the revision, then use `AskUserQuestion` ag
 
 Repeat until the user selects [A] Lock these in.
 
-**Review mode check** — apply before spawning CD-PILLARS and AD-CONCEPT-VISUAL:
-- `solo` → skip both. Note: "CD-PILLARS skipped — Solo mode. AD-CONCEPT-VISUAL skipped — Solo mode." Proceed to Phase 5.
-- `lean` → skip both (not PHASE-GATEs). Note: "CD-PILLARS skipped — Lean mode. AD-CONCEPT-VISUAL skipped — Lean mode." Proceed to Phase 5.
-- `full` → spawn as normal.
-
 **After pillars and anti-pillars are agreed, spawn BOTH `creative-director` AND `art-director` via Task in parallel before moving to Phase 5. Issue both Task calls simultaneously — do not wait for one before starting the other.**
 
 - **`creative-director`** — gate **CD-PILLARS** (`.ags/rules/director-gates.md`)
@@ -238,21 +228,11 @@ Ground the concept in reality:
 - **Biggest risks**: Technical risks, design risks, market risks
 - **Scope tiers**: What's the full vision vs. what ships if time runs out?
 
-**Review mode check** — apply before spawning TD-FEASIBILITY:
-- `solo` → skip. Note: "TD-FEASIBILITY skipped — Solo mode." Proceed directly to scope tier definition.
-- `lean` → skip (not a PHASE-GATE). Note: "TD-FEASIBILITY skipped — Lean mode." Proceed directly to scope tier definition.
-- `full` → spawn as normal.
-
 **After identifying biggest technical risks, spawn `technical-director` via Task using gate TD-FEASIBILITY (`.ags/rules/director-gates.md`) before scope tiers are defined.**
 
 Pass: core loop description, platform target, engine choice (or "undecided"), list of identified technical risks.
 
 Present the assessment to the user. If HIGH RISK, offer to revisit scope before finalising. If CONCERNS, note them and continue.
-
-**Review mode check** — apply before spawning PR-SCOPE:
-- `solo` → skip. Note: "PR-SCOPE skipped — Solo mode." Proceed to document generation.
-- `lean` → skip (not a PHASE-GATE). Note: "PR-SCOPE skipped — Lean mode." Proceed to document generation.
-- `full` → spawn as normal.
 
 **After scope tiers are defined, spawn `producer` via Task using gate PR-SCOPE (`.ags/rules/director-gates.md`).**
 
@@ -276,17 +256,13 @@ Present the assessment to the user. If UNREALISTIC, offer to adjust the MVP defi
 
 Before write approval, run a final consolidated internal review on the assembled concept draft. Spawn `creative-director` (gate **CD-PILLARS**), `art-director` (gate **AD-CONCEPT-VISUAL**), `technical-director` (gate **TD-FEASIBILITY**), `producer` (gate **PR-SCOPE**) in parallel via Task. Pass the full drafted document.
 
-Apply review mode:
-- `solo` → skip the loop; proceed directly to 4b.
-- `lean` / `full` → spawn the panel.
-
 **Loop exit condition.** Single iteration in which every spawned director returns READY (no critical/high/medium findings). No iteration cap. Non-clean → consolidate findings, ask user to revise the relevant sections, re-spawn the same panel.
 
 Record iteration count.
 
 ### 4b. External Review Gate (user confirm)
 
-After the internal loop is CLEAN (or skipped in `solo`), ask via `AskUserQuestion`:
+After the internal loop is CLEAN, ask via `AskUserQuestion`:
 
 ## Combined Review Loop (parallel external Codex)
 

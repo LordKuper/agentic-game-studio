@@ -1,7 +1,7 @@
 ﻿---
 name: ags-design-system
 description: "Guided, section-by-section GDD authoring for a single game system. Gathers context from existing docs, walks through each required section collaboratively, cross-references dependencies, and writes incrementally to file."
-argument-hint: "<system-name> [--review full|lean|solo]"
+argument-hint: "<system-name>"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion, TodoWrite
 ---
@@ -29,13 +29,6 @@ If any STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
 ---
 
 ## 1. Parse Arguments & Validate
-
-Resolve the review mode (once, store for all gate spawns this run):
-1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `.ags/project/review-mode.md` → use that value
-3. Else → default to `lean`
-
-See `.ags/rules/director-gates.md` for the full check pattern.
 
 A system name or retrofit path is **required**. If missing:
 

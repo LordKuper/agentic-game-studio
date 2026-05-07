@@ -59,7 +59,6 @@ tests/                Test code
 | **Stub** | Temporary implementation of a neighbour system, marked `// TODO(epic-id)` and tracked in `stubs.md` |
 | **ADR** | Architecture Decision Record for any significant technical choice |
 | **Gate** | Quality checkpoint that blocks phase or epic close until criteria pass |
-| **Review mode** | Director-gate intensity: `full`, `lean`, or `solo` |
 | **state.md** | The single active-session file; overwritten on each new task |
 | **stage.md** | Persistent project phase + active epic + transition history |
 

@@ -1,7 +1,7 @@
 ﻿---
 name: ags-map-systems
 description: "Decompose a game concept into individual systems, map dependencies, prioritize design order, and create the systems index."
-argument-hint: "[next | system-name] [--review full|lean|solo]"
+argument-hint: "[next | system-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, TodoWrite, Task
 ---
@@ -16,13 +16,6 @@ Two modes:
   to create or update the systems index.
 - **`next`**: `/ags-map-systems next` — Pick the highest-priority undesigned system
   from the index and hand off to `/ags-design-system` (Phase 6).
-
-Also resolve the review mode (once, store for all gate spawns this run):
-1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `.ags/project/review-mode.md` → use that value
-3. Else → default to `lean`
-
-See `.ags/rules/director-gates.md` for the full check pattern.
 
 ---
 
@@ -144,11 +137,6 @@ Show the dependency map as a layered list. Highlight:
 Use `AskUserQuestion` to ask: "Does this dependency ordering look right? Any
 dependencies I'm missing or that should be removed?"
 
-**Review mode check** — apply before spawning TD-SYSTEM-BOUNDARY:
-- `solo` → skip. Note: "TD-SYSTEM-BOUNDARY skipped — Solo mode." Proceed to priority assignment.
-- `lean` → skip (not a PHASE-GATE). Note: "TD-SYSTEM-BOUNDARY skipped — Lean mode." Proceed to priority assignment.
-- `full` → spawn as normal.
-
 **After dependency mapping is approved, spawn `technical-director` via Task using gate TD-SYSTEM-BOUNDARY (`.ags/rules/director-gates.md`) before proceeding to priority assignment.**
 
 Pass: the dependency map summary, layer assignments, bottleneck systems list, any circular dependency resolutions.
@@ -187,11 +175,6 @@ requires it — without [system], the 30-second loop can't function."
 - "Foundation for all economy decisions — players must understand upgrade costs to make meaningful placement choices"
 
 Pure technical necessity ("X depends on Y") is insufficient alone when the system directly shapes player experience.
-
-**Review mode check** — apply before spawning PR-SCOPE:
-- `solo` → skip. Note: "PR-SCOPE skipped — Solo mode." Proceed to writing the systems index.
-- `lean` → skip (not a PHASE-GATE). Note: "PR-SCOPE skipped — Lean mode." Proceed to writing the systems index.
-- `full` → spawn as normal.
 
 **After priorities are approved, spawn `producer` via Task using gate PR-SCOPE (`.ags/rules/director-gates.md`) before writing the index.**
 

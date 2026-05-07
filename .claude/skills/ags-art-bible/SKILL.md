@@ -1,19 +1,12 @@
 ﻿---
 name: ags-art-bible
 description: "Guided, section-by-section Art Bible authoring. Creates the visual identity specification that gates all asset production. Run after /ags-brainstorm is approved and before /ags-map-systems or any GDD authoring begins."
-argument-hint: "[--review full|lean|solo]"
+argument-hint: "[no arguments]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 ---
 
 ## Phase 0: Parse Arguments and Context Check
-
-Resolve the review mode (once, store for all gate spawns this run):
-1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `.ags/project/review-mode.md` → use that value
-3. Else → default to `lean`
-
-See `.ags/rules/director-gates.md` for the full check pattern.
 
 Read `design/gdd/game-concept.md`. If it does not exist, fail with:
 > "No game concept found. Run `/ags-brainstorm` first — the art bible is authored after the game concept is approved."
@@ -191,11 +184,6 @@ Write the approved section to file.
 ---
 
 ## Phase 5: Internal Review Loop (Art Director Sign-Off)
-
-**Review mode check** — apply before spawning AD-ART-BIBLE:
-- `solo` → skip the loop. Note: "AD-ART-BIBLE skipped — Solo mode." Proceed to Phase 5b.
-- `lean` → skip the loop (not a PHASE-GATE). Note: "AD-ART-BIBLE skipped — Lean mode." Proceed to Phase 5b.
-- `full` → spawn the loop.
 
 After all sections are complete (or the scoped set from Phase 1 is complete), spawn `creative-director` via Task using gate **AD-ART-BIBLE** (`.ags/rules/director-gates.md`).
 

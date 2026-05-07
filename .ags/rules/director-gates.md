@@ -19,58 +19,17 @@ Pass context listed under that gate's **Context to pass** field. Handle verdict 
 
 ---
 
-## Review Modes
+## Gate Selection
 
-Review intensity controls whether director gates run. Set globally (persists across sessions) or override per skill run.
+No global review-intensity toggle. No `--review` flag. Each skill / workflow hardcodes its required gate set; gates always spawn when their trigger fires. Default = full coverage.
 
-**Global config**: `.ags/project/review-mode.md` — one word: `full`, `lean`, or `solo`. Set once during `/ags-start`. Edit file directly to change.
-
-**Per-run override**: any gate-using skill accepts `--review [full|lean|solo]` arg. Overrides global config for that run only.
-
-Examples:
-```
-/ags-brainstorm space horror           → uses global mode
-/ags-brainstorm space horror --review full   → forces full mode this run
-/ags-architecture-decision --review solo     → skips all gates this run
-```
-
-| Mode | What runs | Best for |
-|------|-----------|----------|
-| `full` | All gates active — every workflow step reviewed | Teams, learning users, or thorough director feedback at every step |
-| `lean` | PHASE-GATEs only (`/ags-gate-check`) — per-skill gates skipped | **Default** — solo devs and small teams; directors review at milestones only |
-| `solo` | No director gates anywhere | Game jams, maximum speed |
-
-**Check pattern — apply before every gate spawn:**
-
-```
-Before spawning gate [GATE-ID]:
-1. If skill was called with --review [mode], use that
-2. Else read .ags/project/review-mode.md
-3. Else default to full
-
-Apply the resolved mode:
-- solo → skip all gates. Note: "[GATE-ID] skipped — Solo mode"
-- lean → skip unless this is a PHASE-GATE (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE)
-         Note: "[GATE-ID] skipped — Lean mode"
-- full → spawn as normal
-```
+If a workflow needs lighter review at a specific point (e.g. epic close vs phase close), that's encoded in the skill's gate roster — not in user config.
 
 ---
 
 ## Invocation Pattern (copy into any skill)
 
-**MANDATORY: Resolve review mode before every gate spawn.** Never spawn a gate without checking. Resolved mode determined once per skill run:
-1. If skill called with `--review [mode]`, use that
-2. Else read `.ags/project/review-mode.md`
-3. Else default to `lean`
-
-Apply the resolved mode:
-- `solo` → **skip all gates**. Note in output: `[GATE-ID] skipped — Solo mode`
-- `lean` → **skip unless this is a PHASE-GATE** (CD-PHASE-GATE, TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE). Note: `[GATE-ID] skipped — Lean mode`
-- `full` → spawn as normal
-
 ```
-# Apply mode check, then:
 Spawn `[agent-name]` via Task:
 - Gate: [GATE-ID] (see .ags/rules/director-gates.md)
 - Context: [fields listed under that gate]
@@ -80,7 +39,6 @@ Spawn `[agent-name]` via Task:
 For parallel spawning (multiple directors at same gate point):
 
 ```
-# Apply mode check for each gate first, then spawn all that survive:
 Spawn all [N] agents simultaneously via Task — issue all Task calls before
 waiting for any result. Collect all verdicts before proceeding.
 ```
@@ -432,7 +390,7 @@ Agent: `producer` | Model tier: Opus | Domain: Scope, timeline, dependencies, pr
 
 ### PR-EPIC-DONE — Epic Closure Review
 
-**Trigger**: At `/ags-gate-check epic-done` — closes a single epic before advancing to the next iteration. Spawned in `lean` mode (only PR director); in `full` mode CD + TD + AD also spawn via PHASE-GATE patterns.
+**Trigger**: At `/ags-gate-check epic-done` — closes a single epic before advancing to the next iteration. Spawn CD + TD + AD + PR in parallel (full coverage).
 
 **Context to pass**:
 - Path to closing `EPIC.md`

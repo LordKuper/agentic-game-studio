@@ -74,9 +74,7 @@ Apply edits, redraft, present again. Loop until user approves.
 
 ## Phase 5b: Internal Review Loop
 
-Apply review mode:
-- `solo` → skip the loop. Proceed to Phase 5c.
-- `lean` / `full` → spawn `lead-programmer` (and optionally `technical-director`) via Task to review the drafted contracts against existing ADRs, registry stances, and stubs.md.
+Spawn `lead-programmer` (and optionally `technical-director`) via Task to review the drafted contracts against existing ADRs, registry stances, and stubs.md.
 
 **Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected interfaces / defaults, re-spawn the reviewers. No iteration cap.
 

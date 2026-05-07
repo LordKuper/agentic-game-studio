@@ -21,18 +21,6 @@ gap list for each non-ready story.
 
 ---
 
-## Phase 0: Resolve Review Mode
-
-Resolve the review mode once at startup (store for all gate spawns this run):
-
-1. If skill was called with `--review [full|lean|solo]` → use that value
-2. Else read `.ags/project/review-mode.md` → use that value
-3. Else → default to `lean`
-
-See `.ags/rules/director-gates.md` for the full check pattern and mode definitions.
-
----
-
 ## 1. Parse Arguments
 
 **Scope:** `$ARGUMENTS[0]` (blank = ask user via AskUserQuestion)
@@ -319,12 +307,6 @@ If no sprint file exists or no other ready stories are found, skip this section 
 ---
 
 ## Phase 8: Director Gate — Story Readiness Review
-
-Apply the review mode resolved in Phase 0 before spawning QL-STORY-READY:
-
-- `solo` → skip. Note: "QL-STORY-READY skipped — Solo mode." Proceed to close.
-- `lean` → skip. Note: "QL-STORY-READY skipped — Lean mode." Proceed to close.
-- `full` → spawn as normal.
 
 Spawn `qa-lead` via Task using gate **QL-STORY-READY** (`.ags/rules/director-gates.md`).
 

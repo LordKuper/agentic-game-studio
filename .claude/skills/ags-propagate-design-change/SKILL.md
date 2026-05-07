@@ -158,11 +158,6 @@ ADRs referencing this GDD: [M]
 
 ## 6b. Director Gate — Technical Impact Review
 
-**Review mode check** — apply before spawning TD-CHANGE-IMPACT:
-- `solo` → skip. Note: "TD-CHANGE-IMPACT skipped — Solo mode." Proceed to Phase 7.
-- `lean` → skip. Note: "TD-CHANGE-IMPACT skipped — Lean mode." Proceed to Phase 7.
-- `full` → spawn as normal.
-
 Spawn `technical-director` via Task using gate **TD-CHANGE-IMPACT** (`.ags/rules/director-gates.md`).
 
 Pass: the full Design Change Impact Report from Phase 6 (change summary, all affected ADRs with their Still Valid / Needs Review / Likely Superseded classifications, and recommended actions).

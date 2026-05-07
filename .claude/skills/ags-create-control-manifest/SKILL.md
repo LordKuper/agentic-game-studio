@@ -124,11 +124,6 @@ Ask: "Does this look complete? Any rules to add or remove before I write the man
 
 ## 4b. Internal Review Loop — Technical Review
 
-**Review mode check** — apply for the loop:
-- `solo` → skip the loop. Note: "TD-MANIFEST skipped — Solo mode." Proceed to Phase 4c.
-- `lean` → skip the loop. Note: "TD-MANIFEST skipped — Lean mode." Proceed to Phase 4c.
-- `full` → spawn the loop.
-
 Spawn `technical-director` via Task using gate **TD-MANIFEST** (`.ags/rules/director-gates.md`).
 
 Pass: the Control Manifest Preview from Phase 4 (rule counts per layer, full extracted rule list), the list of ADRs covered, engine version, and any rules sourced from technical-preferences.md or engine reference docs.

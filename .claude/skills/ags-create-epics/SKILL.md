@@ -1,7 +1,7 @@
 ---
 name: ags-create-epics
 description: "Create one vertical-slice epic covering 1-3 systems (modes: new / revise / stub). Writes EPIC.md from t_epic.md, updates epics/index.md, sets active epic in stage.md."
-argument-hint: "[name] [--review full|lean|solo]"
+argument-hint: "[name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 agent: producer
@@ -41,12 +41,6 @@ If any STOP triggers, exit with verdict **BLOCKED — missing prerequisite** and
 ## 1. Parse Arguments
 
 - `[name]` — optional slug hint. If omitted, derive slug from first `new` system or ask user.
-- `--review [full|lean|solo]` — override review mode for this run.
-
-Resolve review mode:
-1. `--review` arg → use it
-2. Else read `.ags/project/review-mode.md`
-3. Else default `lean`
 
 ---
 
@@ -132,11 +126,6 @@ Confirm IDs with user before writing.
 ## 8. Combined Review Loop (Producer Gate PR-EPIC + External Codex, parallel)
 
 Canonical contract: `.ags/rules/review-workflow.md`. Aggregator: `producer`.
-
-Apply review mode:
-- `solo` → skip the loop entirely. Proceed to Phase 9.
-- `lean` → skip the internal director gate; still run external Codex parallel iteration (it has no review-mode gating). Proceed to Phase 9.
-- `full` → run combined loop below.
 
 **Each iteration N (start N=1):**
 

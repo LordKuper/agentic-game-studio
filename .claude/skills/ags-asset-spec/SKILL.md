@@ -1,7 +1,7 @@
 ﻿---
 name: ags-asset-spec
 description: "Generate per-asset visual specifications and AI generation prompts from GDDs, level docs, or character profiles. Produces structured spec files and updates the master asset manifest. Run after art bible and GDD/level design are approved, before production begins."
-argument-hint: "[system:<name> | level:<name> | character:<name>] [--review full|lean|solo]"
+argument-hint: "[system:<name> | level:<name> | character:<name>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 ---
@@ -33,12 +33,8 @@ If STOP triggers, exit verdict **BLOCKED**.
 Extract:
 - **Target type**: `system`, `level`, or `character`
 - **Target name**: the name after the colon (normalize to kebab-case)
-- **Review mode**: `--review [full|lean|solo]` if present
 
-**Mode behavior:**
-- `full` (default): spawn both `art-director` and `technical-artist` in parallel
-- `lean`: spawn `art-director` only — faster, skips technical constraint pass
-- `solo`: no agent spawning — main session writes specs from art bible rules alone. Use for simple asset categories or when speed matters more than depth.
+Spawn both `art-director` and `technical-artist` in parallel for the review loop.
 
 ---
 
@@ -102,9 +98,7 @@ Do NOT proceed to Phase 3 without user confirmation of the asset list.
 
 ## Phase 3: Spec Generation
 
-Spawn specialist agents based on review mode. **Issue all Task calls simultaneously — do not wait for one before starting the next.**
-
-### Full mode — spawn in parallel:
+Spawn specialist agents in parallel. **Issue all Task calls simultaneously — do not wait for one before starting the next.**
 
 **`art-director`** via Task:
 - Provide: full asset list from Phase 2, art bible Visual Identity Statement, Color System, Shape Language, the source doc's visual requirements, and any reference games/art mentioned in the art bible Section 9
@@ -113,10 +107,6 @@ Spawn specialist agents based on review mode. **Issue all Task calls simultaneou
 **`technical-artist`** via Task:
 - Provide: full asset list, art bible Asset Standards (Section 8), technical-preferences.md performance budgets, engine name and version
 - Ask: "For each asset in this list, specify: (1) exact dimensions or polycount (match the art bible Asset Standards tiers — do not invent new sizes); (2) file format and export settings; (3) naming convention (from technical-preferences.md); (4) any engine-specific constraints this asset type must respect; (5) LOD requirements if applicable. Flag any asset type where the art bible's preferred standard conflicts with the engine's constraints."
-
-### Lean mode — spawn art-director only (skip technical-artist).
-
-### Solo mode — skip both. Derive specs from art bible rules alone, noting that technical constraints were not validated.
 
 **Collect both responses before Phase 4.** If any conflict exists between art-director and technical-artist (e.g., art-director specifies 4K textures but technical-artist flags the engine budget requires 512px), surface it explicitly — do NOT silently resolve.
 
@@ -163,9 +153,7 @@ If [C]: ask what direction to change. Re-spawn the relevant agent with the updat
 
 ## Phase 4b: Internal Review Loop
 
-Apply review mode:
-- `solo` → skip the loop. Proceed to Phase 4c.
-- `lean` / `full` → spawn `art-director` and `technical-artist` via Task to review the assembled spec set against art bible, DESIGN.md tokens, engine renderer constraints, and budget.
+Spawn `art-director` and `technical-artist` via Task to review the assembled spec set against art bible, DESIGN.md tokens, engine renderer constraints, and budget.
 
 **Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected specs, re-spawn reviewers. No iteration cap.
 
@@ -277,8 +265,8 @@ If a match is found: reference the existing ASSET-ID rather than creating a dupl
 If any spawned agent returns BLOCKED or cannot complete:
 
 1. Surface immediately: "[AgentName]: BLOCKED — [reason]"
-2. In `lean` mode or if `technical-artist` blocks: proceed with art-director output only — note that technical constraints were not validated
-3. In `solo` mode or if `art-director` blocks: derive descriptions from art bible rules — flag as "Art director not consulted — verify against art bible before production"
+2. If `technical-artist` blocks: proceed with art-director output only — note that technical constraints were not validated
+3. If `art-director` blocks: derive descriptions from art bible rules — flag as "Art director not consulted — verify against art bible before production"
 4. Always produce a partial spec — never discard work because one agent blocked
 
 ---

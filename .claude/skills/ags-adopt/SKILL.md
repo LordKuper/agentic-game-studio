@@ -301,29 +301,6 @@ Run `/ags-adopt` after Step 3 to verify all blocking and high gaps resolved.
 
 ---
 
-## Phase 6b: Set Review Mode
-
-After writing plan (or on cancel), check `.ags/project/review-mode.md`.
-
-**Exists**: read, note "Review mode is already set to `[current]`." — skip prompt.
-
-**Missing**: `AskUserQuestion`:
-
-- **Prompt**: "One more setup step: how much design review during the workflow?"
-- **Options**:
-  - `Full` — Director specialists review at each key step. Best for teams, learning workflow, thorough feedback.
-  - `Lean (recommended)` — Directors only at phase gate transitions (/ags-gate-check). Solo / small teams.
-  - `Solo` — No director reviews. Maximum speed. Jams.
-
-Write choice immediately to `.ags/project/review-mode.md` — no separate approval:
-- `Full` → `full`
-- `Lean (recommended)` → `lean`
-- `Solo` → `solo`
-
-Create `.ags/project/` if missing.
-
----
-
 ## Phase 7: Offer First Action
 
 Pick single highest-priority gap. Offer immediate fix via `AskUserQuestion`. First branch that applies:

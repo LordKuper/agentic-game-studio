@@ -179,9 +179,7 @@ resolution and estimated time to address them.]
 
 ## Phase 4b: Internal Review Loop
 
-Apply review mode:
-- `solo` → skip the loop. Proceed to Phase 4c.
-- `lean` / `full` → spawn `release-manager` and `qa-lead` via Task to review the drafted release checklist against target platforms, cert profiles, QA sign-off status, build pipeline, and store metadata.
+Spawn `release-manager` and `qa-lead` via Task to review the drafted release checklist against target platforms, cert profiles, QA sign-off status, build pipeline, and store metadata.
 
 **Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected items, re-spawn reviewers. No iteration cap.
 

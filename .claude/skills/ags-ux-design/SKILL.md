@@ -878,10 +878,6 @@ Present the check results:
 
 Before handoff, run an internal review loop on the completed UX spec. Spawn `ux-designer` (self-review) and `art-director` (gate **AD-UX-VISUAL** if defined; otherwise pass spec for visual-language adherence) in parallel via Task. Pass: spec file path, DESIGN.md tokens, accessibility tier, related GDDs.
 
-**Review mode check**:
-- `solo` → skip the loop entirely; proceed to 5y.
-- `lean` / `full` → spawn the panel.
-
 **Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected sections (re-write to file as in Collaborative Protocol), re-spawn the panel. No iteration cap.
 
 Record iteration count.

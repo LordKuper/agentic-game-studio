@@ -246,15 +246,12 @@ For each metric in category rubric:
 ```
 === Skill Category Check: /[name] ([category]) ===
 
-Metric G1 — Review mode read:      PASS
-Metric G2 — Full mode directors:   FAIL
+Metric G1 — Director panel spawn:  FAIL
   Gap: Phase 3 spawns only CD-PHASE-GATE; TD-PHASE-GATE, PR-PHASE-GATE, AD-PHASE-GATE absent
-Metric G3 — Lean mode: PHASE-GATE only: PASS
-Metric G4 — Solo mode: no directors:    PASS
-Metric G5 — No auto-advance:       PASS
+Metric G2 — No auto-advance:       PASS
 
 Verdict: FAIL (1 failure, 0 warnings)
-Fix: Add TD-PHASE-GATE, PR-PHASE-GATE, and AD-PHASE-GATE to the full-mode director
+Fix: Add TD-PHASE-GATE, PR-PHASE-GATE, and AD-PHASE-GATE to the director
      panel in Phase 3.
 ```
 

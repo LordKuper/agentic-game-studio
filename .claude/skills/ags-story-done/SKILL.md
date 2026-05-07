@@ -1,7 +1,7 @@
 ﻿---
 name: ags-story-done
 description: "End-of-story completion review. Reads the story file, verifies each acceptance criterion against the implementation, checks for GDD/ADR deviations, prompts code review, updates story status to Complete, and surfaces the next ready story from the sprint."
-argument-hint: "[story-file-path] [--review full|lean|solo]"
+argument-hint: "[story-file-path]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Edit, AskUserQuestion, Task
 ---
@@ -31,13 +31,6 @@ If any STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
 ---
 
 ## Phase 1: Find the Story
-
-Resolve the review mode (once, store for all gate spawns this run):
-1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `.ags/project/review-mode.md` → use that value
-3. Else → default to `lean`
-
-See `.ags/rules/director-gates.md` for the full check pattern.
 
 **If a file path is provided** (e.g., `/ags-story-done .ags/project/epics/core/story-damage-calculator.md`):
 read that file directly.
@@ -239,11 +232,6 @@ For each deviation found, categorize:
 
 ## Phase 4b: QA Coverage Gate
 
-**Review mode check** — apply before spawning QL-TEST-COVERAGE:
-- `solo` → skip. Note: "QL-TEST-COVERAGE skipped — Solo mode." Proceed to Phase 5.
-- `lean` → skip (not a PHASE-GATE). Note: "QL-TEST-COVERAGE skipped — Lean mode." Proceed to Phase 5.
-- `full` → spawn as normal.
-
 After completing the deviation checks in Phase 4, spawn `qa-lead` via Task using gate **QL-TEST-COVERAGE** (`.ags/rules/director-gates.md`).
 
 Pass:
@@ -264,11 +252,6 @@ Skip this phase for Config/Data stories (no code tests required).
 ---
 
 ## Phase 5: Lead Programmer Code Review Gate
-
-**Review mode check** — apply before spawning LP-CODE-REVIEW:
-- `solo` → skip. Note: "LP-CODE-REVIEW skipped — Solo mode." Proceed to Phase 6 (completion report).
-- `lean` → skip (not a PHASE-GATE). Note: "LP-CODE-REVIEW skipped — Lean mode." Proceed to Phase 6 (completion report).
-- `full` → spawn as normal.
 
 Spawn `lead-programmer` via Task using gate **LP-CODE-REVIEW** (`.ags/rules/director-gates.md`).
 

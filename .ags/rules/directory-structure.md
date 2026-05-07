@@ -14,7 +14,6 @@
 │   ├── project/                       # Project-state working dir (gitignored except patterns below)
 │   │   ├── state.md                   # Active session (overwritten on new task)
 │   │   ├── stage.md                   # Current dev phase + active epic + transition history
-│   │   ├── review-mode.md             # Director-gate intensity (full / lean / solo)
 │   │   ├── stubs.md                   # TODO stub registry (from t_stubs.md)
 │   │   ├── decisions-log.md           # Append-only decisions chronology (from t_decisions-log.md)
 │   │   ├── epics/                     # Epics (vertical slices) + stories
@@ -48,7 +47,7 @@
 
 - **Production code**: engine source root (e.g. `Assets/` for Unity). Tests in `tests/` regardless of engine.
 - **Active session**: single file `.ags/project/state.md` holds entire working session. One active session at a time. New task overwrites it. History in git.
-- **Project-level state files** (`stage.md`, `review-mode.md`, `stubs.md`, `decisions-log.md`, `epics/index.md`) live under `.ags/project/`. Persist across `state.md` overwrites.
+- **Project-level state files** (`stage.md`, `stubs.md`, `decisions-log.md`, `epics/index.md`) live under `.ags/project/`. Persist across `state.md` overwrites.
 - **All state files in Markdown** — no `.txt`, `.yaml`. Resume work on any stage by reading the relevant `.md`.
 - **`.ags/project/`** mostly working state — keep gitignored unless project explicitly tracks epic/decision history in git.
 - **External reviews** (`.ags/project/reviews/`) — one file per `[YYYY-MM-DD]-[type]-[slug]`. Iterations append as new `## Iteration N` sections; never overwrite. `.ags/project/reviews/.tmp/` holds raw Codex prompts/output, gitignored.

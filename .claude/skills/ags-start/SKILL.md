@@ -1,6 +1,6 @@
 ---
 name: ags-start
-description: "Entry point for every Agentic Game Studio session. First run — guided onboarding (user-interaction, engine, concept, review mode, state.md). Returning run on any phase — surfaces project context (phase, active epic, open stubs, latest decision) and resumes from where work stopped. RESUME branch handles cloned repos where state.md is gone but stage.md / epics survive. Run on first session, on missing engine/concept/state.md, on new task, or on explicit /ags-start invocation."
+description: "Entry point for every Agentic Game Studio session. First run — guided onboarding (user-interaction, engine, concept, state.md). Returning run on any phase — surfaces project context (phase, active epic, open stubs, latest decision) and resumes from where work stopped. RESUME branch handles cloned repos where state.md is gone but stage.md / epics survive. Run on first session, on missing engine/concept/state.md, on new task, or on explicit /ags-start invocation."
 argument-hint: "[no arguments]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Task
@@ -13,7 +13,7 @@ metadata:
 
 Entry point for every working session. Two modes:
 
-- **First run (greenfield)** — guided onboarding: user-interaction → engine → concept skeleton → review mode → fresh `state.md`. Phases 2 → 3 → 4 → 5 → 6 → 7 → 8 → 9.
+- **First run (greenfield)** — guided onboarding: user-interaction → engine → concept skeleton → fresh `state.md`. Phases 2 → 3 → 4 → 5 → 7 → 8 → 9.
 - **Returning run** — three sub-paths based on what is on disk:
   - **CONTINUE** — `state.md` has unfinished work → resume in-place (after user confirms).
   - **RESUME** — `state.md` absent or clean, but project mid-flight (`stage.md` or `epics/index.md` populated) → pre-fill new `state.md` with active-epic / current-phase task, surface project context, hand off.
@@ -28,7 +28,6 @@ Direct-write files (no extra "May I write?"):
 - `.ags/project/p_user-interaction.md` — only if placeholders remain
 - `design/gdd/engine.md` — from `.ags/templates/t_engine.md`
 - `design/gdd/game-concept.md` — from `.ags/templates/t_concept.md` (skeleton only)
-- `.ags/project/review-mode.md`
 - `.ags/project/state.md` — skeleton on new session, or overwritten on reset
 
 ---
@@ -37,7 +36,7 @@ Direct-write files (no extra "May I write?"):
 
 No output. Gather context. Each check produces a boolean signal that drives routing in Phase 2.5.
 
-`ags-start` is designed to **handle missing artifacts itself** rather than redirect — it bootstraps user-interaction (Phase 2), engine (Phase 5), concept (Phase 7), review-mode (Phase 6), state.md (Phase 8). No STOP-with-redirect pattern. If a returning user has none of these, the skill walks the full onboarding.
+`ags-start` is designed to **handle missing artifacts itself** rather than redirect — it bootstraps user-interaction (Phase 2), engine (Phase 5), concept (Phase 7), state.md (Phase 8). No STOP-with-redirect pattern. If a returning user has none of these, the skill walks the full onboarding.
 
 Verify each:
 
@@ -192,24 +191,6 @@ If `design/gdd/engine.md` missing or has `{{...}}`:
 3. Ask Unity version (e.g. `6000.0.30f1`) free-form follow-up.
 4. Write filled template to `design/gdd/engine.md`. Direct consequence — no approval.
 5. Mention `unity-specialist` as engine entry point.
-
----
-
-## Phase 6: Review mode
-
-Check `.ags/project/review-mode.md`.
-
-**Exists**: read, show "Review mode: `[current]`" → Phase 7.
-
-**Missing**: `AskUserQuestion`:
-
-- **Prompt**: "How much director review during work?"
-- **Options**:
-  - `Full` — directors review every key step. Teams, learning, thorough feedback.
-  - `Lean (recommended)` — directors only at phase gates. Solo / small teams.
-  - `Solo` — no director reviews. Maximum speed. Jams.
-
-Write choice to `.ags/project/review-mode.md`: `full` / `lean` / `solo`.
 
 ---
 

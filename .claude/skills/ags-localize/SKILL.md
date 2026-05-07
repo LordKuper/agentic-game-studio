@@ -44,8 +44,6 @@ If STOP triggers, exit verdict **BLOCKED**.
 
 Per `.ags/rules/review-workflow.md`. For every mode below that produces a writable artifact (extracted strings bundle, translator brief, cultural review, VO scripts, RTL report, freeze snapshot, QA verdict report), apply this loop **before** the mode's `May I write...` prompt. Aggregator: `narrative-director` (skill-designated lead).
 
-Skip in `solo` mode.
-
 **Each iteration N (start N=1):**
 
 1. Resolve severity floor: N≤2 → `low`; N=3..4 → `high`; N≥5 → `critical`.

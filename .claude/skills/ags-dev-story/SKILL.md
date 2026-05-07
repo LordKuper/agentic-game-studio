@@ -270,9 +270,7 @@ Ready for: `/ags-code-review [file1] [file2]` then `/ags-story-done [story-path]
 
 ## Phase 6b: Internal Review Loop (Code Review)
 
-Apply review mode:
-- `solo` → skip the loop. Proceed to Phase 6c.
-- `lean` / `full` → spawn `lead-programmer` via Task to perform code review on the changeset (files + test). Pass: changed file paths, story acceptance criteria, ADR references, project coding rules.
+Spawn `lead-programmer` via Task to perform code review on the changeset (files + test). Pass: changed file paths, story acceptance criteria, ADR references, project coding rules.
 
 **Loop exit condition.** Single iteration where the reviewer returns clean (no critical/high/medium findings; ACs covered; tests pass on a quick mental walkthrough or by `Bash` test runner if configured). Non-clean → user (or further programmer agents) revises code, re-spawn lead-programmer review. No iteration cap.
 

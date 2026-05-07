@@ -1,7 +1,7 @@
 ---
 name: ags-gate-check
 description: "Validate readiness to advance between development phases or to close an epic. Produces PASS / CONCERNS / FAIL verdict with blockers and required artifacts. Use when user says 'are we ready to move to X', 'close this epic', 'pass the gate'."
-argument-hint: "[target: foundation | production | polish | release | epic-done] [--review full|lean|solo]"
+argument-hint: "[target: foundation | production | polish | release | epic-done]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task, AskUserQuestion
 model: opus
@@ -31,12 +31,7 @@ Plus a **per-epic gate** within Production: `epic-done`.
 
 **Target:** `$ARGUMENTS[0]`. Accepted values: `foundation`, `production`, `polish`, `release`, `epic-done`. Blank = auto-detect from `stage.md`.
 
-Resolve review mode (once, store for all gate spawns):
-1. `--review [full|lean|solo]` passed → use that
-2. Else read `.ags/project/review-mode.md` → use value
-3. Else → default `lean`
-
-In `solo` mode, all director spawns skipped — gate becomes artifact-existence checks only. In `lean` mode, phase gates spawn full director panel; `epic-done` spawns PR only. In `full` mode, all gates spawn full panel.
+Phase gates (foundation/production/polish/release) spawn the full director panel in parallel. `epic-done` also spawns the full panel (CD + TD + AD + PR).
 
 - **With argument**: `/ags-gate-check production` — validate that transition.
 - **No argument**: read `.ags/project/stage.md` for current phase + active epic. Confirm with user via `AskUserQuestion`:
@@ -141,7 +136,7 @@ In `solo` mode, all director spawns skipped — gate becomes artifact-existence 
 
 ---
 
-### Gate: epic-done (per-epic, lean)
+### Gate: epic-done (per-epic)
 
 Closes a single epic. Run once per epic, before declaring it done.
 
@@ -207,12 +202,7 @@ For unverifiable items, ask user:
 
 ## 4b. Director Panel Assessment (Internal Review Loop)
 
-Apply review mode:
-
-- `solo` → skip director panel entirely. Gate verdict from artifact + quality checks only. No internal-review loop runs.
-- `lean` + phase gate → spawn full panel (CD + TD + PR + AD).
-- `lean` + `epic-done` → spawn `producer` only (gate **PR-EPIC-DONE** in `.ags/rules/director-gates.md`). Other directors skipped.
-- `full` → spawn full panel for any gate.
+Spawn the full director panel (CD + TD + PR + AD) in parallel for any gate.
 
 Spawn parallel via Task using gate names:
 
@@ -277,7 +267,6 @@ No iteration cap. No user-confirm gate before external — it runs every iterati
 
 **Date**: [date]
 **Checked by**: gate-check skill
-**Review mode**: [full | lean | solo]
 
 ### Required Artifacts: [X/Y present]
 - [x] design/architecture/architecture.md — exists, 5.2KB

@@ -1,7 +1,7 @@
 ﻿---
 name: ags-create-architecture
 description: "Author the master architecture document. Run as skeleton in Foundation phase (top-level layers, module boundaries, tech stack — no detailed ADRs yet); refresh in Production as ADRs accumulate per epic. Engine-version-aware: flags knowledge gaps and validates decisions against the pinned engine version."
-argument-hint: "[focus-area: full | layers | data-flow | api-boundaries | adr-audit] [--review full|lean|solo]"
+argument-hint: "[focus-area: full | layers | data-flow | api-boundaries | adr-audit]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash, AskUserQuestion, Task
 agent: technical-director
@@ -16,13 +16,6 @@ Produces `design/architecture/architecture.md` — master architecture document 
 - **Production phase** — refresh after several epics have added ADRs (recommended every 3-5 epics or after a major `revise` epic). Update the document to reflect cumulative architectural state.
 
 **Distinct from `/ags-architecture-decision`**: ADRs record individual decisions. This skill creates the whole-system blueprint that gives ADRs context.
-
-Resolve the review mode (once, store for all gate spawns this run):
-1. If `--review [full|lean|solo]` was passed → use that
-2. Else read `.ags/project/review-mode.md` → use that value
-3. Else → default to `lean`
-
-See `.ags/rules/director-gates.md` for the full check pattern.
 
 **Argument modes:**
 - **No argument / `full`**: Full guided walkthrough — all sections, start to finish
@@ -300,11 +293,6 @@ but don't yet. Group by priority:
 
 Before the external-review gate, run an internal review loop. Reviewers: technical-director (self-review via gate **TD-ARCHITECTURE**) + lead-programmer (gate **LP-FEASIBILITY**). Each iteration: spawn both via Task in parallel, collect verdicts and findings.
 
-**Review mode check** for LP-FEASIBILITY:
-- `solo` → spawn neither; loop runs only TD self-review.
-- `lean` → skip LP-FEASIBILITY (not PHASE-GATE). Loop runs only TD self-review.
-- `full` → spawn both.
-
 **Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical, no high, no medium findings; low allowed). No iteration cap.
 
 **On non-clean iteration**: surface aggregated findings (TD + LP, source-tagged) → user revises the relevant sections of the draft → re-spawn the same reviewers. The draft updates incrementally — write each user-approved section to the skeleton file as before; loop only re-reviews changed sections plus their dependents.
@@ -390,7 +378,7 @@ The substantive TD self-review and LP feasibility review have already run in Pha
 Update the Document Status section of the written architecture document:
 ```
 - Technical Director Sign-Off: [date] — APPROVED / APPROVED WITH CONDITIONS
-- Lead Programmer Feasibility: FEASIBLE / CONCERNS ACCEPTED / REVISED / SKIPPED ([review-mode])
+- Lead Programmer Feasibility: FEASIBLE / CONCERNS ACCEPTED / REVISED
 - Internal Review Iterations: [N]
 - External Review: [report path | skipped — see decisions-log.md | not run]
 ```

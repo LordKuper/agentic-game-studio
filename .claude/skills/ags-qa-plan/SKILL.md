@@ -235,9 +235,7 @@ test entry should reflect the real requirements of these specific stories.
 
 ## Phase 4b: Internal Review Loop
 
-Apply review mode:
-- `solo` → skip the loop. Proceed to Phase 4c.
-- `lean` / `full` → spawn `qa-lead` (self-review) and `producer` via Task to review the drafted plan against project pillars, milestone scope, accessibility tier, and recent bug history.
+Spawn `qa-lead` (self-review) and `producer` via Task to review the drafted plan against project pillars, milestone scope, accessibility tier, and recent bug history.
 
 **Loop exit condition.** Single iteration where every spawned reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected sections of the plan, re-spawn reviewers. No iteration cap.
 
