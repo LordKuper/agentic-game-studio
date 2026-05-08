@@ -41,6 +41,23 @@ No iteration cap. No user-confirm gate before the external reviewer — it runs 
 
 Iterations 1-2 catch real defects of any size. By iteration 3 the draft is mature; only critical / high should still surface. By iteration 5 the loop must be closing on hard blockers only — anything else means the reviewer is grinding. Floor exists to prevent infinite loops on opinion-grade findings.
 
+## Architecture-impact escalation
+
+If fixing a finding requires introducing a new abstraction / entity / layer or otherwise increases architectural complexity (new interface, new module, new pattern, extra level of indirection, new dependency, splitting an existing entity into several), the fix MUST be approved by the user **before** it is applied.
+
+Applies to: code, design documents, ADRs, GDDs, epic contracts, stubs.
+
+Flow:
+1. Aggregator keeps the finding in the kept set as usual.
+2. Before the author / executing agent starts the fix, they formulate the proposed change.
+3. If the proposed change matches the criterion above, the agent does **not** write the change. Instead it describes to the user: which abstraction / entity is being introduced, why, and the alternatives (including "leave as is and accept the finding / lower severity / drop as nitpick").
+4. User decides: approve, pick an alternative, or drop the finding.
+5. The decision is recorded in `decisions-log.md` with `Type: architecture` when the change is accepted.
+
+Not treated as complexity (may be fixed without approval): rename, typo / value fix, adding a missing field to an existing table, updating a citation to an ADR / rule, removing a duplicate, fixing a link.
+
+This rule overrides severity floor: even a critical finding does not authorize silently introducing a new abstraction.
+
 ## Nitpick — definition (mandatory drop)
 
 A finding is a **nitpick** and must be dropped by the aggregator regardless of severity floor when it matches any of:
@@ -90,6 +107,7 @@ Loop continues with internal reviewers only. No user prompt.
 - Applies the drop rules in this file.
 - Surfaces only kept findings to the user.
 - Records iteration count, dropped count by reason, kept count by severity in the external review report (when external ran) and in the skill's verdict line.
+- Flags kept findings whose fix would trigger Architecture-impact escalation with `arch-escalate`. User must approve the fix plan before the change is written.
 
 ## Standalone gate exception
 
