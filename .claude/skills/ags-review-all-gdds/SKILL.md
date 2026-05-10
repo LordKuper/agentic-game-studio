@@ -117,6 +117,20 @@ starting Phase 3. Collect both results before writing the combined report.
 
 ---
 
+## Phase 1c: Document Boundary Check (mandatory — per `.ags/rules/review-workflow.md` § Document Boundary Check)
+
+Run before consistency / design-holism phases. Per `.ags/rules/document-boundaries.md`, scan every GDD in scope:
+
+- tech-leak (class/namespace/library/perf ms-MB-FPS literals/data-schema definitions)
+- GDD→ADR cite (forbidden)
+- raw color/typography/spacing literals
+- front-matter `status:` validity
+- entity ids cited from `design/registry/entities.yaml` only
+
+Delegation: invoke `/ags-consistency-check full` and merge Boundary Violations into this review's findings. Boundary findings classified `high`, never dropped by severity floor. Surface in PASS / CONCERNS / FAIL verdict.
+
+---
+
 ## Phase 2: Cross-GDD Consistency
 
 Work through every pair and group of GDDs to find contradictions and gaps.

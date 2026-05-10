@@ -113,8 +113,41 @@ Loop continues with internal reviewers only. No user prompt.
 
 `/ags-gate-check release` and `/ags-gate-check epic-done` retain external review as a separate gate (not parallel-with-internal), because at gate time the artifact is already written and the gate is a verdict, not an authoring loop. Those gates pass `--min-severity` based on their own iteration counter.
 
+## Document Boundary Check (mandatory in every doc-review iteration)
+
+Every doc-review skill (architecture-review, design-review, review-all-gdds, ux-review, gate-check, propagate-design-change, external-review) MUST include a Document Boundary Check step that enforces `.ags/rules/document-boundaries.md`. Findings count as **substantive** (not nitpicks) — never dropped by the iteration severity floor.
+
+### Per-doc-type checks (run on every reviewed artifact)
+
+| Doc type | Check |
+|---|---|
+| GDD (`design/gdd/*.md`) | (1) front-matter `status:` present + valid; (2) no class/namespace/method names, no `using/import`, no library names from engine-reference; (3) no ms/MB/FPS literals outside player-observable acceptance; (4) no `adr-NNNN` / `ADR-NNNN` cite; (5) no raw color/typography/spacing literals; (6) no data-schema definitions (JSON/YAML/SQL shapes); (7) entity ids cited from `design/registry/entities.yaml` only. |
+| ADR (`design/architecture/adr-*.md`) | (1) front-matter `status:` present + valid; (2) `**GDD source**:` line present + cited GDD `status: approved` (or explicit `Foundational — no GDD requirement`); (3) does NOT redefine concept rules from cited GDD (drift risk — must reference, not copy); (4) cited GDD section anchors resolve. |
+| UX-spec (`design/ux/<screen>.md`, not `hud.md`) | (1) front-matter `status:` present + valid; (2) cited GDD `status: approved`; (3) no mechanic-rule duplication from GDD; (4) no raw color/typography/spacing literals — only `{tokens}` from DESIGN.md. |
+| HUD-spec (`design/ux/hud.md`) | (1) front-matter `status:` present + valid; (2) cited UX-spec(s) AND `design/art/DESIGN.md` `status: approved`; (3) no raw visual literals; (4) no mechanic-rule duplication. |
+| art-bible (`design/art/art-bible.md`) | (1) front-matter `status:` present + valid; (2) Section 6 (UI Visual Language) cites DESIGN.md tokens, no raw values; (3) `design/art/DESIGN.md` `status: approved`. |
+| DESIGN.md (`design/art/DESIGN.md`) | (1) front-matter `status:` present + valid; (2) lint passes (`npx @google/design.md lint` errors=0). |
+| game-concept, engine doc | front-matter `status:` present + valid. |
+
+### Reviewer prompt addendum (paste into every review pool prompt)
+
+> **Document Boundary Check** — apply `.ags/rules/document-boundaries.md` to the artifact under review. Report any boundary violation as a **substantive finding** (severity: high). Includes: tech-leak in GDD, GDD→ADR cite, raw visual literal outside DESIGN.md, missing/invalid front-matter `status:`, missing `**GDD source**:` line in ADR, content duplication across SSoT zones, citation of unapproved predecessor.
+
+### Tooling delegation
+
+Skills MAY delegate the mechanical scan to `/ags-consistency-check` (Phase 3e covers boundary detection). Doing so satisfies this requirement provided the skill surfaces the resulting Boundary Violations section to the user / aggregator.
+
+### Aggregator handling
+
+- Boundary findings: **never dropped** by severity floor (always at least `high`).
+- Boundary fix that requires moving content between docs (e.g. lift schema out of GDD into new ADR) → triggers Architecture-impact escalation rules (user approval required before write).
+
+---
+
 ## Cross-references
 
 - `.ags/rules/director-gates.md` — gate prompt structure, reviewer guidance block.
+- `.ags/rules/document-boundaries.md` — SSoT zones + approval-marker chain enforced by Document Boundary Check.
 - `.claude/skills/ags-external-review/SKILL.md` — `--embedded-parallel` mode contract.
+- `.claude/skills/ags-consistency-check/SKILL.md` — Phase 3e boundary scan (delegation target).
 - `.ags/templates/external-review/t_review-report.md` — report layout including dropped findings.

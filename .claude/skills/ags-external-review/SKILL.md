@@ -20,6 +20,8 @@ Independent second opinion via the `codex` CLI. Three invocation modes:
 
 **No-nitpick rule:** This skill always paste the Reviewer Guidance block from `.ags/rules/director-gates.md` § Reviewer Guidance into the Codex prompt. Substantive findings only. See `.ags/rules/review-workflow.md`.
 
+**Document Boundary Check:** For doc-review types (ADR, GDD, concept, art-bible, design-system, UX, systems-index, control-manifest), the prompt also includes the Boundary Addendum from `.ags/rules/review-workflow.md` § Document Boundary Check — Codex flags violations of `.ags/rules/document-boundaries.md` as `high`-severity substantive findings.
+
 ---
 
 ## Phase 0: Prerequisites
@@ -105,6 +107,7 @@ Read `.ags/templates/external-review/t_prompt-[type].md`. Substitute placeholder
 - `{{PRIOR_FINDINGS}}` — for N>1, the previous iteration's re-classified findings table; empty for N=1
 - `{{SEVERITY_FLOOR}}` — resolved severity floor (`critical` / `high` / `medium` / `low`)
 - `{{REVIEWER_GUIDANCE}}` — paste the Reviewer Guidance block from `.ags/rules/director-gates.md` § Reviewer Guidance verbatim, with `{{ITERATION}}` and `{{SEVERITY_FLOOR}}` substituted
+- `{{BOUNDARY_ADDENDUM}}` — for doc-review types (`adr`, `gdd`, `concept`, `art-bible`, `design-system`, `ux`, `systems-index`, `control-manifest`), paste the Reviewer prompt addendum from `.ags/rules/review-workflow.md` § Document Boundary Check. Skip for `code` / `security` / `release-checklist` / `qa-plan` / `asset-spec` / `localize` / `epic` / `story` / `contracts` / `custom`.
 
 For `custom`, ask user for prompt body and target context inline via `AskUserQuestion`.
 

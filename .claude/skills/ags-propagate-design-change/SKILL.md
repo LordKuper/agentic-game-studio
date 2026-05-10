@@ -39,6 +39,22 @@ Verify the file exists. If not, fail with:
 
 ---
 
+## 1b. Document Boundary Check (mandatory — per `.ags/rules/review-workflow.md` § Document Boundary Check)
+
+Before propagating, validate the changed GDD against `.ags/rules/document-boundaries.md`:
+
+- front-matter `status:` valid (warn if `draft` — propagation runs but downstream skills will reject until approved).
+- no tech-leak (class/namespace/library/perf-literals/data-schema).
+- no GDD→ADR cite (forbidden — GDD must not reference ADR).
+- no raw color/typography/spacing literals.
+- entity ids cited from `design/registry/entities.yaml` only.
+
+Delegation: invoke `/ags-consistency-check entity:<system>` (or `full`) on the changed GDD and merge Boundary Violations into the impact report. Hard violations (🔴 BOUNDARY) → ABORT propagation: "Fix boundary violations in changed GDD before propagating to ADRs."
+
+After downstream ADRs identified, re-run boundary check on each affected ADR (`**GDD source**:` line, no concept-rule duplication from cited GDD). Record violations in Phase 6 Impact Report.
+
+---
+
 ## 2. Read the Changed GDD
 
 Read the current GDD in full.

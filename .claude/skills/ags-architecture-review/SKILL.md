@@ -26,6 +26,17 @@ Validates complete architectural decisions body covers all game design requireme
 
 ---
 
+## Phase 0b: Document Boundary Check (mandatory — per `.ags/rules/review-workflow.md` § Document Boundary Check)
+
+Run before completeness/consistency phases. Enforces `.ags/rules/document-boundaries.md` on artifact set:
+
+- Every cited GDD: tech-leak (class/namespace/library/perf-literals/data-schema), GDD→ADR cite, raw visual literals, front-matter `status:` validity, registry-cited entity ids.
+- Every reviewed ADR: front-matter validity, `**GDD source**:` line presence + cited GDD `status: approved`, no concept-rule duplication from cited GDD.
+
+Delegation: invoke `/ags-consistency-check full` and merge resulting Boundary Violations into this review's findings. Boundary violations classified `high` (substantive) — never dropped by severity floor. Surface in PASS / CONCERNS / FAIL verdict.
+
+---
+
 ## Phase 1: Load Everything
 
 ### Phase 1a — L0: Summary Scan (fast, low tokens)

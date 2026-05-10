@@ -71,6 +71,18 @@ Before validating any spec, load:
 
 ---
 
+## Phase 2b: Document Boundary Check (mandatory — per `.ags/rules/review-workflow.md` § Document Boundary Check)
+
+Run before validation checklists. Per `.ags/rules/document-boundaries.md`:
+
+- UX-spec target: front-matter `status:` validity, cited GDD `status: approved`, no mechanic-rule duplication from GDD, no raw color/typography/spacing literals (only `{tokens}`).
+- HUD-spec target: front-matter validity, cited UX-spec(s) AND `design/art/DESIGN.md` `status: approved`, no raw visual literals, no mechanic-rule duplication.
+- Pattern library: front-matter validity, cited DESIGN.md tokens.
+
+Delegation: `/ags-consistency-check full` and merge Boundary Violations. Boundary findings classified `high`, never dropped by severity floor. Surface in APPROVED / NEEDS REVISION / MAJOR REVISION verdict.
+
+---
+
 ## Phase 3A: UX Spec Validation Checklist
 
 Run all checks against a `ux-spec.md`-based document.

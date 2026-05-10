@@ -31,6 +31,18 @@ Read the target design document in full. Read CLAUDE.md to understand project co
 
 ---
 
+## Phase 1b: Document Boundary Check (mandatory — per `.ags/rules/review-workflow.md` § Document Boundary Check)
+
+Run before completeness. Per `.ags/rules/document-boundaries.md`:
+
+- GDD target: tech-leak (class/namespace/library/perf ms-MB-FPS literals/data-schema), GDD→ADR cite, raw color/typography/spacing literals, front-matter `status:` validity, registry-cited entity ids.
+- ADR target: front-matter validity, `**GDD source**:` line, cited GDD `status: approved`, no concept-rule duplication.
+- UX/HUD/art-bible/DESIGN.md/concept/engine targets: per-doc-type checks from review-workflow.md table.
+
+Delegation: `/ags-consistency-check full` and merge Boundary Violations into review findings. Boundary findings classified `high`, never dropped by severity floor. Surface in verdict.
+
+---
+
 ## Phase 2: Completeness Check
 
 Evaluate against the Design Document Standard checklist:

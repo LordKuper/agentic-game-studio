@@ -175,6 +175,18 @@ For each item in target gate:
 - Compare performance data against `technical-preferences.md`.
 - Grep hardcoded strings in engine source root.
 
+### Document Boundary Check (mandatory — per `.ags/rules/review-workflow.md` § Document Boundary Check)
+
+Run on artifacts in scope of this gate (per Gate Definitions above):
+
+- Concept→Foundation: game-concept, engine doc, art-bible, DESIGN.md, systems-index, accessibility-requirements.
+- Foundation→Production: + ADRs, control-manifest, all GDDs.
+- Production→Polish / Polish→Release / epic-done: + epic doc, stories, UX/HUD specs.
+
+Per `.ags/rules/document-boundaries.md`: front-matter `status:` validity, SSoT zone violations (tech-leak in GDD, GDD→ADR cite, raw visual literals outside DESIGN.md, missing `**GDD source**:` in ADR, content duplication, unapproved predecessor cited).
+
+Delegation: invoke `/ags-consistency-check full` and merge Boundary Violations into gate findings. Boundary findings classified `high`, never dropped — gate verdict downgrades to **FAIL** on any 🔴 BOUNDARY violation, **CONCERNS** on ⚠️ DUPLICATION / ℹ️ MARKER GAP unless waived in `decisions-log.md`.
+
 ### Cross-Reference Checks
 - Compare `design/gdd/` vs implementation in engine source root.
 - Every system in architecture has corresponding code (production phase).

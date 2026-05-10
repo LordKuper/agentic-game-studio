@@ -31,6 +31,14 @@ Read all sprint reports for sprints within this milestone from `.ags/project/epi
 
 ---
 
+## Phase 1b: Document Boundary Check (mandatory — per `.ags/rules/review-workflow.md` § Document Boundary Check)
+
+Run on all design artifacts touched within milestone scope (GDDs, ADRs, UX/HUD specs, art-bible, DESIGN.md). Per `.ags/rules/document-boundaries.md`: front-matter `status:` validity, SSoT zone violations, missing approval markers on cited predecessors.
+
+Delegation: invoke `/ags-consistency-check full` and merge Boundary Violations into milestone risk-assessment + scope-recommendations sections.
+
+---
+
 ## Phase 2: Scan Codebase Health
 
 - Scan for `TODO`, `FIXME`, `HACK` markers that indicate incomplete work
