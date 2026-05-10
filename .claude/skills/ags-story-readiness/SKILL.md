@@ -57,6 +57,10 @@ Before checking any stories, load reference documents once (not per-story):
 - All ADR status fields — for each unique ADR referenced across the stories being
   checked, read the ADR file and note its `Status:` field. Cache these so you
   don't re-read the same ADR for every story.
+- UX-spec / HUD-spec / `design/art/DESIGN.md` front-matter — for each unique
+  UX-spec or HUD-spec path referenced across stories, read front-matter and
+  cache `status` + `approved_at`. Same for `design/art/DESIGN.md` (loaded once).
+  Missing file → mark "missing" in cache, do not re-read per story.
 - The current sprint file (if scope is `sprint`) — to identify Must Have /
   Should Have priority for escalation decisions
 
@@ -124,6 +128,29 @@ items pass or are explicitly marked N/A with a stated reason.
   manifest are referenced, OR "N/A — manifest not yet created" is stated.
   This item auto-passes if `design/architecture/control-manifest.md` does not
   exist yet (do not penalize stories written before the manifest was created).
+
+### UX / UI Completeness
+
+Per `.ags/rules/document-boundaries.md` § 6 (precondition chain). Each item
+auto-passes when story explicitly states N/A with reason.
+
+- [ ] **UX-spec referenced if story touches player flow / screens / controls /
+  navigation**: Story cites a `design/ux/<screen>.md` path with `status: approved`
+  front-matter. Read the cited UX-spec and verify approval.
+  - If cited but `status: draft` or missing front-matter → **BLOCKED**.
+    Fix: `BLOCKED: UX-spec <path> not approved. Run /ags-ux-design then approve before retry.`
+  - If cited file missing → **BLOCKED**. Fix: run `/ags-ux-design [screen]`.
+  - Auto-pass if story explicitly states "N/A — backend / no player-facing flow".
+- [ ] **HUD-spec referenced if story adds / modifies in-game HUD widget or overlay**:
+  Story cites `design/ux/hud.md` (or sibling HUD-spec) with `status: approved`.
+  Apply same approval / missing-file rules as UX-spec above.
+  - Auto-pass if story explicitly states "N/A — no HUD impact".
+- [ ] **DESIGN.md tokens cited if story renders UI**: Story references tokens
+  by `{colors.x}` / `{typography.y}` / `{spacing.z}` / `{components.w}` from
+  `design/art/DESIGN.md`. No raw hex / px / pt / rem literals in story text.
+  - Verify `design/art/DESIGN.md` exists and `status: approved`.
+  - If missing or draft → **BLOCKED**. Fix: run `/ags-design-system`.
+  - Auto-pass if story explicitly states "N/A — no UI rendering".
 
 ### Scope Clarity
 

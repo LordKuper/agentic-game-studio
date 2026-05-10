@@ -65,13 +65,16 @@ Applies to: GDD, ADR, UX-spec, HUD-spec, art-bible, DESIGN.md, game-concept, eng
 
 Skills enforce **automatically** by reading front-matter. No user prompt — fail = abort with explicit reason.
 
-| Doc to create | Required predecessor (`status: approved`) |
+| Doc to create / work to start | Required predecessor (`status: approved`) |
 |---|---|
 | ADR | cited GDD section (`gdd_source`) |
 | UX-spec | cited GDD |
 | HUD-spec | cited UX-spec **and** `design/art/DESIGN.md` |
 | art-bible (Section 6 UI) | `design/art/DESIGN.md` |
 | anything citing entity id | `design/registry/entities.yaml` entry exists |
+| Story implementation touching player flow / screens / controls | UX-spec (`design/ux/<screen>.md`) cited |
+| Story implementation adding/modifying in-game HUD widget | HUD-spec (`design/ux/hud.md`) cited |
+| Story implementation rendering UI | `design/art/DESIGN.md` token cited (no raw hex/px/pt) |
 
 Failure form:
 ```
