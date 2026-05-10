@@ -1,3 +1,8 @@
+---
+status: draft        # draft | approved
+approved_at:         # YYYY-MM-DD; required when status: approved
+---
+
 # Engine
 
 ## Choice

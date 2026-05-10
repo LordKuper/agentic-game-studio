@@ -1,8 +1,20 @@
+---
+status: draft        # draft | approved
+approved_at:         # YYYY-MM-DD; required when status: approved
+---
+
 # ADR-[NNNN]: [Title]
 
-## Status
+## Preconditions
 
-[Proposed | Accepted | Deprecated | Superseded by ADR-XXXX]
+<!--
+Auto-checked by /ags-architecture-decision before draft. Aborts if cited GDD
+section's front-matter status != approved. See .ags/rules/document-boundaries.md.
+-->
+
+**GDD source**: `design/gdd/<system>.md#<section-anchor>` (status: approved at YYYY-MM-DD)
+
+<!-- Multiple sources = multiple lines. Foundational ADR with no GDD: "Foundational — no GDD requirement. Enables: <list>" -->
 
 ## Date
 

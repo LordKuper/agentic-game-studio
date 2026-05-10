@@ -1,7 +1,12 @@
+---
+status: draft        # draft | approved
+approved_at:         # YYYY-MM-DD; required when status: approved
+---
+
 # Game Concept: [Working Title]
 
 *Created: [Date]*
-*Status: [Draft / Under Review / Approved]*
+*Approval marker: YAML front-matter `status`. See `.ags/rules/document-boundaries.md`.*
 
 ---
 

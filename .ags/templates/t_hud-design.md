@@ -1,6 +1,11 @@
+---
+status: draft        # draft | approved
+approved_at:         # YYYY-MM-DD; required when status: approved
+---
+
 # HUD Design: [Game Name]
 
-> **Status**: Draft | In Review | Approved | Implemented
+> **Precondition**: cited UX-spec(s) AND `design/art/DESIGN.md` must have `status: approved` (auto-checked by `/ags-ux-design hud`). See `.ags/rules/document-boundaries.md`.
 > **Author**: [Name or agent — e.g., ui-designer]
 > **Last Updated**: [Date]
 > **Game**: [Single doc per game]

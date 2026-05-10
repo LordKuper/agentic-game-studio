@@ -18,6 +18,7 @@ Verify required artifacts before starting. STOP on first missing item with redir
 | `design/gdd/game-concept.md` (no `{{...}}`) | `/ags-brainstorm` | STOP. "No game concept. Run `/ags-brainstorm` first." |
 | `design/gdd/systems-index.md` | `/ags-map-systems` | STOP. "No systems map. Run `/ags-map-systems` first." |
 | At least one `design/gdd/[system].md` (Approved or Designed status) | `/ags-design-system` | STOP. "No system GDDs yet. Run `/ags-design-system [system-name]` for at least one system." |
+| Cited GDD section has `status: approved` in YAML front-matter | user approval of GDD | STOP. "ABORT — precondition not met. Required: design/gdd/<sys>.md status=approved. Found: status=draft (or missing front-matter). Fix: get GDD approved (set status: approved + approved_at), then retry." See `.ags/rules/document-boundaries.md`. |
 | `design/architecture/architecture.md` | `/ags-create-architecture` | STOP. "No architecture skeleton. Run `/ags-create-architecture` (Foundation phase)." |
 
 If any STOP triggers, exit with verdict **BLOCKED — missing prerequisite** and surface the redirect.
@@ -32,7 +33,7 @@ Enter **retrofit mode**:
 
 1. Read existing ADR fully.
 2. Identify present sections by heading scan:
-   - `## Status` — **BLOCKING if missing**: `/ags-story-readiness` cannot check ADR acceptance
+   - YAML front-matter `status:` — **BLOCKING if missing**: `/ags-story-readiness` cannot check ADR acceptance
    - `## ADR Dependencies` — HIGH if missing: dependency ordering breaks
    - `## Engine Compatibility` — HIGH if missing: post-cutoff risk unknown
    - `## GDD Requirements Addressed` — MEDIUM if missing: traceability lost
@@ -42,17 +43,17 @@ Enter **retrofit mode**:
    File: [path]
 
    Sections already present (will not be touched):
-   ✓ Status: [current value, or "MISSING — will add"]
+   ✓ status (front-matter): [current value, or "MISSING — will add"]
    ✓ [section]
 
    Missing sections to add:
-   ✗ Status — BLOCKING (stories cannot validate ADR acceptance without this)
+   ✗ front-matter status — BLOCKING (stories cannot validate ADR acceptance without this)
    ✗ ADR Dependencies — HIGH
    ✗ Engine Compatibility — HIGH
    ```
 4. Ask: "Add the [N] missing sections? Existing content untouched."
 5. If yes:
-   - **Status**: ask user — "Current status?" Options: "Proposed", "Accepted", "Deprecated", "Superseded by ADR-XXXX"
+   - **status (front-matter)**: default `draft`. Ask user only if retrofitting an already-approved ADR — set `status: approved` + `approved_at: YYYY-MM-DD`.
    - **ADR Dependencies**: ask — "Depend on any ADR? Enable or block any ADR/epic?" Accept "None".
    - **Engine Compatibility**: read engine reference docs (Step 0 below), confirm domain with user, generate table with verified data.
    - **GDD Requirements Addressed**: ask — "Which GDDs motivated this? What requirement does this ADR address?"
@@ -67,6 +68,26 @@ If NOT retrofit, proceed to Step 0 (normal authoring).
 > "What technical decision are you documenting? Provide a short title (e.g., `event-system-architecture`, `physics-engine-choice`)."
 
 Use response as title, proceed to Step 0.
+
+---
+
+## 0a. GDD Precondition Check (BLOCKING — automatic, no user prompt)
+
+Per `.ags/rules/document-boundaries.md`:
+
+1. Identify GDD section(s) this ADR will serve. Derive from title/argument/context. If unclear, ask user once: "Which GDD section does this ADR serve? (path#anchor)".
+2. Read each cited GDD's YAML front-matter (top of file between `---` markers).
+3. Check `status:` field.
+   - `status: approved` AND `approved_at:` populated → PASS, continue.
+   - `status: draft`, missing front-matter, or missing `approved_at` → ABORT with:
+     ```
+     ABORT — precondition not met.
+     Required: design/gdd/<sys>.md status=approved.
+     Found: <observed state>.
+     Fix: get GDD approved (set status: approved + approved_at: YYYY-MM-DD), then retry.
+     ```
+   - Foundational ADR (no GDD) → user must explicitly state "foundational" in argument; record as `**GDD source**: Foundational — no GDD requirement. Enables: <list>` later in Step 4.
+4. Record cited paths + approval dates — written into ADR `**GDD source**:` line immediately before `## Date` section in Step 4.
 
 ---
 
@@ -158,7 +179,7 @@ Derive best guesses from context (GDDs, engine reference, existing ADRs). Presen
 - **Alternatives**: 2-3 concrete options from engine reference + GDD
 - **Dependencies**: scan ADRs for upstream; assume None if unclear
 - **GDD linkage**: extract GDD systems title relates to
-- **Status**: always `Proposed` for new ADRs — never ask
+- **status (front-matter)**: always `draft` for new ADRs — never ask
 
 **Scope**: problem framing, alternatives, upstream dependencies, GDD linkage, status only. Schema design questions (e.g., "How should spawn timing work?") are NOT assumptions — separate step after confirmation. Do not include schema design in assumptions widget.
 
@@ -176,7 +197,7 @@ Alternatives I'll consider:
   C) [option from common patterns]
 GDD systems driving this: [list derived from context]
 Dependencies: [upstream ADRs if any, otherwise "None"]
-Status: Proposed
+status (front-matter): draft
 
 [A] Proceed — draft with these assumptions
 [B] Change the alternatives list
@@ -210,10 +231,15 @@ Record in **ADR Dependencies**. Write "None" if no constraint.
 Format:
 
 ```markdown
+---
+status: draft
+approved_at:
+---
+
 # ADR-[NNNN]: [Title]
 
-## Status
-[Proposed | Accepted | Deprecated | Superseded by ADR-XXXX]
+**GDD source**: `design/gdd/<system>.md#<section-anchor>` (status: approved at YYYY-MM-DD)
+<!-- Multiple sources = multiple lines. Foundational: "Foundational — no GDD requirement. Enables: <list>". Filled from Step 0a. -->
 
 ## Date
 [Date of decision]

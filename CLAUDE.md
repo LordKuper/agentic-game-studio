@@ -27,6 +27,9 @@
 
 See `.ags/rules/collaboration.md`.
 
+## Document Boundaries
+@.ags/rules/document-boundaries.md
+
 ## Coding Rules
 @.ags/rules/coding.md
 

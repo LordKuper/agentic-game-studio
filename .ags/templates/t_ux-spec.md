@@ -1,6 +1,11 @@
+---
+status: draft        # draft | approved
+approved_at:         # YYYY-MM-DD; required when status: approved
+---
+
 # UX Specification: [Screen / Flow Name]
 
-> **Status**: Draft | In Review | Approved | Implemented
+> **Precondition**: cited GDD must have `status: approved` (auto-checked by `/ags-ux-design`). See `.ags/rules/document-boundaries.md`.
 > **Author**: [Name or agent — e.g., ui-designer]
 > **Last Updated**: [Date]
 > **Screen / Flow Name**: [Identifier — e.g., `InventoryScreen`, `NewGameFlow`]

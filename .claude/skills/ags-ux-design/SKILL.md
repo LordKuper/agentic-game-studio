@@ -17,8 +17,14 @@ When this skill is invoked:
 | `design/art/DESIGN.md` (DESIGN.md spec) | `/ags-art-bible` | STOP. "No design tokens file. Author `design/art/DESIGN.md` per .ags/rules/design-system.md before specing UI." |
 | `design/accessibility-requirements.md` | foundation phase | STOP. "Accessibility tier not committed. Run `/ags-gate-check foundation`." |
 | `.ags/rules/technical-preferences.md` (input method, platform) | `/ags-setup-engine` | STOP. "Engine not configured. Run `/ags-setup-engine`." |
+| Cited GDD(s) `status: approved` (UX-spec mode) | user approval | STOP. "ABORT — GDD <path> not approved. Fix front-matter status:approved + approved_at, then retry." See `.ags/rules/document-boundaries.md`. |
+| Cited UX-spec(s) `status: approved` AND `design/art/DESIGN.md` `status: approved` (HUD mode) | user approval | STOP. "ABORT — UX-spec(s) or DESIGN.md not approved. Fix front-matter, then retry." See `.ags/rules/document-boundaries.md`. |
 
 If STOP triggers, exit verdict **BLOCKED**.
+
+**Automatic precondition check (no user prompt):**
+- UX-spec mode: after Phase 2c (GDD UI Requirements gathered), grep front-matter `status:` of each cited GDD. Any `draft`/missing → ABORT with explicit path + observed state.
+- HUD mode: after Phase 2c, grep front-matter of every cited UX-spec AND `design/art/DESIGN.md`. Any not-approved → ABORT.
 
 ---
 

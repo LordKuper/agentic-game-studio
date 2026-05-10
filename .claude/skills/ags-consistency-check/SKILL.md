@@ -148,6 +148,49 @@ Compare against registry value:
 
 ---
 
+### 3e: Document Boundary Scan (per `.ags/rules/document-boundaries.md`)
+
+For each in-scope GDD / ADR / UX-spec / HUD-spec, run targeted greps. Any hit → boundary violation, classify alongside conflicts.
+
+**Tech-leak in GDD** (`design/gdd/*.md`):
+```
+Grep pattern="\b(class|namespace|using|import|package|public\s+(class|interface|struct))\s+\w+" glob="design/gdd/*.md"
+Grep pattern="\b\d+\s?(ms|MB|KB|FPS|fps|µs|us)\b" glob="design/gdd/*.md"
+Grep pattern="\b(MonoBehaviour|ScriptableObject|GameObject|UnityEngine|Godot|UE5|UnrealEngine|System\.\w+|Microsoft\.\w+)\b" glob="design/gdd/*.md"
+```
+Allowed exception: ms/FPS literals inside Acceptance Criteria expressed as player-observable budget — manual review.
+
+**GDD→ADR cite (forbidden)**:
+```
+Grep pattern="\b(adr-\d{3,}|ADR-\d{3,})\b" glob="design/gdd/*.md"
+```
+Any hit = violation. GDD must not cite ADR.
+
+**Concept-leak in ADR** (mechanic rules without GDD cite):
+- ADR missing `**GDD source**:` line → violation.
+- ADR has section describing player-facing rules / formulas not present in cited GDD → manual flag (low-confidence; surface for review).
+
+**Raw visual literal outside DESIGN.md**:
+```
+Grep pattern="#[0-9a-fA-F]{3,8}\b" glob="design/{art,ux,gdd}/**/*.md"
+Grep pattern="\b\d+(\.\d+)?(px|pt|rem|em)\b" glob="design/{art,ux,gdd}/**/*.md"
+```
+Allowed location: `design/art/DESIGN.md` only. All others = violation.
+
+**Duplicated content** (≥3 consecutive sentences identical between GDD ↔ ADR/UX/HUD):
+- Approximate via Bash: `diff` blocks ≥120 chars matching across pairs (skill calls `git diff --no-index --word-diff=none` between extracted sections, or simpler: split files into sentence chunks, hash, intersect). Flag overlapping fingerprints.
+
+**Missing approval marker**:
+- Any GDD / ADR / UX-spec / HUD-spec / art-bible / DESIGN.md / game-concept / engine doc lacking YAML front-matter or `status:` field → violation.
+- Any doc cited as predecessor (per precondition chain) whose `status` ≠ `approved` → violation.
+
+Boundary violations classified:
+- **🔴 BOUNDARY** — hard rule break (tech-leak in GDD, GDD→ADR cite, raw literal outside DESIGN.md, missing approval on cited predecessor).
+- **⚠️ DUPLICATION** — content fingerprint overlap; surface for SSoT consolidation.
+- **ℹ️ MARKER GAP** — doc lacks front-matter; informational on existing files, BLOCKING for new precondition checks.
+
+---
+
 ## Phase 4: Deep Investigation (Conflicts Only)
 
 For each conflict found in Phase 3, do a targeted full-section read of the
@@ -185,6 +228,14 @@ For each conflict, classify:
 Date: [date]
 Registry entries checked: [N entities, N items, N formulas, N constants]
 GDDs scanned: [N] ([list names])
+
+---
+
+### Boundary Violations (per `.ags/rules/document-boundaries.md`)
+
+🔴 BOUNDARY — [file:line] [rule violated] → [fix action]
+⚠️ DUPLICATION — [file-A] ↔ [file-B] [overlapping section] → [consolidate to SSoT: which]
+ℹ️ MARKER GAP — [file] missing front-matter `status:` → add YAML block
 
 ---
 

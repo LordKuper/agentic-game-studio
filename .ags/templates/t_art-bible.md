@@ -1,10 +1,15 @@
+---
+status: draft        # draft | approved
+approved_at:         # YYYY-MM-DD; required when status: approved
+---
+
 # Art Bible: [Game Title]
 
 ## Document Status
 - **Version**: 1.0
 - **Last Updated**: [Date]
 - **Owned By**: art-director
-- **Status**: [Draft / Under Review / Approved]
+- **Approval marker**: see YAML front-matter `status` field. See `.ags/rules/document-boundaries.md`.
 
 ## Visual Identity Summary
 [2-3 sentences: overall visual identity]

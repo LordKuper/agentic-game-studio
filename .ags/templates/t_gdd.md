@@ -1,10 +1,20 @@
+---
+status: draft        # draft | approved
+approved_at:         # YYYY-MM-DD; required when status: approved
+---
+
 # [Mechanic/System Name]
 
-> **Status**: Draft | In Review | Approved | Implemented
 > **Author**: [Agent or person]
 > **Last Updated**: [Date]
 > **Last Verified**: [Date — last confirmed accurate against current design]
 > **Implements Pillar**: [Which pillar supports]
+
+## Scope (concept-only — see `.ags/rules/document-boundaries.md`)
+
+**Belongs here**: mechanic rules, intent, formulas (conceptual), state machines, acceptance criteria, tuning-knob intent, entity references (by registry id).
+
+**Does NOT belong here**: class/method/namespace names, code patterns, library/API choices, data-schema definitions, perf budgets in ms/MB/FPS, links to ADR. Those live in ADR. GDD must not cite ADR — concept is independent of realization.
 
 ## Summary
 
