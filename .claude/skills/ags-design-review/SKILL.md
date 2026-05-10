@@ -1,7 +1,7 @@
 ﻿---
 name: ags-design-review
 description: "Reviews a game design document for completeness, internal consistency, implementability, and adherence to project design standards. Run this before handing a design document to programmers."
-argument-hint: "[path-to-design-doc] [--depth full|lean|solo]"
+argument-hint: "[path-to-design-doc]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 ---
@@ -16,18 +16,6 @@ allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 **Dependency check (during Phase 1)**: If the target document references other GDDs/ADRs in its Dependencies section and those files do not exist (broken references), flag them and surface redirect: "Run `/ags-design-system [missing-system]` to create the dependency, or update the Dependencies section."
 
 If STOP triggers, exit with verdict **BLOCKED — missing prerequisite**.
-
----
-
-## Phase 0: Parse Arguments
-
-Extract `--depth [full|lean|solo]` if present. Default is `full` when no flag is given.
-
-**Note**: `--depth` controls the *analysis depth* of this skill (how many specialist agents are spawned). It is about how thoroughly *this* skill analyses the document.
-
-- **`full`**: Complete review — all phases + specialist agent delegation (Phase 3b)
-- **`lean`**: All phases, no specialist agents — faster, single-session analysis
-- **`solo`**: Phases 1-4 only, no delegation, no Phase 5 next-step prompt — use when called from within another skill
 
 ---
 
@@ -77,14 +65,12 @@ Evaluate against the Design Document Standard checklist:
 
 ---
 
-## Phase 3b: Adversarial Specialist Review (full mode only)
+## Phase 3b: Adversarial Specialist Review
 
-**Skip this phase in `lean` or `solo` mode.**
-
-**This phase is MANDATORY in full mode.** Do not skip it.
+**This phase is MANDATORY.** Do not skip it.
 
 **Before spawning any agents**, print this notice:
-> "Full review: spawning specialist agents in parallel. This typically takes 8–15 minutes. Use `--depth lean` for faster single-session analysis."
+> "Spawning specialist agents in parallel. This typically takes 8–15 minutes."
 
 ### Step 1 — Identify all domains the GDD touches
 
