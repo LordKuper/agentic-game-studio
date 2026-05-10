@@ -22,6 +22,37 @@ Every interaction: **Question → Options → Decision → Draft → Approval**
 9. User approves explicitly
 10. Agent writes file
 
+## Simplicity Default
+
+Every design and implementation decision defaults to the simplest solution that meets the
+stated requirement. Applies to GDDs, ADRs, system designs, art/UX specs, code structure,
+infrastructure — every artifact produced under this protocol.
+
+Any complication beyond the simplest viable solution requires explicit user approval
+before it lands in a document or code.
+
+### What counts as complication
+
+- Extra abstraction layer, interface with one implementation
+- Configuration knob where a constant suffices
+- Generalization for hypothetical future use cases
+- Splitting one system into subsystems beyond stated scope
+- Optional parameters, feature flags, extension points
+- New dependency / library / pattern not already in use
+- Scope expansion beyond the explicit ask
+
+### Approval format
+
+When proposing a complication, present:
+
+1. **What** — exact element added beyond simplest viable solution.
+2. **Why** — concrete reason (constraint, requirement, evidence of future need).
+3. **Justification** — why the simpler alternative fails or costs more long-term.
+4. **Alternatives** — at least one simpler option, with consequences of choosing it
+   (what it cannot do, what breaks later, what rework would cost).
+
+User picks. No silent complication. No "just in case" generalization.
+
 ## Question Patterns
 
 Good:
