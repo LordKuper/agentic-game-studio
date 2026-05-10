@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Epic Scope: {{epic-id}} — {{epic-title}}</title>
+<style>
+  body { font-family: -apple-system, Segoe UI, sans-serif; max-width: 1100px; margin: 2rem auto; padding: 0 1rem; color: #1a1c1e; line-height: 1.5; }
+  h1 { border-bottom: 2px solid #1a1c1e; padding-bottom: 0.3rem; }
+  h2 { margin-top: 2rem; border-bottom: 1px solid #ccc; padding-bottom: 0.2rem; }
+  .meta { display: grid; grid-template-columns: max-content 1fr; gap: 0.3rem 1rem; background: #f4f5f7; padding: 0.8rem 1rem; border-radius: 6px; font-size: 0.95rem; }
+  .meta dt { font-weight: 600; }
+  .meta dd { margin: 0; }
+  .goal { background: #fffbe6; border-left: 4px solid #e6c200; padding: 0.8rem 1rem; border-radius: 4px; }
+  table { border-collapse: collapse; width: 100%; margin: 0.5rem 0; }
+  th, td { border: 1px solid #d0d4d9; padding: 0.5rem 0.7rem; text-align: left; vertical-align: top; }
+  th { background: #f4f5f7; }
+  .badge { display: inline-block; padding: 0.15rem 0.55rem; border-radius: 10px; font-size: 0.8rem; font-weight: 600; color: #fff; }
+  .b-create { background: #2e8b3d; }
+  .b-modify { background: #c08a16; }
+  .b-delete { background: #b3261e; }
+  .b-touch  { background: #6b7077; }
+  .risk-low  { color: #2e8b3d; font-weight: 600; }
+  .risk-med  { color: #c08a16; font-weight: 600; }
+  .risk-high { color: #b3261e; font-weight: 600; }
+  ul.criteria li { margin-bottom: 0.3rem; }
+  .questions { background: #eef4fb; border-left: 4px solid #2563c4; padding: 0.6rem 1rem; border-radius: 4px; }
+  svg.diagram { display: block; margin: 1rem auto; max-width: 100%; height: auto; background: #fafbfc; border: 1px solid #e0e3e7; border-radius: 6px; }
+  .legend { font-size: 0.85rem; color: #555; text-align: center; margin-top: 0.3rem; }
+  code { background: #f4f5f7; padding: 0.05rem 0.3rem; border-radius: 3px; font-size: 0.9em; }
+</style>
+</head>
+<body>
+
+<!--
+  Epic Scope template. Skill /ags-create-epics fills placeholders.
+  Placeholder convention: {{name}} for single values, [bracketed instructions] for free-form sections.
+  All Action badge classes: b-create | b-modify | b-delete | b-touch
+  All Risk classes: risk-low | risk-med | risk-high
+-->
+
+<h1>Epic Scope &mdash; {{epic-id}}: {{epic-title}}</h1>
+
+<dl class="meta">
+  <dt>Epic ID</dt>     <dd>{{epic-id}}</dd>
+  <dt>Slug</dt>        <dd>{{slug}}</dd>
+  <dt>Owner</dt>       <dd>{{owner}}</dd>
+  <dt>Created</dt>     <dd>{{YYYY-MM-DD}}</dd>
+  <dt>Status</dt>      <dd>draft | planned | in-progress | done</dd>
+  <dt>Branch</dt>      <dd>epic/{{slug}}</dd>
+  <dt>EPIC.md</dt>     <dd><a href="./EPIC.md">./EPIC.md</a></dd>
+</dl>
+
+<h2>Goal</h2>
+<div class="goal">
+  <p>[Clarified epic goal in prose. Captures what the epic delivers, why, and what user-visible state results. No implementation details — those live in GDDs/ADRs/stories. Produced by the clarification step of /ags-create-epics from the user's free-form description, then approved by the user before write.]</p>
+</div>
+
+<h2>Affected Systems</h2>
+<table>
+  <thead>
+    <tr><th>System</th><th>Action</th><th>Reason</th><th>GDD</th><th>Risk</th></tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code>{{system-name}}</code></td>
+      <td><span class="badge b-create">CREATE</span></td>
+      <td>[why this system is being created]</td>
+      <td><a href="../../../design/gdd/{{system-name}}.md">{{system-name}}.md</a></td>
+      <td class="risk-med">Med</td>
+    </tr>
+    <tr>
+      <td><code>{{system-name}}</code></td>
+      <td><span class="badge b-modify">MODIFY</span></td>
+      <td>[what changes and why]</td>
+      <td><a href="../../../design/gdd/{{system-name}}.md">{{system-name}}.md</a></td>
+      <td class="risk-low">Low</td>
+    </tr>
+    <tr>
+      <td><code>{{system-name}}</code></td>
+      <td><span class="badge b-delete">DELETE</span></td>
+      <td>[why removed; migration path]</td>
+      <td><a href="../../../design/gdd/{{system-name}}.md">{{system-name}}.md</a></td>
+      <td class="risk-high">High</td>
+    </tr>
+    <tr>
+      <td><code>{{system-name}}</code></td>
+      <td><span class="badge b-touch">TOUCH</span></td>
+      <td>[read-only interaction; no code change]</td>
+      <td><a href="../../../design/gdd/{{system-name}}.md">{{system-name}}.md</a></td>
+      <td class="risk-low">Low</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>Scope count</strong>: {{count}} (Create + Modify + Delete). Touch not counted. Soft limit is 3 — when exceeded, the producer warns and offers to cut or split before write; override decisions are logged in <code>.ags/project/decisions-log.md</code>.</p>
+
+<h2>Component Diagram</h2>
+<!--
+  Inline SVG. Skill generates layout per epic:
+    - Each affected system = labeled rectangle node.
+    - Node color follows Action: green=Create, yellow=Modify, red=Delete, gray (dashed)=Touch.
+    - Edges = data/control flow, dashed if read-only.
+  Keep coordinates simple. For >4 systems, use a multi-row grid. For <=4 systems with non-trivial relations, place in a triangle/quad layout as below.
+-->
+<svg class="diagram" viewBox="0 0 760 320" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Epic component diagram">
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#444"/>
+    </marker>
+  </defs>
+
+  <g>
+    <rect x="40" y="40" width="200" height="70" rx="8" fill="#e6f4ea" stroke="#2e8b3d" stroke-width="2"/>
+    <text x="140" y="68" text-anchor="middle" font-size="14" font-weight="700">{{system-name}}</text>
+    <text x="140" y="90" text-anchor="middle" font-size="11" fill="#2e8b3d">CREATE</text>
+  </g>
+
+  <g>
+    <rect x="280" y="125" width="200" height="70" rx="8" fill="#e6f4ea" stroke="#2e8b3d" stroke-width="2"/>
+    <text x="380" y="153" text-anchor="middle" font-size="14" font-weight="700">{{system-name}}</text>
+    <text x="380" y="175" text-anchor="middle" font-size="11" fill="#2e8b3d">CREATE</text>
+  </g>
+
+  <g>
+    <rect x="520" y="40" width="200" height="70" rx="8" fill="#fdf3d7" stroke="#c08a16" stroke-width="2"/>
+    <text x="620" y="68" text-anchor="middle" font-size="14" font-weight="700">{{system-name}}</text>
+    <text x="620" y="90" text-anchor="middle" font-size="11" fill="#c08a16">MODIFY</text>
+  </g>
+
+  <g>
+    <rect x="280" y="230" width="200" height="60" rx="8" fill="#eceef0" stroke="#6b7077" stroke-width="2" stroke-dasharray="5,3"/>
+    <text x="380" y="256" text-anchor="middle" font-size="13" font-weight="700">{{system-name}}</text>
+    <text x="380" y="276" text-anchor="middle" font-size="11" fill="#6b7077">TOUCH (read-only)</text>
+  </g>
+
+  <line x1="240" y1="95"  x2="295" y2="135" stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="465" y1="135" x2="525" y2="95"  stroke="#444" stroke-width="1.5" marker-end="url(#arr)"/>
+  <line x1="380" y1="195" x2="380" y2="225" stroke="#444" stroke-width="1.5" stroke-dasharray="4,3" marker-end="url(#arr)"/>
+
+  <text x="245" y="128" font-size="10" fill="#555">[edge label]</text>
+  <text x="475" y="128" font-size="10" fill="#555">[edge label]</text>
+  <text x="390" y="217" font-size="10" fill="#555">[edge label]</text>
+</svg>
+<p class="legend">Solid border = active edit &middot; Dashed = read-only touch &middot; Arrow = data/control flow</p>
+
+<h2>Dependencies</h2>
+<ul>
+  <li><strong>Upstream epics</strong>: [epic IDs that must close before this one starts; or "none"]</li>
+  <li><strong>Stubs opened</strong>: [stub IDs introduced by this epic, with owner-epic that closes them; or "none"]</li>
+  <li><strong>Stubs closed</strong>: [stub IDs this epic closes; or "none"]</li>
+  <li><strong>Blocks</strong>: [downstream epics waiting on this one; or "none"]</li>
+</ul>
+
+<h2>Acceptance Criteria</h2>
+<ul class="criteria">
+  <li>[Observable user-facing outcome 1]</li>
+  <li>[Observable user-facing outcome 2]</li>
+  <li>[Persistence / save-load criterion if applicable]</li>
+  <li>[Data-driven criterion if applicable]</li>
+  <li>All public APIs of new systems have doc-comments + unit tests.</li>
+  <li>No regressions in existing tests of modified systems.</li>
+</ul>
+
+<h2>Open Questions</h2>
+<div class="questions">
+  <ul>
+    <li>[Question raised during clarification, not yet decided]</li>
+  </ul>
+</div>
+
+</body>
+</html>

@@ -15,7 +15,7 @@ Epic = 1-3 systems designed and implemented together with TODO stubs for unscope
 - `revise` — existing system extended, refactored, or rewired
 - `stub` — interface only, real impl deferred to a future epic
 
-**Output:** `.ags/project/epics/[slug]/EPIC.md`, updated `.ags/project/epics/index.md`, updated `.ags/project/stage.md`, append to `.ags/project/decisions-log.md`.
+**Output:** `.ags/project/epics/[slug]/scope.html`, `.ags/project/epics/[slug]/EPIC.md`, updated `.ags/project/epics/index.md`, updated `.ags/project/stage.md`, append to `.ags/project/decisions-log.md`.
 
 **Next step after epic creation:** `/ags-epic-contracts [slug]` (if stubs), then `/ags-design-system`, `/ags-architecture-decision`, `/ags-create-stories [slug]`.
 
@@ -67,111 +67,173 @@ Report: "Available systems: [N]. Existing epics: [M]. Open stubs: [K]."
 
 ---
 
-## 4. Suggest Scope Candidates
+## 4. Free-Form Description
 
-Generate 2-3 epic candidates, each with 1-3 systems, mode assignment, and rationale. Sources for candidates:
+Ask the user, in their chosen chat language (per `p_user-interaction.md`):
 
-- **Next-in-dependency-order** — first systems-index entry not yet covered by `new` mode in any past epic.
-- **Stub-closure** — systems in `Open Stubs` whose owner-epic is TBD or matches next slot.
-- **Revise** — systems flagged in any prior epic's Retrospective as needing rework.
+> "Describe what this epic should do. Free form — new features, mechanic changes, data specs, refactor, fix, anything. Don't worry about format yet."
 
-Present candidates as numbered list:
-
-```
-1. epic-[NNN]-[slug-A]
-   Systems: [system-a:new, system-b:stub]
-   Rationale: [one sentence]
-
-2. epic-[NNN]-[slug-B]
-   Systems: [system-c:revise, system-d:new]
-   Rationale: [one sentence]
-```
-
-Ask: "Pick a candidate, or describe your own."
+Capture the response verbatim into working memory (not a file yet). No structuring, no questions yet.
 
 ---
 
-## 5. User Defines Epic
+## 5. Scope Clarification
 
-If user picks a candidate, confirm and proceed. If user describes own epic, ask:
+Goal: turn the free-form description into a clear, formalized scope statement that the user explicitly approves before anything is written to disk.
 
-1. Which 1-3 systems are in scope? (validate against systems-index)
-2. Mode per system? (new / revise / stub)
-3. One-sentence epic name + rationale (2-3 sentences why now, what risk it burns down, what playable state it produces)
+Stay above implementation details — describe **what the epic delivers and why**, not how systems are coded, what data fields exist, or which algorithms are used.
+
+1. Re-read the free-form description. Identify ambiguities, missing acceptance signals, scope boundaries.
+2. Draft a formalized scope statement (in user's chat language) covering:
+   - **Goal** — 2-4 sentences on what the epic delivers and why now.
+   - **In scope** — bullet list of user-facing outcomes / capabilities.
+   - **Not in scope** (only if helpful for disambiguation) — what the epic explicitly does *not* deliver.
+3. List clarification questions for any ambiguity. Ask ONE question per ambiguity, batched in a single turn via `AskUserQuestion`. Do not invent answers.
+4. Iterate: refine the formalized statement based on answers, present updated draft, ask "Approved?" Repeat until user explicitly approves.
+5. **Output** of this step: an approved formalized scope statement held in working memory. This becomes the Goal block of `scope.html` (translated to English at write time per `.ags/rules/user-interaction.md`).
+
+Hard rules for this step:
+- No implementation details (no field names, no algorithms, no code structure).
+- No system list yet — that comes in step 6 from the approved scope.
+- Nothing written to disk before user approval.
 
 ---
 
-## 6. Validate
+## 6. Affected Systems Analysis
 
-Per system in scope:
+With the approved scope statement in hand, derive the affected-systems list from `design/gdd/systems-index.md`. Classify each touched system:
 
-- **`new`** — verify system not already implemented (not in any past EPIC.md as `new` with Status=done).
-- **`revise`** — read GDD; warn user about consumer systems likely affected. Ask user to list affected consumers in Existing System Changes.
-- **`stub`** — verify system exists in systems-index. If not, fail with reason.
+| Action | Meaning |
+|--------|---------|
+| **Create** | System does not exist in `systems-index.md`. Will be added. |
+| **Modify** | System exists. GDD and/or code changes. |
+| **Delete** | System exists. Removed by this epic (with migration). |
+| **Touch** | System read-only: epic calls existing API, no GDD or code change. |
+
+**Scope count** = `Create + Modify + Delete`. **Touch is not counted.**
+
+Present the matrix to user (System | Action | Reason | GDD link | Risk low/med/high) and ask for confirmation or adjustment.
+
+---
+
+## 7. Soft Scope Limit
+
+If `Scope count > 3`:
+
+1. Warn the user: "Scope count is N — exceeds soft limit of 3. Recommended actions: (a) cut systems out of scope, (b) split into 2-3 sequential epics, (c) override and proceed."
+2. If (a) cut — drop systems from the matrix, return to step 5 to revise the formalized scope statement.
+3. If (b) split — produce a proposed split with ordering and dependencies between sub-epics. Stop this skill invocation; user re-runs `/ags-create-epics` per sub-epic.
+4. If (c) override — capture the override reason and record an entry in `.ags/project/decisions-log.md` (type=`scope-override`, includes scope count and reason). Proceed.
+
+This gate is soft: user can always override, but the override is logged.
+
+---
+
+## 8. Validate
+
+Per system in the matrix:
+
+- **Create** — verify the system is not already in `systems-index.md` and not declared `new` in any past EPIC.md with Status=done.
+- **Modify** — verify the system exists in `systems-index.md`. Warn the user about consumer systems likely affected (from systems-index dependencies); the affected consumers should be either in the matrix as `Touch`/`Modify` or explicitly out of scope.
+- **Delete** — verify the system exists. Require a migration note (covered by Reason column).
+- **Touch** — verify the system exists.
 
 If validation fails, surface to user and let them adjust.
 
 ---
 
-## 7. Compute IDs
+## 9. Compute IDs
 
 - **Epic ID**: `epic-[NNN]-[slug]`. NNN = max existing + 1, zero-padded to 3 digits.
-- **Slug**: from `[name]` arg, or derived from first `new` system, or user-confirmed.
+- **Slug**: from `[name]` arg, or derived from first `Create` system, or user-confirmed.
 - **Created**: today (YYYY-MM-DD).
 
 Confirm IDs with user before writing.
 
 ---
 
-## 8. Combined Review Loop (Producer Gate PR-EPIC + External Codex, parallel)
+## 10. Draft scope.html (Live Preview)
 
-Canonical contract: `.ags/rules/review-workflow.md`. Aggregator: `producer`.
+Write the scope file to its real path **immediately**, so the user can review the live rendered HTML in a browser. No `.tmp/` staging — `scope.html` is the working artifact for review and iteration.
+
+Path: `.ags/project/epics/[slug]/scope.html`
+
+Source: `.ags/templates/t_epic-scope.html`. Substitutions:
+
+- `{{epic-id}}`, `{{epic-title}}`, `{{slug}}`, `{{owner}}`, `{{YYYY-MM-DD}}` — header values; Status = `draft`
+- **Goal block** — formalized scope statement from step 5 (translated to English at write time per `.ags/rules/user-interaction.md`)
+- **Affected Systems table** — one `<tr>` per matrix entry; pick correct badge class (`b-create` / `b-modify` / `b-delete` / `b-touch`) and risk class
+- **Scope count** sentence — fill `{{count}}`; when override applied, append "Override recorded in decisions-log on {{date}}."
+- **Component diagram** — inline SVG. Author chooses the layout that best communicates the epic's component relations for this specific case. Hard rules only:
+  1. Each affected system = labeled `<rect>` node; node color follows Action (green=Create, yellow=Modify, red=Delete, gray dashed=Touch).
+  2. Edges = directed `<line>` with `marker-end="url(#arr)"`; read-only edges use `stroke-dasharray="4,3"`.
+  3. Edge labels short (≤20 chars); drop labels when no relation is meaningful.
+  4. Diagram fits inside the template's `viewBox` or a reasonably sized replacement.
+- **Dependencies** list — fill from working memory; use literal "none" when empty
+- **Acceptance Criteria** — user-facing outcomes from step 5 + always-include lines for doc-comments/unit tests and no-regressions
+- **Open Questions** — any ambiguity left after step 5 (rare; should mostly be resolved by approval)
+
+Validate the resulting HTML opens in a browser (no JS errors expected; SVG renders inline).
+
+After write, surface the file path to the user: "scope.html written. Open in browser to review the live render. Iterate by telling me what to change."
+
+---
+
+## 11. Combined Review Loop (Producer Gate PR-EPIC + External Codex, parallel)
+
+Canonical contract: `.ags/rules/review-workflow.md`. Aggregator: `producer`. The reviewed artifact is the live `scope.html` written in step 10 — iterations edit that file in place.
 
 **Each iteration N (start N=1):**
 
 1. Resolve severity floor: N≤2 → `low`; N=3..4 → `high`; N≥5 → `critical`.
-2. Persist epic plan summary to `.ags/project/reviews/.tmp/epic-[slug]-iter[N]-draft.md`.
-3. Spawn in parallel (single message, multiple Task calls):
-   - `producer` via Task with gate **PR-EPIC** (`.ags/rules/director-gates.md`). Pass: epic name, systems with modes, rationale, current epic count, open stubs count, iteration N, severity floor.
-   - `/ags-external-review epic [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]`. Codex unavailable → returns `skipped: codex-unavailable`; producer aggregator logs skip in decisions-log and continues with internal pool only.
-4. **Aggregator (producer)** collects findings from both reviewers; drops nitpicks + below-floor per `.ags/rules/review-workflow.md`.
-5. **Loop exit**: filtered set is empty → proceed to Phase 9. Non-empty → surface aggregated kept findings to user, user revises epic scope/rationale/systems-in-scope, N++, repeat.
+2. Spawn in parallel (single message, multiple Task calls):
+   - `producer` via Task with gate **PR-EPIC** (`.ags/rules/director-gates.md`). Pass: path to live `scope.html`, scope count, override flag, current epic count, open stubs count, iteration N, severity floor.
+   - `/ags-external-review epic [path-to-scope.html] --embedded-parallel --iteration [N] --min-severity [floor]`. Codex unavailable → returns `skipped: codex-unavailable`; producer aggregator logs skip in decisions-log and continues with internal pool only.
+3. **Aggregator (producer)** collects findings from both reviewers; drops nitpicks + below-floor per `.ags/rules/review-workflow.md`.
+4. **Loop exit**: filtered set is empty AND user has approved the live file → proceed to Phase 12. Otherwise: surface aggregated kept findings + any user-requested changes, **edit `scope.html` in place** (Edit tool, not rewrite), N++, repeat.
 
 No iteration cap. Record final iteration count for the decisions-log entry.
 
----
-
-## 9. Approval
-
-Ask: "May I write:
-- `.ags/project/epics/[slug]/EPIC.md` (from `.ags/templates/t_epic.md`)
-- `.ags/project/epics/[slug]/stories/` (empty folder)
-- update `.ags/project/epics/index.md`
-- set active epic in `.ags/project/stage.md`
-- append entry to `.ags/project/decisions-log.md`?"
-
-If declined, stop. Verdict: **BLOCKED — user declined write**.
+User may approve at any iteration even if reviewers still have findings — those are logged as accepted-with-known-issues in `decisions-log.md`.
 
 ---
 
-## 10. Write Files
+## 12. Final Approval (remaining files)
 
-### 10a. EPIC.md
+`scope.html` is already on disk. Ask:
+
+> "scope.html is approved and live. May I now write:
+> - `.ags/project/epics/[slug]/EPIC.md` (from `.ags/templates/t_epic.md`)
+> - `.ags/project/epics/[slug]/stories/` (empty folder)
+> - update `.ags/project/epics/index.md`
+> - set active epic in `.ags/project/stage.md`
+> - append entry to `.ags/project/decisions-log.md`
+> - flip Status in scope.html from `draft` to `planned`?"
+
+If declined, stop. Verdict: **BLOCKED — user declined write**. `scope.html` stays on disk in `draft` status; user can re-run the skill to resume.
+
+---
+
+## 13. Write Remaining Files
+
+### 13a. scope.html status flip
+
+Edit the existing `scope.html`: change Status `draft` → `planned`. No other edits.
+
+### 13b. EPIC.md
 
 Read `.ags/templates/t_epic.md`. Write to `.ags/project/epics/[slug]/EPIC.md` with substitutions:
 
 - Title: `# Epic: [name]`
 - Metadata: ID, Status=`planned`, Created=today, Closed=—
-- Rationale: user-provided
-- Systems in Scope: filled table with mode per system, GDD links
-- Existing System Changes: filled if any `revise`; otherwise leave placeholder
-- Other sections remain as template placeholders (filled by downstream skills)
+- Scope section: keep the link to `./scope.html` from the template (no field duplication — scope.html is the source of truth for goal, affected systems, acceptance criteria)
+- Other sections (Contracts, Stories, Stubs, Playtest, Retrospective, Gate Verdict) remain as template placeholders, filled by downstream skills
 
-### 10b. Stories folder
+### 13c. Stories folder
 
 Create `.ags/project/epics/[slug]/stories/` (write a single `.gitkeep` empty file to ensure directory exists).
 
-### 10c. epics/index.md
+### 13d. epics/index.md
 
 If file does not exist, create with header:
 
@@ -190,7 +252,7 @@ Registry of all epics. Status values: planned, designing, implementing, playtest
 
 Append row for new epic to the table.
 
-### 10d. stage.md
+### 13e. stage.md
 
 If file does not exist, create with skeleton:
 
@@ -212,7 +274,7 @@ If file does not exist, create with skeleton:
 
 If exists, edit: update Active Epic, Updated; append row to Transition History.
 
-### 10e. decisions-log.md
+### 13f. decisions-log.md
 
 If file does not exist, copy from `.ags/templates/t_decisions-log.md` first.
 
@@ -223,23 +285,25 @@ Append entry:
 
 **Type**: scope
 **Context**: New vertical slice planned.
-**Decision**: Epic [name] covers [system list with modes].
-**Rationale**: [user-provided rationale, condensed]
-**Refs**: .ags/project/epics/[slug]/EPIC.md
+**Decision**: Epic [name] — scope statement + affected systems matrix (Create/Modify/Delete/Touch) authored in scope.html.
+**Rationale**: [condensed approved Goal text]
+**Refs**: .ags/project/epics/[slug]/scope.html, .ags/project/epics/[slug]/EPIC.md
 **Decided by**: human
 ```
+
+If a soft-limit override (step 7c) was applied, append a second entry of `Type: scope-override` with scope count, override reason, and link to `scope.html`.
 
 Verdict: **COMPLETE — epic created**.
 
 ---
 
-## 11. Next Steps
+## 14. Next Steps
 
 Suggest in order:
 
-1. `/ags-epic-contracts [slug]` — required if any system is `stub` mode. Locks contracts and pre-registers stubs.
-2. `/ags-design-system` — author or extend GDD sections for `new` and `revise` systems.
-3. `/ags-architecture-decision` — add ADRs for this epic's architectural choices (required for `revise` epics that change architecture).
+1. `/ags-epic-contracts [slug]` — required if any consumer/neighbor system needs a stub interface. Locks contracts and pre-registers stubs.
+2. `/ags-design-system` — author or extend GDD sections for `Create` and `Modify` systems.
+3. `/ags-architecture-decision` — add ADRs for this epic's architectural choices (required for any `Modify` that changes architecture).
 4. `/ux-design` — only if epic has UI/UX work.
 5. `/ags-create-stories [slug]` — break epic into implementable stories once design + ADRs are stable.
 
@@ -248,8 +312,11 @@ Suggest in order:
 ## Rules
 
 - One epic per skill invocation.
-- 1-3 systems per epic. More = scope too big, split into multiple epics.
-- All-`new`, all-`revise`, all-`stub`, or any mix is allowed.
-- Epic name + rationale come from the user — skill never invents them.
-- File writes are atomic per phase: EPIC.md + index.md + stage.md + decisions-log.md all written or none.
+- Soft limit: scope count (Create + Modify + Delete) ≤ 3. Touch is unbounded.
+- Mix of Create / Modify / Delete is allowed.
+- Free-form description and formalized scope statement come from the user — skill never invents intent. Skill may **propose** a formalized rewording for approval; it does not commit it without explicit user approval.
+- Scope discussion stays above implementation details (no field names, no algorithms, no code structure).
+- `scope.html` is written **first**, at its real path, in `draft` status, so the user can review the live render in a browser. It is then iterated in place via Edit through the review loop. The remaining files (EPIC.md, index.md, stage.md, decisions-log.md) are written atomically at final approval, and at the same time `scope.html` is flipped to `planned` status.
+- If the user declines final approval, `scope.html` stays on disk in `draft` status. Re-running the skill resumes from that draft.
+- `scope.html` is the source of truth for goal, affected systems, acceptance criteria. EPIC.md never duplicates those fields.
 - `epics/index.md` is the source of truth for epic count and status. `stage.md` points at the active one.

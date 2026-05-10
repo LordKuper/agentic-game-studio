@@ -9,35 +9,13 @@
 | Created | [YYYY-MM-DD] |
 | Closed | [YYYY-MM-DD or —] |
 
-## Rationale
+## Scope
 
-[2-3 sentences: why this epic now, what risk it burns down, what playable state it produces.]
+Goal, affected systems (Create / Modify / Delete / Touch), component diagram, dependencies, acceptance criteria and open questions live in the scope file:
 
-## Systems in Scope
+- [./scope.html](./scope.html)
 
-Mode values:
-- `new` — system implemented for the first time in this epic
-- `revise` — existing system extended, refactored, or rewired (see Existing System Changes below)
-- `stub` — interface only, real impl deferred to a future epic
-
-Epic may be all-`new`, all-`revise`, or any mix.
-
-| System | Mode | GDD Section |
-|--------|------|------------|
-| [system-a] | new | [link] |
-| [system-b] | revise | [link] |
-| [system-c] | stub | [link or —] |
-
-## Existing System Changes
-
-[Fill this section only if at least one system is `revise`. For each revised system: what changes, why, breaking-change impact on other systems, GDD diff summary, ADR if architectural.]
-
-### [system-b]
-- **Change**: [what is being modified]
-- **Reason**: [why now]
-- **Impact**: [other systems affected]
-- **GDD diff**: [section/subsection updated]
-- **ADR**: [link if architectural change]
+EPIC.md does not duplicate those fields. Edit `scope.html` for any change to epic intent, system list, or acceptance criteria.
 
 ## Contracts (Stub Interfaces)
 
@@ -51,7 +29,10 @@ Epic may be all-`new`, all-`revise`, or any mix.
 
 ## Acceptance Criteria
 
-- [ ] Playable end-to-end through scoped systems
+Functional acceptance criteria are defined in [./scope.html](./scope.html) § Acceptance Criteria.
+
+Process gate criteria (always required, not duplicated in scope):
+
 - [ ] All stories closed
 - [ ] Stubs from prior epics closed or migrated (see `.ags/project/stubs.md`)
 - [ ] Playtest report filed

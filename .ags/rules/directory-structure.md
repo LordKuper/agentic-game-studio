@@ -20,6 +20,7 @@
 │   │   │   ├── index.md               # Registry of all epics
 │   │   │   └── [slug]/
 │   │   │       ├── EPIC.md            # Epic definition (from t_epic.md)
+│   │   │       ├── scope.html         # Epic scope (from t_epic-scope.html): goal, affected systems, diagram, acceptance
 │   │   │       └── stories/           # Story files for this epic
 │   │   ├── milestones/                # Milestone definitions (groups of epics)
 │   │   ├── playtests/                 # Playtest reports
@@ -48,6 +49,6 @@
 - **Production code**: engine source root (e.g. `Assets/` for Unity). Tests in `tests/` regardless of engine.
 - **Active session**: single file `.ags/project/state.md` holds entire working session. One active session at a time. New task overwrites it. History in git.
 - **Project-level state files** (`stage.md`, `stubs.md`, `decisions-log.md`, `epics/index.md`) live under `.ags/project/`. Persist across `state.md` overwrites.
-- **All state files in Markdown** — no `.txt`, `.yaml`. Resume work on any stage by reading the relevant `.md`.
+- **State files in Markdown or HTML** — no `.txt`, `.yaml`. Each skill chooses the format that fits its content (e.g. `/ags-create-epics` writes `scope.html` for visual scope diagrams; most other state stays Markdown). Resume work on any stage by reading the relevant `.md` or `.html`.
 - **`.ags/project/`** mostly working state — keep gitignored unless project explicitly tracks epic/decision history in git.
 - **External reviews** (`.ags/project/reviews/`) — one file per `[YYYY-MM-DD]-[type]-[slug]`. Iterations append as new `## Iteration N` sections; never overwrite. `.ags/project/reviews/.tmp/` holds raw Codex prompts/output, gitignored.
