@@ -75,6 +75,14 @@ Identify the system category (engine, gameplay, AI, networking, UI, tools) and e
 - [ ] Events/signals used for cross-system communication
 - [ ] Consistent with established patterns in the codebase
 
+**Design Principles** (per `.ags/rules/design-principles.md`):
+- [ ] §3 SoC — code stays inside designated layer (gameplay / UI / audio / data / save / AI); no logic leaked across boundaries
+- [ ] §4 Loose Coupling / High Cohesion — cross-module access only through interface / event bus; single responsibility per type
+- [ ] §5 SSoT — only one system owns each mutable runtime fact; no duplicated authoritative state
+- [ ] §6 Fail Fast — content / config / data load validated; loud failure on missing-ref or out-of-range, no silent fallback
+- [ ] §7 Observability — perf-sensitive or gameplay-critical code exposes logs / counters / debug hooks per `coding.md` §9
+- [ ] §8 Backward Compatibility — save format / mod API / content schema changes carry migration; version field bumped if format changed
+
 **SOLID:**
 - [ ] Single Responsibility: Each class has one reason to change
 - [ ] Open/Closed: Extendable without modification

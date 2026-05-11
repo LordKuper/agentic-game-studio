@@ -9,6 +9,7 @@ Rules for writing and editing code. All code in English.
 - Readability and maintainability over cleverness.
 - No hidden coupling, global state, action at a distance.
 - No backwards-compatibility shims unless game already shipped.
+- See `.ags/rules/design-principles.md` for broader system-level principles (SoC, SSoT, Fail Fast, Observability, BC, Evolutionary Architecture).
 
 ## 2. Project layout
 

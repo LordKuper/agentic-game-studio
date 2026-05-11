@@ -290,6 +290,40 @@ After conflict detection, analyse the dependency graph across all ADRs:
 
 ---
 
+## Phase 4b: Design Principles Audit
+
+Enforces `.ags/rules/design-principles.md` across all reviewed ADRs.
+
+For each ADR, check:
+
+| Principle | Detection |
+|---|---|
+| §1 YAGNI | ADR introduces system / abstraction with no cited GDD requirement or playtest evidence — flag as speculative scope |
+| §2 KISS | ADR proposes complex pattern (multi-layer indirection, custom DSL, plugin framework) where simpler approach not justified in Alternatives section |
+| §3 Separation of Concerns | ADR places gameplay logic in UI / audio / save layer, or vice versa — flag layer violation |
+| §4 Loose Coupling / High Cohesion | ADR creates direct cross-module reference where interface / event bus appropriate; ADR scatters single responsibility across multiple systems |
+| §5 SSoT (runtime state) | Two ADRs claim authority over same mutable runtime fact (subset of Phase 4 State management conflict — surface here explicitly) |
+| §6 Fail Fast | ADR involves content / config / data loading without validation step; silent-fallback patterns on missing data |
+| §7 Observability | ADR introduces gameplay-critical or perf-sensitive system without debug / log / metric hooks specified |
+| §8 Backward Compatibility | ADR changes save format / mod API / content schema without migration plan or version bump |
+| §9 Evolutionary Architecture | ADR commits to non-reversible decision (sealed contract, freeze of mod API, hard-coded dependency) without justification; missing Reversibility note |
+
+For each violation:
+
+```
+## Principle Violation: ADR-NNNN — §[N] [principle name]
+Finding: [specific text / decision in ADR that violates]
+Why: [which principle clause + why this breaks it]
+Severity: high (substantive design risk) / medium (advisory)
+Suggested fix: [revise section / add migration plan / extract interface / etc.]
+```
+
+Severity floor: §1, §5, §8 violations are `high` — never dropped by iteration floor. §2, §9 are `medium` advisory. Other principles graded per concrete impact.
+
+Incorporate findings into Phase 7 report under `### Design Principle Violations`.
+
+---
+
 ## Phase 5: Engine Compatibility Cross-Check
 
 Across all ADRs, check for engine consistency:
@@ -424,6 +458,10 @@ For each gap:
 
 ### Cross-ADR Conflicts
 [List all conflicts from Phase 4]
+
+### Design Principle Violations
+[List all violations from Phase 4b — `.ags/rules/design-principles.md`]
+[Or: "None — all ADRs consistent with design principles."]
 
 ### ADR Dependency Order
 [Topologically sorted implementation order from Phase 4 — dependency ordering section]

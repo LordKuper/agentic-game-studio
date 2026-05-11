@@ -56,6 +56,12 @@ Evaluate against the Design Document Standard checklist:
 - [ ] Has Tuning Knobs section (configurable values identified)
 - [ ] Has Acceptance Criteria section (testable success conditions)
 
+**Design Principles Audit** (per `.ags/rules/design-principles.md`):
+
+- [ ] §1 YAGNI — every mechanic / subsystem proposed has a stated player-experience justification, not speculative scope. Flag systems introduced "for future use" with no current playtest need.
+- [ ] §2 KISS — simplest rule set that delivers the player fantasy. Flag clever / complex rules where a straightforward version was not considered in alternatives.
+- [ ] §5 SSoT — GDD describes intent only, defers numeric balance to data-config (`coding.md` §4); no hard-coded balance numbers duplicated across GDD sections.
+
 ---
 
 ## Phase 3: Consistency and Implementability

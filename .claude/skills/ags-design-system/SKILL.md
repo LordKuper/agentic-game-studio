@@ -236,6 +236,12 @@ Use `AskUserQuestion`:
 Once the user confirms, **immediately** create the GDD file with empty section
 headers. This ensures incremental writes have a target.
 
+**Design Principles Check** (per `.ags/rules/design-principles.md`) — apply during every section draft:
+
+- §1 YAGNI — describe only mechanics that serve the stated Player Fantasy. Reject "we might want to..." scope creep. If a mechanic has no playtest-justified need now, omit it (track in Open Questions, not in Detailed Design).
+- §2 KISS — propose the simplest rule set that delivers the fantasy. When a clever rule is added, the section must explain why a simpler version fails.
+- §5 SSoT — Tuning Knobs section names parameters and intent only. Concrete numeric values live in data-config (`coding.md` §4) — cite file path, do not embed numbers in GDD prose.
+
 Use the template structure from `.ags/templates/t_gdd.md`:
 
 ```markdown

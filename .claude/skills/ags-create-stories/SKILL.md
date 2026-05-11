@@ -79,6 +79,10 @@ For each GDD acceptance criterion:
 **Story sizing rule:** one story = one focused session (~2-4 hours). If a
 group of criteria would take longer, split into two stories.
 
+**Design Principles Check** (per `.ags/rules/design-principles.md`):
+- §1 YAGNI — every story must trace to a GDD acceptance criterion. Do not create stories for speculative scaffolding, "future-proofing", or systems with no current playtest need. Cut stories that do not satisfy a current acceptance criterion.
+- §6 Fail Fast — for stories that load content / config / data, acceptance criteria must include validation behaviour on malformed / missing input (loud failure, not silent fallback).
+
 For each story, determine:
 - **GDD requirement**: which acceptance criterion(ia) does this satisfy?
 - **TR-ID**: look up in `tr-registry.yaml`. Use the stable ID. If no match, use `TR-[system]-???` and warn.

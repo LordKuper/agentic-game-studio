@@ -193,6 +193,10 @@ The agent should:
 - Respect all Required and Forbidden patterns from the control manifest
 - Stay within the story's Out of Scope boundaries (do not touch unrelated files)
 - Write clean, doc-commented public APIs
+- Apply `.ags/rules/design-principles.md`:
+  - §1 YAGNI — implement only what story acceptance criteria require; no speculative abstractions, helpers, or "while we're here" refactors
+  - §6 Fail Fast — validate content / config / data on load; raise loud structured error on missing-ref, out-of-range, or schema mismatch; no silent fallback
+  - §7 Observability — add structured logs / counters for perf-sensitive or gameplay-critical paths per `coding.md` §9
 
 ### Config/Data stories (no agent needed)
 

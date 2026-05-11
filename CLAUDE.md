@@ -33,6 +33,9 @@ See `.ags/rules/collaboration.md`.
 ## Coding Rules
 @.ags/rules/coding.md
 
+## Design Principles
+@.ags/rules/design-principles.md
+
 ## Design System
 @.ags/rules/design-system.md
 

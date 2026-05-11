@@ -13,6 +13,7 @@ Single source of truth (SSoT). Every fact lives in exactly one document type. Du
 | Color, typography, spacing, radii, component tokens | DESIGN.md (`design/art/DESIGN.md`) | art-bible, UX, HUD, code (raw literals) |
 | Numeric balance values | data-config (engine-side asset) | GDD describes intent, cites file path |
 | Canonical entity ids (item, enemy, skill, faction…) | `design/registry/entities.yaml` | every other doc cites by id |
+| Runtime game-state ownership (which system owns which mutable fact at runtime — health, inventory, player position, save data) | ADR declaring authority (`design/architecture/adr-NNNN-*.md`) + implementing system | other systems read via interface / event, never duplicate authoritative copy |
 
 ## 2. GDD = concept-only
 

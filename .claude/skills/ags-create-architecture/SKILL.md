@@ -363,7 +363,11 @@ The document structure:
 
 ## Architecture Principles
 [3-5 key principles that govern all technical decisions for this project,
-derived from the game concept, GDDs, and technical preferences]
+derived from the game concept, GDDs, and technical preferences.
+Project-wide design principles inherited from `.ags/rules/design-principles.md`
+(§1 YAGNI, §2 KISS, §3 SoC, §4 Coupling/Cohesion, §5 SSoT, §6 Fail Fast,
+§7 Observability, §8 BC, §9 Evolutionary) — cite by reference, do not duplicate.
+This section adds project-specific principles only.]
 
 ## Open Questions
 [Decisions deferred — must be resolved before the relevant layer is built]

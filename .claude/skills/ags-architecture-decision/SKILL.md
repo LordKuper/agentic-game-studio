@@ -208,6 +208,18 @@ status (front-matter): draft
 
 Do not generate ADR until user confirms or corrects.
 
+**Design Principles Check** (per `.ags/rules/design-principles.md`) — before generating ADR, verify decision against:
+
+- §3 Separation of Concerns — decision keeps gameplay / UI / audio / data / save / AI in separate layers; cross-layer access via interface or event only.
+- §4 Loose Coupling / High Cohesion — no direct cross-module references; system has single responsibility with related data adjacent.
+- §5 SSoT — decision names a single owner for any runtime fact it introduces; no shared mutable state with ambiguous authority.
+- §6 Fail Fast — content / config / data loading paths include validation; no silent fallback on missing or malformed data.
+- §7 Observability — gameplay-critical or perf-sensitive system specifies debug / log / metric hooks in Implementation Guidelines.
+- §8 Backward Compatibility — change to save format / mod API / content schema names migration plan; ADR notes version impact.
+- §9 Evolutionary Architecture — ADR `Consequences` notes reversibility (cheap / costly / one-way); commitments hidden behind interface where reversal cost is high.
+
+If decision violates a principle without explicit justification, raise as Open Question or revise before drafting.
+
 **After engine specialist + TD reviews return** (Step 4.5/4.6), unresolved decisions get separate `AskUserQuestion` per point with proposed options + free-text escape:
 
 ```
