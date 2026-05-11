@@ -58,6 +58,23 @@ Not treated as complexity (may be fixed without approval): rename, typo / value 
 
 This rule overrides severity floor: even a critical finding does not authorize silently introducing a new abstraction.
 
+## User decision presentation format (mandatory)
+
+Whenever a review finding, fix plan, or aggregator step requires a user decision (architecture-impact escalation, boundary fix that moves content, choice between conflicting reviewer recommendations, severity dispute, drop-vs-fix call, any "approve / pick alternative / drop" prompt), the agent surfacing the question MUST present it in this shape — in the **user's chat language** (per `.ags/rules/user-interaction.md`):
+
+1. **Problem / finding** — full description of the defect, its location (file + line / section), why it matters, which rule / ADR / GDD / contract is implicated. No shorthand assuming the user remembers the review context.
+2. **Options** — at least two concrete options. Each option is a self-contained plan: what changes, where, what gets written / removed / introduced.
+3. **Recommended** — exactly one option marked `**Recommended**`. If no recommendation possible, state why explicitly and ask the user to choose.
+4. **Consequences per option** — for every option (including the recommended one and "drop / accept finding"): what becomes possible, what becomes harder, what gets locked in, what downstream artifacts must change, reversibility cost.
+
+Forbidden shortcuts:
+- "Approve?" without options.
+- Options without consequences.
+- Recommendation without justification.
+- Presenting the question in English while chat language is non-English (translate at presentation time; file writes stay English per `user-interaction.md`).
+
+After user picks, record the decision in `decisions-log.md` with the chosen option, the rejected alternatives (one line each), and the rationale cited by the user.
+
 ## Nitpick — definition (mandatory drop)
 
 A finding is a **nitpick** and must be dropped by the aggregator regardless of severity floor when it matches any of:
