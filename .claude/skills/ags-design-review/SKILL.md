@@ -88,7 +88,7 @@ Evaluate against the Design Document Standard checklist:
 **This phase is MANDATORY.** Do not skip it.
 
 **Before spawning any agents**, print this notice:
-> "Spawning specialist agents in parallel. This typically takes 8–15 minutes."
+> "Spawning specialist agents in parallel."
 
 ### Step 1 — Identify all domains the GDD touches
 
