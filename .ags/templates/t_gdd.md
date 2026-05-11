@@ -10,7 +10,7 @@ approved_at:         # YYYY-MM-DD; required when status: approved
 > **Last Verified**: [Date — last confirmed accurate against current design]
 > **Implements Pillar**: [Which pillar supports]
 
-## Scope (concept-only — see `.ags/rules/document-boundaries.md`)
+## Scope
 
 **Belongs here**: mechanic rules, intent, formulas (conceptual), state machines, acceptance criteria, tuning-knob intent, entity references (by registry id).
 
