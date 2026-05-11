@@ -28,7 +28,7 @@ The user must approve before moving to the next step.
 | Artifact | Created by | If missing |
 |---|---|---|
 | `design/gdd/game-concept.md` | `/ags-brainstorm` | STOP. "No game concept. Run `/ags-brainstorm`." |
-| `design/art/ags-art-bible.md` | `/ags-art-bible` | STOP. "No art bible." |
+| `design/art/ags-art-bible.html` | `/ags-art-bible` | STOP. "No art bible." |
 | Core systems GDDs (combat/movement) | `/ags-design-system` | STOP. "Core systems not designed. Run `/ags-design-system [system]`." |
 
 If STOP triggers, exit verdict **BLOCKED**.
@@ -69,7 +69,7 @@ Spawn the `art-director` agent to:
 - Define the color temperature and lighting mood for this area (how does it differ from adjacent areas?)
 - Specify shape language direction (angular fortress? organic cave? decayed grandeur?)
 - Name the primary visual landmarks that will orient the player
-- Read `design/art/ags-art-bible.md` if it exists — anchor all direction in the established art bible
+- Read `design/art/ags-art-bible.html` if it exists — anchor all direction in the established art bible
 
 **The art-director's visual targets from Step 1 must be passed to the game-designer in Step 2** as explicit constraints. Layout decisions happen within the visual direction, not before it.
 

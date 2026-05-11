@@ -21,7 +21,7 @@ If no argument is provided, check whether `design/assets/asset-manifest.md` exis
 
 | Artifact | Created by | If missing |
 |---|---|---|
-| `design/art/ags-art-bible.md` | `/ags-art-bible` | STOP. "No art bible. Run `/ags-art-bible` first." |
+| `design/art/ags-art-bible.html` | `/ags-art-bible` | STOP. "No art bible. Run `/ags-art-bible` first." |
 | Target system/level/character GDD | `/ags-design-system` | STOP. "No GDD for target. Run `/ags-design-system [name]` first." |
 
 If STOP triggers, exit verdict **BLOCKED**.
@@ -43,9 +43,9 @@ Spawn both `art-director` and `technical-artist` in parallel for the review loop
 Read all source material **before** asking the user anything.
 
 ### Required reads:
-- **Art bible**: Read `design/art/ags-art-bible.md` — fail if missing:
+- **Art bible**: Read `design/art/ags-art-bible.html` — fail if missing:
   > "No art bible found. Run `/ags-art-bible` first — asset specs are anchored to the art bible's visual rules and asset standards."
-  Extract: Visual Identity Statement, Color System (semantic colors), Shape Language, Asset Standards (Section 8 — dimensions, formats, polycount budgets, texture resolution tiers).
+  Extract: Visual Identity Summary (Section 1), Color Palette (Section 4), Art Style (Section 5), Asset Production Standards (Section 10 — dimensions, formats, polycount budgets, texture resolution tiers).
 
 - **Technical preferences**: Read `.ags/rules/technical-preferences.md` — extract performance budgets and naming conventions.
 
@@ -185,7 +185,7 @@ Write the file with:
 # Asset Specs — [Target Type]: [Target Name]
 
 > **Source**: [path to source GDD/level/character doc]
-> **Art Bible**: design/art/ags-art-bible.md
+> **Art Bible**: design/art/ags-art-bible.html
 > **Generated**: [date]
 > **Status**: [N] assets specced / [N] approved / [N] in production / [N] done
 

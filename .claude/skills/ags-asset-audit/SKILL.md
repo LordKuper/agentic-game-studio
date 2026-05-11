@@ -11,7 +11,7 @@ allowed-tools: Read, Glob, Grep, AskUserQuestion
 
 | Artifact | Created by | If missing |
 |---|---|---|
-| `design/art/ags-art-bible.md` | `/ags-art-bible` | STOP. "No art bible. Run `/ags-art-bible` first." |
+| `design/art/ags-art-bible.html` | `/ags-art-bible` | STOP. "No art bible. Run `/ags-art-bible` first." |
 | `.ags/rules/technical-preferences.md` | `/ags-setup-engine` | STOP. "Naming conventions not configured. Run `/ags-setup-engine`." |
 | `assets/` directory exists | engine init | STOP. "No `assets/` directory found." |
 

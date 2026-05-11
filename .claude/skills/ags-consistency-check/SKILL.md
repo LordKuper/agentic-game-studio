@@ -191,6 +191,44 @@ Boundary violations classified:
 
 ---
 
+### 3f: Art-bible Dependency Freshness Scan
+
+Targets `design/art/ags-art-bible.html`. For every `<section>` carrying `data-depends-on`, verify the section's recorded provenance still matches the current upstream state.
+
+**Algorithm**:
+
+1. Read `design/art/ags-art-bible.html`. If file absent, skip 3f entirely (no art-bible yet).
+2. For each `<section ... data-depends-on="..." data-checked-at="..." data-checked-against="...">`:
+   a. Parse `data-depends-on` on `|`. Each entry is one of: `<path>`, `<path>:<scope>`, `<path>#<section-id>`, `self#<section-id>`.
+   b. Parse `data-checked-against` on `|`. Same length as `data-depends-on`. If lengths differ or attribute empty → **🟡 STALE: provenance-missing**.
+   c. For each upstream entry, resolve the file path (scope/section anchor informational — hash whole file):
+      - `<path>` / `<path>:<scope>` / `<path>#<section-id>` → file `<path>`.
+      - `self#<id>` → file `design/art/ags-art-bible.html` itself (cross-section drift inside same file).
+   d. Compute current hash via Bash: `git hash-object <path>` (or `sha256sum` for non-git files, prefixed `sha256:`).
+   e. Compare with stored hash for that entry.
+      - Match → entry fresh.
+      - Mismatch → flag entry stale, record `<section-id> ← <upstream-path>` mismatch.
+   f. Also verify upstream file still exists. Missing file → **🔴 DANGLING DEPENDENCY**.
+
+3. **Token reference validity** (run alongside 3f, target art-bible only):
+   - Grep art-bible body for token patterns: `\{(colors|typography|spacing|rounded|components)\.[a-z0-9-]+\}`
+   - Read `design/art/DESIGN.md` front-matter YAML; build set of defined tokens.
+   - Any token cited in art-bible but missing from DESIGN.md → **🔴 MISSING TOKEN** (high — breaks the SSoT contract).
+   - Any token defined in DESIGN.md but never cited in art-bible → **ℹ️ ORPHAN TOKEN** (informational).
+
+**Classification**:
+- **🟠 STALE** — upstream changed since section was last validated. Section may contradict current upstream; user must re-review and re-approve (which restamps provenance).
+- **🟡 STALE: provenance-missing** — section authored before provenance system, or attrs cleared. Same fix path: re-run `/ags-art-bible` on this section to stamp.
+- **🔴 DANGLING DEPENDENCY** — declared upstream file no longer exists. Either restore file or update `data-depends-on` to new path.
+- **🔴 MISSING TOKEN** — art-bible cites a token that does not exist in DESIGN.md. Either add the token or remove the reference.
+- **ℹ️ ORPHAN TOKEN** — token defined but not cited. Informational; may indicate DESIGN.md drift or planned-but-unused token.
+
+Append findings to Phase 5 Output Report under a new sub-section "**Art-bible Dependency Freshness**".
+
+Fix path for STALE entries: invoke `/ags-art-bible` with retrofit mode — skill re-runs the section's authoring loop, then re-stamps `data-checked-at` / `data-checked-against`. Auto-skipped if section content does not actually need changes — user may approve unchanged content to restamp provenance only.
+
+---
+
 ## Phase 4: Deep Investigation (Conflicts Only)
 
 For each conflict found in Phase 3, do a targeted full-section read of the
@@ -236,6 +274,16 @@ GDDs scanned: [N] ([list names])
 🔴 BOUNDARY — [file:line] [rule violated] → [fix action]
 ⚠️ DUPLICATION — [file-A] ↔ [file-B] [overlapping section] → [consolidate to SSoT: which]
 ℹ️ MARKER GAP — [file] missing front-matter `status:` → add YAML block
+
+---
+
+### Art-bible Dependency Freshness
+
+🟠 STALE — design/art/ags-art-bible.html#[section-id] ← [upstream-path] changed since [data-checked-at] → re-run `/ags-art-bible` retrofit on this section
+🟡 STALE: provenance-missing — design/art/ags-art-bible.html#[section-id] → stamp via `/ags-art-bible` retrofit
+🔴 DANGLING DEPENDENCY — design/art/ags-art-bible.html#[section-id] declares missing upstream [path] → restore or update data-depends-on
+🔴 MISSING TOKEN — design/art/ags-art-bible.html cites `{ns.name}` not present in design/art/DESIGN.md → add token or remove reference
+ℹ️ ORPHAN TOKEN — design/art/DESIGN.md defines `{ns.name}` not cited anywhere → confirm intentional
 
 ---
 

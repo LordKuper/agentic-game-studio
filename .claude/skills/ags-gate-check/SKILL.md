@@ -49,7 +49,7 @@ Phase gates (foundation/production/polish/release) spawn the full director panel
 - [ ] `design/gdd/game-concept.md` exists, has content
 - [ ] Game pillars defined (in concept doc or `design/gdd/game-pillars.md`)
 - [ ] Visual Identity Anchor section in `design/gdd/game-concept.md`
-- [ ] `design/art/ags-art-bible.md` exists (Sections 1-4 minimum)
+- [ ] `design/art/ags-art-bible.html` exists (Sections 1-5 minimum)
 - [ ] `design/gdd/systems-index.md` with at least MVP systems
 
 **Quality Checks:**

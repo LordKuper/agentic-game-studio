@@ -16,7 +16,7 @@ The user must approve before moving to the next phase.
 
 | Artifact | Created by | If missing |
 |---|---|---|
-| `design/art/ags-art-bible.md` | `/ags-art-bible` | STOP. "No art bible. Run `/ags-art-bible`." |
+| `design/art/ags-art-bible.html` | `/ags-art-bible` | STOP. "No art bible. Run `/ags-art-bible`." |
 | `design/accessibility-requirements.md` | foundation phase | STOP. "Accessibility tier not committed. Run `/ags-gate-check foundation`." |
 | Active epic with UI scope | `/ags-create-epics` | STOP. "No active epic. Run `/ags-create-epics`." |
 

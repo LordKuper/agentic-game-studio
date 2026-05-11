@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Art Bible: [Game Title]</title>
+<meta name="doc-type" content="art-bible">
+<meta name="status" content="draft"><!-- draft | approved -->
+<meta name="approved-at" content=""><!-- YYYY-MM-DD; required when status=approved -->
+<meta name="version" content="1.0">
+<meta name="owned-by" content="art-director">
+<meta name="last-updated" content="">
+<style>
+  :root {
+    --bg: #fafafa;
+    --fg: #1a1a1a;
+    --muted: #666;
+    --border: #d0d0d0;
+    --accent: #2563eb;
+    --warn: #d97706;
+    --ok: #059669;
+    --code-bg: #f0f0f0;
+    --slot-bg: #e5e7eb;
+    --slot-fg: #6b7280;
+
+    /* Swatches resolved from design/art/DESIGN.md at view time. */
+    /* Defaults are neutral placeholders, NOT brand colors. */
+    --colors-primary: #c0c0c0;
+    --colors-secondary: #b0b0b0;
+    --colors-tertiary: #a0a0a0;
+    --colors-neutral: #e0e0e0;
+    --colors-bg: #fafafa;
+    --colors-fg: #1a1a1a;
+    --colors-success: #c8c8c8;
+    --colors-warning: #c8c8c8;
+    --colors-danger: #c8c8c8;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    line-height: 1.55;
+  }
+  .layout { display: grid; grid-template-columns: 240px 1fr; min-height: 100vh; }
+  nav.toc {
+    position: sticky;
+    top: 0;
+    align-self: start;
+    height: 100vh;
+    overflow-y: auto;
+    padding: 1.5rem 1rem;
+    border-right: 1px solid var(--border);
+    background: #fff;
+    font-size: 0.9rem;
+  }
+  nav.toc ol { list-style: none; padding: 0; margin: 0; }
+  nav.toc li { margin: 0.35rem 0; }
+  nav.toc a { color: var(--fg); text-decoration: none; }
+  nav.toc a:hover { color: var(--accent); }
+  article { padding: 2rem 3rem; max-width: 1100px; }
+  header.doc-header { border-bottom: 2px solid var(--border); padding-bottom: 1rem; margin-bottom: 2rem; }
+  h1 { margin: 0 0 0.5rem; font-size: 2rem; }
+  h2 { margin-top: 2.5rem; padding-bottom: 0.3rem; border-bottom: 1px solid var(--border); }
+  h3 { margin-top: 1.5rem; color: var(--muted); }
+  h4 { margin: 1rem 0 0.4rem; font-size: 0.95rem; color: var(--muted); text-transform: uppercase; letter-spacing: 0.05em; }
+  section { margin-bottom: 2rem; }
+  .badge {
+    display: inline-block;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+  .badge-draft { background: #fef3c7; color: #92400e; }
+  .badge-approved { background: #d1fae5; color: #065f46; }
+  .meta { font-size: 0.85rem; color: var(--muted); }
+  .meta dt { font-weight: 600; display: inline-block; min-width: 110px; }
+  .meta dd { display: inline; margin: 0; }
+  .meta dl > * { display: block; margin: 0.15rem 0; }
+  table { width: 100%; border-collapse: collapse; margin: 0.5rem 0; }
+  th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); vertical-align: top; }
+  th { background: #f3f4f6; font-weight: 600; }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; background: var(--code-bg); padding: 0.1rem 0.35rem; border-radius: 3px; font-size: 0.9em; }
+  .callout {
+    border-left: 4px solid var(--accent);
+    background: #eff6ff;
+    padding: 0.75rem 1rem;
+    margin: 1rem 0;
+    border-radius: 0 4px 4px 0;
+  }
+  .callout-warn { border-left-color: var(--warn); background: #fef3c7; }
+  .placeholder { color: var(--muted); font-style: italic; }
+  details { margin: 0.5rem 0; }
+  summary { cursor: pointer; font-weight: 600; }
+
+  /* Generic image slot — used wherever team must drop a real reference image */
+  .media-slot {
+    background: var(--slot-bg);
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--slot-fg);
+    font-size: 0.8rem;
+    text-align: center;
+    padding: 0.5rem;
+  }
+  .media-slot.ratio-16-9 { aspect-ratio: 16/9; }
+  .media-slot.ratio-1-1 { aspect-ratio: 1/1; }
+  .media-slot.ratio-3-4 { aspect-ratio: 3/4; }
+
+  /* Token-bound swatch (inline, small) */
+  .swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: ui-monospace, monospace;
+    font-size: 0.85rem;
+  }
+  .swatch::before {
+    content: "";
+    width: 1.5rem;
+    height: 1.5rem;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    background: var(--swatch-color, #c0c0c0);
+    display: inline-block;
+  }
+  .swatch-primary { --swatch-color: var(--colors-primary); }
+  .swatch-secondary { --swatch-color: var(--colors-secondary); }
+  .swatch-tertiary { --swatch-color: var(--colors-tertiary); }
+  .swatch-neutral { --swatch-color: var(--colors-neutral); }
+  .swatch-success { --swatch-color: var(--colors-success); }
+  .swatch-warning { --swatch-color: var(--colors-warning); }
+  .swatch-danger { --swatch-color: var(--colors-danger); }
+
+  /* Hero mood board (Section 1) */
+  .mood-board {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 0.5rem;
+    height: 280px;
+    margin: 1rem 0;
+  }
+  .mood-board .media-slot:first-child { grid-row: span 2; }
+
+  /* Reference cards (Section 2) */
+  .ref-card {
+    display: grid;
+    grid-template-columns: 160px 1fr;
+    gap: 1rem;
+    padding: 0.75rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 0.5rem 0;
+    background: #fff;
+  }
+  .ref-card .take-avoid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+  .ref-card .take-avoid > div { font-size: 0.85rem; }
+  .ref-card .take { border-left: 3px solid var(--ok); padding-left: 0.5rem; }
+  .ref-card .avoid { border-left: 3px solid var(--warn); padding-left: 0.5rem; }
+
+  /* Color palette cards (Section 4) */
+  .color-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+  .color-card {
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    overflow: hidden;
+    background: #fff;
+  }
+  .color-card .block {
+    height: 80px;
+    background: var(--swatch-color, #c0c0c0);
+  }
+  .color-card .label { padding: 0.5rem 0.75rem; }
+  .color-card .label code { font-size: 0.8rem; }
+  .color-card .label .role { display: block; font-size: 0.8rem; color: var(--muted); margin-top: 0.2rem; }
+
+  /* Color combinations preview */
+  .combo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 0.5rem;
+    margin: 0.75rem 0;
+  }
+  .combo-tile {
+    aspect-ratio: 16/10;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    font-weight: 600;
+    text-align: center;
+    background: var(--combo-bg, #ddd);
+    color: var(--combo-fg, #333);
+  }
+  .combo-tile small { display: block; font-weight: 400; font-size: 0.7rem; margin-top: 0.4rem; opacity: 0.85; }
+
+  /* Mood strips (Section 4 Emotional Mapping) */
+  .mood-strip { display: flex; height: 32px; border-radius: 4px; overflow: hidden; border: 1px solid var(--border); }
+  .mood-strip span { flex: 1; background: var(--strip-color, #c0c0c0); }
+
+  /* Style / LOD / archetype tiles (Sections 5, 6, 7) */
+  .tile-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 0.75rem;
+    margin: 0.75rem 0;
+  }
+  .style-tile { display: flex; flex-direction: column; gap: 0.3rem; }
+  .style-tile .caption { font-size: 0.85rem; color: var(--muted); text-align: center; }
+  .style-tile .caption strong { color: var(--fg); display: block; }
+
+  /* Tileset grid (Section 7) */
+  .tileset-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+    max-width: 320px;
+    margin: 0.5rem 0;
+  }
+  .tileset-grid .media-slot { aspect-ratio: 1/1; font-size: 0.7rem; }
+
+  /* Button previews (Section 8) — bound to component tokens */
+  .btn-preview {
+    display: inline-block;
+    padding: 0.6rem 1.2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin: 0.25rem;
+    border: 1px solid transparent;
+    cursor: default;
+  }
+  .btn-primary { background: var(--colors-primary); color: var(--colors-bg); }
+  .btn-secondary { background: var(--colors-neutral); color: var(--colors-fg); border-color: var(--border); }
+  .btn-destructive { background: var(--colors-danger); color: var(--colors-bg); }
+  .btn-row { display: flex; gap: 0.5rem; flex-wrap: wrap; align-items: center; margin: 0.5rem 0; padding: 1rem; background: #fff; border: 1px solid var(--border); border-radius: 6px; }
+
+  /* Typography samples */
+  .type-sample {
+    display: block;
+    margin: 0.3rem 0;
+    padding: 0.5rem 0.75rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+  }
+  .type-sample .token { display: block; font-family: ui-monospace, monospace; font-size: 0.75rem; color: var(--muted); margin-bottom: 0.2rem; }
+  .type-h1 { font-size: 2rem; font-weight: 700; line-height: 1.1; }
+  .type-h2 { font-size: 1.5rem; font-weight: 700; }
+  .type-body-md { font-size: 1rem; }
+  .type-body-sm { font-size: 0.85rem; }
+  .type-label-caps { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600; }
+
+  /* Spacing rhythm visual */
+  .spacing-stack { display: flex; flex-direction: column; gap: 0; margin: 0.5rem 0; padding: 1rem; background: #fff; border: 1px solid var(--border); border-radius: 6px; }
+  .spacing-stack > div { background: var(--colors-neutral); height: 24px; border-radius: 3px; }
+  .spacing-stack > div + div.sp-sm { margin-top: 0.5rem; }
+  .spacing-stack > div + div.sp-md { margin-top: 1rem; }
+  .spacing-stack > div + div.sp-lg { margin-top: 1.75rem; }
+  .spacing-stack .sp-label { background: transparent; height: auto; font-size: 0.75rem; color: var(--muted); font-family: ui-monospace, monospace; margin-top: 0.15rem !important; }
+
+  /* Radii samples */
+  .radii-row { display: flex; gap: 0.75rem; align-items: flex-end; margin: 0.5rem 0; }
+  .radii-sample { width: 64px; height: 64px; background: var(--colors-primary); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 0.3rem; font-size: 0.7rem; color: var(--colors-bg); font-family: ui-monospace, monospace; }
+  .r-sm { border-radius: 4px; }
+  .r-md { border-radius: 10px; }
+  .r-lg { border-radius: 20px; }
+  .r-full { border-radius: 999px; }
+
+  /* Icon grid */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(8, 1fr);
+    gap: 4px;
+    max-width: 360px;
+    margin: 0.5rem 0;
+  }
+  .icon-grid .media-slot { aspect-ratio: 1/1; font-size: 0.6rem; }
+
+  /* HUD density mock */
+  .hud-mock {
+    position: relative;
+    aspect-ratio: 16/9;
+    background: var(--slot-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    margin: 0.5rem 0;
+    overflow: hidden;
+  }
+  .hud-mock .hud-zone {
+    position: absolute;
+    background: rgba(0,0,0,0.08);
+    border: 1px dashed var(--muted);
+    color: var(--muted);
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.3rem;
+    text-align: center;
+  }
+  .hud-tl { top: 4%; left: 2%; width: 22%; height: 14%; }
+  .hud-tr { top: 4%; right: 2%; width: 22%; height: 14%; }
+  .hud-bl { bottom: 4%; left: 2%; width: 24%; height: 18%; }
+  .hud-br { bottom: 4%; right: 2%; width: 24%; height: 18%; }
+  .hud-center { top: 50%; left: 50%; transform: translate(-50%,-50%); width: 18%; height: 18%; border-radius: 50%; }
+
+  /* Before / after */
+  .before-after { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 0.5rem 0; }
+  .before-after .lbl { font-size: 0.75rem; color: var(--muted); margin-bottom: 0.2rem; }
+
+  /* Filename anatomy */
+  .filename-anatomy { display: flex; gap: 2px; font-family: ui-monospace, monospace; font-size: 1rem; padding: 0.5rem; background: var(--code-bg); border-radius: 4px; margin: 0.5rem 0; }
+  .filename-anatomy span { padding: 0.2rem 0.4rem; border-radius: 3px; background: #fff; border: 1px solid var(--border); position: relative; }
+  .filename-anatomy span::after { content: attr(data-label); position: absolute; top: 100%; left: 50%; transform: translateX(-50%); font-size: 0.65rem; color: var(--muted); margin-top: 0.3rem; white-space: nowrap; font-family: system-ui, sans-serif; }
+  .filename-anatomy { margin-bottom: 1.5rem; }
+
+  /* Texture size visual comparison */
+  .tex-size-bar { display: flex; align-items: flex-end; gap: 1rem; margin: 0.5rem 0; }
+  .tex-size-bar .bar { background: var(--colors-primary); display: flex; align-items: center; justify-content: center; color: var(--colors-bg); font-size: 0.75rem; font-family: ui-monospace, monospace; border-radius: 3px; min-width: 40px; }
+  .tex-size-bar .b-2048 { width: 128px; height: 128px; }
+  .tex-size-bar .b-1024 { width: 64px; height: 64px; }
+  .tex-size-bar .b-512 { width: 32px; height: 32px; }
+  .tex-size-bar .b-256 { width: 16px; height: 16px; }
+
+  /* Animation timing diagram */
+  .timing-diagram { width: 100%; max-width: 480px; height: 80px; }
+
+  /* Colorblind comparison */
+  .cb-grid {
+    display: grid;
+    grid-template-columns: auto repeat(3, 1fr);
+    gap: 0.4rem;
+    align-items: center;
+    margin: 0.5rem 0;
+    font-size: 0.8rem;
+  }
+  .cb-grid .h { font-weight: 600; color: var(--muted); text-align: center; }
+  .cb-grid .row-label { color: var(--muted); }
+  .cb-swatch { height: 36px; border-radius: 4px; border: 1px solid var(--border); }
+
+  /* Contrast samples */
+  .contrast-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 0.5rem 0; }
+  .contrast-sample { padding: 0.75rem; border-radius: 4px; border: 1px solid var(--border); }
+  .contrast-sample.ok { background: var(--colors-bg); color: var(--colors-fg); }
+  .contrast-sample.bad { background: var(--colors-neutral); color: var(--colors-tertiary); }
+
+  /* Cue pair (icon + color) */
+  .cue-pair { display: inline-flex; align-items: center; gap: 0.4rem; padding: 0.3rem 0.6rem; border-radius: 4px; background: var(--cue-bg, #ddd); color: var(--cue-fg, #333); font-size: 0.85rem; margin: 0.2rem; }
+  .cue-pair svg { width: 16px; height: 16px; }
+
+  /* Inline SVG diagram defaults */
+  svg.diagram { display: block; max-width: 100%; height: auto; margin: 0.5rem 0; }
+  svg.diagram .stroke { stroke: var(--muted); fill: none; stroke-width: 1.5; }
+  svg.diagram .fill-muted { fill: var(--colors-neutral); }
+  svg.diagram .fill-primary { fill: var(--colors-primary); }
+  svg.diagram .label { font: 0.75rem system-ui, sans-serif; fill: var(--muted); }
+  svg.diagram .label-fg { font: 0.75rem system-ui, sans-serif; fill: var(--fg); }
+
+  /* VFX color-coded list */
+  .vfx-codes { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.5rem; margin: 0.5rem 0; }
+  .vfx-code { display: flex; align-items: center; gap: 0.6rem; padding: 0.4rem 0.6rem; border: 1px solid var(--border); border-radius: 4px; background: #fff; font-size: 0.85rem; }
+  .vfx-code .chip { width: 18px; height: 18px; border-radius: 3px; border: 1px solid var(--border); background: var(--chip-color, #c0c0c0); flex-shrink: 0; }
+</style>
+</head>
+<body>
+<div class="layout">
+
+<nav class="toc" aria-label="Table of contents">
+  <strong>Contents</strong>
+  <ol>
+    <li><a href="#identity">1. Visual Identity Summary</a></li>
+    <li><a href="#references">2. Reference Board</a></li>
+    <li><a href="#tokens">3. Design Tokens (DESIGN.md)</a></li>
+    <li><a href="#palette">4. Color Palette</a></li>
+    <li><a href="#style">5. Art Style</a></li>
+    <li><a href="#characters">6. Character Art Standards</a></li>
+    <li><a href="#environments">7. Environment Art Standards</a></li>
+    <li><a href="#ui">8. UI Art Standards</a></li>
+    <li><a href="#vfx">9. VFX Standards</a></li>
+    <li><a href="#production">10. Asset Production Standards</a></li>
+    <li><a href="#accessibility">11. Accessibility</a></li>
+  </ol>
+</nav>
+
+<article>
+
+<header class="doc-header">
+  <h1>Art Bible: <span class="placeholder">[Game Title]</span></h1>
+  <span class="badge badge-draft">Draft</span>
+  <!-- Swap to: <span class="badge badge-approved">Approved</span> when status=approved -->
+  <dl class="meta">
+    <div><dt>Version:</dt> <dd>1.0</dd></div>
+    <div><dt>Last Updated:</dt> <dd><span class="placeholder">[Date]</span></dd></div>
+    <div><dt>Owned By:</dt> <dd>art-director</dd></div>
+  </dl>
+</header>
+
+<section id="identity" data-agent="art-director" data-depends-on="design/gdd/game-concept.md" data-checked-at="" data-checked-against="">
+  <h2>1. Visual Identity Summary</h2>
+  <p class="placeholder">[2–3 sentences: overall visual identity.]</p>
+
+  <h4>Mood board — the single image team should see first</h4>
+  <div class="mood-board">
+    <div class="media-slot">[hero shot]</div>
+    <div class="media-slot">[mood A]</div>
+    <div class="media-slot">[mood B]</div>
+    <div class="media-slot">[mood C]</div>
+    <div class="media-slot">[mood D]</div>
+  </div>
+</section>
+
+<section id="references" data-agent="art-director" data-depends-on="design/gdd/game-concept.md" data-checked-at="" data-checked-against="">
+  <h2>2. Reference Board</h2>
+  <p>Reference games, films, art. For each: what to take, what to avoid.</p>
+
+  <div class="ref-card">
+    <div class="media-slot ratio-3-4">[thumbnail]</div>
+    <div>
+      <strong class="placeholder">[Reference Name]</strong>
+      <div class="meta"><span class="placeholder">[Game / Film / Art]</span></div>
+      <div class="take-avoid">
+        <div class="take"><strong>Take:</strong> <span class="placeholder">[specific quality]</span></div>
+        <div class="avoid"><strong>Avoid:</strong> <span class="placeholder">[divergence rule]</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- Duplicate .ref-card per reference -->
+</section>
+
+<section id="tokens" data-mode="status" data-design-md="lint-required" data-depends-on="design/art/DESIGN.md" data-checked-at="" data-checked-against="">
+  <h2>3. Design Tokens (DESIGN.md)</h2>
+  <div class="callout">
+    <strong>Authoritative tokens</strong> (color hex, typography, spacing, radii, components) live in
+    <code>design/art/DESIGN.md</code> per the
+    <a href="https://github.com/google-labs-code/design.md">google-labs-code DESIGN.md spec</a>.
+    This art bible references tokens by name; numeric values are NOT duplicated here.
+  </div>
+  <div class="callout callout-warn">
+    Lint gate: <code>npx @google/design.md lint design/art/DESIGN.md</code> MUST pass (errors=0) before this art bible is approved.
+  </div>
+  <dl class="meta">
+    <div><dt>Token file:</dt> <dd><code>design/art/DESIGN.md</code></dd></div>
+    <div><dt>Last lint:</dt> <dd><span class="placeholder">[date / errors / warnings]</span></dd></div>
+  </dl>
+</section>
+
+<section id="palette" data-agent="art-director" data-design-md="co-author" data-depends-on="design/art/DESIGN.md:colors" data-checked-at="" data-checked-against="">
+  <h2>4. Color Palette</h2>
+  <p><em>Rationale only. Token names + reasoning. Hex values live in <code>DESIGN.md</code> <code>colors:</code>.</em></p>
+
+  <h3>Primary Palette</h3>
+  <div class="color-cards">
+    <div class="color-card">
+      <div class="block" style="--swatch-color: var(--colors-primary);"></div>
+      <div class="label"><code>{colors.primary}</code><span class="role placeholder">[role]</span></div>
+    </div>
+    <div class="color-card">
+      <div class="block" style="--swatch-color: var(--colors-secondary);"></div>
+      <div class="label"><code>{colors.secondary}</code><span class="role placeholder">[role]</span></div>
+    </div>
+    <div class="color-card">
+      <div class="block" style="--swatch-color: var(--colors-tertiary);"></div>
+      <div class="label"><code>{colors.tertiary}</code><span class="role placeholder">[role]</span></div>
+    </div>
+    <div class="color-card">
+      <div class="block" style="--swatch-color: var(--colors-neutral);"></div>
+      <div class="label"><code>{colors.neutral}</code><span class="role placeholder">[role]</span></div>
+    </div>
+  </div>
+
+  <h4>Token usage rationale</h4>
+  <table>
+    <thead>
+      <tr><th>Token</th><th>Role</th><th>Where + when</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="swatch swatch-primary"><code>{colors.primary}</code></span></td>
+        <td class="placeholder">[Role]</td>
+        <td class="placeholder">[Where + when]</td>
+      </tr>
+      <tr>
+        <td><span class="swatch swatch-secondary"><code>{colors.secondary}</code></span></td>
+        <td class="placeholder">[Role]</td>
+        <td class="placeholder">[Where + when]</td>
+      </tr>
+      <tr>
+        <td><span class="swatch swatch-tertiary"><code>{colors.tertiary}</code></span></td>
+        <td class="placeholder">[Role]</td>
+        <td class="placeholder">[Where + when]</td>
+      </tr>
+      <tr>
+        <td><span class="swatch swatch-neutral"><code>{colors.neutral}</code></span></td>
+        <td class="placeholder">[Role]</td>
+        <td class="placeholder">[Where + when]</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>Color Combinations</h3>
+  <p class="meta">Approved foreground/background pairs. Other combinations are forbidden unless contrast is independently verified.</p>
+  <div class="combo-grid">
+    <div class="combo-tile" style="--combo-bg: var(--colors-primary); --combo-fg: var(--colors-bg);">
+      Primary on BG<small>{colors.primary} / {colors.bg}</small>
+    </div>
+    <div class="combo-tile" style="--combo-bg: var(--colors-bg); --combo-fg: var(--colors-fg);">
+      FG on BG<small>{colors.fg} / {colors.bg}</small>
+    </div>
+    <div class="combo-tile" style="--combo-bg: var(--colors-neutral); --combo-fg: var(--colors-fg);">
+      FG on Neutral<small>{colors.fg} / {colors.neutral}</small>
+    </div>
+    <div class="combo-tile" style="--combo-bg: var(--colors-danger); --combo-fg: var(--colors-bg);">
+      Danger on BG<small>{colors.danger} / {colors.bg}</small>
+    </div>
+  </div>
+
+  <h3>Emotional Color Mapping</h3>
+  <table>
+    <thead>
+      <tr><th>Game State</th><th>Dominant Tokens</th><th>Strip</th><th>Mood</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Exploration</td>
+        <td><span class="placeholder">[token list]</span></td>
+        <td>
+          <div class="mood-strip">
+            <span style="--strip-color: var(--colors-primary);"></span>
+            <span style="--strip-color: var(--colors-secondary);"></span>
+            <span style="--strip-color: var(--colors-neutral);"></span>
+          </div>
+        </td>
+        <td class="placeholder">[Feeling]</td>
+      </tr>
+      <tr>
+        <td>Combat</td>
+        <td><span class="placeholder">[token list]</span></td>
+        <td>
+          <div class="mood-strip">
+            <span style="--strip-color: var(--colors-danger);"></span>
+            <span style="--strip-color: var(--colors-primary);"></span>
+            <span style="--strip-color: var(--colors-warning);"></span>
+          </div>
+        </td>
+        <td class="placeholder">[Feeling]</td>
+      </tr>
+      <tr>
+        <td>Safe zones</td>
+        <td><span class="placeholder">[token list]</span></td>
+        <td>
+          <div class="mood-strip">
+            <span style="--strip-color: var(--colors-success);"></span>
+            <span style="--strip-color: var(--colors-neutral);"></span>
+            <span style="--strip-color: var(--colors-bg);"></span>
+          </div>
+        </td>
+        <td class="placeholder">[Feeling]</td>
+      </tr>
+      <tr>
+        <td>Danger</td>
+        <td><span class="placeholder">[token list]</span></td>
+        <td>
+          <div class="mood-strip">
+            <span style="--strip-color: var(--colors-danger);"></span>
+            <span style="--strip-color: var(--colors-warning);"></span>
+            <span style="--strip-color: var(--colors-fg);"></span>
+          </div>
+        </td>
+        <td class="placeholder">[Feeling]</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p class="meta">Swatch boxes and strips are neutral placeholders. To preview real colors, regenerate this file with a viewer that reads <code>design/art/DESIGN.md</code> tokens and overrides the CSS custom properties (<code>--colors-*</code>) in <code>:root</code>.</p>
+</section>
+
+<section id="style" data-agent="art-director" data-depends-on="design/gdd/game-concept.md|self#identity" data-checked-at="" data-checked-against="">
+  <h2>5. Art Style</h2>
+
+  <h3>Rendering Style</h3>
+  <p class="placeholder">[Realistic / Stylized / Pixel / Cel-shaded / etc.]</p>
+  <div class="tile-row">
+    <figure class="style-tile">
+      <div class="media-slot ratio-1-1">[reference]</div>
+      <figcaption class="caption"><strong class="placeholder">[Style A]</strong><span class="placeholder">[why it fits]</span></figcaption>
+    </figure>
+    <figure class="style-tile">
+      <div class="media-slot ratio-1-1">[reference]</div>
+      <figcaption class="caption"><strong class="placeholder">[Style B]</strong><span class="placeholder">[contrast / rejected]</span></figcaption>
+    </figure>
+  </div>
+
+  <h3>Proportions</h3>
+  <p class="placeholder">[Character proportions, environment scale, UI scale relationships.]</p>
+  <svg class="diagram" viewBox="0 -15 400 150" role="img" aria-label="Scale comparison diagram: character vs environment">
+    <line x1="0" y1="110" x2="400" y2="110" class="stroke"/>
+    <!-- Character silhouette -->
+    <rect x="40" y="60" width="20" height="50" class="fill-primary"/>
+    <circle cx="50" cy="50" r="10" class="fill-primary"/>
+    <text x="50" y="125" class="label" text-anchor="middle">character</text>
+    <!-- Environment silhouette -->
+    <rect x="160" y="20" width="80" height="90" class="fill-muted"/>
+    <polygon points="160,20 200,0 240,20" class="fill-muted"/>
+    <text x="200" y="125" class="label" text-anchor="middle">building</text>
+    <!-- Landmark -->
+    <rect x="300" y="-10" width="60" height="120" class="fill-muted"/>
+    <text x="330" y="125" class="label" text-anchor="middle">landmark</text>
+  </svg>
+
+  <h3>Level of Detail</h3>
+  <p class="placeholder">[How detailed are characters, environments, UI?]</p>
+  <div class="tile-row">
+    <figure class="style-tile">
+      <div class="media-slot ratio-1-1">[near LOD]</div>
+      <figcaption class="caption"><strong>Near</strong><span class="placeholder">[detail target]</span></figcaption>
+    </figure>
+    <figure class="style-tile">
+      <div class="media-slot ratio-1-1">[mid LOD]</div>
+      <figcaption class="caption"><strong>Mid</strong><span class="placeholder">[detail target]</span></figcaption>
+    </figure>
+    <figure class="style-tile">
+      <div class="media-slot ratio-1-1">[far LOD]</div>
+      <figcaption class="caption"><strong>Far</strong><span class="placeholder">[detail target]</span></figcaption>
+    </figure>
+  </div>
+
+  <h3>Visual Hierarchy</h3>
+  <p class="placeholder">[How to guide player's eye. What is always most prominent.]</p>
+  <svg class="diagram" viewBox="0 0 400 160" role="img" aria-label="Focal-point diagram">
+    <rect x="0" y="0" width="400" height="160" class="fill-muted" opacity="0.3"/>
+    <circle cx="200" cy="80" r="32" class="fill-primary"/>
+    <circle cx="200" cy="80" r="60" fill="none" class="stroke" stroke-dasharray="3 3"/>
+    <text x="200" y="84" class="label-fg" text-anchor="middle">focal</text>
+    <text x="40" y="140" class="label">supporting</text>
+    <text x="320" y="30" class="label">supporting</text>
+  </svg>
+</section>
+
+<section id="characters" data-agent="art-director" data-depends-on="self#identity|self#style|self#palette" data-checked-at="" data-checked-against="">
+  <h2>6. Character Art Standards</h2>
+  <p class="placeholder">[Silhouette, color coding, animation style, proportions.]</p>
+
+  <h3>Silhouette Test</h3>
+  <p class="meta">Each archetype must be unambiguous at thumbnail scale, filled with a single color.</p>
+  <svg class="diagram" viewBox="0 0 400 130" role="img" aria-label="Silhouette test row">
+    <g class="fill-primary">
+      <ellipse cx="50" cy="40" rx="14" ry="16"/>
+      <rect x="36" y="56" width="28" height="40"/>
+      <rect x="34" y="96" width="12" height="20"/>
+      <rect x="54" y="96" width="12" height="20"/>
+    </g>
+    <text x="50" y="116" class="label" text-anchor="middle">player</text>
+
+    <g class="fill-muted">
+      <polygon points="150,24 170,56 130,56"/>
+      <rect x="130" y="56" width="40" height="40"/>
+      <rect x="130" y="96" width="14" height="20"/>
+      <rect x="156" y="96" width="14" height="20"/>
+    </g>
+    <text x="150" y="116" class="label" text-anchor="middle">enemy</text>
+
+    <g class="fill-muted">
+      <circle cx="250" cy="40" r="16"/>
+      <rect x="234" y="56" width="32" height="34"/>
+      <rect x="234" y="90" width="14" height="26"/>
+      <rect x="252" y="90" width="14" height="26"/>
+    </g>
+    <text x="250" y="116" class="label" text-anchor="middle">NPC</text>
+
+    <g class="fill-muted">
+      <ellipse cx="350" cy="50" rx="20" ry="22"/>
+      <rect x="332" y="70" width="36" height="34"/>
+      <rect x="332" y="104" width="12" height="12"/>
+      <rect x="356" y="104" width="12" height="12"/>
+    </g>
+    <text x="350" y="116" class="label" text-anchor="middle">boss</text>
+  </svg>
+
+  <h3>Color Coding per Archetype</h3>
+  <div class="combo-grid">
+    <div class="combo-tile" style="--combo-bg: var(--colors-primary); --combo-fg: var(--colors-bg);">Player<small>{colors.primary}</small></div>
+    <div class="combo-tile" style="--combo-bg: var(--colors-danger); --combo-fg: var(--colors-bg);">Enemy<small>{colors.danger}</small></div>
+    <div class="combo-tile" style="--combo-bg: var(--colors-success); --combo-fg: var(--colors-bg);">Ally / NPC<small>{colors.success}</small></div>
+    <div class="combo-tile" style="--combo-bg: var(--colors-warning); --combo-fg: var(--colors-fg);">Neutral / hostile-on-aggro<small>{colors.warning}</small></div>
+  </div>
+
+  <h3>Animation Style Reference</h3>
+  <div class="tile-row">
+    <figure class="style-tile">
+      <div class="media-slot ratio-1-1">[idle pose]</div>
+      <figcaption class="caption"><strong>Idle</strong><span class="placeholder">[stance, weight]</span></figcaption>
+    </figure>
+    <figure class="style-tile">
+      <div class="media-slot ratio-1-1">[locomotion]</div>
+      <figcaption class="caption"><strong>Locomotion</strong><span class="placeholder">[gait notes]</span></figcaption>
+    </figure>
+    <figure class="style-tile">
+      <div class="media-slot ratio-1-1">[action]</div>
+      <figcaption class="caption"><strong>Action</strong><span class="placeholder">[anticipation rule]</span></figcaption>
+    </figure>
+  </div>
+</section>
+
+<section id="environments" data-agent="art-director" data-depends-on="self#identity|self#style|self#palette" data-checked-at="" data-checked-against="">
+  <h2>7. Environment Art Standards</h2>
+  <p class="placeholder">[Tilesets, modularity, lighting, atmospheric effects, scale.]</p>
+
+  <h3>Tileset / Modular Kit Preview</h3>
+  <div class="tileset-grid">
+    <div class="media-slot">[tile]</div><div class="media-slot">[tile]</div><div class="media-slot">[tile]</div><div class="media-slot">[tile]</div>
+    <div class="media-slot">[tile]</div><div class="media-slot">[tile]</div><div class="media-slot">[tile]</div><div class="media-slot">[tile]</div>
+    <div class="media-slot">[tile]</div><div class="media-slot">[tile]</div><div class="media-slot">[tile]</div><div class="media-slot">[tile]</div>
+    <div class="media-slot">[tile]</div><div class="media-slot">[tile]</div><div class="media-slot">[tile]</div><div class="media-slot">[tile]</div>
+  </div>
+
+  <h3>Lighting Moods per Biome / Time-of-Day</h3>
+  <div class="tile-row">
+    <figure class="style-tile">
+      <div class="media-slot ratio-16-9">[dawn]</div>
+      <figcaption class="caption"><strong>Dawn</strong><span class="placeholder">[temp / contrast]</span></figcaption>
+    </figure>
+    <figure class="style-tile">
+      <div class="media-slot ratio-16-9">[noon]</div>
+      <figcaption class="caption"><strong>Noon</strong><span class="placeholder">[temp / contrast]</span></figcaption>
+    </figure>
+    <figure class="style-tile">
+      <div class="media-slot ratio-16-9">[night]</div>
+      <figcaption class="caption"><strong>Night</strong><span class="placeholder">[temp / contrast]</span></figcaption>
+    </figure>
+  </div>
+
+  <h3>Scale Reference</h3>
+  <svg class="diagram" viewBox="0 0 400 160" role="img" aria-label="Character-to-environment scale reference">
+    <line x1="0" y1="130" x2="400" y2="130" class="stroke"/>
+    <rect x="20" y="100" width="10" height="30" class="fill-primary"/>
+    <text x="25" y="145" class="label" text-anchor="middle">1×</text>
+    <rect x="80" y="70" width="30" height="60" class="fill-muted"/>
+    <text x="95" y="145" class="label" text-anchor="middle">small prop</text>
+    <rect x="160" y="40" width="60" height="90" class="fill-muted"/>
+    <text x="190" y="145" class="label" text-anchor="middle">building</text>
+    <rect x="280" y="0" width="100" height="130" class="fill-muted"/>
+    <text x="330" y="145" class="label" text-anchor="middle">landmark</text>
+  </svg>
+
+  <h3>Modularity Rule</h3>
+  <p class="placeholder">[Grid size, snap rules, edge-piece policy.]</p>
+</section>
+
+<section id="ui" data-agent="art-director" data-consult="ux-designer" data-design-md="co-author" data-depends-on="design/art/DESIGN.md:colors,typography,spacing,rounded,components|design/gdd/hud-design.md" data-checked-at="" data-checked-against="">
+  <h2>8. UI Art Standards</h2>
+  <div class="callout">
+    All token values (color, typography, spacing, radii, component styles) live in
+    <code>design/art/DESIGN.md</code>. This section captures <strong>rationale and visual language</strong>.
+  </div>
+
+  <h3>Button Family Rationale</h3>
+  <p class="placeholder">[Why these button variants exist, what each communicates.]</p>
+  <div class="btn-row">
+    <span class="btn-preview btn-primary">Primary action</span>
+    <span class="btn-preview btn-secondary">Secondary</span>
+    <span class="btn-preview btn-destructive">Destructive</span>
+  </div>
+  <ul>
+    <li><code>{components.button-primary}</code> — <span class="placeholder">[purpose]</span></li>
+    <li><code>{components.button-secondary}</code> — <span class="placeholder">[purpose]</span></li>
+    <li><code>{components.button-destructive}</code> — <span class="placeholder">[purpose]</span></li>
+  </ul>
+
+  <h3>Typography Rationale</h3>
+  <p class="placeholder">[Why this type system. Hierarchy intent.]</p>
+  <div>
+    <div class="type-sample"><span class="token">{typography.h1}</span><span class="type-h1">Heading One</span></div>
+    <div class="type-sample"><span class="token">{typography.h2}</span><span class="type-h2">Heading Two</span></div>
+    <div class="type-sample"><span class="token">{typography.body-md}</span><span class="type-body-md">Body medium — the workhorse of running text in dialogs, tooltips, and descriptions.</span></div>
+    <div class="type-sample"><span class="token">{typography.body-sm}</span><span class="type-body-sm">Body small — secondary info, captions, metadata.</span></div>
+    <div class="type-sample"><span class="token">{typography.label-caps}</span><span class="type-label-caps">Label caps</span></div>
+  </div>
+
+  <h3>Spacing Rhythm Rationale</h3>
+  <p class="placeholder">[Spacing scale intent — density, breathing room, grouping logic.]</p>
+  <div class="spacing-stack">
+    <div></div><div class="sp-label">↕ {spacing.sm}</div>
+    <div class="sp-sm"></div><div class="sp-label">↕ {spacing.md}</div>
+    <div class="sp-md"></div><div class="sp-label">↕ {spacing.lg}</div>
+    <div class="sp-lg"></div>
+  </div>
+
+  <h3>Radii / Shape Language</h3>
+  <p class="placeholder">[Soft vs sharp. What corner radii communicate.]</p>
+  <div class="radii-row">
+    <div class="radii-sample r-sm">.sm</div>
+    <div class="radii-sample r-md">.md</div>
+    <div class="radii-sample r-lg">.lg</div>
+    <div class="radii-sample r-full">.full</div>
+  </div>
+
+  <h3>Iconography Style</h3>
+  <p class="placeholder">[Stroke weight, fill rules, grid. NOT in DESIGN.md scope — document here.]</p>
+  <div class="icon-grid">
+    <div class="media-slot">[icon]</div><div class="media-slot">[icon]</div><div class="media-slot">[icon]</div><div class="media-slot">[icon]</div>
+    <div class="media-slot">[icon]</div><div class="media-slot">[icon]</div><div class="media-slot">[icon]</div><div class="media-slot">[icon]</div>
+    <div class="media-slot">[icon]</div><div class="media-slot">[icon]</div><div class="media-slot">[icon]</div><div class="media-slot">[icon]</div>
+    <div class="media-slot">[icon]</div><div class="media-slot">[icon]</div><div class="media-slot">[icon]</div><div class="media-slot">[icon]</div>
+  </div>
+
+  <h3>HUD Density Principle</h3>
+  <p>From <code>design/gdd/hud-design.md § HUD Philosophy</code>: <span class="placeholder">[principle]</span></p>
+  <div class="hud-mock" aria-label="HUD zone layout mock">
+    <div class="hud-zone hud-tl">vitals</div>
+    <div class="hud-zone hud-tr">objective</div>
+    <div class="hud-zone hud-bl">abilities</div>
+    <div class="hud-zone hud-br">inventory / minimap</div>
+    <div class="hud-zone hud-center">reticle</div>
+  </div>
+</section>
+
+<section id="vfx" data-agent="art-director" data-depends-on="design/art/DESIGN.md:colors|self#palette" data-checked-at="" data-checked-against="">
+  <h2>9. VFX Standards</h2>
+  <p class="placeholder">[Particle style, screen effects, impact feedback, color coding.]</p>
+
+  <h3>Particle Style Reference</h3>
+  <div class="tile-row">
+    <figure class="style-tile">
+      <div class="media-slot ratio-1-1">[particle A]</div>
+      <figcaption class="caption"><strong class="placeholder">[Family A]</strong><span class="placeholder">[when]</span></figcaption>
+    </figure>
+    <figure class="style-tile">
+      <div class="media-slot ratio-1-1">[particle B]</div>
+      <figcaption class="caption"><strong class="placeholder">[Family B]</strong><span class="placeholder">[when]</span></figcaption>
+    </figure>
+    <figure class="style-tile">
+      <div class="media-slot ratio-1-1">[particle C]</div>
+      <figcaption class="caption"><strong class="placeholder">[Family C]</strong><span class="placeholder">[when]</span></figcaption>
+    </figure>
+  </div>
+
+  <h3>Screen Effect Before / After</h3>
+  <div class="before-after">
+    <figure>
+      <div class="lbl">Before (baseline)</div>
+      <div class="media-slot ratio-16-9">[baseline frame]</div>
+    </figure>
+    <figure>
+      <div class="lbl">After (effect active)</div>
+      <div class="media-slot ratio-16-9">[effect frame]</div>
+    </figure>
+  </div>
+
+  <h3>Impact Feedback Frame Sequence</h3>
+  <div class="tile-row">
+    <figure class="style-tile"><div class="media-slot ratio-1-1">[anticipation]</div><figcaption class="caption"><strong>0–2 fr</strong></figcaption></figure>
+    <figure class="style-tile"><div class="media-slot ratio-1-1">[hit]</div><figcaption class="caption"><strong>3–5 fr</strong></figcaption></figure>
+    <figure class="style-tile"><div class="media-slot ratio-1-1">[settle]</div><figcaption class="caption"><strong>6–12 fr</strong></figcaption></figure>
+  </div>
+
+  <h3>VFX Color Coding</h3>
+  <p class="meta">Color carries meaning — every VFX family is tied to a semantic token.</p>
+  <div class="vfx-codes">
+    <div class="vfx-code"><span class="chip" style="--chip-color: var(--colors-success);"></span><strong>Heal / buff</strong> — <code>{colors.success}</code></div>
+    <div class="vfx-code"><span class="chip" style="--chip-color: var(--colors-danger);"></span><strong>Damage / debuff</strong> — <code>{colors.danger}</code></div>
+    <div class="vfx-code"><span class="chip" style="--chip-color: var(--colors-warning);"></span><strong>Warning / telegraph</strong> — <code>{colors.warning}</code></div>
+    <div class="vfx-code"><span class="chip" style="--chip-color: var(--colors-primary);"></span><strong>Player-action confirm</strong> — <code>{colors.primary}</code></div>
+  </div>
+</section>
+
+<section id="production" data-agent="art-director" data-consult="technical-artist" data-depends-on=".ags/rules/technical-preferences.md" data-checked-at="" data-checked-against="">
+  <h2>10. Asset Production Standards</h2>
+
+  <h3>Naming Convention</h3>
+  <div class="filename-anatomy">
+    <span data-label="category">char</span>
+    <span data-label="separator">_</span>
+    <span data-label="name">knight</span>
+    <span data-label="separator">_</span>
+    <span data-label="variant">idle</span>
+    <span data-label="separator">_</span>
+    <span data-label="size">1024</span>
+    <span data-label="extension">.png</span>
+  </div>
+  <p>Pattern: <code>[category]_[name]_[variant]_[size].[ext]</code></p>
+
+  <h3>Texture Standards</h3>
+  <table>
+    <thead>
+      <tr><th>Category</th><th>Max Resolution</th><th>Format</th><th>Color Space</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Characters</td><td class="placeholder">[Size]</td><td class="placeholder">[Format]</td><td class="placeholder">[Space]</td></tr>
+      <tr><td>Environments</td><td class="placeholder">[Size]</td><td class="placeholder">[Format]</td><td class="placeholder">[Space]</td></tr>
+      <tr><td>UI</td><td class="placeholder">[Size]</td><td class="placeholder">[Format]</td><td class="placeholder">[Space]</td></tr>
+      <tr><td>VFX</td><td class="placeholder">[Size]</td><td class="placeholder">[Format]</td><td class="placeholder">[Space]</td></tr>
+    </tbody>
+  </table>
+
+  <h4>Visual size comparison</h4>
+  <div class="tex-size-bar" aria-label="Texture resolution tier visual comparison">
+    <div class="bar b-2048">2048</div>
+    <div class="bar b-1024">1024</div>
+    <div class="bar b-512">512</div>
+    <div class="bar b-256">256</div>
+  </div>
+
+  <h3>Animation Standards</h3>
+  <p class="placeholder">[Frame rates, blend times, animation graph structure.]</p>
+  <svg class="timing-diagram diagram" viewBox="0 0 480 80" role="img" aria-label="Animation timing diagram">
+    <line x1="20" y1="60" x2="460" y2="60" class="stroke"/>
+    <rect x="20" y="40" width="120" height="20" class="fill-muted"/>
+    <text x="80" y="34" class="label" text-anchor="middle">anticipation</text>
+    <rect x="140" y="30" width="60" height="30" class="fill-primary"/>
+    <text x="170" y="24" class="label-fg" text-anchor="middle">action</text>
+    <rect x="200" y="40" width="260" height="20" class="fill-muted"/>
+    <text x="330" y="34" class="label" text-anchor="middle">recovery / blend out</text>
+    <text x="20" y="76" class="label">0 fr</text>
+    <text x="460" y="76" class="label" text-anchor="end">end</text>
+  </svg>
+</section>
+
+<section id="accessibility" data-agent="ux-designer" data-depends-on="design/art/DESIGN.md:colors|design/accessibility-requirements.md|self#palette" data-checked-at="" data-checked-against="">
+  <h2>11. Accessibility</h2>
+  <ul>
+    <li>Colorblind-safe UI required</li>
+    <li>Min text size: <span class="placeholder">[X]</span>px at 1080p</li>
+    <li>High contrast mode specs: <span class="placeholder">[describe]</span></li>
+    <li>Icon + color (never color alone) for game state</li>
+  </ul>
+
+  <h3>Colorblind Palette Test</h3>
+  <p class="meta">Each semantic color must be distinguishable from the others under all three simulation modes. Failing pairs MUST be backed by shape, icon, or pattern cues.</p>
+  <div class="cb-grid">
+    <div></div><div class="h">Normal</div><div class="h">Protanopia (sim)</div><div class="h">Deuteranopia (sim)</div>
+    <div class="row-label"><code>{colors.success}</code></div>
+    <div class="cb-swatch" style="background: var(--colors-success);"></div>
+    <div class="cb-swatch" style="background: var(--colors-success); filter: hue-rotate(60deg) saturate(0.6);"></div>
+    <div class="cb-swatch" style="background: var(--colors-success); filter: hue-rotate(40deg) saturate(0.5);"></div>
+    <div class="row-label"><code>{colors.danger}</code></div>
+    <div class="cb-swatch" style="background: var(--colors-danger);"></div>
+    <div class="cb-swatch" style="background: var(--colors-danger); filter: hue-rotate(60deg) saturate(0.6);"></div>
+    <div class="cb-swatch" style="background: var(--colors-danger); filter: hue-rotate(40deg) saturate(0.5);"></div>
+    <div class="row-label"><code>{colors.warning}</code></div>
+    <div class="cb-swatch" style="background: var(--colors-warning);"></div>
+    <div class="cb-swatch" style="background: var(--colors-warning); filter: hue-rotate(60deg) saturate(0.6);"></div>
+    <div class="cb-swatch" style="background: var(--colors-warning); filter: hue-rotate(40deg) saturate(0.5);"></div>
+  </div>
+  <p class="meta">Filter-based simulation is approximate. Final verification uses dedicated colorblind sim tools at certification time.</p>
+
+  <h3>Contrast Verification</h3>
+  <p class="meta">Foreground / background pairs at body-md size. WCAG AA target: 4.5:1.</p>
+  <div class="contrast-row">
+    <div class="contrast-sample ok">
+      <strong>Sample — passes</strong>
+      <div><span class="placeholder">[token pair]</span></div>
+    </div>
+    <div class="contrast-sample bad">
+      <strong>Sample — fails</strong>
+      <div><span class="placeholder">[token pair]</span></div>
+    </div>
+  </div>
+
+  <h3>Icon + Color Pairing (never color alone)</h3>
+  <p class="meta">Every game state cue MUST combine shape/icon with color. Color-only cues are forbidden.</p>
+  <div>
+    <span class="cue-pair" style="--cue-bg: var(--colors-success); --cue-fg: var(--colors-bg);">
+      <svg viewBox="0 0 16 16"><polyline points="3,8 7,12 13,4" fill="none" stroke="currentColor" stroke-width="2"/></svg>
+      Healed
+    </span>
+    <span class="cue-pair" style="--cue-bg: var(--colors-danger); --cue-fg: var(--colors-bg);">
+      <svg viewBox="0 0 16 16"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="2"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="2"/></svg>
+      Damaged
+    </span>
+    <span class="cue-pair" style="--cue-bg: var(--colors-warning); --cue-fg: var(--colors-fg);">
+      <svg viewBox="0 0 16 16"><polygon points="8,2 14,14 2,14" fill="none" stroke="currentColor" stroke-width="2"/><line x1="8" y1="6" x2="8" y2="10" stroke="currentColor" stroke-width="2"/></svg>
+      Warning
+    </span>
+  </div>
+</section>
+
+</article>
+</div>
+</body>
+</html>

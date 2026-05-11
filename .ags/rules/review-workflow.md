@@ -142,7 +142,7 @@ Every doc-review skill (architecture-review, design-review, review-all-gdds, ux-
 | ADR (`design/architecture/adr-*.md`) | (1) front-matter `status:` present + valid; (2) `**GDD source**:` line present + cited GDD `status: approved` (or explicit `Foundational — no GDD requirement`); (3) does NOT redefine concept rules from cited GDD (drift risk — must reference, not copy); (4) cited GDD section anchors resolve. |
 | UX-spec (`design/ux/<screen>.md`, not `hud.md`) | (1) front-matter `status:` present + valid; (2) cited GDD `status: approved`; (3) no mechanic-rule duplication from GDD; (4) no raw color/typography/spacing literals — only `{tokens}` from DESIGN.md. |
 | HUD-spec (`design/ux/hud.md`) | (1) front-matter `status:` present + valid; (2) cited UX-spec(s) AND `design/art/DESIGN.md` `status: approved`; (3) no raw visual literals; (4) no mechanic-rule duplication. |
-| art-bible (`design/art/art-bible.md`) | (1) front-matter `status:` present + valid; (2) Section 6 (UI Visual Language) cites DESIGN.md tokens, no raw values; (3) `design/art/DESIGN.md` `status: approved`. |
+| art-bible (`design/art/ags-art-bible.html`) | (1) `<meta name="status">` present + valid; (2) Section 8 (UI Art Standards) cites DESIGN.md tokens, no raw values; (3) `design/art/DESIGN.md` `status: approved`. |
 | DESIGN.md (`design/art/DESIGN.md`) | (1) front-matter `status:` present + valid; (2) lint passes (`npx @google/design.md lint` errors=0). |
 | game-concept, engine doc | front-matter `status:` present + valid. |
 

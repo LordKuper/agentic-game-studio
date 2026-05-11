@@ -1,260 +1,220 @@
-﻿---
+---
 name: ags-art-bible
 description: "Guided, section-by-section Art Bible authoring. Creates the visual identity specification that gates all asset production. Run after /ags-brainstorm is approved and before /ags-map-systems or any GDD authoring begins."
 argument-hint: "[no arguments]"
 user-invocable: true
-allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
+allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion, Bash
+---
+
+## Source of Truth
+
+**Template is SSoT.** Skill does NOT enumerate sections, agents, or modes — it parses `.ags/templates/t_art-bible.html` at runtime and derives the work plan from it. Editing the template (adding a section, changing an agent assignment, marking a section status-only) propagates to skill behavior with no skill edits required.
+
+Output file: `design/art/ags-art-bible.html`.
+
+### Template contract (the skill relies on these conventions)
+
+Each authored block is `<section id="..." [data-*]>`:
+
+| Attribute | Purpose | Default |
+|---|---|---|
+| `id` | Stable identifier for the section | required |
+| `<h2>` (first child) | Display heading | required |
+| `data-agent` | Primary agent to spawn for drafting | `art-director` |
+| `data-consult` | Comma-separated agents spawned in parallel for cross-domain check | none |
+| `data-mode` | `creative` (draft via agent) or `status` (system-recorded, no creative draft) | `creative` |
+| `data-design-md` | `co-author` (skill must co-author DESIGN.md entries before approval) or `lint-required` (re-run lint before approval) | none |
+| `data-depends-on` | `\|`-separated list of upstream sources this section reads. Each entry: `<path>` (full file), `<path>:<scope>` (namespace inside DESIGN.md, e.g. `colors,components`), `<path>#<section-id>` (specific section), or `self#<section-id>` (sibling section in same art-bible) | none |
+| `data-checked-at` | ISO date (YYYY-MM-DD) — when the section was last validated against its `data-depends-on` sources | empty |
+| `data-checked-against` | `\|`-separated git blob hashes (one per `data-depends-on` entry, same order) — snapshot of upstream content at last validation | empty |
+
+Document-level status uses `<meta name="status" content="draft|approved">` and `<meta name="approved-at" content="YYYY-MM-DD">` in `<head>`. See `.ags/rules/document-boundaries.md`.
+
 ---
 
 ## Phase 0: Parse Arguments and Context Check
 
-Read `design/gdd/game-concept.md`. If it does not exist, fail with:
+Read `design/gdd/game-concept.md`. If missing, fail:
 > "No game concept found. Run `/ags-brainstorm` first — the art bible is authored after the game concept is approved."
 
-Extract from game-concept.md:
+Extract from `game-concept.md`:
 - Game title (working title)
 - Core fantasy and elevator pitch
 - Game pillars (all of them)
-- **Visual Identity Anchor** section if present (from brainstorm Phase 4 art-director output)
+- **Visual Identity Anchor** if present (from brainstorm Phase 4 art-director output)
 - Target platform (if noted)
 
-**Retrofit mode detection**: Glob `design/art/ags-art-bible.md`. If the file exists:
-- Read it in full
-- For each of the 9 sections, check whether the body contains real content (more than a `[To be designed]` placeholder or similar) vs. is empty/placeholder
-- Build a section status table:
+**Read template** `.ags/templates/t_art-bible.html`. Parse every `<section ...>` block. For each, extract:
+- `id`
+- `<h2>` text (display heading)
+- `data-agent` (default `art-director`)
+- `data-consult` (split on comma, trim; default empty)
+- `data-mode` (default `creative`)
+- `data-design-md` (default none)
+- Full inner HTML (becomes the placeholder skeleton the section is built from)
 
-```
-Section | Status
---------|--------
-1. Visual Identity Statement | [Complete / Empty / Placeholder]
-2. Color Palette | ...
-3. Lighting & Atmosphere | ...
-4. Character Art Direction | ...
-5. Environment & Level Art | ...
-6. UI Visual Language | ...
-7. VFX & Particle Style | ...
-8. Asset Standards | ...
-9. Style Prohibitions | ...
-```
+This list IS the work plan. Skill iterates it. Skill MUST NOT inject sections not present in template, skip sections present in template, or reorder them.
 
-- Present this table to the user:
-  > "Found existing art bible at `design/art/ags-art-bible.md`. [N] sections are complete, [M] need content. I'll work on the incomplete sections only — existing content will not be touched."
-- Only work on sections with Status: Empty or Placeholder. Do not re-author sections that are already complete.
+**Retrofit mode detection**: Glob `design/art/ags-art-bible.html`. If exists:
+- Read in full
+- For each `<section id>` from the template plan, locate same id in existing file
+- Decide status: `Complete` (body contains real content, no `.placeholder` / `[bracketed]` stubs left) or `Empty/Placeholder`
+- Present table to user listing every template section + status:
+  > "Found existing art bible at `design/art/ags-art-bible.html`. [N] sections complete, [M] need content. I'll work on incomplete sections only — existing content will not be touched."
+- Sections not appearing in existing file: treat as new, author them.
+- Sections appearing in existing file but no longer in template: surface as warning ("legacy section, no longer in template — keep / remove?") via `AskUserQuestion`. Do not silently drop.
 
-If the file does not exist, this is a fresh authoring session — proceed normally.
+If file does not exist, fresh authoring session — proceed.
 
-Read `.ags/rules/technical-preferences.md` if it exists — extract performance budgets and engine for asset standard constraints.
+Read `.ags/rules/technical-preferences.md` if exists — extract performance budgets and engine for technical constraints.
 
-Read `.ags/rules/design-system.md` — DESIGN.md (https://github.com/google-labs-code/design.md) is the canonical token format. Token-bearing sections of the art bible (Color Palette, UI Visual Language, anything with hex / typography / spacing values) reference `design/art/DESIGN.md` rather than duplicating values.
+Read `.ags/rules/design-system.md` — DESIGN.md is canonical token format.
 
 Glob `design/art/DESIGN.md`:
-- If exists — read it, extract token names, present summary to user.
-- If absent — flag: a DESIGN.md companion file MUST be authored alongside the bible. Co-author it during Sections 2 (Color Palette) and 6 (UI Visual Language). After authoring, run `npx @google/design.md lint design/art/DESIGN.md` and report errors=0 before declaring those sections complete.
+- If exists — read, extract token names, summary to user.
+- If absent — flag: DESIGN.md MUST be authored alongside bible. Co-authoring happens automatically when iterating through sections with `data-design-md="co-author"`.
 
 ---
 
 ## Phase 1: Framing
 
-Present the session context and ask two questions before authoring anything:
-
 Use `AskUserQuestion` with two tabs:
 - Tab **"Scope"** — "Which sections need to be authored today?"
-  Options: `Full bible — all 9 sections` / `Visual identity core (sections 1–4 only)` / `Asset standards only (section 8)` / `Resume — fill in missing sections`
-- Tab **"References"** — "Do you have reference games, films, or art that define the visual direction?"
-  (Free text — let the user type specific titles. Do NOT preset options here.)
+  Build options dynamically from parsed template — e.g. `Full bible — all [N] sections` / `Resume — fill in missing sections` / `Custom — pick sections`
+- Tab **"References"** — "Do you have reference games, films, or art that define visual direction?" (free text)
 
-If the game-concept.md has a Visual Identity Anchor section, note it:
-> "Found a visual identity anchor from brainstorm: '[anchor name] — [one-line rule]'. I'll use this as the foundation for the art bible."
+If `game-concept.md` has Visual Identity Anchor:
+> "Found a visual identity anchor from brainstorm: '[anchor name] — [one-line rule]'. I'll use this as foundation."
 
----
-
-## Phase 2: Visual Identity Foundation (Sections 1–4)
-
-Core visual language — all other sections flow from these four. Author and write each to file before moving to next.
-
-### Section 1: Visual Identity Statement
-
-**Goal**: A one-line visual rule plus 2–3 supporting principles that resolve visual ambiguity.
-
-If a visual anchor exists from game-concept.md: present it and ask:
-- "Build directly from this anchor?"
-- "Revise it before expanding?"
-- "Start fresh with new options?"
-
-**Agent delegation (MANDATORY)**: Spawn `art-director` via Task:
-- Provide: game concept (elevator pitch, core fantasy), full pillar set, platform target, any reference games/art from Phase 1 framing, the visual anchor if it exists
-- Ask: "Draft a Visual Identity Statement for this game. Provide: (1) a one-line visual rule that could resolve any visual decision ambiguity, (2) 2–3 supporting visual principles, each with a one-sentence design test ('when X is ambiguous, this principle says choose Y'). Anchor all principles directly in the stated pillars — each principle must serve a specific pillar."
-
-Present the art-director's draft to the user. Use `AskUserQuestion`:
-- Options: `[A] Lock this in` / `[B] Revise the one-liner` / `[C] Revise a supporting principle` / `[D] Describe my own direction`
-
-Write the approved section to file immediately.
-
-### Section 2: Mood & Atmosphere
-
-**Goal**: Emotional targets by game state — specific enough for a lighting artist to work from.
-
-For each major game state (e.g., exploration, combat, victory, defeat, menus — adapt to this game's states), define:
-- Primary emotion/mood target
-- Lighting character (time of day, color temperature, contrast level)
-- Atmospheric descriptors (3–5 adjectives)
-- Energy level (frenetic / measured / contemplative / etc.)
-
-**Agent delegation**: Spawn `art-director` via Task with the Visual Identity Statement and pillar set. Ask: "Define mood and atmosphere targets for each major game state in this game. Be specific — 'dark and foreboding' is not enough. Name the exact emotional target, the lighting character (warm/cool, high/low contrast, time of day direction), and at least one visual element that carries the mood. Each game state must feel visually distinct from the others."
-
-Write the approved section to file immediately.
-
-### Section 3: Shape Language
-
-**Goal**: The geometric vocabulary that makes this game's world visually coherent and distinguishable.
-
-Cover:
-- Character silhouette philosophy (how readable at thumbnail size? Distinguishing trait per archetype?)
-- Environment geometry (angular/curved/organic/geometric — which dominates and why?)
-- UI shape grammar (does UI echo the world aesthetic, or is it a distinct HUD language?)
-- Hero shapes vs. supporting shapes (what draws the eye, what recedes?)
-
-**Agent delegation**: Spawn `art-director` via Task with Visual Identity Statement and mood targets. Ask: "Define the shape language for this game. Connect each shape principle back to the visual identity statement and a specific game pillar. Explain what these shape choices communicate to the player emotionally."
-
-Write the approved section to file immediately.
-
-### Section 4: Color System
-
-**Goal**: A complete, producible palette system that serves both aesthetic and communication needs.
-
-Cover:
-- Primary palette (5–7 colors with roles — not just hex codes, but what each color means in this world)
-- Semantic color usage (what does red communicate? Gold? Blue? White? Establish the color vocabulary)
-- Per-biome or per-area color temperature rules (if the game has distinct areas)
-- UI palette (may differ from world palette — define the divergence explicitly)
-- Colorblind safety: which semantic colors need shape/icon/sound backup
-
-**Agent delegation**: Spawn `art-director` via Task with Visual Identity Statement and mood targets. Ask: "Design the color system for this game. Every semantic color assignment must be explained — why does this color mean danger/safety/reward in this world? Identify which color pairs might fail colorblind players and specify what backup cues are needed."
-
-Write the approved section to file immediately.
+**Initialize output file** (if not retrofit): Copy `.ags/templates/t_art-bible.html` to `design/art/ags-art-bible.html`. Replace `<h1>` placeholder with game title. Set `<meta name="last-updated">` to today. Keep `<meta name="status" content="draft">`.
 
 ---
 
-## Phase 3: Production Guides (Sections 5–8)
+## Phase 2: Section Iteration Loop
 
-Translate visual identity into concrete production rules. Specific enough for outsourcing team without additional briefing.
+Iterate over parsed sections in template order. Skip sections excluded by user scope (Phase 1) and sections marked Complete in retrofit mode.
 
-### Section 5: Character Design Direction
+For each section, run the protocol matching its `data-mode`:
 
-**Agent delegation**: Spawn `art-director` via Task with sections 1–4. Ask: "Define character design direction for this game. Cover: visual archetype for the player character (if any), distinguishing feature rules per character type (how do players tell enemies/NPCs/allies apart at a glance?), expression/pose style targets (stiff/expressive/realistic/exaggerated), and LOD philosophy (how much detail is preserved at game camera distance?)."
+### Mode: `creative` (default)
 
-Write the approved section to file.
+1. **Brief**: prepare context for the section. Always include:
+   - Game concept (elevator pitch, fantasy, pillars, platform)
+   - Visual identity anchor (if exists)
+   - All previously approved sections (so each new section can anchor in prior decisions)
+   - Section heading + section's current placeholder body from template (the placeholder text describes intent of the section — treat it as the spec)
+   - References gathered in Phase 1
+   - Cited governance docs (e.g. `.ags/rules/technical-preferences.md` for technical constraints)
 
-### Section 6: Environment Design Language
+2. **Agent spawn**:
+   - Primary: spawn `data-agent` via Task with brief. Ask: "Draft the section titled '[heading]'. Use the placeholder body as guidance for what this section must cover. Anchor in stated pillars and prior sections. Do not invent sub-structure beyond what the placeholder body shows."
+   - Consult: if `data-consult` non-empty, spawn each listed agent in **parallel** (single message, multiple Task calls). Each consult agent gets same brief + role-specific question (e.g. ux-designer: "Does the proposed art direction support readability/accessibility for the interaction patterns this game requires? Flag conflicts."; technical-artist: "Are any proposed art preferences in conflict with the engine constraints in `.ags/rules/technical-preferences.md`?").
+   - If primary and consults conflict, surface BOTH positions explicitly via `AskUserQuestion`. Do NOT silently resolve.
 
-**Agent delegation**: Spawn `art-director` via Task with sections 1–4. Ask: "Define the environment design language for this game. Cover: architectural style and its relationship to the world's culture/history, texture philosophy (painted vs. PBR vs. stylized — why this choice for this game?), prop density rules (sparse/dense — what drives the choice per area type?), and environmental storytelling guidelines (what visual details should tell the story without text?)."
+3. **DESIGN.md co-authoring** (only if `data-design-md="co-author"`):
+   - Identify token references (`{colors.*}`, `{typography.*}`, `{spacing.*}`, `{rounded.*}`, `{components.*}`) the section cites
+   - For each missing token, co-author entry in `design/art/DESIGN.md` (prompt user for values, write to DESIGN.md front-matter)
+   - Run `npx @google/design.md lint design/art/DESIGN.md` — must return errors=0 before section approval
 
-Write the approved section to file.
+4. **Approval**: present draft via `AskUserQuestion`:
+   - Options: `[A] Lock in` / `[B] Revise` / `[C] Describe my own direction`
 
-### Section 7: UI/HUD Visual Direction
+5. **Write to file**: replace the entire `<section id="X">…</section>` block in `design/art/ags-art-bible.html` with the approved content. **Preserve outer markup** (the `<section>` opening tag with its `id` and `data-*` attrs, the `<h2>` heading, sub-section `<h3>` structure where the placeholder defines it). Replace only `.placeholder` spans and stub cells with approved content.
 
-**Agent delegation**: Spawn in parallel:
-- **`art-director`**: Visual style for UI — diegetic vs. screen-space HUD, typography direction (font personality, weight, size hierarchy), iconography style (flat/outlined/illustrated/photorealistic), animation feel for UI elements
-- **`ux-designer`**: UX alignment check — does the visual direction support the interaction patterns this game requires? Flag any conflicts between art direction and readability/accessibility needs.
+6. **Stamp provenance** (mandatory on every section approval, including retrofit re-approval):
+   - Resolve each entry in `data-depends-on` to a file path. For `<path>:<scope>` entries, the file is `<path>` (scope is informational — hash whole file). For `<path>#<section>` entries, the file is `<path>`. For `self#<id>` entries, the file is the art-bible itself (`design/art/ags-art-bible.html`).
+   - For each resolved path, compute git blob hash via Bash: `git hash-object <path>` (works even on uncommitted files). If file is outside git, fall back to `sha256sum <path>` and prefix with `sha256:`.
+   - Set `data-checked-at` on the `<section>` tag to today's date (YYYY-MM-DD).
+   - Set `data-checked-against` to `|`-separated list of hashes (same order as `data-depends-on` entries).
+   - This is non-creative book-keeping — no user prompt; happens automatically after the user approves the section content.
 
-Collect both. If they conflict (e.g., art-director wants elaborate diegetic UI but ux-designer flags it would reduce combat readability), surface the conflict explicitly with both positions. Do NOT silently resolve — use `AskUserQuestion` to let the user decide.
+### Mode: `status`
 
-Write the approved section to file.
+System-recorded section, no creative draft. Skill fills it from observed project state:
 
-### Section 8: Asset Standards
-
-**Agent delegation**: Spawn in parallel:
-- **`art-director`**: File format preferences, naming convention direction, texture resolution tiers, LOD level expectations, export settings philosophy
-- **`technical-artist`**: Engine-specific hard constraints — poly count budgets per asset category, texture memory limits, material slot counts, importer constraints, anything from the performance budgets in `.ags/rules/technical-preferences.md`
-
-If any art preference conflicts with a technical constraint (e.g., art-director wants 4K textures but performance budget requires 2K for mobile), resolve the conflict explicitly — note both the ideal and the constrained standard, and explain the tradeoff. Ambiguity in asset standards is where production costs are born.
-
-Write the approved section to file.
+- If `data-design-md="lint-required"`: run `npx @google/design.md lint design/art/DESIGN.md`. Record date + errors + warnings count into the section's status fields (look for `<dt>Last lint:</dt>` or analogous slot in the section's placeholder body). If errors > 0, abort the section and surface the lint output — fix DESIGN.md before retry.
+- Fill any other observable fields the section's placeholder body declares (file paths, lint timestamps, etc.).
+- No user `AskUserQuestion` approval — section is purely factual. Write directly after fields populated.
 
 ---
 
-## Phase 4: Reference Direction (Section 9)
+## Phase 3: Internal Review Loop (Art Director Sign-Off)
 
-**Goal**: A curated reference set that is specific about what to take and what to avoid from each source.
+After all in-scope sections complete, spawn `creative-director` via Task using gate **AD-ART-BIBLE** (`.ags/rules/director-gates.md`).
 
-**Agent delegation**: Spawn `art-director` via Task with the completed sections 1–8. Ask: "Compile a reference direction for this game. Provide 3–5 reference sources (games, films, art styles, or specific artists). For each: name it, specify exactly what visual element to draw from it (not 'the general aesthetic' — a specific technique, color choice, or compositional rule), and specify what to explicitly avoid or diverge from (to prevent the 'trying to copy X' reading). References should be additive — no two references should be pointing in exactly the same direction."
+Pass: art bible file path (`design/art/ags-art-bible.html`), game pillars, visual identity anchor.
 
-Write the approved section to file.
+**Loop exit condition**: single iteration where reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected sections (re-run Phase 2 protocol on those sections), re-spawn same gate. No iteration cap.
 
----
-
-## Phase 5: Internal Review Loop (Art Director Sign-Off)
-
-After all sections are complete (or the scoped set from Phase 1 is complete), spawn `creative-director` via Task using gate **AD-ART-BIBLE** (`.ags/rules/director-gates.md`).
-
-Pass: art bible file path, game pillars, visual identity anchor.
-
-**Loop exit condition.** Single iteration where the reviewer returns clean (no critical/high/medium findings). Non-clean → user revises affected sections (re-write to file as in Collaborative Protocol), re-spawn the same gate. No iteration cap.
-
-Record iteration count and final verdict in the art bible's status header:
-`> **Art Director Sign-Off (AD-ART-BIBLE)**: APPROVED [date] / CONCERNS (accepted) [date] / REVISED [date] | Iterations: [N]`
+Record iteration count and final verdict in art bible by appending to `<header class="doc-header">`:
+```html
+<p class="meta"><strong>Art Director Sign-Off (AD-ART-BIBLE)</strong>: APPROVED [date] / CONCERNS (accepted) [date] / REVISED [date] | Iterations: [N]</p>
+```
 
 ---
 
 ## Combined Review Loop (parallel external Codex)
 
-Per `.ags/rules/review-workflow.md`. The internal review section above runs **in parallel** with external Codex inside one loop. Each iteration:
+Per `.ags/rules/review-workflow.md`. Internal review runs **in parallel** with external Codex inside one loop. Each iteration:
 
-1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
-2. Persist current draft to `.ags/project/reviews/.tmp/[type]-[slug]-iter[N]-draft.md`.
+1. Resolve severity floor: iter 1-2 → all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/[type]-[slug]-iter[N]-draft.html`.
 3. **Spawn in one message, in parallel** (multiple Task calls + one Bash invocation):
-   - All internal reviewer Tasks listed above.
-   - `/ags-external-review [type] [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
-4. Aggregator (`producer` by default; skill-designated lead where the skill specifies one) merges findings from internal + external, drops nitpicks + below-floor.
-5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
+   - Internal reviewer Task (creative-director, gate AD-ART-BIBLE).
+   - `/ags-external-review art-bible [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in `decisions-log` and continues with internal pool only.
+4. Aggregator (`art-director`) merges findings, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → write approval. Non-empty → surface kept findings, user revises affected sections, N++, repeat.
 
-No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count for the decisions-log entry written at skill completion.
+No iteration cap. No user-confirm gate before external. Record final iteration count for `decisions-log` entry written at skill completion.
 
 ---
 
-## Phase 6: Close
+## Phase 4: Approval and Close
+
+On final approval:
+1. Set `<meta name="status" content="approved">` in `<head>`.
+2. Set `<meta name="approved-at" content="YYYY-MM-DD">` to today.
+3. Swap `<span class="badge badge-draft">Draft</span>` for `<span class="badge badge-approved">Approved</span>`.
+4. Append decision entry to `.ags/project/decisions-log.md`.
 
 Before presenting next steps, check project state:
-- Does `design/gdd/systems-index.md` exist? → map-systems is done, skip that option
-- Does `.ags/rules/technical-preferences.md` contain a configured engine (not `[TO BE CONFIGURED]`)? → setup-engine is done, skip that option
-- Does `design/gdd/` contain any `*.md` files? → design-system has been run, skip that option
-- Does `design/gdd/gdd-cross-review-*.md` exist? → review-all-gdds is done
-- Do GDDs exist (check above)? → include /ags-consistency-check option
+- Does `design/gdd/systems-index.md` exist? → map-systems done
+- Does `.ags/rules/technical-preferences.md` contain configured engine? → setup-engine done
+- Does `design/gdd/` contain any `*.md`? → design-system has run
+- Does `design/gdd/gdd-cross-review-*.md` exist? → review-all-gdds done
 
-Use `AskUserQuestion` for next steps. Only include options that are genuinely next based on the state check above:
+Use `AskUserQuestion` for next steps. Only include options genuinely next:
 
-**Option pool — include only if not already done:**
-- `[_] Run /ags-map-systems — decompose the concept into systems before writing GDDs` (skip if systems-index.md exists)
-- `[_] Run /ags-setup-engine — configure the engine (asset standards may need revisiting after engine is set)` (skip if engine configured)
-- `[_] Run /ags-design-system — start the first GDD` (skip if any GDDs exist)
-- `[_] Run /ags-review-all-gdds — cross-GDD consistency check (required before Technical Setup gate)` (skip if gdd-cross-review-*.md exists)
-- `[_] Run /ags-asset-spec — generate per-asset visual specs and AI generation prompts from approved GDDs` (include if GDDs exist)
-- `[_] Run /ags-consistency-check — scan existing GDDs against the art bible for visual direction conflicts` (include if GDDs exist)
-- `[_] Run /ags-create-architecture — author the master architecture document (next Technical Setup step)`
+- `[_] /ags-map-systems — decompose concept into systems before writing GDDs` (skip if systems-index.md exists)
+- `[_] /ags-setup-engine — configure engine (asset standards may need revisiting)` (skip if engine configured)
+- `[_] /ags-design-system — start the first GDD` (skip if any GDDs exist)
+- `[_] /ags-review-all-gdds — cross-GDD consistency check` (skip if gdd-cross-review-*.md exists)
+- `[_] /ags-asset-spec — generate per-asset visual specs from approved GDDs` (include if GDDs exist)
+- `[_] /ags-consistency-check — scan GDDs against art bible` (include if GDDs exist)
+- `[_] /ags-create-architecture — author master architecture document`
 - `[_] Stop here`
 
-Assign letters A, B, C… only to the options actually included. Mark the most logical pipeline-advancing option as `(recommended)`.
-
-> **Always include** `/ags-create-architecture` and Stop here as options — these are always valid next steps once the art bible is complete.
+Assign letters A, B, C… only to included options. Mark most logical pipeline-advancing option as `(recommended)`. Always include `/ags-create-architecture` and Stop here.
 
 ---
 
 ## Collaborative Protocol
 
-Every section: **Question → Options → Decision → Draft (from art-director agent) → Approval → Write to file**
+Every `creative`-mode section: **Brief → Agent draft (with consults in parallel) → Conflict surfacing → Approval → Write to file**
 
-- Never draft section without spawning relevant agent(s)
+- Never draft section without spawning `data-agent` (and `data-consult` if specified)
 - Write each section to file immediately after approval — do not batch
-- Surface agent disagreements — never silently resolve conflicts between art-director and technical-artist
-- Art bible is a constraint document: restricts future decisions in exchange for visual coherence. Every section narrows solution space productively.
+- Surface agent disagreements — never silently resolve
+- Art bible is a constraint document: restricts future decisions in exchange for visual coherence
+- **HTML editing rule**: when replacing a section, preserve the outer `<section ... data-*>` tag attributes verbatim — they are the contract between template and skill.
 
 ---
 
 ## Recommended Next Steps
 
 After art bible approved:
-- `/ags-map-systems` — decompose concept into game systems before authoring GDDs
-- `/ags-setup-engine` — if engine not yet configured (asset standards may need revisiting)
-- `/ags-design-system [first-system]` — start authoring per-system GDDs
-- `/ags-consistency-check` — validate GDDs against art bible once GDDs exist
+- `/ags-map-systems` — decompose concept into game systems
+- `/ags-setup-engine` — if engine not yet configured
+- `/ags-design-system [first-system]` — start per-system GDDs
+- `/ags-consistency-check` — validate GDDs against art bible
 - `/ags-create-architecture` — produce master architecture document

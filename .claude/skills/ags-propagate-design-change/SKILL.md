@@ -1,7 +1,7 @@
 ﻿---
 name: ags-propagate-design-change
-description: "When a GDD is revised, scans all ADRs and the traceability index to identify which architectural decisions are now potentially stale. Produces a change impact report and guides the user through resolution."
-argument-hint: "[path/to/changed-gdd.md]"
+description: "When an upstream design document is revised (GDD, DESIGN.md, accessibility-requirements, technical-preferences), scans downstream artifacts (ADRs, art-bible sections, traceability index) to identify what is now potentially stale. Produces a change impact report and guides resolution."
+argument-hint: "[path/to/changed-doc]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash, Task
 agent: technical-director
@@ -9,10 +9,17 @@ agent: technical-director
 
 # Propagate Design Change
 
-When GDD changes, ADRs written against it may be invalid. Finds every affected
-ADR, compares ADR assumptions against current GDD, guides user through resolution.
+When an upstream design document changes, downstream artifacts written against it may be invalid. Finds every affected downstream (ADRs, art-bible sections), compares assumptions against current upstream, guides user through resolution.
 
-**Usage:** `/ags-propagate-design-change design/gdd/combat-system.md`
+**Accepted upstream document kinds** (auto-detected from argument path):
+- `design/gdd/<system>.md` → ADR impact analysis (Phase 5). Also triggers art-bible scan (Phase 5b) if any art-bible section depends on this GDD.
+- `design/art/DESIGN.md` → art-bible scan (Phase 5b). Also surfaces UX/HUD-spec token references (Phase 5c).
+- `design/accessibility-requirements.md` → art-bible Accessibility section + UX-spec scan (Phase 5b).
+- `.ags/rules/technical-preferences.md` → art-bible Production section + ADR feasibility (Phases 5 + 5b).
+
+**Usage:**
+- `/ags-propagate-design-change design/gdd/combat-system.md`
+- `/ags-propagate-design-change design/art/DESIGN.md`
 
 ---
 
@@ -20,22 +27,36 @@ ADR, compares ADR assumptions against current GDD, guides user through resolutio
 
 | Artifact | Created by | If missing |
 |---|---|---|
-| Changed GDD path argument | user | STOP. "Usage: `/ags-propagate-design-change <path-to-changed-gdd>`." |
-| `design/architecture/architecture.md` | `/ags-create-architecture` | STOP. "No architecture doc. Run `/ags-create-architecture`." |
+| Changed upstream doc path argument | user | STOP. "Usage: `/ags-propagate-design-change <path-to-changed-doc>`." |
+| `design/architecture/architecture.md` (only required when changed doc is a GDD) | `/ags-create-architecture` | If changed doc is non-GDD (DESIGN.md / accessibility / technical-preferences), skip architecture-related phases; continue with art-bible scan. If changed doc IS a GDD: STOP. "No architecture doc. Run `/ags-create-architecture`." |
+| `design/art/ags-art-bible.html` (only required when changed doc has art-bible deps) | `/ags-art-bible` | If absent, skip Phase 5b silently. |
 | `.ags/project/epics/index.md` | `/ags-create-epics` | WARN: cannot map change to epics. |
 
 If STOP triggers, exit verdict **BLOCKED**.
 
 ---
 
-## 1. Validate Argument
+## 1. Validate Argument and Classify Upstream Kind
 
-A GDD path argument is **required**. If missing, fail with:
-> "Usage: `/ags-propagate-design-change design/gdd/[system].md`
-> Provide the path to the GDD that was changed."
+A path argument is **required**. If missing, fail with:
+> "Usage: `/ags-propagate-design-change <path-to-changed-doc>`
+> Accepted: GDD under design/gdd/, design/art/DESIGN.md, design/accessibility-requirements.md, .ags/rules/technical-preferences.md."
 
-Verify the file exists. If not, fail with:
+Verify file exists. If not, fail with:
 > "[path] not found. Check the path and try again."
+
+**Classify** the path into a kind that drives which downstream phases run:
+
+| Path pattern | Kind | Downstream phases |
+|---|---|---|
+| `design/gdd/*.md` (excluding `game-concept.md`, `systems-index.md`, `game-pillars.md`) | `gdd` | 3, 4, 5 (ADR impact), 5b (art-bible scan) |
+| `design/art/DESIGN.md` | `design-md` | 5b (art-bible scan), 5c (UX/HUD-spec token scan) |
+| `design/accessibility-requirements.md` | `accessibility` | 5b (art-bible accessibility + UX-spec) |
+| `.ags/rules/technical-preferences.md` | `tech-prefs` | 5 (ADR feasibility), 5b (art-bible production) |
+| `design/gdd/game-concept.md` | `concept` | 5b (art-bible identity + references + style) |
+| Other | reject | STOP. "Unsupported upstream type." |
+
+Set `$KIND` for use in later phases. Skip Phases 3 and 4 if `$KIND ≠ gdd|concept` — git diff against ADR-relevant fields makes no sense for non-GDD upstream. Skip Phase 5 (ADR impact) if `$KIND ∉ {gdd, tech-prefs}`.
 
 ---
 
@@ -149,6 +170,55 @@ Recommended action:
 
 ---
 
+## 5b. Art-bible Impact Analysis
+
+Runs when `$KIND ∈ {gdd, design-md, accessibility, tech-prefs, concept}` and `design/art/ags-art-bible.html` exists.
+
+1. Read `design/art/ags-art-bible.html`. Parse every `<section ... data-depends-on="..." data-checked-against="...">`.
+2. For each section, parse `data-depends-on` on `|`. Locate entries whose path matches the changed upstream:
+   - Exact path match — section depends on this file directly
+   - `<changed-path>:<scope>` — section depends on a scope namespace inside the changed file (treat as match)
+   - `<changed-path>#<section>` — section depends on a sub-section of the changed file (treat as match)
+3. For each matched section:
+   - Compute current `git hash-object <changed-path>` and compare against the section's stored hash for that dep entry
+   - Hash matches → ✅ STILL VALID (provenance already matches current upstream — section was re-stamped after the change)
+   - Hash differs → 🟠 STALE — section needs re-review
+   - Missing `data-checked-against` → 🟡 PROVENANCE-MISSING — section authored before provenance system
+4. **Token-reference impact** (`$KIND = design-md` only):
+   - Grep changed DESIGN.md against its previous git version: `git diff HEAD -- design/art/DESIGN.md`
+   - Extract added / removed / renamed tokens
+   - For each removed/renamed token: grep art-bible for `\{<token-path>\}` references → **🔴 BROKEN REFERENCE** for every hit
+   - For added tokens: surface as informational (art-bible may want to cite the new token)
+
+Produce per-section impact entry:
+
+```
+### Art-bible section: <section-id> (<heading>)
+Status: STILL VALID | STALE | PROVENANCE-MISSING | BROKEN REFERENCE
+Depends-on entry matched: <upstream-path>[:scope|#anchor]
+Stored hash: <hash> | Current hash: <hash>
+Recommended action:
+  STILL VALID → no action
+  STALE → run `/ags-art-bible` retrofit on this section to re-review and restamp
+  PROVENANCE-MISSING → run `/ags-art-bible` retrofit to stamp (no content change needed if section is still accurate)
+  BROKEN REFERENCE → fix token references at: <art-bible:line numbers>
+```
+
+Append all entries to the impact report (Phase 6).
+
+## 5c. UX/HUD-spec Token Scan
+
+Runs when `$KIND = design-md`. Coarse pass — UX/HUD specs do not have data-depends-on; rely on token references in body.
+
+1. Glob `design/ux/*.md`.
+2. For each file, grep `\{(colors|typography|spacing|rounded|components)\.[a-z0-9-]+\}`.
+3. For each token cited that was removed/renamed in DESIGN.md → **🔴 BROKEN REFERENCE** (file:line:token).
+4. Surface in impact report under "UX/HUD-spec Token Impact".
+
+No automated provenance restamp here — these specs do not carry hashes. User-driven fix.
+
+---
+
 ## 6. Present Impact Report
 
 Present the full impact report to the user before asking for any action. Format:
@@ -241,13 +311,15 @@ If user declined: Verdict: **BLOCKED** — user declined write.
 
 ## 10. Follow-Up Actions
 
-Based on the resolution decisions, suggest:
+Based on resolution decisions, suggest:
 
 - **ADRs marked Superseded**: "Run `/ags-architecture-decision [title]` to write the
   replacement ADR. Then re-run `/ags-propagate-design-change` to verify coverage."
 - **ADRs to update in place**: List the specific fields to update in each ADR
-- **If many ADRs affected**: "Run `/ags-architecture-review` after all ADRs are updated
-  to verify the full traceability matrix is still coherent."
+- **Art-bible sections marked STALE**: "Run `/ags-art-bible` in retrofit mode — skill detects out-of-date sections from `data-checked-against` mismatch and re-runs the authoring loop for each. Provenance is re-stamped automatically on re-approval."
+- **Art-bible BROKEN REFERENCE**: "Fix token citations at flagged lines. Run `/ags-consistency-check` afterwards to confirm MISSING TOKEN findings clear."
+- **UX/HUD-spec BROKEN REFERENCE**: "Edit the cited specs to use the renamed token (or remove if dropped). No skill auto-fixes — manual edit."
+- **If many downstreams affected**: "Run `/ags-architecture-review` after all ADRs updated to verify traceability matrix coherent. Run `/ags-consistency-check` to verify art-bible token references clean."
 
 ---
 

@@ -90,7 +90,7 @@ Component property whitelist: `backgroundColor`, `textColor`, `typography`, `rou
 
 ## Cross-references
 
-- Art bible — `t_art-bible.md`
+- Art bible — `t_art-bible.html`
 - UX spec — `t_ux-spec.md`
 - HUD design — `t_hud-design.md`
 - Interaction patterns — `t_interaction-patterns.md`

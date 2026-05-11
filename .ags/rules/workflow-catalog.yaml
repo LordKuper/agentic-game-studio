@@ -61,8 +61,8 @@ phases:
         command: /ags-art-bible
         required: true
         artifact:
-          glob: "design/art/ags-art-bible.md"
-        description: "Visual identity specification (9 sections). Uses Visual Identity Anchor from /ags-brainstorm"
+          glob: "design/art/ags-art-bible.html"
+        description: "Visual identity specification (11 sections, HTML). Uses Visual Identity Anchor from /ags-brainstorm"
 
       - id: map-systems
         name: "Systems Map"

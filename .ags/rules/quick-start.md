@@ -145,7 +145,7 @@ Templates in `.ags/templates/`:
 - `t_milestone.md` — for new milestones (groups of epics)
 - `t_level-design.md` — for new levels
 - `t_game-pillars.md` — for core design pillars
-- `t_art-bible.md` — for visual style reference
+- `t_art-bible.html` — for visual style reference
 - `t_tech-design.md` — for per-system technical designs
 - `t_post-mortem.md` — for project/milestone retrospectives
 - `t_sound-bible.md` — for audio style reference

@@ -517,7 +517,7 @@ Agent: `art-director` | Model tier: Sonnet | Domain: Visual identity, art bible,
 **Trigger**: After art bible drafted (`/ags-art-bible`), before asset production begins
 
 **Context to pass**:
-- Art bible path (`design/art/ags-art-bible.md`)
+- Art bible path (`design/art/ags-art-bible.html`)
 - Game pillars and core fantasy
 - Platform and performance constraints (from `.ags/rules/technical-preferences.md` if configured)
 - Visual identity anchor chosen during brainstorm (from `design/gdd/game-concept.md`)
@@ -545,7 +545,7 @@ Agent: `art-director` | Model tier: Sonnet | Domain: Visual identity, art bible,
 - Target phase name
 - All art/visual artifacts present (file paths)
 - Visual identity anchor from `design/gdd/game-concept.md` (if present)
-- Art bible path if exists (`design/art/ags-art-bible.md`)
+- Art bible path if exists (`design/art/ags-art-bible.html`)
 
 **Prompt**:
 > "Review the current project state for [target phase] gate readiness from a visual
@@ -683,7 +683,7 @@ Invoked by orchestration skills and senior skills when domain specialist's feasi
 **Trigger**: After art direction decisions made, when new asset types introduced, or when tech art decision affects visual style
 
 **Context to pass**:
-- Art bible path (if exists at `design/ags-art-bible.md`)
+- Art bible path (if exists at `design/art/ags-art-bible.html`)
 - Specific asset type, style decision, or visual direction being reviewed
 - Reference images or style descriptions
 - Platform and performance constraints
