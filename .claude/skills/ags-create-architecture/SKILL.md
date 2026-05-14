@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-create-architecture
 description: "Author the master architecture document. Run as skeleton in Foundation phase (top-level layers, module boundaries, tech stack — no detailed ADRs yet); refresh in Production as ADRs accumulate per epic. Engine-version-aware: flags knowledge gaps and validates decisions against the pinned engine version."
 argument-hint: "[focus-area: full | layers | data-flow | api-boundaries | adr-audit]"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash, AskUserQuestion, Task
 agent: technical-director
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Create Architecture
 

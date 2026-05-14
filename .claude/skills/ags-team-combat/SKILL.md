@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-team-combat
 description: "Orchestrate the combat team: coordinates game-designer, gameplay-programmer, ai-programmer, technical-artist, audio-director, and qa-lead to design, implement, and validate a combat feature end-to-end."
 argument-hint: "[combat feature description]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 **Argument check:** If no combat feature description is provided, output:
 > "Usage: `/ags-team-combat [combat feature description]` — Provide a description of the combat feature to design and implement (e.g., `melee parry system`, `ranged weapon spread`)."
 Then stop immediately without spawning any subagents or reading any files.

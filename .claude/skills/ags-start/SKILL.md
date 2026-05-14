@@ -25,7 +25,7 @@ One active session at a time. No slugs, no archive, no pointer files. New task o
 
 Direct-write files (no extra "May I write?"):
 
-- `.ags/project/p_user-interaction.md` — only if placeholders remain
+- `.ags/project/user-interaction.md` — only if placeholders remain
 - `design/gdd/engine.md` — from `.ags/templates/t_engine.md`
 - `design/gdd/game-concept.md` — from `.ags/templates/t_concept.md` (skeleton only)
 - `.ags/project/state.md` — skeleton on new session, or overwritten on reset
@@ -40,7 +40,7 @@ No output. Gather context. Each check produces a boolean signal that drives rout
 
 Verify each:
 
-- **User-interaction configured?** Read `.ags/project/p_user-interaction.md`. Flag `not configured` if `{{...}}` placeholders remain or file absent.
+- **User-interaction configured?** Read `.ags/project/user-interaction.md`. Flag `not configured` if `{{...}}` placeholders remain or file absent.
 - **Engine configured?** Flag `not configured` if `design/gdd/engine.md` missing or contains `{{...}}`.
 - **Concept exists?** Flag `not configured` if `design/gdd/game-concept.md` missing or contains `{{pitch}}`.
 - **state.md status?** Read `.ags/project/state.md`. Record: file absent | clean (all sections empty) | unfinished (current task non-empty, or any `- [ ]`, or files in progress, or open questions).
@@ -56,11 +56,11 @@ Store all signals internally. Do NOT show unprompted.
 
 ## Phase 2: User-interaction bootstrap
 
-If `.ags/project/p_user-interaction.md` has `{{...}}`, follow `.ags/rules/user-interaction.md`:
+If `.ags/project/user-interaction.md` has `{{...}}`, follow `.ags/rules/user-interaction.md`:
 
 1. Read `.ags/templates/t_user-interaction.md`.
 2. One question per template field via `AskUserQuestion`.
-3. Write filled file to `.ags/project/p_user-interaction.md`. Bootstrap rule = direct directive, no separate approval.
+3. Write filled file to `.ags/project/user-interaction.md`. Bootstrap rule = direct directive, no separate approval.
 4. From now follow created file rules (language, etc.).
 
 No placeholders → skip to Phase 2.5.

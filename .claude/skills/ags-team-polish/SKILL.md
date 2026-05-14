@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-team-polish
 description: "Orchestrate the polish team: coordinates performance-analyst, technical-artist, audio-director, and qa-lead to optimize, polish, and harden a feature or area for release quality."
 argument-hint: "[feature or area to polish]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 If no argument is provided, output usage guidance and exit without spawning any agents:
 > Usage: `/ags-team-polish [feature or area]` — specify the feature or area to polish (e.g., `combat`, `main menu`, `inventory system`, `level-1`). Do not use `AskUserQuestion` here; output the guidance directly.
 

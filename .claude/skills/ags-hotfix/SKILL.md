@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion
 ---
 
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
+
 > **Explicit invocation only**: Run only on `/ags-hotfix`. No auto-invoke.
 
 ## Phase 0: Prerequisites

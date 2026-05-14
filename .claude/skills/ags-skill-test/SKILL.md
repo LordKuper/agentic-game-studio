@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 ---
 
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
+
 # Skill Test
 
 Validates `.claude/skills/*/SKILL.md` for structural compliance + behavioral correctness. No external deps.

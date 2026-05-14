@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-team-qa
 description: "Orchestrate the QA team through a full testing cycle. Coordinates qa-lead (strategy + test plan) and qa-lead (test case writing + bug reporting) to produce a complete QA package for a sprint or feature. Covers: test plan generation, test case writing, smoke check gate, manual QA execution, and sign-off report."
 argument-hint: "[sprint | feature: system-name]"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 agent: qa-lead
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 When this skill is invoked, orchestrate the QA team through a structured testing cycle.
 

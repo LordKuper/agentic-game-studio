@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 agent: producer
 ---
 
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
+
 When this skill is invoked:
 
 Parse the argument:
@@ -213,3 +215,18 @@ After audit, recommend highest-value follow-up actions:
 - `--summary` used → `/ags-content-audit` (no flag) to write full report to `docs/`.
 
 Verdict: **COMPLETE** — content audit finished.
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Audit phases run **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (producer + game-designer).
+   - For each GDD whose content counts under-deliver: `/ags-external-review gdd [gdd-path] --embedded-parallel --iteration [N] --min-severity [floor]`. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+3. Aggregator (`producer`) merges findings from internal + Codex, drops nitpicks + below-floor.
+4. **Loop exit**: filtered set empty → emit final verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source GDDs, NOT this content-audit report.

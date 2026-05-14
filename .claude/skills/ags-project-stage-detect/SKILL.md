@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-project-stage-detect
 description: "Automatically analyze project state, detect stage, identify gaps, and recommend next steps based on existing artifacts. Use when user asks 'where are we in development', 'what stage are we in', 'full project audit'."
 argument-hint: "[optional: role filter like 'programmer' or 'designer']"
@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Bash, Write, AskUserQuestion
 model: haiku
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Project Stage Detection
 

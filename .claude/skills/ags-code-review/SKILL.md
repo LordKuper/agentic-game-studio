@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-code-review
 description: "Performs an architectural and quality code review on a specified file or set of files. Checks for coding standard compliance, architectural pattern adherence, SOLID principles, testability, and performance concerns."
 argument-hint: "[path-to-file-or-directory]"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Task, AskUserQuestion
 agent: lead-programmer
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 ## Phase 0: Prerequisites
 
@@ -185,3 +187,18 @@ This skill is read-only — no files are written.
 - If verdict is APPROVED: run `/ags-story-done [story-path]` to close the story.
 - If verdict is CHANGES REQUIRED: fix the issues and re-run `/ags-code-review`.
 - If an ARCHITECTURAL VIOLATION is found: run `/ags-architecture-decision` to record the correct approach.
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. The review phases run **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (lead-programmer + relevant specialists).
+   - `/ags-external-review code [diff-path-or-branch] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex reviews the diff. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+3. Aggregator (`lead-programmer`) merges findings from internal + Codex, drops nitpicks + below-floor.
+4. **Loop exit**: filtered set empty → emit final verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source diff, NOT this review report.

@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-story-done
 description: "End-of-story completion review. Reads the story file, verifies each acceptance criterion against the implementation, checks for GDD/ADR deviations, prompts code review, updates story status to Complete, and surfaces the next ready story from the sprint."
 argument-hint: "[story-file-path]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Edit, AskUserQuestion, Task
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Story Done
 

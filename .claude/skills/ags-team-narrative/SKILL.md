@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-team-narrative
 description: "Orchestrate the narrative team: coordinates narrative-director, narrative-director, narrative-director, and game-designer to create cohesive story content, world lore, and narrative-driven level design."
 argument-hint: "[narrative content description]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion, TodoWrite
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 If no argument is provided, output usage guidance and exit without spawning any agents:
 > Usage: `/ags-team-narrative [narrative content description]` — describe the story content, scene, or narrative area to work on (e.g., `boss encounter cutscene`, `faction intro dialogue`, `tutorial narrative`). Do not use `AskUserQuestion` here; output the guidance directly.
 

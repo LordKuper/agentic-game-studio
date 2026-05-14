@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 agent: technical-director
 ---
 
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
+
 # Adopt — Brownfield Template Adoption
 
 Audit existing artifacts for **format compliance** with template skill pipeline. Produce prioritised migration plan.

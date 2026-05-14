@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-review-all-gdds
 description: "Holistic cross-GDD consistency and game design review. Reads all system GDDs simultaneously and checks for contradictions between them, stale references, ownership conflicts, formula incompatibilities, and game design theory violations (dominant strategies, economic imbalance, cognitive overload, pillar drift). Run after all MVP GDDs are written, before architecture begins."
 argument-hint: "[focus: full | consistency | design-theory | since-last-review]"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash, AskUserQuestion, Task
 model: opus
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Review All GDDs
 
@@ -645,3 +647,18 @@ If any spawned agent returns BLOCKED, errors, or fails to complete:
 4. **Don't make design decisions** — flag contradictions and options; never decide which GDD is "right"
 5. **Ask before writing** — confirm before writing report or updating systems index
 6. **Be specific** — every issue must cite exact GDD, section, and text; no vague warnings
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. The cross-GDD analysis runs **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (specialists + game-designer gate).
+   - For each in-scope GDD: `/ags-external-review gdd [gdd-path] --embedded-parallel --iteration [N] --min-severity [floor]`. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+3. Aggregator (`game-designer`) merges findings from internal + Codex, drops nitpicks + below-floor.
+4. **Loop exit**: filtered set empty → emit final cross-GDD verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source GDDs, NOT this review report.

@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-release-checklist
 description: "Generates a comprehensive pre-release validation checklist covering build verification, certification requirements, store metadata, and launch readiness."
 argument-hint: "[platform: pc|console|mobile|all]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 > **Explicit invocation only**: This skill should only run when the user explicitly requests it with `/ags-release-checklist`. Do not auto-invoke based on context matching.
 

@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-dev-story
 description: "Read a story file and implement it. Loads the full context (story, GDD requirement, ADR guidelines, control manifest), routes to the right programmer agent for the system and engine, implements the code and test, and confirms each acceptance criterion. The core implementation skill — run after /ags-story-readiness, before /ags-code-review and /ags-story-done."
 argument-hint: "[story-path]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash, Task, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Dev Story
 

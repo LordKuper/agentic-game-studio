@@ -1,24 +1,22 @@
 ---
 name: ags-external-review
-description: "Run external Codex CLI review on a target artifact (ADR, epic, code diff, GDD, concept, art-bible, design-system, ux, systems-index, control-manifest, story, contracts, qa-plan, asset-spec, localize, release-checklist, security). Claude re-classifies findings by severity; high+ blocks workflow until fixed and re-reviewed. Reports written to .ags/project/reviews/."
-argument-hint: "[type: adr|epic|code|gdd|concept|art-bible|design-system|ux|systems-index|control-manifest|story|contracts|qa-plan|asset-spec|localize|release-checklist|security|custom] [target-path or identifier] [--iteration N] [--min-severity critical|high|medium|low] [--embedded | --embedded-parallel]"
-user-invocable: true
+description: "Internal-only: parallel Codex CLI reviewer invoked by authoring and review-verdict skills inside their Combined Review Loop. Not user-invocable. Returns structured findings JSON to the caller's aggregator; no verdict, no block. Codex unavailable returns {skipped: codex-unavailable}; loop continues with internal pool only."
+argument-hint: "[type: adr|epic|code|gdd|concept|art-bible|design-system|ux|systems-index|control-manifest|story|contracts|qa-plan|asset-spec|localize|release-checklist|security|custom] [target-path or identifier] [--iteration N] [--min-severity critical|high|medium|low] --embedded-parallel"
+user-invocable: false
 allowed-tools: Read, Glob, Grep, Bash, Write, Edit, AskUserQuestion
 ---
 
-# External Review (Codex)
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
-Independent second opinion via the `codex` CLI. Three invocation modes:
+# External Review (Codex) — parallel reviewer
 
-- **Standalone** — user runs `/ags-external-review`, full verdict + dialog.
-- **`--embedded`** — called from a standalone gate (`/ags-gate-check epic-done|release`). Returns `EXTERNAL-REVIEW: PASS|CONCERNS|BLOCK — [report]` verdict line. Caller treats BLOCK as gate FAIL.
-- **`--embedded-parallel`** — called by a generator skill from inside its combined review loop, in parallel with internal reviewers. Returns structured findings JSON `{kept: [...], dropped: [...], skipped: null|"codex-unavailable"}`. **No verdict, no block** — the skill's aggregator decides.
+Independent second opinion via the `codex` CLI. **Parallel-only**: spawned by authoring and review-verdict skills inside their Combined Review Loop, alongside internal reviewers. Returns structured findings to caller's aggregator — no verdict, no block, no user dialog.
 
 **Why this exists:** internal review is biased by the authoring context. An external tool with no session history catches issues an in-context reviewer normalises away.
 
-**Severity policy:** Codex returns findings with its own severity labels. Claude **re-classifies** every finding using the rubric in Phase 4 — Codex labels are advisory, not authoritative. In standalone / `--embedded` modes, findings re-classified `critical` or `high` are **blocking**. In `--embedded-parallel`, this skill returns findings without blocking — caller aggregator applies its own severity floor.
+**Severity policy:** Codex returns findings with its own severity labels. Claude **re-classifies** every finding using the rubric in Phase 4 — Codex labels are advisory. This skill returns the re-classified findings; caller aggregator applies its own severity floor.
 
-**No-nitpick rule:** This skill always paste the Reviewer Guidance block from `.ags/rules/director-gates.md` § Reviewer Guidance into the Codex prompt. Substantive findings only. See `.ags/rules/review-workflow.md`.
+**No-nitpick rule:** Reviewer Guidance block from `.ags/rules/director-gates.md` § Reviewer Guidance is pasted into the Codex prompt. Substantive findings only. See `.ags/rules/review-workflow.md`.
 
 **Document Boundary Check:** For doc-review types (ADR, GDD, concept, art-bible, design-system, UX, systems-index, control-manifest), the prompt also includes the Boundary Addendum from `.ags/rules/review-workflow.md` § Document Boundary Check — Codex flags violations of `.ags/rules/document-boundaries.md` as `high`-severity substantive findings.
 
@@ -28,11 +26,12 @@ Independent second opinion via the `codex` CLI. Three invocation modes:
 
 | Check | If missing |
 |---|---|
-| `codex` binary on PATH (run `command -v codex` via Bash) | Standalone / `--embedded`: STOP. "Codex CLI not found on PATH. Install Codex CLI before running external review." `--embedded-parallel`: do NOT stop — return immediately with `{kept: [], dropped: [], skipped: "codex-unavailable", report_path: null}` so caller logs skip and continues with internal pool only. |
-| Type argument is one of `adr|epic|code|gdd|concept|art-bible|design-system|ux|systems-index|control-manifest|story|contracts|qa-plan|asset-spec|localize|release-checklist|security|custom` | STOP. "Invalid type. Usage: `/ags-external-review adr design/architecture/adr-0001-event-system.md`." |
-| Target path/identifier provided (or resolvable from context for `epic`) | STOP. "No target. Provide path or identifier." |
-| Target file/dir exists (where applicable) | STOP. "Target `[X]` not found." |
-| Prompt template `.ags/templates/external-review/t_prompt-[type].md` exists (skip for `custom`) | STOP. "Prompt template missing for type `[type]`." |
+| `codex` binary on PATH (run `command -v codex` via Bash) | Return immediately with `{kept: [], dropped: [], skipped: "codex-unavailable", report_path: null}` so caller logs skip and continues with internal pool only. **Do NOT stop.** |
+| Type argument is one of `adr|epic|code|gdd|concept|art-bible|design-system|ux|systems-index|control-manifest|story|contracts|qa-plan|asset-spec|localize|release-checklist|security|custom` | Return error JSON `{kept: [], dropped: [], skipped: "invalid-type", report_path: null}`. |
+| Target path/identifier provided | Return error JSON `{kept: [], dropped: [], skipped: "no-target", report_path: null}`. |
+| Target file/dir exists (where applicable) | Return error JSON `{kept: [], dropped: [], skipped: "target-not-found", report_path: null}`. |
+| Prompt template `.ags/templates/external-review/t_prompt-[type].md` exists (skip for `custom`) | Return error JSON `{kept: [], dropped: [], skipped: "template-missing", report_path: null}`. |
+| `--embedded-parallel` flag present | Return error JSON `{kept: [], dropped: [], skipped: "user-invocation-not-allowed", report_path: null}`. This skill is internal-only. |
 
 ---
 
@@ -42,10 +41,9 @@ Parse arguments:
 
 - `$1` = type
 - `$2` = target (path or epic-slug)
-- `--iteration N` (optional, default 1)
-- `--min-severity [critical|high|medium|low]` (optional). Default derived from iteration when not passed: N≤2 → `low`; N=3..4 → `high`; N≥5 → `critical`. The Codex prompt is told to omit findings below this floor; Phase 4 still re-classifies and Phase 4b still drops.
-- `--embedded` — caller is a standalone gate. Returns verdict line `EXTERNAL-REVIEW: PASS|CONCERNS|BLOCK — [report-path]`.
-- `--embedded-parallel` — caller is a generator skill running this in parallel with internal reviewers. **No verdict, no block.** Returns structured JSON `{kept: [...findings...], dropped: [...], skipped: null|"codex-unavailable", report_path: [...]}`. Skip Phases 5-7 (no report write, no decisions-log entry, no verdict dialog) — caller's aggregator owns the dialog. Append the iteration to the report file in compressed form (one block under `## Iteration N (parallel)`) so the report still accumulates history; aggregator may amend or finalise it.
+- `--iteration N` (default 1)
+- `--min-severity [critical|high|medium|low]` — required from caller. If absent, derive from iteration: N≤2 → `low`; N=3..4 → `high`; N≥5 → `critical`. Codex prompt is told to omit findings below this floor; Phase 4 still re-classifies and Phase 4b still drops.
+- `--embedded-parallel` — mandatory mode flag.
 
 Determine **report path**:
 
@@ -64,16 +62,16 @@ Determine **report path**:
 - `ux` → UX doc basename without `.md` (e.g. `hud`, `inventory-flow`)
 - `systems-index` → `systems-index` (single artifact)
 - `control-manifest` → `control-manifest` (single artifact)
-- `story` → story basename without `.md` (e.g. `story-001-spawn-enemy`), prefix with epic slug if available: `[epic-slug]--[story]`
+- `story` → story basename without `.md`, prefix with epic slug if available: `[epic-slug]--[story]`
 - `contracts` → `[epic-slug]-contracts`
 - `qa-plan` → QA plan basename without `.md`
 - `asset-spec` → asset-spec basename without `.md`
 - `localize` → `localize` or locale-bundle basename
 - `release-checklist` → `release-[version]` or checklist basename
 - `security` → `release-[version]` or `security-[short-hash]`
-- `custom` → user-supplied via `AskUserQuestion`
+- `custom` → caller-supplied
 
-If report file already exists, this is a re-review iteration — read previous file, append a new `## Iteration N` section. Do not overwrite past iterations.
+If report file already exists, this is a re-review iteration — read previous file, append a new `## Iteration N (parallel)` section. Do not overwrite past iterations.
 
 ---
 
@@ -102,16 +100,16 @@ Read `.ags/templates/external-review/t_prompt-[type].md`. Substitute placeholder
   - `release-checklist` → target platforms with cert profiles, QA sign-off status, build pipeline, store metadata, prior changelog/patch-notes.
   - `code` → diff context (base branch), changed files list.
   - `security` → release branch / version tag, threat-model notes, dependency manifest.
-  - `custom` → user-supplied via `AskUserQuestion`.
-- `{{ITERATION}}` — iteration number; for N>1 also embed previous iteration's findings + user's fix notes
+  - `custom` → caller-supplied via the calling skill.
+- `{{ITERATION}}` — iteration number; for N>1 also embed previous iteration's findings + fix notes
 - `{{PRIOR_FINDINGS}}` — for N>1, the previous iteration's re-classified findings table; empty for N=1
 - `{{SEVERITY_FLOOR}}` — resolved severity floor (`critical` / `high` / `medium` / `low`)
 - `{{REVIEWER_GUIDANCE}}` — paste the Reviewer Guidance block from `.ags/rules/director-gates.md` § Reviewer Guidance verbatim, with `{{ITERATION}}` and `{{SEVERITY_FLOOR}}` substituted
 - `{{BOUNDARY_ADDENDUM}}` — for doc-review types (`adr`, `gdd`, `concept`, `art-bible`, `design-system`, `ux`, `systems-index`, `control-manifest`), paste the Reviewer prompt addendum from `.ags/rules/review-workflow.md` § Document Boundary Check. Skip for `code` / `security` / `release-checklist` / `qa-plan` / `asset-spec` / `localize` / `epic` / `story` / `contracts` / `custom`.
 
-For `custom`, ask user for prompt body and target context inline via `AskUserQuestion`.
+For `custom`, the calling skill supplies prompt body and target context.
 
-Write rendered prompt to `.ags/project/reviews/.tmp/[date]-[type]-[slug]-iter[N]-prompt.md` (gitignored — outside the published report).
+Write rendered prompt to `.ags/project/reviews/.tmp/[date]-[type]-[slug]-iter[N]-prompt.md` (gitignored).
 
 ---
 
@@ -127,10 +125,10 @@ If the `--format json` flag is not supported by the installed Codex version, fal
 
 Raw output to `.ags/project/reviews/.tmp/[date]-[type]-[slug]-iter[N]-raw.json` (or `.txt`).
 
-**Failure handling:**
-- Non-zero exit → STOP. Show stderr to user. Do not write report. Ask whether to retry or abort.
-- Empty output → STOP. "Codex returned no findings — check CLI auth/quota."
-- Timeout (>10 min) → STOP. Suggest splitting target.
+**Failure handling (no caller dialog):**
+- Non-zero exit → return `{kept: [], dropped: [], skipped: "codex-error", report_path: null, error: "[stderr]"}`. Caller logs in decisions-log and continues with internal pool only.
+- Empty output → return `{kept: [], dropped: [], skipped: "codex-empty", report_path: null}`.
+- Timeout (>10 min) → return `{kept: [], dropped: [], skipped: "codex-timeout", report_path: null}`.
 
 ---
 
@@ -163,25 +161,19 @@ After re-classification, walk every finding and tag with `dropped` reason (or ke
 - `dropped: below-floor` — re-classified severity is below `--min-severity` floor (resolved per Phase 1).
 - `kept` — substantive finding at or above floor.
 
-Record both raw count and dropped count in report (or in returned JSON for `--embedded-parallel`).
+Record raw count and dropped count in the returned JSON.
 
 ---
 
-## Phase 5: Write Report
+## Phase 5: Append iteration block to report
 
-Render `.ags/templates/external-review/t_review-report.md` to the resolved report path.
+Append a compressed `## Iteration N (parallel)` block (severity floor used, kept count, dropped count by reason, kept findings table only) to the resolved report path. Use Edit (file may not exist yet — Write on first iteration, Edit thereafter). No user write-confirmation — caller's aggregator owns dialog.
 
-If iteration N>1, **append** new `## Iteration N` section to existing file (Edit, not Write). Top-level summary table (latest verdict) updated in place.
-
-In `--embedded-parallel` mode: append a compressed `## Iteration N (parallel)` block (severity floor used, kept count, dropped count by reason, kept findings table only) and skip the user write-confirmation question — caller's aggregator owns the dialog.
-
-Standalone / `--embedded`: ask "May I write external review report to `[path]`?"
+If report file does not exist, create it with the template header from `.ags/templates/external-review/t_review-report.md` plus the first `## Iteration N (parallel)` block.
 
 ---
 
-## Phase 6: Verdict & Block Decision
-
-**Skip entirely in `--embedded-parallel` mode.** Return JSON to caller:
+## Phase 6: Return JSON to caller
 
 ```json
 {
@@ -194,78 +186,21 @@ Standalone / `--embedded`: ask "May I write external review report to `[path]`?"
 }
 ```
 
-Caller's aggregator decides whether the loop continues.
-
-Standalone / `--embedded` modes — compute verdict as below from kept (post Phase 4b) findings:
-
-| Counts | Verdict |
-|---|---|
-| any `critical` | **BLOCK** |
-| any `high` | **BLOCK** |
-| no critical/high, any medium | **CONCERNS** |
-| only low, or none | **PASS** |
-
-**On BLOCK:**
-1. Print blockers list (critical + high) with location + fix suggestion.
-2. STOP the calling workflow. If invoked from `/ags-gate-check`, return verdict=FAIL with reason "external review BLOCK". If invoked from `/ags-architecture-decision`, do not proceed to write approval.
-3. Tell user: "Fix the [N] blocking findings, then re-run `/ags-external-review [type] [target] --iteration [N+1]`."
-4. Exit.
-
-**On CONCERNS:** show medium findings, ask user via `AskUserQuestion`:
-- [A] Accept and proceed (record acceptance in report)
-- [B] Fix and re-review
-- [C] Stop here
-
-**On PASS:** caller may proceed.
+Caller's aggregator merges kept findings with internal-reviewer findings and decides loop exit. This skill never writes to `decisions-log.md` — parent skill records its own loop-completion entry.
 
 ---
 
-## Phase 7: Update decisions-log.md
-
-**Skip in `--embedded-parallel` mode** — the parent generator skill writes its own decisions-log entry at completion (covering the whole combined-review loop).
-
-Standalone / `--embedded`: append entry to `.ags/project/decisions-log.md` only when verdict is PASS or user accepted CONCERNS:
-
-```
-## [YYYY-MM-DD HH:MM] — External review: [type] [slug] — [PASS | CONCERNS-ACCEPTED]
-
-**Type**: process
-**Context**: External Codex review iteration [N] on [target].
-**Decision**: [verdict] — [N findings: C critical, H high, M medium, L low after Claude re-classification].
-**Rationale**: [one-line summary]
-**Refs**: [report path]
-**Decided by**: [user] (verdict from external review + Claude re-classification)
-```
-
-BLOCK verdict: do NOT log to decisions-log (the review is not closed yet — only the resolved iteration is logged).
-
----
-
-## Phase 8: Cleanup
+## Phase 7: Cleanup
 
 Delete `.ags/project/reviews/.tmp/` files older than 7 days (Bash). Keep current iteration's tmp files until next iteration starts.
 
 ---
 
-## Embedded use (called from other skills)
+## Caller contract
 
-### `--embedded` (standalone gate sub-step)
-
-Used by `/ags-gate-check epic-done|release` where external review is its own gate.
-
-- Caller passes `type`, `target`, optional `--iteration N`, optional `--min-severity`.
-- This skill returns a structured verdict line: `EXTERNAL-REVIEW: [PASS | CONCERNS | BLOCK] — [report-path]`.
-- Caller treats BLOCK as hard FAIL of its own gate. CONCERNS surfaces to caller's user prompt. PASS is silent.
-- No `AskUserQuestion` prompts inside embedded mode beyond the BLOCK fix-and-retry instruction — the calling skill owns the user dialog.
-
-### `--embedded-parallel` (generator skill combined-review loop)
-
-Used by every document-generating skill (`/ags-architecture-decision`, `/ags-create-epics`, `/ags-design-system`, `/ags-art-bible`, `/ags-ux-design`, `/ags-qa-plan`, `/ags-asset-spec`, `/ags-localize`, `/ags-release-checklist`, `/ags-launch-checklist`, `/ags-day-one-patch`, `/ags-epic-contracts`, `/ags-create-stories`, `/ags-dev-story`, `/ags-map-systems`, `/ags-brainstorm`, `/ags-create-architecture`, `/ags-create-control-manifest`).
+Called by every authoring and review-verdict skill within its Combined Review Loop:
 
 - Caller spawns this skill in parallel with internal reviewer Tasks within one loop iteration.
-- Caller passes `type`, `target` (path to draft, possibly under `.ags/project/reviews/.tmp/`), `--iteration N`, `--min-severity [floor]`.
-- This skill **does not block, does not dialog, does not write decisions-log**. Skips Phase 6, 7. Phase 5 writes a compressed iteration block to the report file.
-- Returns JSON (see Phase 6) — `kept` is the list of substantive findings at or above the floor; caller's aggregator merges with internal-reviewer findings and decides loop exit.
+- Caller passes `type`, `target` (path to draft for authoring, or path to source artifact for review-verdict), `--iteration N`, `--min-severity [floor]`, `--embedded-parallel`.
+- This skill **does not block, does not dialog, does not write decisions-log**. Phase 5 writes a compressed iteration block to the report file; Phase 6 returns JSON.
 - `codex` not on PATH → returns `{kept: [], dropped: [], skipped: "codex-unavailable", report_path: null}` immediately. Caller logs skip in decisions-log and proceeds with internal pool only.
-
-Detect mode via arg flag `--embedded` or `--embedded-parallel`. Default = standalone mode (full prompts, full verdict, full dialog).

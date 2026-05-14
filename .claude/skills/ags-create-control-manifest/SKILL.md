@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-create-control-manifest
 description: "Produce a flat actionable rules sheet for programmers — what you must do, what you must never do, per system and per layer. Two modes: SEED (Foundation phase, derived from architecture skeleton + technical preferences + engine reference) and REFRESH (Production phase, regenerated from accumulated Accepted ADRs)."
 argument-hint: "[seed | refresh]"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task
 agent: technical-director
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Create Control Manifest
 

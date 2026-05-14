@@ -69,7 +69,7 @@ Report: "Available systems: [N]. Existing epics: [M]. Open stubs: [K]."
 
 ## 4. Free-Form Description
 
-Ask the user, in their chosen chat language (per `p_user-interaction.md`):
+Ask the user, in their chosen chat language (per `user-interaction.md`):
 
 > "Describe what this epic should do. Free form — new features, mechanic changes, data specs, refactor, fix, anything. Don't worry about format yet."
 

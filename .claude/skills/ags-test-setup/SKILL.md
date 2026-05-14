@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-test-setup
 description: "Scaffold the test framework and CI/CD pipeline for the project's engine. Creates the tests/ directory structure, engine-specific test runner configuration, and GitHub Actions workflow. Run once during Technical Setup phase before the first sprint begins."
 argument-hint: "[force]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Test Setup
 

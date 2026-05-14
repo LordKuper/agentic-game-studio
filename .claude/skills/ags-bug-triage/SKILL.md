@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-bug-triage
 description: "Read all open bugs in .ags/project/qa/bugs/, re-evaluate priority vs. severity, assign to sprints, surface systemic trends, and produce a triage report. Run at sprint start or when the bug count grows enough to need re-prioritization."
 argument-hint: "[sprint | full | trend]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Bug Triage
 

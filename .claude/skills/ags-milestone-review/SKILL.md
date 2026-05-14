@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-milestone-review
 description: "Generates a comprehensive milestone progress review including feature completeness, quality metrics, risk assessment, and go/no-go recommendation. Use at milestone checkpoints or when evaluating readiness for a milestone deadline."
 argument-hint: "[milestone-name|current]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 ## Phase 0a: Prerequisites
 
@@ -146,3 +148,18 @@ If no, stop here. Verdict: **BLOCKED** — user declined write.
 
 - Run `/ags-gate-check` for a formal phase gate verdict if this milestone marks a development phase boundary.
 - Run `/ags-create-epics` to adjust the next sprint based on the scope recommendations above.
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Milestone-analysis phases run **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (producer + relevant director gates).
+   - For each epic in the milestone scope: `/ags-external-review epic [epic-path] --embedded-parallel --iteration [N] --min-severity [floor]`. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+3. Aggregator (`producer`) merges findings from internal + Codex, drops nitpicks + below-floor.
+4. **Loop exit**: filtered set empty → emit final verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source epics, NOT this milestone-review report.

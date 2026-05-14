@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-reverse-document
 description: "Generate design or architecture documents from existing implementation. Works backwards from code to create missing planning docs."
 argument-hint: "<type> <path> (e.g., 'design Assets/Scripts/Gameplay/combat' or 'architecture Assets/Scripts/core')"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, AskUserQuestion
 # Read-only diagnostic skill — no specialist agent delegation needed
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Reverse Documentation
 
@@ -250,3 +252,19 @@ Agent: ✅ Written to design/gdd/[system-name].md
 8. **Flag follow-up** — suggest related work, don't auto-execute
 
 **NEVER assume intent. ALWAYS ask before documenting "why".**
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Authoring + internal review runs **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/reverse-doc-[type]-[slug]-iter[N]-draft.md`.
+3. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (specialists matching reversed doc type + relevant director gate).
+   - `/ags-external-review [matching-type] [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — pick the `--type` matching the reversed doc (`gdd` / `adr` / `ux` / etc.); fall back to `custom` if none fits. Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (owning director for the reversed doc type — `game-designer` for GDD, `technical-director` for ADR, `ux-designer` for UX, etc.) merges findings from internal + Codex, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically.

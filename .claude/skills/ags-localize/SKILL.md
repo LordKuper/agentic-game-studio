@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-localize
 description: "Full localization pipeline: scan for hardcoded strings, extract and manage string tables, validate translations, generate translator briefings, run cultural/sensitivity review, manage VO localization, test RTL/platform requirements, enforce string freeze, and report coverage."
 argument-hint: "[scan|extract|validate|status|brief|cultural-review|vo-pipeline|rtl-check|freeze|qa]"
@@ -6,6 +6,8 @@ user-invocable: true
 agent: narrative-director
 allowed-tools: Read, Glob, Grep, Write, Bash, Task, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Localization Pipeline
 

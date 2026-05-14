@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-create-stories
 description: "Break a single epic into implementable story files. Reads the epic, its GDD, governing ADRs, and control manifest. Each story embeds its GDD requirement TR-ID, ADR guidance, acceptance criteria, story type, and test evidence path. Run after /ags-create-epics for each epic."
 argument-hint: "[epic-slug | epic-path]"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 agent: lead-programmer
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Create Stories
 

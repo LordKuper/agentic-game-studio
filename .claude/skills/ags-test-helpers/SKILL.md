@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-test-helpers
 description: "Generate engine-specific test helper libraries for the project's test suite. Reads existing test patterns and produces tests/helpers/ with assertion utilities, factory functions, and mock objects tailored to the project's systems. Reduces boilerplate in new test files."
 argument-hint: "[system-name | all | scaffold]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Test Helpers
 

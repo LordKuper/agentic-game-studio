@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-brainstorm
 description: "Guided game concept ideation — from zero idea to a structured game concept document. Uses professional studio ideation techniques, player psychology frameworks, and structured creative exploration."
 argument-hint: "[genre or theme hint, or 'open']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, WebSearch, Task, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 When this skill is invoked:
 

@@ -87,7 +87,7 @@ Fix: get GDD approved (set status: approved + approved_at), then retry.
 
 ## 7. ADR `gdd_source` field
 
-Mandatory line in every ADR, placed **immediately before `## Status` heading**:
+Mandatory line in every ADR, placed inside the `## Preconditions` section (first section after the title):
 
 ```markdown
 **GDD source**: `design/gdd/<system>.md#<section-anchor>` (status: approved at YYYY-MM-DD)

@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, AskUserQuestion
 ---
 
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
+
 # Smoke Check
 
 Gate between "implementation done" and "QA hand-off". Runs automated tests, checks coverage gaps, batch-verifies critical paths with developer, produces PASS/FAIL report.

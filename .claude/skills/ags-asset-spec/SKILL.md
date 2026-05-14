@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-asset-spec
 description: "Generate per-asset visual specifications and AI generation prompts from GDDs, level docs, or character profiles. Produces structured spec files and updates the master asset manifest. Run after art bible and GDD/level design are approved, before production begins."
 argument-hint: "[system:<name> | level:<name> | character:<name>]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 If no argument is provided, check whether `design/assets/asset-manifest.md` exists:
 - If it exists: read it, find the first context (system/level/character) with any asset at status "Needed" but no spec file written yet, and use `AskUserQuestion`:

@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion, Bash
 ---
 
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
+
 ## Source of Truth
 
 **Template is SSoT.** Skill does NOT enumerate sections, agents, or modes — it parses `.ags/templates/t_art-bible.html` at runtime and derives the work plan from it. Editing the template (adding a section, changing an agent assignment, marking a section status-only) propagates to skill behavior with no skill edits required.

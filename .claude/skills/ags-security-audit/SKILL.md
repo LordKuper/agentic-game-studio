@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-security-audit
 description: "Audit the game for security vulnerabilities: save tampering, cheat vectors, network exploits, data exposure, and input validation gaps. Produces a prioritised security report with remediation guidance. Run before any public release or multiplayer launch."
 argument-hint: "[full | network | save | input | quick]"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, Write, Task, AskUserQuestion
 agent: lead-programmer
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Security Audit
 
@@ -252,3 +254,18 @@ If no CRITICAL/HIGH findings:
 - **Accepted risk is a valid outcome** — some LOW findings are acceptable trade-offs for a solo team; document the decision
 - **Multiplayer games have a higher bar** — any HIGH finding in a multiplayer context should be treated as CRITICAL
 - **This is not a penetration test** — this audit covers common patterns; a real pentest by a human security professional is recommended before any competitive or monetised multiplayer launch
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Audit phases run **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (technical-director + lead-programmer).
+   - `/ags-external-review security [release-branch-or-version-tag] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex scans the release branch / dependency manifest / threat-model notes. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+3. Aggregator (`technical-director`) merges findings from internal + Codex, drops nitpicks + below-floor.
+4. **Loop exit**: filtered set empty → emit final verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source code / release artifacts, NOT this audit report.

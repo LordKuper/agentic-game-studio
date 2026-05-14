@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-scope-check
 description: "Analyze a feature or sprint for scope creep by comparing current scope against the original plan. Flags additions, quantifies bloat, and recommends cuts. Use when user says 'any scope creep', 'scope review', 'are we staying in scope'."
 argument-hint: "[feature-name or sprint-N]"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Bash, AskUserQuestion
 model: haiku
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Scope Check
 
@@ -137,3 +139,18 @@ Always end with:
 - Not all additions are bad — some are discovered requirements. But they must be acknowledged and accounted for
 - When recommending cuts, prioritize preserving the core player experience over nice-to-haves
 - Always quantify scope changes — "it feels bigger" is not actionable, "+35% items" is
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Scope-analysis phases run **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (producer + game-designer).
+   - For the epic/milestone under scope-check: `/ags-external-review epic [epic-path] --embedded-parallel --iteration [N] --min-severity [floor]`. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+3. Aggregator (`producer`) merges findings from internal + Codex, drops nitpicks + below-floor.
+4. **Loop exit**: filtered set empty → emit final verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source epic/milestone definition, NOT this scope-check report.

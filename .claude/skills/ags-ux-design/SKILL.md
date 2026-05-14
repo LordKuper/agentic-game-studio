@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-ux-design
 description: "Guided, section-by-section UX spec authoring for a screen, flow, or HUD. Reads game concept, player journey, and relevant GDDs to provide context-aware design guidance. Produces ux-spec.md (per screen/flow) or hud-design.md using the studio templates."
 argument-hint: "[screen/flow name] or 'hud' or 'patterns'"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, Task
 agent: ux-designer
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 When this skill is invoked:
 

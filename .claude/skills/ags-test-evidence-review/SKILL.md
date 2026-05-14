@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-test-evidence-review
 description: "Quality review of test files and manual evidence documents. Goes beyond existence checks — evaluates assertion coverage, edge case handling, naming conventions, and evidence completeness. Produces ADEQUATE/INCOMPLETE/MISSING verdict per story. Run before QA sign-off or on demand."
 argument-hint: "[story-path | sprint | system-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Test Evidence Review
 
@@ -259,3 +261,18 @@ Verdict: **COMPLETE** — evidence review finished. Use CONCERNS if BLOCKING ite
 - **BLOCKING vs. ADVISORY distinction is important** — only flag BLOCKING when
   the gap leaves a story criterion genuinely unverified
 - **Ask before writing** — the report file is optional; always confirm before writing
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Evidence-evaluation phases run **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (qa-lead + relevant story owners).
+   - `/ags-external-review custom [evidence-bundle-path] --embedded-parallel --iteration [N] --min-severity [floor]` — bundle = story + cited evidence files + test files. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+3. Aggregator (`qa-lead`) merges findings from internal + Codex, drops nitpicks + below-floor.
+4. **Loop exit**: filtered set empty → emit final verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source evidence bundle, NOT this review report.

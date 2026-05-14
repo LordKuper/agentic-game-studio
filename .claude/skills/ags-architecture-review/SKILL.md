@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-architecture-review
 description: "Validates completeness and consistency of the project architecture against all GDDs. Builds a traceability matrix mapping every GDD technical requirement to ADRs, identifies coverage gaps, detects cross-ADR conflicts, verifies engine compatibility consistency across all decisions, and produces a PASS/CONCERNS/FAIL verdict. The architecture equivalent of /ags-design-review."
 argument-hint: "[focus: full | coverage | consistency | engine | single-gdd path/to/gdd.md]"
@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Task, AskUserQuestion
 agent: technical-director
 model: opus
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Architecture Review
 
@@ -680,3 +682,18 @@ If any spawned agent returns BLOCKED, errors, or fails to complete:
 3. **Don't guess** — if requirement ambiguous, ask: "Is [X] a technical requirement or a design preference?"
 4. **Ask before writing** — always confirm before writing the report file
 5. **Non-blocking** — verdict is advisory; user decides whether to continue despite CONCERNS or FAIL
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Phases 2–6 (analysis + conflict detection + engine audit + arch-doc coverage) run **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (engine-specialist consultation in Phase 5, design-principles audit in Phase 4b, etc.).
+   - For each ADR under review: `/ags-external-review adr [adr-path] --embedded-parallel --iteration [N] --min-severity [floor]`. For `architecture.md` (if present): one additional call with `custom` type bundling the arch doc + systems-index. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+3. Aggregator (`technical-director`) merges findings from internal phases + Codex, drops nitpicks + below-floor.
+4. **Loop exit**: filtered set empty → emit Phase 7 verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source ADRs, NOT this review report.

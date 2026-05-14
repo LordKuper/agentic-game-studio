@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-team-release
 description: "Orchestrate the release team: coordinates release-manager, qa-lead, tools-programmer, and producer to execute a release from candidate to deployment."
 argument-hint: "[version number or 'next']"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 **Argument check:** If no version number is provided:
 1. Read `.ags/project/state.md` and the most recent file in `.ags/project/milestones/` (if they exist) to infer the target version.
 2. If a version is found: report "No version argument provided — inferred [version] from milestone data. Proceeding." Then confirm with `AskUserQuestion`: "Releasing [version]. Is this correct?"

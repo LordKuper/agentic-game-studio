@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-design-review
 description: "Reviews a game design document for completeness, internal consistency, implementability, and adherence to project design standards. Run this before handing a design document to programmers."
 argument-hint: "[path-to-design-doc]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Task, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 ## Phase 0a: Prerequisites
 
@@ -272,3 +274,18 @@ Build the option list dynamically — only include options that are genuinely ne
 Assign letters A, B, C… only to included options. Mark the most pipeline-advancing option as `(recommended)`.
 
 Never end the skill with plain text after file writes. Always close with this widget.
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Analysis phases run **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (specialists + game-designer gate).
+   - For each GDD under review: `/ags-external-review gdd [gdd-path] --embedded-parallel --iteration [N] --min-severity [floor]`. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+3. Aggregator (`game-designer`) merges findings from internal + Codex, drops nitpicks + below-floor.
+4. **Loop exit**: filtered set empty → emit final verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source GDDs, NOT this review report.

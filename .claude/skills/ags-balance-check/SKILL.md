@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-balance-check
 description: "Analyzes game balance data files, formulas, and configuration to identify outliers, broken progressions, degenerate strategies, and economy imbalances. Use after modifying any balance-related data or design. Use when user says 'balance report', 'check game balance', 'run a balance check'."
 argument-hint: "[system-name|path-to-data-file]"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, AskUserQuestion
 agent: systems-designer
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 ## Phase 0: Prerequisites
 
@@ -124,3 +126,18 @@ If yes:
 If no: summarize open issues, suggest saving to `design/balance/balance-check-[system]-[date].md`.
 
 End: "Re-run `/ags-balance-check` after fixes to verify."
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Balance-analysis phases run **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (game-designer + systems-designer).
+   - For the cited GDD: `/ags-external-review gdd [gdd-path] --embedded-parallel --iteration [N] --min-severity [floor]` — balance config bundled via `{{RELATED_DOCS}}`. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+3. Aggregator (`game-designer`) merges findings from internal + Codex, drops nitpicks + below-floor.
+4. **Loop exit**: filtered set empty → emit final verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source GDD + balance config, NOT this balance-check report.

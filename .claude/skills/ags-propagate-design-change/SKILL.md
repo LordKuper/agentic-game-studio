@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-propagate-design-change
 description: "When an upstream design document is revised (GDD, DESIGN.md, accessibility-requirements, technical-preferences), scans downstream artifacts (ADRs, art-bible sections, traceability index) to identify what is now potentially stale. Produces a change impact report and guides resolution."
 argument-hint: "[path/to/changed-doc]"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Bash, Task
 agent: technical-director
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Propagate Design Change
 

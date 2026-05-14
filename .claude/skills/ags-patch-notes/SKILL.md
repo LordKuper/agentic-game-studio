@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-patch-notes
 description: "Generate player-facing patch notes from git history, sprint data, and internal changelogs. Translates developer language into clear, engaging player communication."
 argument-hint: "[version] [--style brief|detailed|full]"
@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Write, Bash, AskUserQuestion
 model: haiku
 agent: producer
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 ## Phase 0: Prerequisites
 
@@ -196,3 +198,19 @@ Verdict: **COMPLETE** — patch notes generated and saved.
 
 - Run `/ags-release-checklist` to verify all other release gates are met before publishing.
 - Share the patch notes draft with the producer for tone review before posting publicly.
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Authoring + internal review runs **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/patch-notes-[version]-iter[N]-draft.md`.
+3. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (producer + narrative-director).
+   - `/ags-external-review custom [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (`producer`) merges findings from internal + Codex, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically.

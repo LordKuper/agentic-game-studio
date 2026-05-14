@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, AskUserQuestion
 ---
 
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
+
 # Soak Test
 
 Soak/endurance test = extended play session with observation goals. Unlike smoke check (~10 min) or single-feature playtest (~30 min), runs **30 min – several hours** to surface:
@@ -260,3 +262,19 @@ If verdict FAIL, run `/ags-smoke-check` again after fixes."
 - **Duration matches session design** — 5-min game ≠ 4h soak; city-builder might. Ask if unclear.
 - **First soak should be `all` focus** — narrow focus (memory-only) for regression soaks after specific fix, not first pass.
 - **Ask before writing** — always confirm before creating protocol file.
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Authoring + internal review runs **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/soak-test-[focus]-iter[N]-draft.md`.
+3. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (qa-lead + performance-analyst).
+   - `/ags-external-review custom [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (`qa-lead`) merges findings from internal + Codex, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically.

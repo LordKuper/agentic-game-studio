@@ -9,9 +9,9 @@ Canonical contract for every document-producing skill. Skills reference this fil
 3. Architecture changes → `technical-director`.
 4. Cross-domain changes → `producer`.
 
-## Combined review loop
+## Combined review loop (authoring + review)
 
-Internal reviewers (skill-specific specialists + director gate) and external Codex reviewer run **in parallel** within the same iteration. Codex is one general-profile reviewer in the pool, not a separate post-internal step. The skill-designated **aggregator** (producer for most generators; relevant lead for domain-specific skills) collects findings from every reviewer, drops nitpicks, applies the iteration severity floor, and decides loop exit.
+Applies to **every skill emitting findings on a document** — both authoring loops (drafting GDDs, ADRs, epics, stories, etc.) and review-verdict skills (architecture-review, design-review, ux-review, code-review, consistency-check, audits, etc.). Internal reviewers (skill-specific specialists + director gate) and external Codex reviewer run **in parallel** within the same iteration. Codex is one general-profile reviewer in the pool, not a separate post-internal step. The skill-designated **aggregator** (producer for most generators; owning director for review-verdict skills — e.g. technical-director for architecture-review, art-director for design-review) collects findings from every reviewer, drops nitpicks, applies the iteration severity floor, and decides loop exit.
 
 ```
 Loop iteration N (start N = 1):
@@ -22,8 +22,10 @@ Loop iteration N (start N = 1):
 
   parallel spawn:
     - skill-specific internal reviewers (specialists, director gate)
-    - /ags-external-review [type] [draft-path] --embedded-parallel --min-severity [floor]
+    - /ags-external-review [type] [target-artifact-path] --embedded-parallel --min-severity [floor]
       (Codex unavailable on PATH → log skip in decisions-log.md, continue with internal pool)
+      target-artifact-path = draft path (authoring) OR source artifact under review (review skills).
+      Codex reviews the source artifact, NOT the review-report.
 
   aggregator collects findings from every reviewer.
 
@@ -125,10 +127,6 @@ Loop continues with internal reviewers only. No user prompt.
 - Surfaces only kept findings to the user.
 - Records iteration count, dropped count by reason, kept count by severity in the external review report (when external ran) and in the skill's verdict line.
 - Flags kept findings whose fix would trigger Architecture-impact escalation with `arch-escalate`. User must approve the fix plan before the change is written.
-
-## Standalone gate exception
-
-`/ags-gate-check release` and `/ags-gate-check epic-done` retain external review as a separate gate (not parallel-with-internal), because at gate time the artifact is already written and the gate is a verdict, not an authoring loop. Those gates pass `--min-severity` based on their own iteration counter.
 
 ## Document Boundary Check (mandatory in every doc-review iteration)
 

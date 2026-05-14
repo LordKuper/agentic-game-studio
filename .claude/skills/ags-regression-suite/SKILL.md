@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-regression-suite
 description: "Map test coverage to GDD critical paths, identify fixed bugs without regression tests, flag coverage drift from new features, and maintain tests/ags-regression-suite.md. Run after implementing a bug fix or before a release gate."
 argument-hint: "[update | audit | report]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 # Regression Suite
 
@@ -253,3 +255,19 @@ Verdict: **COMPLETE** — regression suite updated. (If user declined write: Ver
 - **Gaps advisory, not blocking** — surface clearly but don't block other work (except at release gate)
 - **Quarantine ≠ deletion** — flaky tests → quarantine (noted in manifest), not removed; fix via `/test-flakiness`
 - **Ask before writing** — confirm before creating or updating manifest
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Authoring + internal review runs **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. Persist current draft to `.ags/project/reviews/.tmp/regression-suite-iter[N]-draft.md`.
+3. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (qa-lead + lead-programmer).
+   - `/ags-external-review custom [draft-path] --embedded-parallel --iteration [N] --min-severity [floor]` — Codex unavailable returns `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+4. Aggregator (`qa-lead`) merges findings from internal + Codex, drops nitpicks + below-floor.
+5. **Loop exit**: filtered set empty → proceed to write approval. Non-empty → surface aggregated kept findings, user revises draft, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically.

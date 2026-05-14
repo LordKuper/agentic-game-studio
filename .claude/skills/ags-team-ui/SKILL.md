@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-team-ui
 description: "Orchestrate the UI team through the full UX pipeline: from UX spec authoring through visual design, implementation, review, and polish. Integrates with /ux-design, /ux-review, and studio UX templates."
 argument-hint: "[UI feature description]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 When this skill is invoked, orchestrate the UI team through a structured pipeline.
 
 **Decision Points:** At each phase transition, use `AskUserQuestion` to present

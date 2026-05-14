@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-team-live-ops
 description: "Orchestrate the live-ops team for post-launch content planning: coordinates game-designer, systems-designer, producer, and narrative-director to design and plan a season, event, or live content update."
 argument-hint: "[season name or event description]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 **Argument check:** If no season name or event description is provided, output:
 > "Usage: `/ags-team-live-ops [season name or event description]` — Provide the name or description of the season or live event to plan."
 Then stop immediately without spawning any subagents or reading any files.

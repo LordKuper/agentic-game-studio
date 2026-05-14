@@ -7,6 +7,8 @@ allowed-tools: Read, Glob, Grep, Bash, Write, Edit, Task, AskUserQuestion
 model: opus
 ---
 
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
+
 # Gate Validation
 
 Validates readiness to advance phase **or** close an epic. Checks artifacts, quality, blockers, stub debt.

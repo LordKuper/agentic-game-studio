@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-team-audio
 description: "Orchestrate audio team: audio-director + audio-director + technical-artist + gameplay-programmer for full audio pipeline from direction to implementation."
 argument-hint: "[feature or area to design audio for]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 If no argument is provided, output usage guidance and exit without spawning any agents:
 > Usage: `/ags-team-audio [feature or area]` — specify the feature or area to design audio for (e.g., `combat`, `main menu`, `forest biome`, `boss encounter`). Do not use `AskUserQuestion` here; output the guidance directly.

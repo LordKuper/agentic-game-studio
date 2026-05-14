@@ -9,6 +9,8 @@ context: |
 model: haiku
 ---
 
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
+
 # Studio Help — What Do I Do Next?
 
 Read-only — reports findings, writes nothing.

@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-team-level
 description: "Orchestrate level design team: game-designer + narrative-director + narrative-director + art-director + systems-designer + qa-lead for complete area/level creation."
 argument-hint: "[level name or area to design]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, Bash, Task, AskUserQuestion, TodoWrite
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 When this skill is invoked:
 

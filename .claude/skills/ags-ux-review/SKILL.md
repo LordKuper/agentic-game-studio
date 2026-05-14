@@ -1,4 +1,4 @@
-﻿---
+---
 name: ags-ux-review
 description: "Validates a UX spec, HUD design, or interaction pattern library for completeness, accessibility compliance, GDD alignment, and implementation readiness. Produces APPROVED / NEEDS REVISION / MAJOR REVISION NEEDED verdict with specific gaps."
 argument-hint: "[file-path or 'all' or 'hud' or 'patterns']"
@@ -6,6 +6,8 @@ user-invocable: true
 allowed-tools: Read, Glob, Grep, AskUserQuestion
 agent: ux-designer
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 ## Phase 0: Prerequisites
 
@@ -283,3 +285,18 @@ After delivering the verdict:
 Never block the user from proceeding — the verdict is advisory. Document risks,
 present findings, let the user decide whether to proceed despite concerns. A user
 who chooses to proceed with a NEEDS REVISION spec takes on the documented risk.
+
+---
+
+## Combined Review Loop (parallel external Codex)
+
+Per `.ags/rules/review-workflow.md`. Analysis phases run **in parallel** with external Codex inside one loop. Each iteration:
+
+1. Resolve severity floor: iter 1-2 → keep all severities; iter 3-4 → critical/high; iter 5+ → critical only.
+2. **Spawn in one message, in parallel**:
+   - All internal reviewer Tasks (ux-designer + art-director + accessibility checks).
+   - For each UX-spec under review: `/ags-external-review ux [ux-spec-path] --embedded-parallel --iteration [N] --min-severity [floor]`. For HUD-spec: one additional call. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
+3. Aggregator (`ux-designer`) merges findings from internal + Codex, drops nitpicks + below-floor.
+4. **Loop exit**: filtered set empty → emit final verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
+
+No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source UX/HUD specs, NOT this review report.

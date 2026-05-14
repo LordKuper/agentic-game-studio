@@ -1,10 +1,12 @@
-﻿---
+---
 name: ags-map-systems
 description: "Decompose a game concept into individual systems, map dependencies, prioritize design order, and create the systems index."
 argument-hint: "[next | system-name]"
 user-invocable: true
 allowed-tools: Read, Glob, Grep, Write, Edit, AskUserQuestion, TodoWrite, Task
 ---
+
+**Language**: Talk to user in language from `.ags/project/user-interaction.md`. Fall back to English if file missing. Files on disk always English per `.ags/rules/user-interaction.md`.
 
 When this skill is invoked:
 
