@@ -63,6 +63,7 @@ Evaluate against the Design Document Standard checklist:
 - [ ] §1 YAGNI — every mechanic / subsystem proposed has a stated player-experience justification, not speculative scope. Flag systems introduced "for future use" with no current playtest need.
 - [ ] §2 KISS — simplest rule set that delivers the player fantasy. Flag clever / complex rules where a straightforward version was not considered in alternatives.
 - [ ] §5 SSoT — GDD describes intent only, defers numeric balance to data-config (`coding.md` §4); no hard-coded balance numbers duplicated across GDD sections.
+- [ ] §10 Over-engineering smells — walk the §10.1 checklist against this GDD. Common GDD-level hits: mechanics with no player-fantasy / pillar justification; tuning knobs no designer asked for; "for future use" content slots; modes / variants with no second case; premature unification of two systems sharing only surface. Each hit → **severity `critical`, category `over-engineering`**. Drop only if author supplies §10.2 justification (second consumer, near-term use, or ADR reference). Vague justifications ("flexible", "future-proof") do not satisfy. These findings are never nitpicks, never dropped by severity floor, and force **MAJOR REVISION NEEDED** verdict until resolved.
 
 ---
 
@@ -285,7 +286,7 @@ Per `.ags/rules/review-workflow.md`. Analysis phases run **in parallel** with ex
 2. **Spawn in one message, in parallel**:
    - All internal reviewer Tasks (specialists + game-designer gate).
    - For each GDD under review: `/ags-external-review gdd [gdd-path] --embedded-parallel --iteration [N] --min-severity [floor]`. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
-3. Aggregator (`game-designer`) merges findings from internal + Codex, drops nitpicks + below-floor.
+3. Aggregator (`game-designer`) merges findings from internal + Codex, drops nitpicks + below-floor. **Exception**: any finding tagged `category: over-engineering` (per `design-principles.md` §10) is always `severity: critical`, never nitpick-droppable, never below-floor. Carries through every iteration until removed or justified per §10.2.
 4. **Loop exit**: filtered set empty → emit final verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
 
 No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source GDDs, NOT this review report.

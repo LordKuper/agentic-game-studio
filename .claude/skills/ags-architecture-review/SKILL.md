@@ -309,6 +309,7 @@ For each ADR, check:
 | §7 Observability | ADR introduces gameplay-critical or perf-sensitive system without debug / log / metric hooks specified |
 | §8 Backward Compatibility | ADR changes save format / mod API / content schema without migration plan or version bump |
 | §9 Evolutionary Architecture | ADR commits to non-reversible decision (sealed contract, freeze of mod API, hard-coded dependency) without justification; missing Reversibility note |
+| §10 Over-engineering smells | Walk §10.1 checklist against ADR. Common ADR-level hits: interface / abstract base with one implementer; generic / template parameter with one concrete type; plugin / extension system with no plugins; config flag without a second mode; layered indirection without payoff; custom DSL when data-config suffices; event bus for two known callers; abstraction "in case we swap engine / DB / renderer" with no roadmap; premature optimization without profiler data. Drop only if ADR contains §10.2 justification (named second consumer + epic id, concrete near-term use, or referenced ADR). Vague rationales ("flexibility", "future-proof", "best practice") do not satisfy. |
 
 For each violation:
 
@@ -320,7 +321,7 @@ Severity: high (substantive design risk) / medium (advisory)
 Suggested fix: [revise section / add migration plan / extract interface / etc.]
 ```
 
-Severity floor: §1, §5, §8 violations are `high` — never dropped by iteration floor. §2, §9 are `medium` advisory. Other principles graded per concrete impact.
+Severity floor: §1, §5, §8 violations are `high` — never dropped by iteration floor. §2, §9 are `medium` advisory. §10 over-engineering smells are **always `critical`, category `over-engineering`** — never dropped by iteration floor, never treated as nitpick, force **FAIL** verdict (not CONCERNS) in Phase 7 until removed or justified per §10.2. Other principles graded per concrete impact.
 
 Incorporate findings into Phase 7 report under `### Design Principle Violations`.
 
@@ -486,7 +487,8 @@ For each gap:
 PASS: All requirements covered, no conflicts, engine consistent
 CONCERNS: Some gaps or partial coverage, but no blocking conflicts
 FAIL: Critical gaps (Foundation/Core layer requirements uncovered),
-      or blocking cross-ADR conflicts detected
+      blocking cross-ADR conflicts detected,
+      or any unresolved §10 over-engineering finding
 
 ### Blocking Issues (must resolve before PASS)
 [List items that must be resolved — FAIL verdict only]
@@ -693,7 +695,7 @@ Per `.ags/rules/review-workflow.md`. Phases 2–6 (analysis + conflict detection
 2. **Spawn in one message, in parallel**:
    - All internal reviewer Tasks (engine-specialist consultation in Phase 5, design-principles audit in Phase 4b, etc.).
    - For each ADR under review: `/ags-external-review adr [adr-path] --embedded-parallel --iteration [N] --min-severity [floor]`. For `architecture.md` (if present): one additional call with `custom` type bundling the arch doc + systems-index. Codex unavailable → `skipped: codex-unavailable`; aggregator logs skip in decisions-log and continues with internal pool only.
-3. Aggregator (`technical-director`) merges findings from internal phases + Codex, drops nitpicks + below-floor.
+3. Aggregator (`technical-director`) merges findings from internal phases + Codex, drops nitpicks + below-floor. **Exception**: any finding tagged `category: over-engineering` (per `design-principles.md` §10) is always `severity: critical`, never nitpick-droppable, never below-floor. Carries through every iteration until removed or justified per §10.2.
 4. **Loop exit**: filtered set empty → emit Phase 7 verdict. Non-empty → surface aggregated kept findings, user resolves, N++, repeat.
 
 No iteration cap. No user-confirm gate before external — it runs every iteration automatically. Record final iteration count in the verdict report and decisions-log entry. Codex reviews the source ADRs, NOT this review report.

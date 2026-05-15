@@ -38,6 +38,45 @@ Save format versioned. Migration function per version bump. Mod API stable (`cod
 
 Game design changes. Architecture must survive change. Hide decisions behind interfaces. Defer commitment where cost of reversal is high. ADR documents reversibility of decision. Avoid premature freezing of contracts that will be revisited in next epic.
 
+## 10. Over-engineering smells
+
+Concrete checklist for reviewers. Any item below is a **violation** unless author provides explicit justification (see §10.2). Applies to GDD, ADR, and code-level design.
+
+### 10.1 Smell list
+
+- **Interface / abstract base with one implementer** — extract only when ≥2 real implementers exist or a near-term second one is named and scheduled.
+- **Generic / template parameter with one concrete type** — `Repository<T>` where only `Repository<Item>` ever instantiated.
+- **Plugin / extension system with no plugins** — registry, dispatcher, hook framework built without a second consumer.
+- **Config flag / mode without a second mode** — `useNewPathfinder=true` with no `false` branch in scope, or feature toggle for an unshipped alternative.
+- **"For future use" fields** — data-config or schema fields with no current consumer code path.
+- **Speculative tuning knob** — exposed parameter no designer has asked to tune; intent unverified by playtest.
+- **Premature unification** — merging two systems that share surface but not semantics ("inventory and quest log both have items").
+- **Premature optimization** — perf decision in ADR without profiler measurement or stated budget breach.
+- **Layered indirection without payoff** — manager → service → provider → repository for a fact one system owns.
+- **Custom DSL / scripting layer** — when same authoring need served by data-config or direct code.
+- **Event bus for two known callers** — direct call simpler; event bus pays off ≥3 listeners or unknown future listeners with explicit reason.
+- **Abstraction "in case we swap engine / DB / renderer"** — swap is not on roadmap, no ADR documents it.
+- **Mechanic / subsystem in GDD with no player-experience justification** — feature exists because "RPGs have it", not because pillar / fantasy demands it.
+
+### 10.2 Justification escape hatch
+
+Author may keep a flagged item by adding explicit justification to the ADR/GDD:
+
+```
+Justification: <second consumer name + epic id where it lands>, OR
+              <concrete near-term use case>, OR
+              <ADR reference documenting the constraint>.
+```
+
+No justification → reviewer enforces removal. Vague justifications ("more flexible", "future-proof", "best practice") do **not** satisfy.
+
+### 10.3 Severity and review handling
+
+- Over-engineering findings are **always severity `critical`, category `over-engineering`**.
+- Aggregator **MUST NOT** drop these as nitpicks.
+- Iteration severity floor (`.ags/rules/review-workflow.md`) keeps `critical` at all iterations — over-engineering items survive every iteration until removed or justified per §10.2.
+- Any unresolved over-engineering finding → **FAIL** verdict in `/ags-design-review` and `/ags-architecture-review` (not CONCERNS).
+
 ## Cross-references
 
 - `.ags/rules/coding.md` — code-level engineering principles, data-driven design, testing, observability
